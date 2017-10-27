@@ -1,0 +1,31 @@
+<div>
+	<mat-toolbar color="primary">		
+			<span i18n>Curreny Table</span> 
+			<span class="example-fill-remaining-space"></span>
+			<span><button mat-button (click)="orderbooks()" i18n>Orderbooks</button></span>
+			<span><button mat-button *ngIf="hash === null" (click)="openLoginDialog()" i18n>Login</button></span>		
+			<span><button mat-button *ngIf="hash !== null" (click)="logout()" i18n>Logout</button></span>
+	</mat-toolbar>
+	<div>
+		<mat-table #table [dataSource]="datasource"> 
+			<ng-container matColumnDef="exchange"> 
+				<mat-header-cell *matHeaderCellDef i18n> Exchange </mat-header-cell> 
+				<mat-cell *matCellDef="let element"> {{element.exchange}} </mat-cell> 
+			</ng-container> 
+			<ng-container matColumnDef="currpair"> 
+				<mat-header-cell *matHeaderCellDef i18n> Currency Pair </mat-header-cell> 
+				<mat-cell *matCellDef="let element"> {{element.currpair}} </mat-cell> </ng-container> 
+			<ng-container matColumnDef="last"> 
+				<mat-header-cell *matHeaderCellDef i18n> Last </mat-header-cell> 
+				<mat-cell *matCellDef="let element"> {{element.last < 0.01 ? '--' : element.last | number:'1.2'}} </mat-cell> 
+			</ng-container> 
+			<ng-container matColumnDef="volume"> 
+				<mat-header-cell *matHeaderCellDef i18n> Volume </mat-header-cell> 
+				<mat-cell *matCellDef="let element"> {{element.volume < 1 ? '--' : element.volume | number:'1.2'}} </mat-cell> 
+			</ng-container> 
+			<mat-header-row *matHeaderRowDef="['exchange', 'currpair', 'last', 'volume']"></mat-header-row>
+		<mat-row *matRowDef="let row; columns: ['exchange', 'currpair', 'last', 'volume'];" 
+			(click)="selectedRow(row)"></mat-row> 
+		</mat-table>
+	</div>
+</div>

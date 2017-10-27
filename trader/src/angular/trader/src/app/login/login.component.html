@@ -1,0 +1,67 @@
+<div mat-dialog-content>
+<mat-tab-group> 
+	<mat-tab i18n-label label="Login">
+		<form [formGroup]="loginForm" novalidate>  
+			<ul>
+				<li>
+					<mat-form-field> 
+						<input matInput
+							i18n-placeholder placeholder="Username" tabindex="1" formControlName="username"> 
+					</mat-form-field>
+				</li>
+				<li>
+					<mat-form-field> 
+						<input matInput
+							i18n-placeholder placeholder="Password" tabindex="2" formControlName="password" type="password">
+					</mat-form-field>
+				</li>
+				<li *ngIf="loginFailed" i18n class="errorText">
+					Login Failed
+				</li>
+				<li>
+					<button mat-button (click)="onLoginClick()" tabindex="-1" i18n>Ok</button>
+					<button mat-button (click)="onCancelClick()" tabindex="-1" i18n>Cancel</button>
+				</li>
+			</ul>
+		</form>
+	</mat-tab> 
+	<mat-tab i18n-label label="Signin">
+		<form [formGroup]="signinForm" novalidate>
+			<ul>
+				<li>
+					<mat-form-field> 
+						<input matInput
+							i18n-placeholder placeholder="Username" tabindex="1" formControlName="username"> 
+					</mat-form-field>
+				</li>
+				<li>
+					<mat-form-field> 
+						<input matInput
+							i18n-placeholder placeholder="Password" tabindex="2" formControlName="password" type="password">
+					</mat-form-field>
+					<mat-form-field> 
+						<input matInput
+							i18n-placeholder placeholder="Password" tabindex="3" formControlName="password2" type="password">
+					</mat-form-field>
+				</li>
+					<li>
+					<mat-form-field> 
+						<input matInput
+							i18n-placeholder placeholder="Email" tabindex="4" formControlName="email">
+					</mat-form-field>
+				</li>			
+				<li *ngIf="signinFailed" i18n class="errorText">
+					Signin Failed
+				</li>	
+				<li>
+					<button mat-button (click)="onSigninClick()" tabindex="-1" i18n>Ok</button>
+					<button mat-button (click)="onCancelClick()" tabindex="-1" i18n>Cancel</button>
+				</li>
+			</ul>
+		</form>
+	</mat-tab> 	
+</mat-tab-group>
+</div>
+
+
+

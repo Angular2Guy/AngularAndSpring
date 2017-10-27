@@ -1,0 +1,14 @@
+.example-container {
+  display: flex;
+  flex-direction: column; 
+}
+
+.mat-table {
+  overflow: auto;  
+}
+
+.example-fill-remaining-space {
+  // This fills the remaining space, by using flexbox. 
+  // Every toolbar row uses a flexbox row layout.
+  flex: 1 1 auto;
+}

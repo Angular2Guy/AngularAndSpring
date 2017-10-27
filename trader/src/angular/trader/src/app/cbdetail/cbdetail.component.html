@@ -1,0 +1,62 @@
+<div>
+	<mat-toolbar color="primary"><span i18n>Coinbase</span> <span class="currPair">{{myCurrPair}}</span></mat-toolbar>
+	<div>
+		<table>
+			<tbody>
+				<tr *ngIf="currpair === BTCUSD">	
+					<td><span i18n>Pair</span>:</td>
+					<td>{{myCurrPair}}</td>
+					<td><span i18n>Last Usd</span>:</td>
+					<td>{{currQuote?.USD | number:'1.2'}}</td>				
+					<td><span i18n>Last Eur</span>:</td>
+					<td>{{currQuote?.EUR | number:'1.2'}}</td>
+					<td><span i18n>Last Yen</span>:</td>
+					<td>{{currQuote?.JPY | number:'1.2'}}</td>
+					<td><span i18n>Last Pound</span>:</td>
+					<td>{{currQuote?.GBP | number:'1.2'}}</td>
+					<td><span i18n>Timestamp</span>:</td>
+					<td>{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
+				</tr>					
+				<tr *ngIf="currpair === ETHUSD">
+					<td><span i18n>Pair</span>:</td>
+					<td>{{myCurrPair}}</td>					
+					<td><span i18n>Last Usd</span>:</td>
+					<td>{{currQuote?.USD / currQuote?.ETH | number:'1.2'}}</td>				
+					<td><span i18n>Last Eur</span>:</td>
+					<td>{{currQuote?.EUR / currQuote?.ETH | number:'1.2'}}</td>
+					<td><span i18n>Last Yen</span>:</td>
+					<td>{{currQuote?.JPY / currQuote?.ETH | number:'1.2'}}</td>
+					<td><span i18n>Last Pound</span>:</td>
+					<td>{{currQuote?.GBP / currQuote?.ETH | number:'1.2'}}</td>
+					<td><span i18n>Timestamp</span>:</td>
+					<td>{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
+				</tr>
+				<tr *ngIf="currpair === LTCUSD">
+					<td><span i18n>Pair</span>:</td>
+					<td>{{myCurrPair}}</td>					
+					<td><span i18n>Last Usd</span>:</td>
+					<td>{{currQuote?.USD / currQuote?.LTC | number:'1.2'}}</td>				
+					<td><span i18n>Last Eur</span>:</td>
+					<td>{{currQuote?.EUR / currQuote?.LTC | number:'1.2'}}</td>
+					<td><span i18n>Last Yen</span>:</td>
+					<td>{{currQuote?.JPY / currQuote?.LTC | number:'1.2'}}</td>
+					<td><span i18n>Last Pound</span>:</td>
+					<td>{{currQuote?.GBP / currQuote?.LTC | number:'1.2'}}</td>
+					<td><span i18n>Timestamp</span>:</td>
+					<td>{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
+				</tr>
+			</tbody>
+		</table>	
+		<div class="detailLinks">
+			<a [routerLink]="['/overview']" i18n>back</a>
+		</div>	
+		<div *ngIf="chartlabels.length > 0" style="display: block;">
+			<canvas baseChart height="200" width="720"
+                [data]="chartdata"
+                [labels]="chartlabels" 
+                [legend]=false
+                [chartType]="chartType"></canvas>
+    	</div>		
+		<br /> {{todayQuotes?.length }}
+	</div>
+</div>

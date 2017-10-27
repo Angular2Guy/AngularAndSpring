@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<script type="text/javascript">
+			var url = navigator.language || navigator.userLanguage;
+			if(url.split('-')[0] === 'en' || url.split('-')[0] === 'de') {
+				window.location.href = window.location.href + url.split('-')[0]+"/index.html";
+			}
+		</script>
+		The languages german and english are supported:<br/>
+		<a href="./de/index.html">German</a>
+		<a href="./en/index.html">English</a>
+	</body>
+</html>
