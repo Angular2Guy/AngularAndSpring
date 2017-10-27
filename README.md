@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 # AngularAndSpring
-=======
-# AngularAndSpring
->>>>>>> branch 'master' of https://github.com/Angular2Guy/AngularAndSpring.git
-=======
-# AngularAndSpring
->>>>>>> branch 'master' of https://github.com/Angular2Guy/AngularAndSpring.git
+
+This is a application that shows howto use Spring Boot, Angular and Mongodb with the reactive features of Spring.
