@@ -25,11 +25,13 @@ import { QuoteBs } from '../common/quoteBs';
 import { QuoteCb } from '../common/quoteCb';
 import { QuoteIb } from '../common/quoteIb';
 import { Utils } from './utils';
+import { OrderbookIb } from '../common/orderbookIb';
 
 @Injectable()
 export class ItbitService {
     private _reqOptionsArgs: RequestOptionsArgs = { headers: new Headers() };
     private readonly _itbit = '/itbit';
+    private readonly _itbitOb = '';
     private _utils = new Utils();
     BTCEUR = 'btceur';
     BTCUSD = 'btcusd';
@@ -44,5 +46,9 @@ export class ItbitService {
     
     getTodayQuotes(currencypair: string): Observable<QuoteIb[]> {
         return this.http.get(this._itbit+'/'+currencypair+'/today', this._reqOptionsArgs).map(res => <QuoteIb[]>res.json()).catch(this._utils.handleError);
+    }
+    
+    getOrderbook(currencypair: string): Observable<OrderbookIb> {
+        return this.http.get(this._itbitOb+'/'+currencypair, this._reqOptionsArgs).map(res => <OrderbookIb>res.json()).catch(this._utils.handleError);
     }
 }

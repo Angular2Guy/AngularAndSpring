@@ -23,11 +23,13 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/throw';
 import { QuoteBf } from '../common/quoteBf';
 import { Utils } from './utils';
+import { OrderbookBf } from '../common/orderbookBf';
 
 @Injectable()
 export class BitfinexService {
   private _reqOptionsArgs: RequestOptionsArgs = { headers: new Headers() };
-  private readonly _bitstamp = '/bitfinex';  
+  private readonly _bitfinex = '/bitfinex';  
+  private readonly _bitfinexOb = 'https://www.bitstamp.net/api/v2/order_book';
   BTCUSD = 'btcusd';
   ETHUSD = 'ethusd';
   LTCUSD = 'ltcusd';
@@ -40,11 +42,14 @@ export class BitfinexService {
   }
 
   getCurrentQuote(currencypair: string): Observable<QuoteBf> {
-      return this.http.get(this._bitstamp+'/'+currencypair+'/current', this._reqOptionsArgs).map(res => <QuoteBf>res.json()).catch(this._utils.handleError);
+      return this.http.get(this._bitfinex+'/'+currencypair+'/current', this._reqOptionsArgs).map(res => <QuoteBf>res.json()).catch(this._utils.handleError);
   }
    
   getTodayQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get(this._bitstamp+'/'+currencypair+'/today', this._reqOptionsArgs).map(res => <QuoteBf[]>res.json()).catch(this._utils.handleError);
+      return this.http.get(this._bitfinex+'/'+currencypair+'/today', this._reqOptionsArgs).map(res => <QuoteBf[]>res.json()).catch(this._utils.handleError);
   }
 
+  getOrderbook(currencypair: string): Observable<OrderbookBf> {
+      return this.http.get(this._bitfinexOb+'/'+currencypair, this._reqOptionsArgs).map(res => <OrderbookBf>res.json()).catch(this._utils.handleError);
+  }
 }

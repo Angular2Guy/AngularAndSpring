@@ -25,12 +25,14 @@ import { QuoteBs } from '../common/quoteBs';
 import { QuoteCb } from '../common/quoteCb';
 import { QuoteIb } from '../common/quoteIb';
 import { Utils } from './utils';
+import { OrderbookBs } from '../common/orderbookBs';
 
 @Injectable()
 export class BitstampService {    
    
     private _reqOptionsArgs: RequestOptionsArgs = { headers: new Headers() };
     private readonly _bitstamp = '/bitstamp';
+    private readonly _bitstampOb = 'https://www.bitstamp.net/api/v2/order_book';
     BTCEUR = 'btceur';
     ETHEUR = 'etheur';
     LTCEUR = 'ltceur';
@@ -51,5 +53,9 @@ export class BitstampService {
      
     getTodayQuotes(currencypair: string): Observable<QuoteBs[]> {
         return this.http.get(this._bitstamp+'/'+currencypair+'/today', this._reqOptionsArgs).map(res => <QuoteBs[]>res.json()).catch(this._utils.handleError);
+    }
+    
+    getOrderbook(currencypair: string): Observable<OrderbookBs> {
+        return this.http.get(this._bitstampOb+'/'+currencypair, this._reqOptionsArgs).map(res => <OrderbookBs>res.json()).catch(this._utils.handleError);
     }
 }

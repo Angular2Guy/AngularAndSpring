@@ -14,6 +14,13 @@
    limitations under the License.
  */
 import { Component, OnInit } from '@angular/core';
+import { BitstampService } from '../services/bitstamp.service';
+import { ItbitService } from '../services/itbit.service';
+import { BitfinexService } from '../services/bitfinex.service';
+import { Router } from '@angular/router';
+import { OrderbookBs } from '../common/orderbookBs';
+import { OrderbookBf, Order } from '../common/orderbookBf';
+import { OrderbookIb } from '../common/orderbookIb';
 
 @Component({
   selector: 'app-orderbooks',
@@ -22,9 +29,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OrderbooksComponent implements OnInit {
 
-  constructor() { }
+  orderbookBs: OrderbookBs;
+  orderbookBf: OrderbookBf;
+  orderbookIb: OrderbookIb;
+    
+  constructor(private router: Router, 
+          private serviceBs: BitstampService, 
+          private serviceIb: ItbitService, 
+          private serviceBf: BitfinexService) { }
 
   ngOnInit() {
+      this.serviceBs.getOrderbook(this.serviceBs.BTCUSD).subscribe(ob => this.orderbookBs = ob);
   }
 
+  
 }
