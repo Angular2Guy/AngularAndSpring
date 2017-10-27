@@ -30,8 +30,7 @@ import { OrderbookIb } from '../common/orderbookIb';
 @Injectable()
 export class ItbitService {
     private _reqOptionsArgs: RequestOptionsArgs = { headers: new Headers() };
-    private readonly _itbit = '/itbit';
-    private readonly _itbitOb = '';
+    private readonly _itbit = '/itbit';    
     private _utils = new Utils();
     BTCEUR = 'btceur';
     BTCUSD = 'btcusd';
@@ -49,6 +48,6 @@ export class ItbitService {
     }
     
     getOrderbook(currencypair: string): Observable<OrderbookIb> {
-        return this.http.get(this._itbitOb+'/'+currencypair, this._reqOptionsArgs).map(res => <OrderbookIb>res.json()).catch(this._utils.handleError);
+        return this.http.get(this._itbit+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).map(res => <OrderbookIb>res.json()).catch(this._utils.handleError);
     }
 }

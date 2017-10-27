@@ -32,6 +32,7 @@ export class OrderbooksComponent implements OnInit {
   orderbookBs: OrderbookBs;
   orderbookBf: OrderbookBf;
   orderbookIb: OrderbookIb;
+  currencies: MyCurr[];
     
   constructor(private router: Router, 
           private serviceBs: BitstampService, 
@@ -40,7 +41,12 @@ export class OrderbooksComponent implements OnInit {
 
   ngOnInit() {
       this.serviceBs.getOrderbook(this.serviceBs.BTCUSD).subscribe(ob => this.orderbookBs = ob);
+      this.currencies = [new MyCurr(this.serviceBf.BTCUSD, 'Btc - Usd'), new MyCurr(this.serviceBf.ETHUSD,'Eth - Usd'), new MyCurr(this.serviceBf.LTCUSD,'Ltc - Usd'), new MyCurr(this.serviceBf.XRPUSD, 'Xrp - Usd')];
   }
 
   
+}
+
+export class MyCurr {
+    constructor(public value: string, public name: string) { }
 }

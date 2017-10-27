@@ -32,9 +32,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.clients.QuoteBs;
 import reactor.core.publisher.Flux;
@@ -43,8 +46,16 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/bitstamp")
 public class BitstampController {
+	private static final String URLBS = "https://www.bitstamp.net/api";
+	
 	@Autowired
 	private ReactiveMongoOperations operations;	
+	
+	@GetMapping("/{currpair}/orderbook")
+	public Mono<String> getOrderbook(@PathVariable String currpair) {
+		WebClient wc = WebUtils.buildWebClient(URLBS);
+		return wc.get().uri("/v2/order_book/"+currpair+"/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
+	}
 	
 	@GetMapping
 	public Flux<QuoteBs> allQuotes() {

@@ -21,19 +21,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.clients.QuoteBf;
+import io.netty.channel.ChannelOption;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/bitfinex")
 public class BitfinexController {
+	private static final String URLBF = "https://api.bitfinex.com";
+	
 	@Autowired
-	private ReactiveMongoOperations operations;	
+	private ReactiveMongoOperations operations;			
+	
+	@GetMapping("/{currpair}/orderbook")
+	public Mono<String> getOrderbook(@PathVariable String currpair) {
+		WebClient wc = WebUtils.buildWebClient(URLBF);
+		return wc.get().uri("/v1/book/"+currpair+"/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
+	}
 	
 	@GetMapping
 	public Flux<QuoteBf> allQuotes() {

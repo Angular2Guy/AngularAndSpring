@@ -29,7 +29,6 @@ import { OrderbookBf } from '../common/orderbookBf';
 export class BitfinexService {
   private _reqOptionsArgs: RequestOptionsArgs = { headers: new Headers() };
   private readonly _bitfinex = '/bitfinex';  
-  private readonly _bitfinexOb = 'https://www.bitstamp.net/api/v2/order_book';
   BTCUSD = 'btcusd';
   ETHUSD = 'ethusd';
   LTCUSD = 'ltcusd';
@@ -50,6 +49,6 @@ export class BitfinexService {
   }
 
   getOrderbook(currencypair: string): Observable<OrderbookBf> {
-      return this.http.get(this._bitfinexOb+'/'+currencypair, this._reqOptionsArgs).map(res => <OrderbookBf>res.json()).catch(this._utils.handleError);
+      return this.http.get(this._bitfinex+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).map(res => <OrderbookBf>res.json()).catch(this._utils.handleError);
   }
 }

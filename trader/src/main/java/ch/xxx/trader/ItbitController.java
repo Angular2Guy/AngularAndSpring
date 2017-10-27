@@ -24,8 +24,10 @@ import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -37,9 +39,16 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/itbit")
 public class ItbitController {
+	private static final String URLIB = "https://api.itbit.com";
 	
 	@Autowired
 	private ReactiveMongoOperations operations;
+	
+	@GetMapping("/{currpair}/orderbook")
+	public Mono<String> getOrderbook(@PathVariable String currpair) {
+		WebClient wc = WebUtils.buildWebClient(URLIB);
+		return wc.get().uri("/v1/markets/"+currpair+"/order_book/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
+	}
 	
 	@GetMapping
 	public Flux<QuoteIb> allQuotes() {

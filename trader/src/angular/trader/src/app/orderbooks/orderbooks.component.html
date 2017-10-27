@@ -1,4 +1,31 @@
-<p>
-  orderbooks works!
-</p>
-{{orderbookBs | json}}
+<div>
+	<mat-toolbar color="primary">
+	<span i18n>Orderbooks</span></mat-toolbar>
+	<div>
+		<mat-list>
+			<mat-list-item>
+				<mat-checkbox i18n>Bitstamp</mat-checkbox>
+			</mat-list-item>
+			<mat-list-item>
+				<mat-checkbox i18n>Itbit</mat-checkbox>		
+			</mat-list-item>
+			<mat-list-item>
+				<mat-checkbox i18n>Bitfinex</mat-checkbox>
+			</mat-list-item>			
+			<mat-list-item>
+				<div class="formatMs">
+					<mat-form-field> 
+						<mat-select placeholder-i18n placeholder="currency pair"> 
+							<mat-option *ngFor="let curr of currencies" [value]="curr.value"> {{curr.name}} </mat-option> 
+						</mat-select> 
+					</mat-form-field>
+				</div>
+			</mat-list-item>
+			<mat-list-item>
+				<a [routerLink]="['/overview']" i18n>back</a>		
+			</mat-list-item>
+		</mat-list>						
+	</div>
+
+	{{orderbookBs | json}}
+</div>
