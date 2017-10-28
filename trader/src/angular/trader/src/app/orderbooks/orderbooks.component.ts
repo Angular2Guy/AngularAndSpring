@@ -33,7 +33,8 @@ export class OrderbooksComponent implements OnInit {
   orderbookBf: OrderbookBf;
   orderbookIb: OrderbookIb;
   currencies: MyCurr[];
-    
+  model = new MyModel(null, false, false, false, 1, null);  
+  
   constructor(private router: Router, 
           private serviceBs: BitstampService, 
           private serviceIb: ItbitService, 
@@ -44,7 +45,18 @@ export class OrderbooksComponent implements OnInit {
       this.currencies = [new MyCurr(this.serviceBf.BTCUSD, 'Btc - Usd'), new MyCurr(this.serviceBf.ETHUSD,'Eth - Usd'), new MyCurr(this.serviceBf.LTCUSD,'Ltc - Usd'), new MyCurr(this.serviceBf.XRPUSD, 'Xrp - Usd')];
   }
 
+  onSubmit() {
+      console.log(this.model);
+  }
   
+  onBack() {
+      this.router.navigateByUrl("/overview");
+  }
+  
+}
+
+export class MyModel {
+    constructor(public currpair: string, public bitstampCb: boolean, public itbitCb: boolean, public bitfinexCb: boolean, public buysell: number, public amount: number) {}
 }
 
 export class MyCurr {

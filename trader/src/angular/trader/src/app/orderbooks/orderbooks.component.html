@@ -1,31 +1,54 @@
 <div>
 	<mat-toolbar color="primary">
 	<span i18n>Orderbooks</span></mat-toolbar>
-	<div>
-		<mat-list>
-			<mat-list-item>
-				<mat-checkbox i18n>Bitstamp</mat-checkbox>
-			</mat-list-item>
-			<mat-list-item>
-				<mat-checkbox i18n>Itbit</mat-checkbox>		
-			</mat-list-item>
-			<mat-list-item>
-				<mat-checkbox i18n>Bitfinex</mat-checkbox>
-			</mat-list-item>			
-			<mat-list-item>
-				<div class="formatMs">
-					<mat-form-field> 
-						<mat-select placeholder-i18n placeholder="currency pair"> 
-							<mat-option *ngFor="let curr of currencies" [value]="curr.value"> {{curr.name}} </mat-option> 
-						</mat-select> 
-					</mat-form-field>
-				</div>
-			</mat-list-item>
-			<mat-list-item>
-				<a [routerLink]="['/overview']" i18n>back</a>		
-			</mat-list-item>
-		</mat-list>						
+	<div class="flexcontainer">
+		<div class="flexchild">
+			<form (ngSubmit)="onSubmit()" #obForm="ngForm">
+				<mat-list>
+					<mat-list-item>
+						<mat-checkbox [(ngModel)]="model.bitstampCb" name="bitstampCb" i18n>Bitstamp</mat-checkbox>
+					</mat-list-item>
+					<mat-list-item>
+						<mat-checkbox [(ngModel)]="model.itbitCb" name="itbitCb" i18n>Itbit</mat-checkbox>		
+					</mat-list-item>
+					<mat-list-item>
+						<mat-checkbox [(ngModel)]="model.bitfinexCb" name="bitfinexCb" i18n>Bitfinex</mat-checkbox>
+					</mat-list-item>			
+					<mat-list-item>					 
+						<div class="formatMs">
+							<mat-form-field> 
+								<mat-select [(ngModel)]="model.currpair" required name="currpair" placeholder-i18n placeholder="currency pair"> 
+									<mat-option *ngFor="let curr of currencies" [value]="curr.value"> {{curr.name}} </mat-option> 
+								</mat-select> 
+							</mat-form-field>
+						</div>					
+					</mat-list-item>
+					<mat-list-item>
+						<div class="formatMs">
+								<mat-radio-group [(ngModel)]="model.buysell" name="buysell">
+	  								<mat-radio-button name="buysell" value="1" i18n>Buy</mat-radio-button>
+	  								<mat-radio-button name="buysell" value="0" i18n>Sell</mat-radio-button>
+								</mat-radio-group>
+						</div>
+					</mat-list-item>
+					<mat-list-item>					 
+						<div class="formatMs">
+							<mat-form-field> 
+								<input matInput type="number" [(ngModel)]="model.amount" name="amount" required placeholder-i18n placeholder="Amount" > 
+							</mat-form-field>
+						</div>					
+					</mat-list-item>
+					<mat-list-item>
+						<button mat-button type="submit" [disabled]="!obForm.form.valid" i18n>Search</button>
+						<button mat-button (click)="onBack()" i18n>Back</button>	
+					</mat-list-item>
+				</mat-list>
+			</form>						
+		</div>
+		<div class="flexchild"><span i18n>Bitstamp Orders</span><span i18n>Price</span></div>	
+		<div class="flexchild"><span i18n>Itbit Orders</span><span i18n>Price</span></div>
+		<div class="flexchild"><span i18n>Bitfinex Orders</span><span i18n>Price</span></div>
 	</div>
-
+	{{model | json}}
 	{{orderbookBs | json}}
 </div>

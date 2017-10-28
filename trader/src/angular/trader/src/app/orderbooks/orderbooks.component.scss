@@ -1,3 +1,14 @@
 .formatMs {
 	margin-top: 25px;
 }
+
+.flexcontainer {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.flexchild {
+
+}

@@ -65,7 +65,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
           this.datasource.rows.push(new Myrow("","",0,0, null));
       }
       this.hash = this.serviceMu.salt;
-      console.log(this.hash);
+      //console.log(this.hash);
     }  
      
     ngOnDestroy(): void {
