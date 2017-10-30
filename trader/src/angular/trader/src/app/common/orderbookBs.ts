@@ -1,6 +1,6 @@
 export interface OrderbookBs {
     timestamp: Date;
-    bids: number[][];
-    asks: number[][];
+    bids: string[][];
+    asks: string[][];
 }
 

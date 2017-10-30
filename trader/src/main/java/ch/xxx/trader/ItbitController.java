@@ -46,7 +46,8 @@ public class ItbitController {
 	
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair) {
-		WebClient wc = WebUtils.buildWebClient(URLIB);
+		currpair = currpair.equals("btcusd") ? "XBTUSD" : currpair; 
+		WebClient wc = WebUtils.buildWebClient(URLIB);		
 		return wc.get().uri("/v1/markets/"+currpair+"/order_book/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
 	}
 	

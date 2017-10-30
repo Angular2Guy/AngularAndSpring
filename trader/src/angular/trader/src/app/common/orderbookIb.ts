@@ -1,4 +1,4 @@
 export interface OrderbookIb {
-    bids: number[][];
-    asks: number[][];
+    bids: string[][];
+    asks: string[][];
 }
