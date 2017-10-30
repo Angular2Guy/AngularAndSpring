@@ -48,21 +48,24 @@
 		<div class="flexchild"><span i18n>Bitstamp Orders</span> <span i18n>Price</span>
 			<mat-list>
 				<mat-list-item *ngFor="let order of bsOrders">
-					{{order.price}} - {{order.amount}}
+					<span [style.color]="order.color">{{order.price}} - {{order.amount}}</span>
 				</mat-list-item>
 			</mat-list>
 		</div>	
 		<div class="flexchild"><span i18n>Itbit Orders</span> <span i18n>Price</span>
 			<mat-list>
 				<mat-list-item *ngFor="let order of ibOrders">
-					{{order.price}} - {{order.amount}}
+					<span [style.color]="order.color">{{order.price}} - {{order.amount}}</span>
 				</mat-list-item>
 			</mat-list>
 		</div>
 		<div class="flexchild"><span i18n>Bitfinex Orders</span> <span i18n>Price</span>
-			
+			<mat-list>
+				<mat-list-item *ngFor="let order of bfOrders">
+					<span [style.color]="order.color">{{order.price}} - {{order.amount}}</span>
+				</mat-list-item>
+			</mat-list>
 		</div>
 	</div>
-	{{model | json}}
-	{{ibOrders | json}}
+			
 </div>

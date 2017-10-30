@@ -19,7 +19,7 @@ import { ItbitService } from '../services/itbit.service';
 import { BitfinexService } from '../services/bitfinex.service';
 import { Router } from '@angular/router';
 import { OrderbookBs } from '../common/orderbookBs';
-import { OrderbookBf, Order } from '../common/orderbookBf';
+import { OrderbookBf, OrderBf } from '../common/orderbookBf';
 import { OrderbookIb } from '../common/orderbookIb';
 
 @Component( {
@@ -77,9 +77,9 @@ export class OrderbooksComponent implements OnInit {
         let bidAskArr = this.model.buysell === 1 ? ob.asks : ob.bids;
         for ( let i = 0; i < bidAskArr.length; i++ ) {
             let order = bidAskArr[i];
+            myOrders.push( new MyOrder( this.model.buysell, parseFloat( order[0] ), parseFloat( order[1] ), sum > this.model.amount ? "black" : "blue" ) );
             sum += parseFloat( order[1] );
-            myOrders.push( new MyOrder( this.model.buysell, parseFloat( order[0] ), parseFloat( order[1] ), "red" ) );
-            if ( sum > this.model.amount ) {
+            if ( sum > (this.model.amount * 1.5) ) {
                 break;
             }
         }
@@ -87,7 +87,18 @@ export class OrderbooksComponent implements OnInit {
     }
 
     private filterObBf( ob: OrderbookBf ): MyOrder[] {
-        return [];
+        let myOrders: MyOrder[] = [];
+        let sum = 0;
+        let bidAskArr = this.model.buysell === 1 ? ob.asks : ob.bids;
+        for ( let i = 0; i < bidAskArr.length; i++ ) {
+            let order = bidAskArr[i];
+            myOrders.push( new MyOrder( this.model.buysell, parseFloat( order.price ), parseFloat( order.amount ), sum > this.model.amount ? "black" : "blue" ) );
+            sum += parseFloat( order.amount );
+            if ( sum > (this.model.amount * 1.5) ) {
+                break;
+            }
+        }
+        return myOrders;
     }
 
     private filterObIb( ob: OrderbookIb ): MyOrder[] {
@@ -96,9 +107,9 @@ export class OrderbooksComponent implements OnInit {
         let bidAskArr = this.model.buysell === 1 ? ob.asks : ob.bids;
         for ( let i = 0; i < bidAskArr.length; i++ ) {
             let order = bidAskArr[i];
+            myOrders.push( new MyOrder( this.model.buysell, parseFloat( order[0] ), parseFloat( order[1] ), sum > this.model.amount ? "black" : "blue" ) );
             sum += parseFloat( order[1] );
-            myOrders.push( new MyOrder( this.model.buysell, parseFloat( order[0] ), parseFloat( order[1] ), "red" ) );
-            if ( sum > this.model.amount ) {
+            if ( sum > (this.model.amount * 1.5) ) {
                 break;
             }
         }
