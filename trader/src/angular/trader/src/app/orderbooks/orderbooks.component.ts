@@ -51,7 +51,7 @@ export class OrderbooksComponent implements OnInit {
         console.log( this.model );
         if ( this.model.itbitCb && this.model.currpair === this.serviceBf.BTCUSD ) {
             this.serviceIb.getOrderbook( this.serviceIb.BTCUSD ).subscribe( ob => {
-                this.orderbookIb = ob;
+//                this.orderbookIb = ob;
                 this.ibOrders = this.filterObIb( ob );
             } );
         } else {
@@ -59,15 +59,19 @@ export class OrderbooksComponent implements OnInit {
         }
         if ( this.model.bitstampCb ) {
             this.serviceBs.getOrderbook( this.model.currpair ).subscribe( ob => {
-                this.orderbookBs = ob;
+//                this.orderbookBs = ob;
                 this.bsOrders = this.filterObBs( ob );
             } );
+        } else {
+            this.bsOrders = [];
         }
         if ( this.model.bitfinexCb ) {
             this.serviceBf.getOrderbook( this.model.currpair ).subscribe( ob => {
-                this.orderbookBf = ob;
+//                this.orderbookBf = ob;
                 this.bfOrders = this.filterObBf( ob );
             } );
+        } else {
+            this.bfOrders = [];
         }
     }
 
