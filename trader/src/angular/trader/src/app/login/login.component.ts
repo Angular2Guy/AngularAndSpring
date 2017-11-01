@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit {
   private user = new MyUser();
   loginFailed = false;
   signinFailed = false;
+  pwMatching = true;
   
   constructor(public dialogRef: MatDialogRef<QuoteoverviewComponent>,
           @Inject(MAT_DIALOG_DATA) public data: any, private myuserService: MyuserService, fb: FormBuilder) { 
@@ -40,6 +41,8 @@ export class LoginComponent implements OnInit {
           password: ['', Validators.required],
           password2: ['', Validators.required],
           email: ['', Validators.required]
+      },{
+          validator: this.validate.bind(this)
       });
       this.loginForm = fb.group({
           username: ['', Validators.required],
@@ -51,11 +54,26 @@ export class LoginComponent implements OnInit {
       
   }
 
+  validate(group: FormGroup) {
+      if(group.get('password').touched || group.get('password2').touched) {
+          this.pwMatching = group.get('password').value === group.get('password2').value && group.get('password').value !== '';
+          if(!this.pwMatching) {
+              group.get('password').setErrors({MatchPassword: true});
+              group.get('password2').setErrors({MatchPassword: true});
+          } else {
+              group.get('password').setErrors(null);
+              group.get('password2').setErrors(null);
+          }
+      }
+      return this.pwMatching;
+  }
+  
   onSigninClick(): void {
       let myUser = new MyUser();
       myUser.userId = this.signinForm.get('username').value;
       myUser.password = this.signinForm.get('password').value;
       myUser.email = this.signinForm.get('email').value;
+//      console.log(this.signinForm);
 //      console.log(myUser);
       this.myuserService.postSignin(myUser).subscribe(us => this.signin(us),err => console.log(err));
   }
