@@ -2,7 +2,7 @@
 
 Author: Sven Loesekann
 
-Technologies: Angular, Angular-Cli, Spring Boot, MongoDB, Maven, Docker
+Technologies: Angular, Angular-Cli, Angular-Material, Spring Boot, MongoDB, Maven, Docker
 
 ## What is the goal?
 
