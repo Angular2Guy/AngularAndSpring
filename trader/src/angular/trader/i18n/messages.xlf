@@ -74,6 +74,14 @@
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8055e7b92d40f781799dd53a2057ebdda99cf19e" datatype="html">
+        <source>Passwords do not match</source>
+        <target>Passwords do not match</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/login/login.component.ts</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="244aae9346da82b0922506c2d2581373a15641cc" datatype="html">
         <source>Email</source>
         <target>Email</target>
@@ -479,7 +487,7 @@
         <target>Buy</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fe708b572beec788b18edd1b5852d63c07dfaead" datatype="html">
@@ -487,7 +495,7 @@
         <target>Sell</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7e892ba15f2c6c17e83510e273b3e10fc32ea016" datatype="html">
@@ -495,7 +503,7 @@
         <target>Search</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="cda31dbd724cf5f4fa7a4274d9120651490c8a8c" datatype="html">
@@ -503,7 +511,7 @@
         <target>Back</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2efebf0198885108af21985497c59765f2f768b9" datatype="html">
@@ -511,7 +519,7 @@
         <target>Bitstamp Orders</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">52</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4d6ee53858628de558a18623894a03c8673bce9e" datatype="html">
@@ -519,15 +527,31 @@
         <target>Price</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">53</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">62</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dfc2fb58e2a04ed944a4bd80f0a2087775134068" datatype="html">
+        <source>Amount</source>
+        <target>Amount</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="019cd3d2cc6e92a90f5ab736aa4b5903689cdc87" datatype="html">
@@ -535,7 +559,7 @@
         <target>Itbit Orders</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="0d0d4f352b2ebfea87a88c6e62f6ef8f752b2f64" datatype="html">
@@ -543,7 +567,7 @@
         <target>Bitfinex Orders</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
     </body>
