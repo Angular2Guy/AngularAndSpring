@@ -174,9 +174,9 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
     
     createRowCb(quote: QuoteCb) : Myrow[] {           
         let rows: Myrow[] = [];
-        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.BTCUSD), this.formatNumber(typeof quote.usd != 'undefined' ? quote.usd : quote.USD), -1, this.serviceCb.BTCUSD));
-        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.ETHUSD), this.formatNumber((typeof quote.usd != 'undefined' ? quote.usd : quote.USD) / (typeof quote.eth != 'undefined' ? quote.eth : quote.ETH)), -1, this.serviceCb.ETHUSD));
-        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.LTCUSD), this.formatNumber((typeof quote.usd != 'undefined' ? quote.usd : quote.USD) / (typeof quote.ltc != 'undefined' ? quote.ltc : quote.LTC)), -1, this.serviceCb.LTCUSD));        
+        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.BTCUSD), this.formatNumber(quote.usd), -1, this.serviceCb.BTCUSD));
+        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.ETHUSD), this.formatNumber(quote.usd / quote.eth), -1, this.serviceCb.ETHUSD));
+        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.LTCUSD), this.formatNumber(quote.usd / quote.ltc), -1, this.serviceCb.LTCUSD));        
         return rows;
     }
     
