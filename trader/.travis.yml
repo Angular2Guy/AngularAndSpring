@@ -1,0 +1,21 @@
+language: java
+    
+jdk:
+  - oraclejdk8
+
+services:
+  - docker
+  
+notifications:
+  email:
+    - angular2guy@gmx.ch
+  on_success: always
+  on_failure: always
+
+before_install:
+  - nvm install 6.9
+  - nvm use 6.9
+
+      
+script:
+  mvn clean install
