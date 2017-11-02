@@ -1,8 +1,8 @@
-# This is an example application to show howto use Spring Boot, Angular and Mongodb with the reactive features of Spring.
+# This is an example application to show howto use Spring Boot, Angular and Mongodb with the Webflux features of Spring.
 
 Author: Sven Loesekann
 
-Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, MongoDB, Maven, Docker
+Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, MongoDB, Maven, Docker
 
 ## What is the goal?
 
