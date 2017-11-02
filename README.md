@@ -1,5 +1,7 @@
 # This is an example application to show howto use Spring Boot, Angular and Mongodb with the Webflux features of Spring.
 
+![Build Status](https://travis-ci.org/Angular2Guy/AngularAndSpring.svg?branch=master)
+
 Author: Sven Loesekann
 
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, MongoDB, Maven, Docker
@@ -14,6 +16,8 @@ The application runs a scheduled task reads the exchange rates of cryptocurrenci
 If the user logs in the user can see the relevant part of the orderbooks for an order.
 
 ## Setup
+
+MongoDB 3.4.x or newer.
 
 Eclipse Oxygen JEE or newer.
 
