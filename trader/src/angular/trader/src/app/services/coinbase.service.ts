@@ -40,10 +40,21 @@ export class CoinbaseService {
     }
 
     getCurrentQuote(): Observable<QuoteCb> {
-        return this.http.get(this._coinbase+'/current', this._reqOptionsArgs).map(res => <QuoteCb>res.json()).catch(this._utils.handleError);
+        return this.http.get(this._coinbase+'/current', this._reqOptionsArgs).map(res => this.lowercaseKeys(res.json())).catch(this._utils.handleError);
     }
     
     getTodayQuotes(): Observable<QuoteCbSmall[]> {
         return this.http.get(this._coinbase+'/today', this._reqOptionsArgs).map(res => <QuoteCbSmall[]>res.json()).catch(this._utils.handleError);
+    }
+    
+    private lowercaseKeys(quote: QuoteCb): QuoteCb {
+        for (let p in quote) {
+          if( quote.hasOwnProperty(p) && p !== '_id' && p !== 'createdAt') {
+            quote[p.toLowerCase()] = quote[p];  
+            //console.log( p + " , " + quote[p] + "\n");
+            //console.log( p.toLowerCase() + " , " + quote[p.toLowerCase()] + "\n");
+          } 
+        }     
+        return quote;
     }
 }

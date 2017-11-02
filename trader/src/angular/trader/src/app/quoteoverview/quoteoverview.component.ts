@@ -95,7 +95,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
     }
       
     selectedRow(row: Myrow):void {
-      console.log(row);
+      //console.log(row);
       if(row.exchange === 'Bitstamp') {
           this.router.navigateByUrl("bsdetail/"+row.pair);
       } else if(row.exchange === 'Itbit' && row.pair === 'XBTUSD') {
