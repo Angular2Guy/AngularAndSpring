@@ -14,7 +14,7 @@
    limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptionsArgs, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PlatformLocation } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -29,25 +29,24 @@ import { OrderbookIb } from '../common/orderbookIb';
 
 @Injectable()
 export class ItbitService {
-    private _reqOptionsArgs: RequestOptionsArgs = { headers: new Headers() };
+    private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
     private readonly _itbit = '/itbit';    
     private _utils = new Utils();
     BTCEUR = 'btceur';
     BTCUSD = 'btcusd';
     
-    constructor(private http: Http, private pl: PlatformLocation ) { 
-        this._reqOptionsArgs.headers.set( 'Content-Type', 'application/json' );
+    constructor(private http: HttpClient, private pl: PlatformLocation ) { 
     }
 
     getCurrentQuote(currencypair: string): Observable<QuoteIb> {
-        return this.http.get(this._itbit+'/'+currencypair+'/current', this._reqOptionsArgs).map(res => <QuoteIb>res.json()).catch(this._utils.handleError);
+        return this.http.get(this._itbit+'/'+currencypair+'/current', this._reqOptionsArgs).catch(this._utils.handleError);
     }
     
     getTodayQuotes(currencypair: string): Observable<QuoteIb[]> {
-        return this.http.get(this._itbit+'/'+currencypair+'/today', this._reqOptionsArgs).map(res => <QuoteIb[]>res.json()).catch(this._utils.handleError);
+        return this.http.get(this._itbit+'/'+currencypair+'/today', this._reqOptionsArgs).catch(this._utils.handleError);
     }
     
     getOrderbook(currencypair: string): Observable<OrderbookIb> {
-        return this.http.get(this._itbit+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).map(res => <OrderbookIb>res.json()).catch(this._utils.handleError);
+        return this.http.get(this._itbit+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).catch(this._utils.handleError);
     }
 }

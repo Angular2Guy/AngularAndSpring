@@ -14,7 +14,7 @@
    limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptionsArgs, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PlatformLocation } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -27,7 +27,7 @@ import { OrderbookBf } from '../common/orderbookBf';
 
 @Injectable()
 export class BitfinexService {
-  private _reqOptionsArgs: RequestOptionsArgs = { headers: new Headers() };
+  private _reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
   private readonly _bitfinex = '/bitfinex';  
   BTCUSD = 'btcusd';
   ETHUSD = 'ethusd';
@@ -36,19 +36,18 @@ export class BitfinexService {
   
   private _utils = new Utils();
   
-  constructor(private http: Http, private pl: PlatformLocation ) { 
-      this._reqOptionsArgs.headers.set( 'Content-Type', 'application/json' );
+  constructor(private http: HttpClient, private pl: PlatformLocation ) { 
   }
 
   getCurrentQuote(currencypair: string): Observable<QuoteBf> {
-      return this.http.get(this._bitfinex+'/'+currencypair+'/current', this._reqOptionsArgs).map(res => <QuoteBf>res.json()).catch(this._utils.handleError);
+      return this.http.get(this._bitfinex+'/'+currencypair+'/current', this._reqOptionsArgs).catch(this._utils.handleError);
   }
    
   getTodayQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get(this._bitfinex+'/'+currencypair+'/today', this._reqOptionsArgs).map(res => <QuoteBf[]>res.json()).catch(this._utils.handleError);
+      return this.http.get(this._bitfinex+'/'+currencypair+'/today', this._reqOptionsArgs).catch(this._utils.handleError);
   }
 
   getOrderbook(currencypair: string): Observable<OrderbookBf> {
-      return this.http.get(this._bitfinex+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).map(res => <OrderbookBf>res.json()).catch(this._utils.handleError);
+      return this.http.get(this._bitfinex+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).catch(this._utils.handleError);
   }
 }

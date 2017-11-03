@@ -18,6 +18,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -57,7 +58,8 @@ import { AuthGuardService } from './services/auth-guard.service';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule, 
+    HttpModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     MaterialModule,
     ChartsModule,

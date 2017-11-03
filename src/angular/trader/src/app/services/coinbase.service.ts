@@ -14,7 +14,7 @@
    limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptionsArgs, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PlatformLocation } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -28,23 +28,22 @@ import { Utils } from './utils';
 
 @Injectable()
 export class CoinbaseService {
-    private _reqOptionsArgs: RequestOptionsArgs = { headers: new Headers() };
+    private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
     private readonly _coinbase = '/coinbase';
     private _utils = new Utils();
     BTCUSD = 'btcusd';
     ETHUSD = 'ethusd';
     LTCUSD = 'ltcusd';
     
-    constructor(private http: Http, private pl: PlatformLocation ) { 
-        this._reqOptionsArgs.headers.set( 'Content-Type', 'application/json' );
+    constructor(private http: HttpClient, private pl: PlatformLocation ) { 
     }
 
     getCurrentQuote(): Observable<QuoteCb> {
-        return this.http.get(this._coinbase+'/current', this._reqOptionsArgs).map(res => this.lowercaseKeys(res.json())).catch(this._utils.handleError);
+        return this.http.get(this._coinbase+'/current', this._reqOptionsArgs).map(res => this.lowercaseKeys(<QuoteCb>res)).catch(this._utils.handleError);
     }
     
     getTodayQuotes(): Observable<QuoteCbSmall[]> {
-        return this.http.get(this._coinbase+'/today', this._reqOptionsArgs).map(res => <QuoteCbSmall[]>res.json()).catch(this._utils.handleError);
+        return this.http.get(this._coinbase+'/today', this._reqOptionsArgs).catch(this._utils.handleError);
     }
     
     private lowercaseKeys(quote: QuoteCb): QuoteCb {

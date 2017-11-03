@@ -14,7 +14,7 @@
    limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptionsArgs, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PlatformLocation } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -27,18 +27,17 @@ import { AuthCheck } from '../common/authcheck';
 
 @Injectable()
 export class MyuserService {
-  private _reqOptionsArgs: RequestOptionsArgs = { headers: new Headers() };
+  private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
   private _utils = new Utils();
   private myUserUrl = "/myuser";
   private _salt:string = null;
   
-  constructor(private http: Http, private pl: PlatformLocation ) { 
-      this._reqOptionsArgs.headers.set( 'Content-Type', 'application/json' );
+  constructor(private http: HttpClient, private pl: PlatformLocation ) { 
   }
 
   postLogin(user: MyUser): Observable<MyUser> {
       return this.http.post(this.myUserUrl+'/login', user, this._reqOptionsArgs).map(res => {
-              let retval = <MyUser>res.json();
+              let retval = <MyUser>res;
               this._salt = retval.salt;
               retval.password = 'yyy';
               return retval;
@@ -47,7 +46,7 @@ export class MyuserService {
 
   postSignin(user: MyUser): Observable<MyUser> {
       return this.http.post(this.myUserUrl+'/signin', user, this._reqOptionsArgs).map(res => {
-              let retval = <MyUser>res.json();              
+              let retval = <MyUser>res;              
               retval.salt = 'xxx';
               retval.password = 'yyy';
               return retval;
@@ -58,7 +57,7 @@ export class MyuserService {
       let authcheck = new AuthCheck();
       authcheck.hash = this._salt;
       authcheck.path = path;
-      return this.http.post(this.myUserUrl+'/authorize', authcheck, this._reqOptionsArgs).map(res => <AuthCheck>res.json()).catch(this._utils.handleError);
+      return this.http.post(this.myUserUrl+'/authorize', authcheck, this._reqOptionsArgs).catch(this._utils.handleError);
   }
      
   logout(): void {
