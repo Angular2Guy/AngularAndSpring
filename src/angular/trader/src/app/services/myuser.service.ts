@@ -30,7 +30,6 @@ export class MyuserService {
   private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
   private _utils = new Utils();
   private myUserUrl = "/myuser";
-  private _salt:string = null;
   
   constructor(private http: HttpClient, private pl: PlatformLocation ) { 
   }
@@ -38,7 +37,7 @@ export class MyuserService {
   postLogin(user: MyUser): Observable<MyUser> {
       return this.http.post(this.myUserUrl+'/login', user, this._reqOptionsArgs).map(res => {
               let retval = <MyUser>res;
-              this._salt = retval.salt;
+              localStorage.setItem("salt", retval.salt);
               retval.password = 'yyy';
               return retval;
           }).catch(this._utils.handleError);
@@ -55,16 +54,16 @@ export class MyuserService {
   
   postCheckAuthorisation(path: string): Observable<AuthCheck> {      
       let authcheck = new AuthCheck();
-      authcheck.hash = this._salt;
+      authcheck.hash = this.salt;
       authcheck.path = path;
       return this.http.post(this.myUserUrl+'/authorize', authcheck, this._reqOptionsArgs).catch(this._utils.handleError);
   }
      
   logout(): void {
-      this._salt = null;
+      localStorage.clear();      
   }
   
   get salt():string {
-      return this._salt;
+      return !localStorage.getItem("salt") ? null : localStorage.getItem("salt"); 
   }
 }
