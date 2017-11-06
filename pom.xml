@@ -18,7 +18,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<docker.image.prefix>springio</docker.image.prefix>
+		<docker.image.prefix>angular2guy</docker.image.prefix>
 	</properties>
 	<licenses>
 		<license>
@@ -76,12 +76,9 @@
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>dockerfile-maven-plugin</artifactId>
-				<version>1.3.4</version>
+				<version>1.3.6</version>
 				<configuration>
-					<repository>${docker.image.prefix}/${project.artifactId}</repository>
-					<dockerDirectory>src/docker</dockerDirectory>
-					<!-- <resources> <resource> <targetPath>/</targetPath> <directory>${project.build.directory}</directory> 
-						<include>${project.build.finalName}.jar</include> </resource> </resources> -->
+					<repository>${docker.image.prefix}/${project.artifactId}</repository>																											
 				</configuration>
 			</plugin>
 			<plugin>
@@ -122,13 +119,6 @@
 							</target>
 						</configuration>
 					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>exec-maven-plugin</artifactId>
-				<groupId>org.codehaus.mojo</groupId>
-				<version>1.4.0</version>
-				<executions>
 					<execution>
 						<id>angular-cli build de</id>
 						<goals>
@@ -145,7 +135,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>			
 		</plugins>
 
 		<pluginManagement>
