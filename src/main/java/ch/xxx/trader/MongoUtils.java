@@ -29,9 +29,7 @@ import org.springframework.data.mongodb.core.query.Query;
 public class MongoUtils {
 	private static final Query buildQuery(Optional<String> pair, boolean ascending) {
 		Calendar cal = GregorianCalendar.getInstance();
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
+		cal.add(Calendar.DAY_OF_YEAR, -1);
 		Query query = new Query();
 		if (pair.isPresent()) {
 			query.addCriteria(Criteria.where("pair").is(pair.get()));
