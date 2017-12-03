@@ -15,19 +15,27 @@
  */
 package ch.xxx.trader.clients;
 
-import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Document
-public class MyUser {
+public class MyUser implements UserDetails {
+
+	private static final long serialVersionUID = 4579343827343522647L;
 
 	@Id
 	private ObjectId _id;
+	@JsonProperty
+	private final Date createdAt = new Date();	
 	@JsonProperty
 	private String userId;
 	@JsonProperty
@@ -35,15 +43,7 @@ public class MyUser {
 	@JsonProperty
 	private String salt;
 	@JsonProperty
-	private String email;	
-	@JsonProperty
-	private BigDecimal btcAmount;
-	@JsonProperty
-	private BigDecimal ethAmount;
-	@JsonProperty
-	private BigDecimal ltcAmount;
-	@JsonProperty
-	private BigDecimal xrpAmount;
+	private String email;		
 	
 	public ObjectId get_id() {
 		return _id;
@@ -62,31 +62,7 @@ public class MyUser {
 	}
 	public void setPassword(String password) {
 		this.password = password;
-	}
-	public BigDecimal getBtcAmount() {
-		return btcAmount;
-	}
-	public void setBtcAmount(BigDecimal btcAmount) {
-		this.btcAmount = btcAmount;
-	}
-	public BigDecimal getEthAmount() {
-		return ethAmount;
-	}
-	public void setEthAmount(BigDecimal ethAmount) {
-		this.ethAmount = ethAmount;
-	}
-	public BigDecimal getLtcAmount() {
-		return ltcAmount;
-	}
-	public void setLtcAmount(BigDecimal ltcAmount) {
-		this.ltcAmount = ltcAmount;
-	}
-	public BigDecimal getXrpAmount() {
-		return xrpAmount;
-	}
-	public void setXrpAmount(BigDecimal xrpAmount) {
-		this.xrpAmount = xrpAmount;
-	}
+	}	
 	public String getEmail() {
 		return email;
 	}
@@ -99,5 +75,32 @@ public class MyUser {
 	public void setSalt(String salt) {
 		this.salt = salt;
 	}
-	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		GrantedAuthority auth = () -> "USERS"; 					
+		return Arrays.asList(auth);
+	}
+	@Override
+	public String getUsername() {
+		return this.userId;
+	}
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+	public Date getCreatedAt() {
+		return createdAt;
+	}
 }
