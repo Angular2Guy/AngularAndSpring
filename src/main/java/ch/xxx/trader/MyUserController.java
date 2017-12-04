@@ -22,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +40,7 @@ public class MyUserController {
 	@Autowired
 	private ReactiveMongoOperations operations;
 	@Autowired
-	private PasswordEncryption passwordEncryption;
+	private PasswordEncryption passwordEncryption;	
 
 	@PostMapping("/authorize")
 	public Mono<AuthCheck> postAuthorize(@RequestBody AuthCheck authcheck) {
@@ -86,7 +89,10 @@ public class MyUserController {
 			} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 				return new MyUser();
 			}
-			if (user.getPassword().equals(encryptedPassword)) {
+			if (user.getPassword().equals(encryptedPassword)) {	
+				Authentication auth = new UsernamePasswordAuthenticationToken(
+						user.getUserId(), encryptedPassword, user.getAuthorities());
+				SecurityContextHolder.getContext().setAuthentication(auth);
 				return user;
 			}
 		}
