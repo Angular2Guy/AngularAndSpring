@@ -37,8 +37,7 @@ export class MyuserService {
   postLogin(user: MyUser): Observable<MyUser> {
       return this.http.post(this.myUserUrl+'/login', user, this._reqOptionsArgs).map(res => {
               let retval = <MyUser>res;
-              localStorage.setItem("salt", retval.salt);
-              retval.password = 'yyy';
+              localStorage.setItem("salt", retval.salt);              
               return retval;
           }).catch(this._utils.handleError);
   }
@@ -59,8 +58,9 @@ export class MyuserService {
       return this.http.post(this.myUserUrl+'/authorize', authcheck, this._reqOptionsArgs).catch(this._utils.handleError);
   }
      
-  logout(): void {
+  postLogout(hash: string): Observable<MyUser> {
       localStorage.clear();      
+      return this.http.post(this.myUserUrl+'/logout', hash, this._reqOptionsArgs).catch(this._utils.handleError);
   }
   
   get salt():string {

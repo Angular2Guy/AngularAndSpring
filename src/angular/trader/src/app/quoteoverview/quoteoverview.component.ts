@@ -86,8 +86,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
     }
     
     logout():void {
-        this.hash = null;
-        this.serviceMu.logout();
+        this.serviceMu.postLogout(this.hash).subscribe(myUser => this.hash = myUser.salt);        
     }
     
     orderbooks(): void {      
