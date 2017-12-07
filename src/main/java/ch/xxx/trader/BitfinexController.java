@@ -17,6 +17,8 @@ package ch.xxx.trader;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -44,7 +46,13 @@ public class BitfinexController {
 	private ReactiveMongoOperations operations;			
 	
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair) {
+	public Mono<String> getOrderbook(@PathVariable String currpair,HttpServletRequest request) {
+		if(!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBF)) {
+			return Mono.just("{\n" + 
+					"  \"bids\":[],\n" + 
+					"  \"asks\":[]\n" + 
+					"}");
+		}
 		WebClient wc = WebUtils.buildWebClient(URLBF);
 		return wc.get().uri("/v1/book/"+currpair+"/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
 	}

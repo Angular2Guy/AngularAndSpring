@@ -110,7 +110,7 @@ public class MyUserController {
 					Authentication auth = 
 							  new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword(), user.getAuthorities());
 					SecurityContextHolder.getContext().setAuthentication(auth);
-					session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+					session.setAttribute(WebUtils.SECURITYCONTEXT, SecurityContextHolder.getContext());
 				}
 				user.setPassword("XXX");
 				return user;

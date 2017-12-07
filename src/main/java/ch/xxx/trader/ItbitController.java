@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
@@ -45,7 +47,10 @@ public class ItbitController {
 	private ReactiveMongoOperations operations;
 	
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair) {
+	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
+		if(!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLIB)) {
+			return Mono.just("{\"bids\": [], \"asks\": [] }");
+		}
 		currpair = currpair.equals("btcusd") ? "XBTUSD" : currpair; 
 		WebClient wc = WebUtils.buildWebClient(URLIB);		
 		return wc.get().uri("/v1/markets/"+currpair+"/order_book/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));

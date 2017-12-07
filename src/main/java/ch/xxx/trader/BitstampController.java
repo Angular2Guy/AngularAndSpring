@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.Optional;
 
 import javax.print.attribute.standard.DateTimeAtCompleted;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Path.CrossParameterNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,10 @@ public class BitstampController {
 	private ReactiveMongoOperations operations;	
 	
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair) {
+	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
+		if(!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBS)) {
+			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
+		}
 		WebClient wc = WebUtils.buildWebClient(URLBS);
 		return wc.get().uri("/v2/order_book/"+currpair+"/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
 	}
