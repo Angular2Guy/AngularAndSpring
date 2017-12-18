@@ -27,20 +27,20 @@ export class CommonUtils {
         let serviceIb = new ItbitService(null,null);
         let serviceBf = new BitfinexService(null, null);
         this.currpairs.set(serviceBs.BTCEUR, "Bitcoin Eur");
-        this.currpairs.set(serviceBs.ETHEUR, "Etherium Eur");
+        this.currpairs.set(serviceBs.ETHEUR, "Ether Eur");
         this.currpairs.set(serviceBs.LTCEUR, "Litecoin Eur");
         this.currpairs.set(serviceBs.XRPEUR, "Ripple Eur");
         this.currpairs.set(serviceBs.BTCUSD, "Bitcoin Usd");
-        this.currpairs.set(serviceBs.ETHUSD, "Etherium Usd");
+        this.currpairs.set(serviceBs.ETHUSD, "Ether Usd");
         this.currpairs.set(serviceBs.LTCUSD, "Litecoin Usd");
         this.currpairs.set(serviceBs.XRPUSD, "Ripple Usd");
         this.currpairs.set(serviceIb.BTCEUR, "Bitcoin Eur");
         this.currpairs.set(serviceIb.BTCUSD, "Bitcoin Usd");
         this.currpairs.set(serviceCb.BTCUSD, "Bitcoin Usd");
-        this.currpairs.set(serviceCb.ETHUSD, "Etherium Usd");
+        this.currpairs.set(serviceCb.ETHUSD, "Ether Usd");
         this.currpairs.set(serviceCb.LTCUSD, "Litecoin Usd");
         this.currpairs.set(serviceBf.BTCUSD, "Bitcoin Usd");
-        this.currpairs.set(serviceBf.ETHUSD, "Etherium Usd");
+        this.currpairs.set(serviceBf.ETHUSD, "Ether Usd");
         this.currpairs.set(serviceBf.LTCUSD, "Litecoin Usd");
         this.currpairs.set(serviceBf.XRPUSD, "Ripple Usd");        
     }
