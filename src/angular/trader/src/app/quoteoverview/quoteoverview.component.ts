@@ -81,7 +81,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
       });
     
       dialogRef.afterClosed().subscribe(result => {        
-        this.hash = result;
+        this.hash = typeof result === 'undefined' || result === null ? null : result;        
       });  
     }
     

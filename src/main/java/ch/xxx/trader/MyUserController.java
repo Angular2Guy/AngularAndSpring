@@ -76,7 +76,7 @@ public class MyUserController {
 			this.operations.save(myUser).block();
 			return Mono.just(myUser);
 		}
-		return Mono.just(user);
+		return Mono.just(new MyUser());
 	}
 
 	@PostMapping("/logout")

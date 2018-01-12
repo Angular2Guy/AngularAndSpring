@@ -87,13 +87,14 @@ export class LoginComponent implements OnInit {
   }
   
   signin(us: MyUser):void {
-      this.user = us;
+      this.user = us;   
+      this.data.hash = null;
       if(this.user.userId !== null) {
           this.signinFailed = false;
           this.dialogRef.close();
       } else {
           this.signinFailed = true;
-      }
+      }      
   }
   
   login(us: MyUser):void {

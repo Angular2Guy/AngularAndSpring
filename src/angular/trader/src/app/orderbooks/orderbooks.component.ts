@@ -48,7 +48,7 @@ export class OrderbooksComponent implements OnInit {
     }
 
     onSubmit() {
-        console.log( this.model );
+        //console.log( this.model );
         if ( this.model.itbitCb && this.model.currpair === this.serviceBf.BTCUSD ) {
             this.serviceIb.getOrderbook( this.serviceIb.BTCUSD ).subscribe( ob => {
 //                this.orderbookIb = ob;
