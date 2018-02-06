@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.js",
-    "build": "ng build --prod --aot --bh /de --output-path dist/de --locale de --deploy-url /de --i18nFile=./i18n/messages.de.xlf && ng build --prod --aot --bh /en --deploy-url /en --output-path dist/en --locale en --i18nFile=./i18n/messages.xlf",
+    "build": "ng build --prod --aot --build-optimizer false --bh /de --output-path dist/de --locale de --deploy-url /de --i18nFile=./i18n/messages.de.xlf && ng build --prod --aot --build-optimizer false --bh /en --deploy-url /en --output-path dist/en --locale en --i18nFile=./i18n/messages.xlf",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -36,7 +36,7 @@
     "material-design-icons": "3.0.1"      
   },
   "devDependencies": {
-    "@angular/cli": "1.6.0",
+    "@angular/cli": "1.6.7",
     "@angular/compiler-cli": "^5.0.0",
     "@angular/language-service": "^5.0.0",
     "@types/jasmine": "~2.5.53",
