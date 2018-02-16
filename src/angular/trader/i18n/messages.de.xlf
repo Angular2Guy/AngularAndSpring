@@ -47,7 +47,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
@@ -59,7 +59,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">58</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6765b4c916060f6bc42d9bb69e80377dbcb5e4e9" datatype="html">
@@ -87,7 +87,7 @@
         <target>Email</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">53</context>
         </context-group>
       </trans-unit>
       <trans-unit id="f207549116db16b24fe3e996bb65157802fdd793" datatype="html">
@@ -95,7 +95,7 @@
         <target>Signin Failed</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5a49f221378f8688a0cf91b1a3207407623f1918" datatype="html">
@@ -158,12 +158,12 @@
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="21c7cbaff37471ead857f208b2eb92ffb4d08c5d" datatype="html">
+	  <trans-unit id="21c7cbaff37471ead857f208b2eb92ffb4d08c5d" datatype="html">
         <source> Volume </source>
         <target> Volumen </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5533c9aacc3ebd25fca0ae27bfe1b8022429b78d" datatype="html">
@@ -198,6 +198,10 @@
         <source>High</source>
         <target>High</target>
         <context-group purpose="location">
+          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
           <context context-type="linenumber">9</context>
         </context-group>
@@ -213,6 +217,10 @@
       <trans-unit id="9556266f0a2b1762a44b686f2bb21dbfefb01c12" datatype="html">
         <source>Low</source>
         <target>Low</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
           <context context-type="linenumber">11</context>
