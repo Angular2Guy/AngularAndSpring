@@ -17,7 +17,16 @@
 				<mat-cell *matCellDef="let element"> {{element.currpair}} </mat-cell> </ng-container> 
 			<ng-container matColumnDef="last"> 
 				<mat-header-cell *matHeaderCellDef i18n> Last </mat-header-cell> 
-				<mat-cell *matCellDef="let element"> {{element.last < 0.01 ? '--' : element.last | number:'1.2'}} </mat-cell> 
+				<mat-cell *matCellDef="let element"> 
+					<div class="lastquote">{{element.last < 0.01 ? '--' : element.last | number:'1.2'}} 
+						<div class="popup">
+							<ul>
+								<li><span i18n>High</span> {{element.high < 0.01 ? '--' : element.high | number:'1.2'}}</li>
+ 								<li><span i18n>Low</span> {{element.low < 0.01 ? '--' : element.low | number:'1.2'}}</li>
+							</ul>
+						</div> 
+					</div>  
+				</mat-cell> 
 			</ng-container> 
 			<ng-container matColumnDef="volume"> 
 				<mat-header-cell *matHeaderCellDef i18n> Volume </mat-header-cell> 

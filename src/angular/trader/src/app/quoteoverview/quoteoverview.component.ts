@@ -62,7 +62,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
           this.refreshData();
       }, 15000);
       for(let i = 0;i<17;i++) {
-          this.datasource.rows.push(new Myrow("","",0,0, null));
+          this.datasource.rows.push(new Myrow("","",0,0, null,-1,-1));
       }
       this.hash = this.serviceMu.salt;
       //console.log(this.hash);
@@ -164,23 +164,23 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
     }
     
     createRowBs(quote: QuoteBs, exchange: string, currpair: string) : Myrow {        
-        return new Myrow(exchange, currpair, this.formatNumber(quote.last), this.formatNumber(quote.volume), quote.pair);
+        return new Myrow(exchange, currpair, this.formatNumber(quote.last), this.formatNumber(quote.volume), quote.pair, this.formatNumber(quote.high), this.formatNumber(quote.low));
     }
     
     createRowBf(quote: QuoteBf, exchange: string, currpair: string) : Myrow {  
-        return new Myrow(exchange, currpair, this.formatNumber(quote.last_price), this.formatNumber(quote.volume), quote.pair);
+        return new Myrow(exchange, currpair, this.formatNumber(quote.last_price), this.formatNumber(quote.volume), quote.pair, this.formatNumber(quote.high), this.formatNumber(quote.low));
     }
     
     createRowCb(quote: QuoteCb) : Myrow[] {           
         let rows: Myrow[] = [];
-        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.BTCUSD), this.formatNumber(quote.usd), -1, this.serviceCb.BTCUSD));
-        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.ETHUSD), this.formatNumber(quote.usd / quote.eth), -1, this.serviceCb.ETHUSD));
-        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.LTCUSD), this.formatNumber(quote.usd / quote.ltc), -1, this.serviceCb.LTCUSD));        
+        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.BTCUSD), this.formatNumber(quote.usd), -1, this.serviceCb.BTCUSD, -1, -1));
+        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.ETHUSD), this.formatNumber(quote.usd / quote.eth), -1, this.serviceCb.ETHUSD, -1, -1));
+        rows.push(new Myrow("Coinbase", this.utils.getCurrpairName(this.serviceCb.LTCUSD), this.formatNumber(quote.usd / quote.ltc), -1, this.serviceCb.LTCUSD, -1, -1));        
         return rows;
     }
     
     createRowIb(quote: QuoteIb, exchange: string, currpair: string) : Myrow {
-       return new Myrow(exchange, currpair, this.formatNumber(quote.lastPrice), this.formatNumber(quote.volume24h), quote.pair); 
+       return new Myrow(exchange, currpair, this.formatNumber(quote.lastPrice), this.formatNumber(quote.volume24h), quote.pair, this.formatNumber(quote.high24h), this.formatNumber(quote.low24h)); 
     }
 }
 
@@ -200,7 +200,7 @@ export class Myds extends DataSource<Myrow> {
 }     
     
 export class Myrow {
-    constructor(public exchange: string, public currpair: string, public last: number, public volume: number, public pair: string) {
+    constructor(public exchange: string, public currpair: string, public last: number, public volume: number, public pair: string, public high: number, public low: number) {
         
     }
 }
