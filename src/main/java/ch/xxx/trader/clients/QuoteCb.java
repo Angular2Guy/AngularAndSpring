@@ -30,7 +30,8 @@ public class QuoteCb {
 	@Id
 	private ObjectId _id;
 	@JsonProperty
-	private final Date createdAt = new Date();
+	private Date createdAt = new Date();
+
 	private final BigDecimal aed;
 	private final BigDecimal afn;
 	private final BigDecimal all;
@@ -961,5 +962,7 @@ public class QuoteCb {
 		return createdAt;
 	}
 	
-	
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
 }

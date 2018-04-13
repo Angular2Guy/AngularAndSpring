@@ -30,7 +30,7 @@ public class QuoteIb {
 	@Id
 	private ObjectId _id;
 	@JsonProperty
-	private final Date createdAt = new Date();	
+	private Date createdAt = new Date();		
 	private final String pair;
 	private final BigDecimal bid;
 	private final BigDecimal bidAmt;
@@ -122,6 +122,9 @@ public class QuoteIb {
 	}
 	public Date getCreatedAt() {
 		return createdAt;
+	}
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 	@Override
 	public String toString() {

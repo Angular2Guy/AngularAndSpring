@@ -32,7 +32,7 @@ public class QuoteBs {
 	@JsonProperty
 	private String pair;
 	@JsonProperty
-	private final Date createdAt = new Date();
+	private Date createdAt = new Date();
 	private final BigDecimal high;
 	private final BigDecimal last;
 	private final Date timestamp;
@@ -105,6 +105,10 @@ public class QuoteBs {
 		return createdAt;
 	}
 
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+	
 	public String getPair() {
 		return pair;
 	}

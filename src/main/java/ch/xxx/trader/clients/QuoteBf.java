@@ -32,7 +32,8 @@ public class QuoteBf {
 	@JsonProperty
 	private String pair;
 	@JsonProperty
-	private final Date createdAt = new Date();
+	private Date createdAt = new Date();
+
 	private final BigDecimal mid;
 	private final BigDecimal bid;
 	private final BigDecimal ask;
@@ -75,6 +76,10 @@ public class QuoteBf {
 		return createdAt;
 	}
 
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+	
 	public BigDecimal getMid() {
 		return mid;
 	}
