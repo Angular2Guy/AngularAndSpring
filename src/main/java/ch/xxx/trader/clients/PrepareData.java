@@ -39,7 +39,7 @@ public class PrepareData {
 	private ReactiveMongoOperations operations;
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "0 0 0 ? * ?")
+	@Scheduled(cron = "5 0 0 ? * ?")
 	public void createBsHourlyAvg() {
 		if (!this.operations.collectionExists("quoteBsHour").block()) {
 			this.operations.createCollection("quoteBsHour").block();
@@ -84,7 +84,7 @@ public class PrepareData {
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "5 0 0 ? * ?")
+	@Scheduled(cron = "10 0 0 ? * ?")
 	public void createBfHourlyAvg() {
 		if (!this.operations.collectionExists("quoteBfHour").block()) {
 			this.operations.createCollection("quoteBfHour").block();
@@ -129,7 +129,7 @@ public class PrepareData {
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "10 0 0 ? * ?")
+	@Scheduled(cron = "15 0 0 ? * ?")
 	public void createIbHourlyAvg() {
 		if (!this.operations.collectionExists("quoteIbHour").block()) {
 			this.operations.createCollection("quoteIbHour").block();
@@ -173,8 +173,8 @@ public class PrepareData {
 		}
 	}
 
-	@Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	// @Scheduled(cron = "20 0 0 ? * ?")
+	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+	@Scheduled(cron = "20 0 0 ? * ?")
 	public void createCbHourlyAvg() {
 		if (!this.operations.collectionExists("quoteCbHour").block()) {
 			this.operations.createCollection("quoteCbHour").block();
