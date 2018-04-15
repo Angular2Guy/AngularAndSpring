@@ -63,6 +63,7 @@ public class PrepareData {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
 		} else {
 			globalBeginn.setTime(lastHourQuote.getCreatedAt());
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
 		}
 
 		Calendar begin = Calendar.getInstance();
@@ -108,6 +109,7 @@ public class PrepareData {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
 		} else {
 			globalBeginn.setTime(lastHourQuote.getCreatedAt());
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
 		}
 
 		Calendar begin = Calendar.getInstance();
@@ -153,6 +155,7 @@ public class PrepareData {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
 		} else {
 			globalBeginn.setTime(lastHourQuote.getCreatedAt());
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
 		}
 
 		Calendar begin = Calendar.getInstance();
@@ -198,6 +201,7 @@ public class PrepareData {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
 		} else {
 			globalBeginn.setTime(lastHourQuote.getCreatedAt());
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
 		}
 
 		Calendar begin = Calendar.getInstance();
@@ -243,6 +247,7 @@ public class PrepareData {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
 		} else {
 			globalBeginn.setTime(lastHourQuote.getCreatedAt());
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
 		}
 
 		Calendar begin = Calendar.getInstance();
@@ -288,6 +293,7 @@ public class PrepareData {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
 		} else {
 			globalBeginn.setTime(lastHourQuote.getCreatedAt());
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
 		}
 
 		Calendar begin = Calendar.getInstance();
@@ -333,6 +339,7 @@ public class PrepareData {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
 		} else {
 			globalBeginn.setTime(lastHourQuote.getCreatedAt());
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
 		}
 
 		Calendar begin = Calendar.getInstance();
@@ -377,6 +384,7 @@ public class PrepareData {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
 		} else {
 			globalBeginn.setTime(lastHourQuote.getCreatedAt());
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
 		}
 
 		Calendar begin = Calendar.getInstance();
