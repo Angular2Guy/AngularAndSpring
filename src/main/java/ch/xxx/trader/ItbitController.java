@@ -15,8 +15,8 @@
  */
 package ch.xxx.trader;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,10 +30,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
 
-import ch.xxx.trader.clients.QuoteCb;
+import ch.xxx.trader.clients.PrepareData;
 import ch.xxx.trader.clients.QuoteIb;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,9 +40,15 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/itbit")
 public class ItbitController {
 	private static final String URLIB = "https://api.itbit.com";
+	private final Map<String,String> currpairs = new HashMap<String,String>();
 	
 	@Autowired
 	private ReactiveMongoOperations operations;
+	
+	public ItbitController() {
+		this.currpairs.put("btcusd", "XBTUSD");
+		this.currpairs.put("btceur", "XBTEUR");
+	}
 	
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
@@ -61,29 +65,32 @@ public class ItbitController {
 		return this.operations.findAll(QuoteIb.class);
 	}
 	
-	@GetMapping("/btceur/today")
-	public Flux<QuoteIb> todayQuotes() {
-		Query query = MongoUtils.buildTodayQuery(Optional.of("XBTEUR"));
-		return this.operations.find(query, QuoteIb.class).filter(q -> filterEvenMinutes(q));
-	}
-	
-	@GetMapping("/btceur/current")
-	public Mono<QuoteIb> currentQuote() {
-		Query query = MongoUtils.buildCurrentQuery(Optional.of("XBTEUR"));
+	@GetMapping("/{pair}/current")
+	public Mono<QuoteIb> currentQuote(@PathVariable String pair) {
+		pair = this.currpairs.get(pair);
+		Query query = MongoUtils.buildCurrentQuery(Optional.of(pair));
 		return this.operations.findOne(query, QuoteIb.class);
 	}
-	
-	@GetMapping("/btcusd/today")
-	public Flux<QuoteIb> todayQuotesUsd() {
-		Query query = MongoUtils.buildTodayQuery(Optional.of("XBTUSD"));
-		return this.operations.find(query, QuoteIb.class).filter(q -> filterEvenMinutes(q));
-	}
-	
-	@GetMapping("/btcusd/current")
-	public Mono<QuoteIb> currentQuoteUsd() {
-		Query query = MongoUtils.buildCurrentQuery(Optional.of("XBTUSD"));
-		return this.operations.findOne(query, QuoteIb.class);
-	}
+
+	@GetMapping("/{pair}/{timeFrame}")
+	public Flux<QuoteIb> tfQuotes(@PathVariable String timeFrame, @PathVariable String pair) {
+		pair = this.currpairs.get(pair);
+		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
+			return this.operations.find(query, QuoteIb.class).filter(q -> filterEvenMinutes(q));
+		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
+			return this.operations.find(query, QuoteIb.class, PrepareData.IB_HOUR_COL);
+		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
+			return this.operations.find(query, QuoteIb.class, PrepareData.IB_DAY_COL);
+		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
+			return this.operations.find(query, QuoteIb.class, PrepareData.IB_DAY_COL);
+		}
+
+		return Flux.empty();
+	}		
 	
     private boolean filterEvenMinutes(QuoteIb quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());

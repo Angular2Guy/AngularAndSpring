@@ -27,14 +27,32 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 public class MongoUtils {
-	private static final Query buildQuery(Optional<String> pair, boolean ascending) {
+	
+	public enum TimeFrame {
+		CURRENT("current"), TODAY("today"), SEVENDAYS("7days"), THIRTYDAYS("30days"), NINTYDAYS("90days");
+		private TimeFrame(String value) {
+			this.value = value;
+		}
+
+		private String value;
+
+		public String getValue() {
+			return this.value;
+		}
+	};
+	
+	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin) {
 		Calendar cal = GregorianCalendar.getInstance();
 		cal.add(Calendar.DAY_OF_YEAR, -1);
 		Query query = new Query();
 		if (pair.isPresent()) {
 			query.addCriteria(Criteria.where("pair").is(pair.get()));
 		}
-		query.addCriteria(Criteria.where("createdAt").gt(cal.getTime()));
+		if(begin.isPresent()) {
+			query.addCriteria(Criteria.where("createdAt").gt(begin.get().getTime()));
+		} else {
+			query.addCriteria(Criteria.where("createdAt").gt(cal.getTime()));
+		}
 		if (ascending) {
 			query.with(Sort.by("createdAt").ascending());
 		} else {
@@ -43,12 +61,30 @@ public class MongoUtils {
 		return query;
 	}
 
-	public static final Query buildTodayQuery(Optional<String> pair) {
-		return buildQuery(pair, true);
+	public static final Query build90DayQuery(Optional<String> pair) {
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.add(Calendar.DAY_OF_YEAR, -90);
+		return buildQuery(pair, true, Optional.of(cal));
+	}
+	
+	public static final Query build30DayQuery(Optional<String> pair) {
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.add(Calendar.DAY_OF_YEAR, -30);
+		return buildQuery(pair, true, Optional.of(cal));
+	}
+	
+	public static final Query build7DayQuery(Optional<String> pair) {
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.add(Calendar.DAY_OF_YEAR, -7);
+		return buildQuery(pair, true, Optional.of(cal));
+	}
+	
+	public static final Query buildTodayQuery(Optional<String> pair) {		
+		return buildQuery(pair, true, Optional.empty());
 	}
 
 	public static final Query buildCurrentQuery(Optional<String> pair) {
-		return buildQuery(pair, false);
+		return buildQuery(pair, false, Optional.empty());
 	}	
 	
 	public static final boolean filterEvenMinutes(Date date) {

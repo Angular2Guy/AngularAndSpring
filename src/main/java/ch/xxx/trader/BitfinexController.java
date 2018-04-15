@@ -24,16 +24,14 @@ import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ch.xxx.trader.clients.PrepareData;
 import ch.xxx.trader.clients.QuoteBf;
-import io.netty.channel.ChannelOption;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -41,107 +39,78 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/bitfinex")
 public class BitfinexController {
 	private static final String URLBF = "https://api.bitfinex.com";
-	
+
 	@Autowired
-	private ReactiveMongoOperations operations;			
-	
+	private ReactiveMongoOperations operations;
+
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair,HttpServletRequest request) {
-		if(!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBF)) {
-			return Mono.just("{\n" + 
-					"  \"bids\":[],\n" + 
-					"  \"asks\":[]\n" + 
-					"}");
+	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
+		if (!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBF)) {
+			return Mono.just("{\n" + "  \"bids\":[],\n" + "  \"asks\":[]\n" + "}");
 		}
 		WebClient wc = WebUtils.buildWebClient(URLBF);
-		return wc.get().uri("/v1/book/"+currpair+"/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
+		return wc.get().uri("/v1/book/" + currpair + "/").accept(MediaType.APPLICATION_JSON).exchange()
+				.flatMap(res -> res.bodyToMono(String.class));
 	}
-	
+
 	@GetMapping
 	public Flux<QuoteBf> allQuotes() {
 		return this.operations.findAll(QuoteBf.class);
-	}		
-	
-	@GetMapping("/btcusd/today")
-	public Flux<QuoteBf> todayQuotesBtcUsd() {
-		Query query = MongoUtils.buildTodayQuery(Optional.of("btcusd"));
-		return this.operations.find(query,QuoteBf.class)
-				.filter(q -> filterEvenMinutes(q));
-	}
-	
-	@GetMapping("/ethusd/today")
-	public Flux<QuoteBf> todayQuotesEthUsd() {
-		Query query = MongoUtils.buildTodayQuery(Optional.of("ethusd"));
-		return this.operations.find(query,QuoteBf.class)
-				.filter(q -> filterEvenMinutes(q));
-	}
-	
-	@GetMapping("/ltcusd/today")
-	public Flux<QuoteBf> todayQuotesLtcUsd() {
-		Query query = MongoUtils.buildTodayQuery(Optional.of("ltcusd"));
-		return this.operations.find(query,QuoteBf.class)
-				.filter(q -> filterEvenMinutes(q));
 	}
 
-	@GetMapping("/xrpusd/today")
-	public Flux<QuoteBf> todayQuotesXrpUsd() {
-		Query query = MongoUtils.buildTodayQuery(Optional.of("xrpusd"));
-		return this.operations.find(query,QuoteBf.class)
-				.filter(q -> filterEvenMinutes(q));
+	@GetMapping("/{pair}/current")
+	public Mono<QuoteBf> currentQuote(@PathVariable String pair) {
+		Query query = MongoUtils.buildCurrentQuery(Optional.of(pair));
+		return this.operations.findOne(query, QuoteBf.class);
 	}
-	
-	@GetMapping("/btcusd/current")
-	public Mono<QuoteBf> currentQuoteBtcUsd() {
-		Query query = MongoUtils.buildCurrentQuery(Optional.of("btcusd"));
-		return this.operations.findOne(query,QuoteBf.class);
+
+	@GetMapping("/{pair}/{timeFrame}")
+	public Flux<QuoteBf> tfQuotes(@PathVariable String timeFrame, @PathVariable String pair) {
+		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
+			return this.operations.find(query, QuoteBf.class).filter(q -> filterEvenMinutes(q));
+		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
+			return this.operations.find(query, QuoteBf.class, PrepareData.BF_HOUR_COL);
+		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
+			return this.operations.find(query, QuoteBf.class, PrepareData.BF_DAY_COL);
+		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
+			return this.operations.find(query, QuoteBf.class, PrepareData.BF_DAY_COL);
+		}
+
+		return Flux.empty();
 	}
-	
-	@GetMapping("/ethusd/current")
-	public Mono<QuoteBf> currentQuoteEthUsd() {
-		Query query = MongoUtils.buildCurrentQuery(Optional.of("ethusd"));
-		return this.operations.findOne(query,QuoteBf.class);
-	}
-	
-	@GetMapping("/ltcusd/current")
-	public Mono<QuoteBf> currentQuoteLtcUsd() {
-		Query query = MongoUtils.buildCurrentQuery(Optional.of("ltcusd"));
-		return this.operations.findOne(query,QuoteBf.class);
-	}
-	
-	@GetMapping("/xrpusd/current")
-	public Mono<QuoteBf> currentQuoteXrpUsd() {
-		Query query = MongoUtils.buildCurrentQuery(Optional.of("xrpusd"));
-		return this.operations.findOne(query,QuoteBf.class);
-	}
-	
+
 	@GetMapping("/btcusd")
 	public Flux<QuoteBf> allQuotesBtcUsd() {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("pair").is("btcusd"));
-		return this.operations.find(query,QuoteBf.class);
+		return this.operations.find(query, QuoteBf.class);
 	}
-		
+
 	@GetMapping("/ethusd")
 	public Flux<QuoteBf> allQuotesEthUsd() {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("pair").is("ethusd"));
-		return this.operations.find(query,QuoteBf.class);
+		return this.operations.find(query, QuoteBf.class);
 	}
-	
+
 	@GetMapping("/ltcusd")
 	public Flux<QuoteBf> allQuotesLtcUsd() {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("pair").is("ltcusd"));
-		return this.operations.find(query,QuoteBf.class);
+		return this.operations.find(query, QuoteBf.class);
 	}
-	
+
 	@GetMapping("/xrpusd")
 	public Flux<QuoteBf> allQuotesXrpUsd() {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("pair").is("xrpusd"));
-		return this.operations.find(query,QuoteBf.class);
+		return this.operations.find(query, QuoteBf.class);
 	}
-	
+
 	private boolean filterEvenMinutes(QuoteBf quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}

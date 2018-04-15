@@ -34,22 +34,30 @@ public class PrepareData {
 	private static final Logger log = LoggerFactory.getLogger(ScheduledTask.class);
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	private final Map<Integer, Method> cbMethodCache = new HashMap<Integer, Method>();
-
+	public static final String BS_HOUR_COL = "quoteBsHour";
+	public static final String BS_DAY_COL = "quoteBsDay";
+	public static final String BF_HOUR_COL = "quoteBfHour";
+	public static final String BF_DAY_COL = "quoteBfDay";
+	public static final String IB_HOUR_COL = "quoteIbHour";
+	public static final String IB_DAY_COL = "quoteIbDay";
+	public static final String CB_HOUR_COL = "quoteCbHour";
+	public static final String Cb_DAY_COL = "quoteCbDay";
+	
 	@Autowired
 	private ReactiveMongoOperations operations;
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "5 0 0 ? * ?")
 	public void createBsHourlyAvg() {
-		if (!this.operations.collectionExists("quoteBsHour").block()) {
-			this.operations.createCollection("quoteBsHour").block();
+		if (!this.operations.collectionExists(BS_HOUR_COL).block()) {
+			this.operations.createCollection(BS_HOUR_COL).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
 		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, "quoteBsHour").block();
+		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, BS_HOUR_COL).block();
 		Calendar globalBeginn = Calendar.getInstance();
 		if (lastHourQuote == null) {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
@@ -75,7 +83,7 @@ public class PrepareData {
 					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteHour(key, multimap, begin, end))
 							.collect(Collectors.toList()))
 					.block();
-			collectBs.forEach(col -> this.operations.insertAll(Mono.just(col), "quoteBsHour").blockLast());
+			collectBs.forEach(col -> this.operations.insertAll(Mono.just(col), BS_HOUR_COL).blockLast());
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -86,15 +94,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "5 0 1 ? * ?")
 	public void createBsDailyAvg() {
-		if (!this.operations.collectionExists("quoteBsDay").block()) {
-			this.operations.createCollection("quoteBsDay").block();
+		if (!this.operations.collectionExists(BS_DAY_COL).block()) {
+			this.operations.createCollection(BS_DAY_COL).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
 		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, "quoteBsDay").block();
+		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, BS_DAY_COL).block();
 		Calendar globalBeginn = Calendar.getInstance();
 		if (lastHourQuote == null) {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
@@ -120,7 +128,7 @@ public class PrepareData {
 					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteDay(key, multimap, begin, end))
 							.collect(Collectors.toList()))
 					.block();
-			collectBs.forEach(col -> this.operations.insertAll(Mono.just(col), "quoteBsDay").blockLast());
+			collectBs.forEach(col -> this.operations.insertAll(Mono.just(col), BS_DAY_COL).blockLast());
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -131,15 +139,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "10 0 0 ? * ?")
 	public void createBfHourlyAvg() {
-		if (!this.operations.collectionExists("quoteBfHour").block()) {
-			this.operations.createCollection("quoteBfHour").block();
+		if (!this.operations.collectionExists(BF_HOUR_COL).block()) {
+			this.operations.createCollection(BF_HOUR_COL).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
 		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, "quoteBfHour").block();
+		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, BF_HOUR_COL).block();
 		Calendar globalBeginn = Calendar.getInstance();
 		if (lastHourQuote == null) {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
@@ -165,7 +173,7 @@ public class PrepareData {
 					.map(multimap -> multimap.keySet().stream().map(key -> makeBfQuoteHour(key, multimap, begin, end))
 							.collect(Collectors.toList()))
 					.block();
-			collectBf.forEach(col -> this.operations.insertAll(Mono.just(col), "quoteBfHour").blockLast());
+			collectBf.forEach(col -> this.operations.insertAll(Mono.just(col), BF_HOUR_COL).blockLast());
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -176,15 +184,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "10 0 1 ? * ?")
 	public void createBfDailyAvg() {
-		if (!this.operations.collectionExists("quoteBfDay").block()) {
-			this.operations.createCollection("quoteBfDay").block();
+		if (!this.operations.collectionExists(BF_DAY_COL).block()) {
+			this.operations.createCollection(BF_DAY_COL).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
 		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, "quoteBfDay").block();
+		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, BF_DAY_COL).block();
 		Calendar globalBeginn = Calendar.getInstance();
 		if (lastHourQuote == null) {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
@@ -210,7 +218,7 @@ public class PrepareData {
 					.map(multimap -> multimap.keySet().stream().map(key -> makeBfQuoteDay(key, multimap, begin, end))
 							.collect(Collectors.toList()))
 					.block();
-			collectBf.forEach(col -> this.operations.insertAll(Mono.just(col), "quoteBfDay").blockLast());
+			collectBf.forEach(col -> this.operations.insertAll(Mono.just(col), BF_DAY_COL).blockLast());
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -221,15 +229,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "15 0 0 ? * ?")
 	public void createIbHourlyAvg() {
-		if (!this.operations.collectionExists("quoteIbHour").block()) {
-			this.operations.createCollection("quoteIbHour").block();
+		if (!this.operations.collectionExists(IB_HOUR_COL).block()) {
+			this.operations.createCollection(IB_HOUR_COL).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
 		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, "quoteIbHour").block();
+		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, IB_HOUR_COL).block();
 		Calendar globalBeginn = Calendar.getInstance();
 		if (lastHourQuote == null) {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
@@ -255,7 +263,7 @@ public class PrepareData {
 					.map(multimap -> multimap.keySet().stream().map(key -> makeIbQuoteHour(key, multimap, begin, end))
 							.collect(Collectors.toList()))
 					.block();
-			collectIb.forEach(col -> this.operations.insertAll(Mono.just(col), "quoteIbHour").blockLast());
+			collectIb.forEach(col -> this.operations.insertAll(Mono.just(col), IB_HOUR_COL).blockLast());
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -266,15 +274,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "15 0 1 ? * ?")
 	public void createIbDailyAvg() {
-		if (!this.operations.collectionExists("quoteIbDay").block()) {
-			this.operations.createCollection("quoteIbDay").block();
+		if (!this.operations.collectionExists(IB_DAY_COL).block()) {
+			this.operations.createCollection(IB_DAY_COL).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
 		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, "quoteIbDay").block();
+		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, IB_DAY_COL).block();
 		Calendar globalBeginn = Calendar.getInstance();
 		if (lastHourQuote == null) {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
@@ -300,7 +308,7 @@ public class PrepareData {
 					.map(multimap -> multimap.keySet().stream().map(key -> makeIbQuoteDay(key, multimap, begin, end))
 							.collect(Collectors.toList()))
 					.block();
-			collectIb.forEach(col -> this.operations.insertAll(Mono.just(col), "quoteIbDay").blockLast());
+			collectIb.forEach(col -> this.operations.insertAll(Mono.just(col), IB_DAY_COL).blockLast());
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -311,15 +319,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "20 0 0 ? * ?")
 	public void createCbHourlyAvg() {
-		if (!this.operations.collectionExists("quoteCbHour").block()) {
-			this.operations.createCollection("quoteCbHour").block();
+		if (!this.operations.collectionExists(CB_HOUR_COL).block()) {
+			this.operations.createCollection(CB_HOUR_COL).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
 		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, "quoteCbHour").block();
+		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, CB_HOUR_COL).block();
 		Calendar globalBeginn = Calendar.getInstance();
 		if (lastHourQuote == null) {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
@@ -343,7 +351,7 @@ public class PrepareData {
 			// Coinbase
 			Collection<QuoteCb> collectCb = this.operations.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, begin, end)).block();
-			this.operations.insertAll(Mono.just(collectCb), "quoteCbHour").blockLast();
+			this.operations.insertAll(Mono.just(collectCb), CB_HOUR_COL).blockLast();
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -355,15 +363,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "20 0 1 ? * ?")
 	public void createCbDailyAvg() {
-		if (!this.operations.collectionExists("quoteCbDay").block()) {
-			this.operations.createCollection("quoteCbDay").block();
+		if (!this.operations.collectionExists(Cb_DAY_COL).block()) {
+			this.operations.createCollection(Cb_DAY_COL).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
 		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, "quoteCbDay").block();
+		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, Cb_DAY_COL).block();
 		Calendar globalBeginn = Calendar.getInstance();
 		if (lastHourQuote == null) {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
@@ -387,7 +395,7 @@ public class PrepareData {
 			// Coinbase
 			Collection<QuoteCb> collectCb = this.operations.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, begin, end)).block();
-			this.operations.insertAll(Mono.just(collectCb), "quoteCbDay").blockLast();
+			this.operations.insertAll(Mono.just(collectCb), Cb_DAY_COL).blockLast();
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);

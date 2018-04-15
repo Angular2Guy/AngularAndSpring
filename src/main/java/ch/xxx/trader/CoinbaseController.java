@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ch.xxx.trader.clients.PrepareData;
 import ch.xxx.trader.clients.QuoteCb;
 import ch.xxx.trader.clients.QuoteCbSmall;
 import reactor.core.publisher.Flux;
@@ -45,6 +46,30 @@ public class CoinbaseController {
 	public Flux<QuoteCbSmall> todayQuotesBc() {
 		Query query = MongoUtils.buildTodayQuery(Optional.empty());
 		return this.operations.find(query,QuoteCb.class)
+				.filter(q -> filterEvenMinutes(q))
+				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+	}
+	
+	@GetMapping("/7days")
+	public Flux<QuoteCbSmall> sevenDaysQuotesBc() {
+		Query query = MongoUtils.build7DayQuery(Optional.empty());
+		return this.operations.find(query,QuoteCb.class,PrepareData.CB_HOUR_COL)
+				.filter(q -> filterEvenMinutes(q))
+				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+	}
+	
+	@GetMapping("/30days")
+	public Flux<QuoteCbSmall> thirtyDaysQuotesBc() {
+		Query query = MongoUtils.build30DayQuery(Optional.empty());
+		return this.operations.find(query,QuoteCb.class,PrepareData.Cb_DAY_COL)
+				.filter(q -> filterEvenMinutes(q))
+				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+	}
+	
+	@GetMapping("/90days")
+	public Flux<QuoteCbSmall> nintyDaysQuotesBc() {
+		Query query = MongoUtils.build90DayQuery(Optional.empty());
+		return this.operations.find(query,QuoteCb.class,PrepareData.Cb_DAY_COL)
 				.filter(q -> filterEvenMinutes(q))
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
 	}
