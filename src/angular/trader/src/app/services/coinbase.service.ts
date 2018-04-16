@@ -46,6 +46,18 @@ export class CoinbaseService {
         return this.http.get(this._coinbase+'/today', this._reqOptionsArgs).catch(this._utils.handleError);
     }
     
+    get7DayQuotes(): Observable<QuoteCbSmall[]> {
+        return this.http.get(this._coinbase+'/7days', this._reqOptionsArgs).catch(this._utils.handleError);
+    }
+    
+    get30DayQuotes(): Observable<QuoteCbSmall[]> {
+        return this.http.get(this._coinbase+'/30days', this._reqOptionsArgs).catch(this._utils.handleError);
+    }
+    
+    get90DayQuotes(): Observable<QuoteCbSmall[]> {
+        return this.http.get(this._coinbase+'/90days', this._reqOptionsArgs).catch(this._utils.handleError);
+    }
+    
     private lowercaseKeys(quote: QuoteCb): QuoteCb {
         for (let p in quote) {
           if( quote.hasOwnProperty(p) && p !== '_id' && p !== 'createdAt') {

@@ -37,7 +37,8 @@ export class CbdetailComponent implements OnInit {
     private utils = new CommonUtils();
     BTCUSD: string;
     ETHUSD: string;
-    LTCUSD: string
+    LTCUSD: string;
+    timeframe = this.utils.timeframes[0];
     
     constructor(private route: ActivatedRoute, private router: Router, private serviceCb: CoinbaseService) { 
         this.BTCUSD = this.serviceCb.BTCUSD;
@@ -69,4 +70,33 @@ export class CbdetailComponent implements OnInit {
             });
     }
 
+    changeTf() {
+        this.chartdata = [];
+        this.chartlabels = [];
+        this.route.paramMap
+        .switchMap((params: ParamMap) => {  
+            this.currpair = params.get('currpair');
+            if(this.timeframe === this.utils.timeframes[1]) return this.serviceCb.get7DayQuotes();
+            if(this.timeframe === this.utils.timeframes[2]) return this.serviceCb.get30DayQuotes();
+            if(this.timeframe === this.utils.timeframes[3]) return this.serviceCb.get90DayQuotes() 
+                else return this.serviceCb.getTodayQuotes();
+        })            
+        .subscribe(quotes => {
+            this.todayQuotes = quotes; 
+            if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())            
+            else if(this.timeframe === this.utils.timeframes[1]) 
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString())
+             else 
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getMinutes().toString());                                       
+            
+            if(this.currpair === this.serviceCb.BTCUSD) {
+                this.chartdata = this.todayQuotes.map(quote => quote.usd);
+            } else if(this.currpair === this.serviceCb.ETHUSD) {
+                this.chartdata = this.todayQuotes.map(quote => quote.usd/quote.eth)
+            } else if(this.currpair === this.serviceCb.LTCUSD) {
+                this.chartdata = this.todayQuotes.map(quote => quote.usd/quote.ltc)
+            }});
+    }
+    
 }
