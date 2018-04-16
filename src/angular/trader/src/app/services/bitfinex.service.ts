@@ -47,6 +47,18 @@ export class BitfinexService {
       return this.http.get(this._bitfinex+'/'+currencypair+'/today', this._reqOptionsArgs).catch(this._utils.handleError);
   }
 
+  get7DayQuotes(currencypair: string): Observable<QuoteBf[]> {
+      return this.http.get(this._bitfinex+'/'+currencypair+'/7days', this._reqOptionsArgs).catch(this._utils.handleError);
+  }
+
+  get30DayQuotes(currencypair: string): Observable<QuoteBf[]> {
+      return this.http.get(this._bitfinex+'/'+currencypair+'/30days', this._reqOptionsArgs).catch(this._utils.handleError);
+  }
+  
+  get90DayQuotes(currencypair: string): Observable<QuoteBf[]> {
+      return this.http.get(this._bitfinex+'/'+currencypair+'/90days', this._reqOptionsArgs).catch(this._utils.handleError);
+  }
+  
   getOrderbook(currencypair: string): Observable<OrderbookBf> {
       return this.http.get(this._bitfinex+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).catch(this._utils.handleError);
   }

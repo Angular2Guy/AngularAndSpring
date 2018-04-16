@@ -34,6 +34,7 @@ export class BfdetailComponent implements OnInit {
     chartType = "line";
     private utils = new CommonUtils();
     currPair = "";
+    timeframe = this.utils.timeframes[0];
 
     constructor(private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService) { }
 
@@ -50,6 +51,27 @@ export class BfdetailComponent implements OnInit {
                 this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getMinutes().toString());
                 this.chartdata = this.todayQuotes.map(quote => quote.last_price);
         });
-}  
+    }  
 
+    changeTf() {
+        this.chartdata = [];
+        this.chartlabels = [];
+        this.route.paramMap
+        .switchMap((params: ParamMap) => {            
+            if(this.timeframe === this.utils.timeframes[1]) return this.serviceBf.get7DayQuotes(params.get('currpair'));
+            if(this.timeframe === this.utils.timeframes[2]) return this.serviceBf.get30DayQuotes(params.get('currpair'));
+            if(this.timeframe === this.utils.timeframes[3]) return this.serviceBf.get90DayQuotes(params.get('currpair')) 
+                else return this.serviceBf.getTodayQuotes(params.get('currpair'));
+        })            
+        .subscribe(quotes => { 
+            this.todayQuotes = quotes;
+            if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())            
+            else if(this.timeframe === this.utils.timeframes[1]) 
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString())
+             else 
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getMinutes().toString());                                       
+            this.chartdata = this.todayQuotes.map(quote => quote.last_price);
+            });
+    }
 }

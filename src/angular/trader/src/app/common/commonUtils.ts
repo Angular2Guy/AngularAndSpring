@@ -20,6 +20,7 @@ import { BitfinexService } from '../services/bitfinex.service';
 
 export class CommonUtils {
     private currpairs = new Map<string,string>();
+    public timeframes = ['today','7 Days', '30 Days', '90 Days'];
     
     constructor() { 
         let serviceBs = new BitstampService(null, null);
