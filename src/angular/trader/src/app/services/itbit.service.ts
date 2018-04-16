@@ -46,6 +46,18 @@ export class ItbitService {
         return this.http.get(this._itbit+'/'+currencypair+'/today', this._reqOptionsArgs).catch(this._utils.handleError);
     }
     
+    get7DayQuotes(currencypair: string): Observable<QuoteIb[]> {
+        return this.http.get(this._itbit+'/'+currencypair+'/7days', this._reqOptionsArgs).catch(this._utils.handleError);
+    }
+    
+    get30DayQuotes(currencypair: string): Observable<QuoteIb[]> {
+        return this.http.get(this._itbit+'/'+currencypair+'/30days', this._reqOptionsArgs).catch(this._utils.handleError);
+    }
+    
+    get90DayQuotes(currencypair: string): Observable<QuoteIb[]> {
+        return this.http.get(this._itbit+'/'+currencypair+'/90days', this._reqOptionsArgs).catch(this._utils.handleError);
+    }
+    
     getOrderbook(currencypair: string): Observable<OrderbookIb> {
         return this.http.get(this._itbit+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).catch(this._utils.handleError);
     }
