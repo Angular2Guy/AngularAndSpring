@@ -53,6 +53,18 @@ export class BitstampService {
         return this.http.get(this._bitstamp+'/'+currencypair+'/today', this._reqOptionsArgs).catch(this._utils.handleError);
     }
     
+    get7DayQuotes(currencypair: string): Observable<QuoteBs[]> {
+        return this.http.get(this._bitstamp+'/'+currencypair+'/7days', this._reqOptionsArgs).catch(this._utils.handleError);
+    }
+    
+    get30DayQuotes(currencypair: string): Observable<QuoteBs[]> {
+        return this.http.get(this._bitstamp+'/'+currencypair+'/30days', this._reqOptionsArgs).catch(this._utils.handleError);
+    }
+    
+    get90DayQuotes(currencypair: string): Observable<QuoteBs[]> {
+        return this.http.get(this._bitstamp+'/'+currencypair+'/90days', this._reqOptionsArgs).catch(this._utils.handleError);
+    }
+    
     getOrderbook(currencypair: string): Observable<OrderbookBs> {
         return this.http.get(this._bitstamp+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).catch(this._utils.handleError);
     }
