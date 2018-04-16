@@ -25,7 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Document
-public class QuoteCbSmall {
+public class QuoteCbSmall implements Quote {
 	@Id
 	private ObjectId _id;
 	private final Date createdAt;

@@ -41,42 +41,23 @@ public class PrepareData {
 	public static final String IB_HOUR_COL = "quoteIbHour";
 	public static final String IB_DAY_COL = "quoteIbDay";
 	public static final String CB_HOUR_COL = "quoteCbHour";
-	public static final String Cb_DAY_COL = "quoteCbDay";
-	
+	public static final String CB_DAY_COL = "quoteCbDay";
+
 	@Autowired
 	private ReactiveMongoOperations operations;
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "5 0 0 ? * ?")
 	public void createBsHourlyAvg() {
-		if (!this.operations.collectionExists(BS_HOUR_COL).block()) {
-			this.operations.createCollection(BS_HOUR_COL).block();
-		}
-		Query query = new Query();
-		query.with(Sort.by("createdAt").ascending());
-		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
-		query = new Query();
-		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, BS_HOUR_COL).block();
-		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote == null) {
-			globalBeginn.setTime(firstQuote.getCreatedAt());
-		} else {
-			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
-		}
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BS_HOUR_COL, QuoteBs.class);
 
-		Calendar begin = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		begin.setTime(globalBeginn.getTime());
-		begin.set(Calendar.MINUTE, 0);
-		begin.set(Calendar.SECOND, 0);
-		end.setTime(begin.getTime());
-		end.add(Calendar.DAY_OF_YEAR, 1);
+		Calendar begin = timeFrame.getX();
+		Calendar end = timeFrame.getY();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (end.before(now)) {
-			query = new Query();
+			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Bitstamp
 			List<Collection<QuoteBs>> collectBs = this.operations.find(query, QuoteBs.class)
@@ -95,34 +76,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "5 0 1 ? * ?")
 	public void createBsDailyAvg() {
-		if (!this.operations.collectionExists(BS_DAY_COL).block()) {
-			this.operations.createCollection(BS_DAY_COL).block();
-		}
-		Query query = new Query();
-		query.with(Sort.by("createdAt").ascending());
-		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
-		query = new Query();
-		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, BS_DAY_COL).block();
-		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote == null) {
-			globalBeginn.setTime(firstQuote.getCreatedAt());
-		} else {
-			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
-		}
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BS_DAY_COL, QuoteBs.class);
 
-		Calendar begin = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		begin.setTime(globalBeginn.getTime());
-		begin.set(Calendar.MINUTE, 0);
-		begin.set(Calendar.SECOND, 0);
-		end.setTime(begin.getTime());
-		end.add(Calendar.DAY_OF_YEAR, 1);
+		Calendar begin = timeFrame.getX();
+		Calendar end = timeFrame.getY();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (end.before(now)) {
-			query = new Query();
+			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Bitstamp
 			List<Collection<QuoteBs>> collectBs = this.operations.find(query, QuoteBs.class)
@@ -141,34 +103,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "10 0 0 ? * ?")
 	public void createBfHourlyAvg() {
-		if (!this.operations.collectionExists(BF_HOUR_COL).block()) {
-			this.operations.createCollection(BF_HOUR_COL).block();
-		}
-		Query query = new Query();
-		query.with(Sort.by("createdAt").ascending());
-		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
-		query = new Query();
-		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, BF_HOUR_COL).block();
-		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote == null) {
-			globalBeginn.setTime(firstQuote.getCreatedAt());
-		} else {
-			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
-		}
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BF_HOUR_COL, QuoteBf.class);
 
-		Calendar begin = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		begin.setTime(globalBeginn.getTime());
-		begin.set(Calendar.MINUTE, 0);
-		begin.set(Calendar.SECOND, 0);
-		end.setTime(begin.getTime());
-		end.add(Calendar.DAY_OF_YEAR, 1);
+		Calendar begin = timeFrame.getX();
+		Calendar end = timeFrame.getY();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (end.before(now)) {
-			query = new Query();
+			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Bitfinex
 			List<Collection<QuoteBf>> collectBf = this.operations.find(query, QuoteBf.class)
@@ -187,34 +130,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "10 0 1 ? * ?")
 	public void createBfDailyAvg() {
-		if (!this.operations.collectionExists(BF_DAY_COL).block()) {
-			this.operations.createCollection(BF_DAY_COL).block();
-		}
-		Query query = new Query();
-		query.with(Sort.by("createdAt").ascending());
-		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
-		query = new Query();
-		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, BF_DAY_COL).block();
-		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote == null) {
-			globalBeginn.setTime(firstQuote.getCreatedAt());
-		} else {
-			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
-		}
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BF_DAY_COL, QuoteBf.class);
 
-		Calendar begin = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		begin.setTime(globalBeginn.getTime());
-		begin.set(Calendar.MINUTE, 0);
-		begin.set(Calendar.SECOND, 0);
-		end.setTime(begin.getTime());
-		end.add(Calendar.DAY_OF_YEAR, 1);
+		Calendar begin = timeFrame.getX();
+		Calendar end = timeFrame.getY();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (end.before(now)) {
-			query = new Query();
+			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Bitfinex
 			List<Collection<QuoteBf>> collectBf = this.operations.find(query, QuoteBf.class)
@@ -233,34 +157,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "15 0 0 ? * ?")
 	public void createIbHourlyAvg() {
-		if (!this.operations.collectionExists(IB_HOUR_COL).block()) {
-			this.operations.createCollection(IB_HOUR_COL).block();
-		}
-		Query query = new Query();
-		query.with(Sort.by("createdAt").ascending());
-		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
-		query = new Query();
-		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, IB_HOUR_COL).block();
-		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote == null) {
-			globalBeginn.setTime(firstQuote.getCreatedAt());
-		} else {
-			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
-		}
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(IB_HOUR_COL, QuoteIb.class);
 
-		Calendar begin = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		begin.setTime(globalBeginn.getTime());
-		begin.set(Calendar.MINUTE, 0);
-		begin.set(Calendar.SECOND, 0);
-		end.setTime(begin.getTime());
-		end.add(Calendar.DAY_OF_YEAR, 1);
+		Calendar begin = timeFrame.getX();
+		Calendar end = timeFrame.getY();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (end.before(now)) {
-			query = new Query();
+			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Itbit
 			List<Collection<QuoteIb>> collectIb = this.operations.find(query, QuoteIb.class)
@@ -279,34 +184,15 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "15 0 1 ? * ?")
 	public void createIbDailyAvg() {
-		if (!this.operations.collectionExists(IB_DAY_COL).block()) {
-			this.operations.createCollection(IB_DAY_COL).block();
-		}
-		Query query = new Query();
-		query.with(Sort.by("createdAt").ascending());
-		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
-		query = new Query();
-		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, IB_DAY_COL).block();
-		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote == null) {
-			globalBeginn.setTime(firstQuote.getCreatedAt());
-		} else {
-			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
-		}
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(IB_DAY_COL, QuoteIb.class);
 
-		Calendar begin = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		begin.setTime(globalBeginn.getTime());
-		begin.set(Calendar.MINUTE, 0);
-		begin.set(Calendar.SECOND, 0);
-		end.setTime(begin.getTime());
-		end.add(Calendar.DAY_OF_YEAR, 1);
+		Calendar begin = timeFrame.getX();
+		Calendar end = timeFrame.getY();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (end.before(now)) {
-			query = new Query();
+			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Itbit
 			List<Collection<QuoteIb>> collectIb = this.operations.find(query, QuoteIb.class)
@@ -325,35 +211,16 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "20 0 0 ? * ?")
 	public void createCbHourlyAvg() {
-		if (!this.operations.collectionExists(CB_HOUR_COL).block()) {
-			this.operations.createCollection(CB_HOUR_COL).block();
-		}
-		Query query = new Query();
-		query.with(Sort.by("createdAt").ascending());
-		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
-		query = new Query();
-		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, CB_HOUR_COL).block();
-		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote == null) {
-			globalBeginn.setTime(firstQuote.getCreatedAt());
-		} else {
-			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
-		}
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_HOUR_COL, QuoteCb.class);
 
-		Calendar begin = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		begin.setTime(globalBeginn.getTime());
-		begin.set(Calendar.MINUTE, 0);
-		begin.set(Calendar.SECOND, 0);
-		end.setTime(begin.getTime());
-		end.add(Calendar.DAY_OF_YEAR, 1);
+		Calendar begin = timeFrame.getX();
+		Calendar end = timeFrame.getY();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (end.before(now)) {
 			Date start = new Date();
-			query = new Query();
+			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Coinbase
 			Collection<QuoteCb> collectCb = this.operations.find(query, QuoteCb.class).collectList()
@@ -370,40 +237,21 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "20 0 1 ? * ?")
 	public void createCbDailyAvg() {
-		if (!this.operations.collectionExists(Cb_DAY_COL).block()) {
-			this.operations.createCollection(Cb_DAY_COL).block();
-		}
-		Query query = new Query();
-		query.with(Sort.by("createdAt").ascending());
-		QuoteBs firstQuote = this.operations.findOne(query, QuoteBs.class).block();
-		query = new Query();
-		query.with(Sort.by("createdAt").descending());
-		QuoteBs lastHourQuote = this.operations.findOne(query, QuoteBs.class, Cb_DAY_COL).block();
-		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote == null) {
-			globalBeginn.setTime(firstQuote.getCreatedAt());
-		} else {
-			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
-		}
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_DAY_COL, QuoteCb.class);
 
-		Calendar begin = Calendar.getInstance();
-		Calendar end = Calendar.getInstance();
-		begin.setTime(globalBeginn.getTime());
-		begin.set(Calendar.MINUTE, 0);
-		begin.set(Calendar.SECOND, 0);
-		end.setTime(begin.getTime());
-		end.add(Calendar.DAY_OF_YEAR, 1);
+		Calendar begin = timeFrame.getX();
+		Calendar end = timeFrame.getY();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (end.before(now)) {
 			Date start = new Date();
-			query = new Query();
+			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Coinbase
 			Collection<QuoteCb> collectCb = this.operations.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, begin, end)).block();
-			this.operations.insertAll(Mono.just(collectCb), Cb_DAY_COL).blockLast();
+			this.operations.insertAll(Mono.just(collectCb), CB_DAY_COL).blockLast();
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -696,5 +544,33 @@ public class PrepareData {
 	private BigDecimal avgHourValue(BigDecimal v1, BigDecimal v2, long count) {
 		return v1.add(v2 == null ? BigDecimal.ZERO
 				: v2.divide(BigDecimal.valueOf(count == 0 ? 1 : count), 10, RoundingMode.HALF_UP));
+	}
+
+	private Tuple<Calendar, Calendar> createTimeFrame(String colName, Class<? extends Quote> colType) {
+		if (!this.operations.collectionExists(colName).block()) {
+			this.operations.createCollection(colName).block();
+		}
+		Query query = new Query();
+		query.with(Sort.by("createdAt").ascending());
+		Quote firstQuote = this.operations.findOne(query, colType).block();
+		query = new Query();
+		query.with(Sort.by("createdAt").descending());
+		Quote lastHourQuote = this.operations.findOne(query, colType, colName).block();
+		Calendar globalBeginn = Calendar.getInstance();
+		if (lastHourQuote == null) {
+			globalBeginn.setTime(firstQuote.getCreatedAt());
+		} else {
+			globalBeginn.setTime(lastHourQuote.getCreatedAt());
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
+		}
+
+		Calendar begin = Calendar.getInstance();
+		Calendar end = Calendar.getInstance();
+		begin.setTime(globalBeginn.getTime());
+		begin.set(Calendar.MINUTE, 0);
+		begin.set(Calendar.SECOND, 0);
+		end.setTime(begin.getTime());
+		end.add(Calendar.DAY_OF_YEAR, 1);
+		return new Tuple<Calendar, Calendar>(begin, end);
 	}
 }

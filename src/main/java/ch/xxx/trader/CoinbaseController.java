@@ -61,7 +61,7 @@ public class CoinbaseController {
 	@GetMapping("/30days")
 	public Flux<QuoteCbSmall> thirtyDaysQuotesBc() {
 		Query query = MongoUtils.build30DayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class,PrepareData.Cb_DAY_COL)
+		return this.operations.find(query,QuoteCb.class,PrepareData.CB_DAY_COL)
 				.filter(q -> filterEvenMinutes(q))
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
 	}
@@ -69,7 +69,7 @@ public class CoinbaseController {
 	@GetMapping("/90days")
 	public Flux<QuoteCbSmall> nintyDaysQuotesBc() {
 		Query query = MongoUtils.build90DayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class,PrepareData.Cb_DAY_COL)
+		return this.operations.find(query,QuoteCb.class,PrepareData.CB_DAY_COL)
 				.filter(q -> filterEvenMinutes(q))
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
 	}

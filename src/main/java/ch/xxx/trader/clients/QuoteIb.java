@@ -25,7 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Document
-public class QuoteIb {
+public class QuoteIb implements Quote {
 	
 	@Id
 	private ObjectId _id;
