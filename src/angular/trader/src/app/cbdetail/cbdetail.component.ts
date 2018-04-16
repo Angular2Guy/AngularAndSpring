@@ -34,7 +34,7 @@ export class CbdetailComponent implements OnInit {
     chartType = "line";
     currpair: string;
     myCurrPair = "";
-    private utils = new CommonUtils();
+    utils = new CommonUtils();
     BTCUSD: string;
     ETHUSD: string;
     LTCUSD: string;

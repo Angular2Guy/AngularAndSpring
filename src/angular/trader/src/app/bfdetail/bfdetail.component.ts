@@ -32,7 +32,7 @@ export class BfdetailComponent implements OnInit {
     chartdata: number[] = [];
     chartlabels: string[] = [];
     chartType = "line";
-    private utils = new CommonUtils();
+    utils = new CommonUtils();
     currPair = "";
     timeframe = this.utils.timeframes[0];
 
