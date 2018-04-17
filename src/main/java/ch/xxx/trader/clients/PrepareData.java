@@ -47,7 +47,7 @@ public class PrepareData {
 	private ReactiveMongoOperations operations;
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "5 0 0 ? * ?")
+	@Scheduled(cron = "0 5 0 ? * ?")
 	public void createBsHourlyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BS_HOUR_COL, QuoteBs.class);
 
@@ -74,7 +74,7 @@ public class PrepareData {
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "5 0 1 ? * ?")
+	@Scheduled(cron = "0 5 1 ? * ?")
 	public void createBsDailyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BS_DAY_COL, QuoteBs.class);
 
@@ -101,7 +101,7 @@ public class PrepareData {
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "10 0 0 ? * ?")
+	@Scheduled(cron = "0 10 0 ? * ?")
 	public void createBfHourlyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BF_HOUR_COL, QuoteBf.class);
 
@@ -128,7 +128,7 @@ public class PrepareData {
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "10 0 1 ? * ?")
+	@Scheduled(cron = "0 10 1 ? * ?")
 	public void createBfDailyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BF_DAY_COL, QuoteBf.class);
 
@@ -155,7 +155,7 @@ public class PrepareData {
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "15 0 0 ? * ?")
+	@Scheduled(cron = "0 15 0 ? * ?")
 	public void createIbHourlyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(IB_HOUR_COL, QuoteIb.class);
 
@@ -182,7 +182,7 @@ public class PrepareData {
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "15 0 1 ? * ?")
+	@Scheduled(cron = "0 15 1 ? * ?")
 	public void createIbDailyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(IB_DAY_COL, QuoteIb.class);
 
@@ -209,7 +209,7 @@ public class PrepareData {
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "20 0 0 ? * ?")
+	@Scheduled(cron = "0 20 0 ? * ?")
 	public void createCbHourlyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_HOUR_COL, QuoteCb.class);
 
@@ -235,7 +235,7 @@ public class PrepareData {
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-	@Scheduled(cron = "20 0 1 ? * ?")
+	@Scheduled(cron = "0 20 1 ? * ?")
 	public void createCbDailyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_DAY_COL, QuoteCb.class);
 
