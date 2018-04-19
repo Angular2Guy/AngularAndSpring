@@ -1,4 +1,4 @@
-package ch.xxx.trader.clients;
+package ch.xxx.trader.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,31 +19,31 @@ import reactor.core.publisher.Mono;
 //@EnableWebFluxSecurity
 public class WebfluxSecurityConfig {
 	
-	@Autowired
-	private ReactiveMongoOperations operations;
-	@Autowired
-	private PasswordEncryption passwordEncryption;
-	
-	@Bean
-	public ReactiveUserDetailsService userDetailsRepository() {
-		return new ReactiveUserDetailsService() {
-			
-			@Override
-			public Mono<UserDetails> findByUsername(String username) {
-				Query query = new Query();
-				query.addCriteria(Criteria.where("userId").is(username));
-				return operations.findOne(query, UserDetails.class);
-			}
-		};
-	}			
-	
-	@Bean
-	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-		http
-			.authorizeExchange()
-				.anyExchange().authenticated()
-				.and()
-			.httpBasic();
-		return http.build();
-	}
+//	@Autowired
+//	private ReactiveMongoOperations operations;
+//	@Autowired
+//	private PasswordEncryption passwordEncryption;
+//	
+//	@Bean
+//	public ReactiveUserDetailsService userDetailsRepository() {
+//		return new ReactiveUserDetailsService() {
+//			
+//			@Override
+//			public Mono<UserDetails> findByUsername(String username) {
+//				Query query = new Query();
+//				query.addCriteria(Criteria.where("userId").is(username));
+//				return operations.findOne(query, UserDetails.class);
+//			}
+//		};
+//	}			
+//	
+//	@Bean
+//	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+//		http
+//			.authorizeExchange()
+//				.anyExchange().authenticated()
+//				.and()
+//			.httpBasic();
+//		return http.build();
+//	}
 }

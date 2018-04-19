@@ -1,4 +1,4 @@
-package ch.xxx.trader.clients;
+package ch.xxx.trader.config;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
