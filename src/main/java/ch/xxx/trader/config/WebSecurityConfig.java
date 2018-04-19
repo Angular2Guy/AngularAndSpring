@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import ch.xxx.trader.clients.MyAuthenticationProvider;
+import ch.xxx.trader.MyAuthenticationProvider;
 
 @Configuration
 @Order(SecurityProperties.DEFAULT_FILTER_ORDER)
