@@ -13,23 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.clients;
+package dtos;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class WrapperCb {
-	private final CurrencyCb data;
+public class CurrencyCb {
+	private final String currency;
+	private final QuoteCb rates;
 	
-	public WrapperCb(@JsonProperty("data") CurrencyCb data) {
+	public CurrencyCb(@JsonProperty("currency")String currency,@JsonProperty("rates") QuoteCb rates) {
 		super();
-		this.data = data;
+		this.currency = currency;
+		this.rates = rates;
 	}
-
-	public CurrencyCb getData() {
-		return data;
+	public String getCurrency() {
+		return currency;
 	}
-
-	
+	public QuoteCb getRates() {
+		return rates;
+	}
 }

@@ -15,21 +15,11 @@
  */
 package ch.xxx.trader;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.TemporalField;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Optional;
 
-import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Path.CrossParameterNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.convert.JodaTimeConverters.DateTimeToDateConverter;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -41,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.clients.PrepareData;
-import ch.xxx.trader.clients.QuoteBs;
+import dtos.QuoteBs;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

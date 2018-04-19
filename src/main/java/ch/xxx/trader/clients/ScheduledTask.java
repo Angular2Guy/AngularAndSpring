@@ -29,6 +29,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import dtos.QuoteBf;
+import dtos.QuoteBs;
+import dtos.QuoteIb;
+import dtos.WrapperCb;
 import io.netty.channel.ChannelOption;
 import reactor.core.publisher.Mono;
 

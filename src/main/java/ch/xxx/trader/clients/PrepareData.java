@@ -27,6 +27,11 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import dtos.Quote;
+import dtos.QuoteBf;
+import dtos.QuoteBs;
+import dtos.QuoteCb;
+import dtos.QuoteIb;
 import reactor.core.publisher.Mono;
 
 @Component

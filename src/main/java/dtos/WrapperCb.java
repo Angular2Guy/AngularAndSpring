@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016 Sven Loesekann
+*    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,25 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.clients;
-
-import java.util.List;
+package dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CurrencyCb {
-	private final String currency;
-	private final QuoteCb rates;
+public class WrapperCb {
+	private final CurrencyCb data;
 	
-	public CurrencyCb(@JsonProperty("currency")String currency,@JsonProperty("rates") QuoteCb rates) {
+	public WrapperCb(@JsonProperty("data") CurrencyCb data) {
 		super();
-		this.currency = currency;
-		this.rates = rates;
+		this.data = data;
 	}
-	public String getCurrency() {
-		return currency;
+
+	public CurrencyCb getData() {
+		return data;
 	}
-	public QuoteCb getRates() {
-		return rates;
-	}
+
+	
 }

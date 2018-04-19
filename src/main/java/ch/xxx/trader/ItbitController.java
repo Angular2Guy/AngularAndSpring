@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.clients.PrepareData;
-import ch.xxx.trader.clients.QuoteIb;
+import dtos.QuoteIb;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

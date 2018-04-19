@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.clients;
+package dtos;
 
 import java.math.BigDecimal;
 import java.util.Date;

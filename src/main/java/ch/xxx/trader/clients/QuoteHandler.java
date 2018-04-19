@@ -17,7 +17,7 @@ package ch.xxx.trader.clients;
 
 import org.springframework.web.reactive.socket.WebSocketMessage;
 
-import reactor.core.publisher.Mono;
+import dtos.QuoteBs;
 
 public class QuoteHandler {
 	public static QuoteBs convert(WebSocketMessage msg) {

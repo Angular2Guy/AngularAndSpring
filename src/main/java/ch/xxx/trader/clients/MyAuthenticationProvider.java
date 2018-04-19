@@ -17,6 +17,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.PasswordEncryption;
+import dtos.MyUser;
 
 @Component
 public class MyAuthenticationProvider implements AuthenticationProvider {

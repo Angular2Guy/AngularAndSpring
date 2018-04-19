@@ -15,12 +15,9 @@
  */
 package ch.xxx.trader.clients;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.cert.PKIXRevocationChecker.Option;
-import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.web.reactive.socket.WebSocketHandler;
@@ -28,8 +25,7 @@ import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import dtos.QuoteBf;
 import reactor.core.publisher.Mono;
 
 public class WebsocketClient {
