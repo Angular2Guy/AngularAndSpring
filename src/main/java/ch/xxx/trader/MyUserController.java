@@ -34,8 +34,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dtos.AuthCheck;
-import dtos.MyUser;
+import ch.xxx.trader.dtos.AuthCheck;
+import ch.xxx.trader.dtos.MyUser;
 import reactor.core.publisher.Mono;
 
 @RestController

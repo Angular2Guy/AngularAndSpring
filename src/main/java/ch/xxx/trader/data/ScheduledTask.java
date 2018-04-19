@@ -29,10 +29,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import dtos.QuoteBf;
-import dtos.QuoteBs;
-import dtos.QuoteIb;
-import dtos.WrapperCb;
+import ch.xxx.trader.dtos.QuoteBf;
+import ch.xxx.trader.dtos.QuoteBs;
+import ch.xxx.trader.dtos.QuoteIb;
+import ch.xxx.trader.dtos.WrapperCb;
 import io.netty.channel.ChannelOption;
 import reactor.core.publisher.Mono;
 

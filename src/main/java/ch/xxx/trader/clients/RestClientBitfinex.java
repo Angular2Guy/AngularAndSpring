@@ -18,7 +18,7 @@ package ch.xxx.trader.clients;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import dtos.QuoteBf;
+import ch.xxx.trader.dtos.QuoteBf;
 
 public class RestClientBitfinex {
 	private static final String URL = "https://api.bitfinex.com";

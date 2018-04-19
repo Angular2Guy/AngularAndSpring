@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package dtos;
+package ch.xxx.trader.dtos;
 
 import java.util.Date;
 

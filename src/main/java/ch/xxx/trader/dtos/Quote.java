@@ -1,4 +1,4 @@
-package dtos;
+package ch.xxx.trader.dtos;
 
 import java.util.Date;
 
