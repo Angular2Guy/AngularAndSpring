@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.xxx.trader.clients.PrepareData;
+import ch.xxx.trader.data.PrepareData;
 import dtos.QuoteBs;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

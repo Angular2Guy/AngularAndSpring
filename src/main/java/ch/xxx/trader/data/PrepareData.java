@@ -1,4 +1,4 @@
-package ch.xxx.trader.clients;
+package ch.xxx.trader.data;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

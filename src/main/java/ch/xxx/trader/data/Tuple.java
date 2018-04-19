@@ -1,4 +1,4 @@
-package ch.xxx.trader.clients;
+package ch.xxx.trader.data;
 
 public class  Tuple <X,Y> {
 	private final X x;

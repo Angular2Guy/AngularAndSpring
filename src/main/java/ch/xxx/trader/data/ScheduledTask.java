@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.clients;
+package ch.xxx.trader.data;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;

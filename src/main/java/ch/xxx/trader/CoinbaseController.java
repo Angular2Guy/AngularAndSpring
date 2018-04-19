@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.xxx.trader.clients.PrepareData;
+import ch.xxx.trader.data.PrepareData;
 import dtos.QuoteCb;
 import dtos.QuoteCbSmall;
 import reactor.core.publisher.Flux;
