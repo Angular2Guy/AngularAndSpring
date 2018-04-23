@@ -54,7 +54,7 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 5 0 ? * ?")
 	public void createBsHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BS_HOUR_COL, QuoteBs.class);
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -81,13 +81,13 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 5 1 ? * ?")
 	public void createBsDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BS_DAY_COL, QuoteBs.class);
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-		Calendar now = Calendar.getInstance();
+		Calendar now = Calendar.getInstance();		
 		while (end.before(now)) {
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
@@ -108,7 +108,7 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 10 0 ? * ?")
 	public void createBfHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BF_HOUR_COL, QuoteBf.class);
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -135,7 +135,7 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 10 1 ? * ?")
 	public void createBfDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BF_DAY_COL, QuoteBf.class);
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -162,7 +162,7 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 15 0 ? * ?")
 	public void createIbHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(IB_HOUR_COL, QuoteIb.class);
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(IB_HOUR_COL, QuoteIb.class, true);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -189,7 +189,7 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 15 1 ? * ?")
 	public void createIbDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(IB_DAY_COL, QuoteIb.class);
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(IB_DAY_COL, QuoteIb.class,false);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -216,7 +216,7 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 20 0 ? * ?")
 	public void createCbHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_HOUR_COL, QuoteCb.class);
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -242,7 +242,7 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 20 1 ? * ?")
 	public void createCbDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_DAY_COL, QuoteCb.class);
+		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_DAY_COL, QuoteCb.class,false);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -551,7 +551,7 @@ public class PrepareData {
 				: v2.divide(BigDecimal.valueOf(count == 0 ? 1 : count), 10, RoundingMode.HALF_UP));
 	}
 
-	private Tuple<Calendar, Calendar> createTimeFrame(String colName, Class<? extends Quote> colType) {
+	private Tuple<Calendar, Calendar> createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
 		if (!this.operations.collectionExists(colName).block()) {
 			this.operations.createCollection(colName).block();
 		}
@@ -566,7 +566,11 @@ public class PrepareData {
 			globalBeginn.setTime(firstQuote.getCreatedAt());
 		} else {
 			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
+			if(hour) {
+				globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
+			} else {
+				globalBeginn.add(Calendar.DAY_OF_YEAR, 1);
+			}
 		}
 
 		Calendar begin = Calendar.getInstance();
