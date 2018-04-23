@@ -382,6 +382,26 @@
           <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="5e163aac9783caab1df4a5a2f7668e7515f95fcc" datatype="html">
+        <source>{VAR_PLURAL, plural, =1 {today} other {<x id="INTERPOLATION" equiv-text="{{tf}}"/> days} }</source>
+        <target>{VAR_PLURAL, plural, =1 {heute} other {<x id="INTERPOLATION" equiv-text="{{tf}}"/> Tage} }</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="37ccfddc37dd72d77aebf74b487f6bcd12d95771" datatype="html">
         <source>ItBit</source>
         <target>ItBit</target>
