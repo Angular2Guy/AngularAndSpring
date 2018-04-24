@@ -10,27 +10,26 @@
 		<mat-table #table [dataSource]="datasource"> 
 			<ng-container matColumnDef="exchange"> 
 				<mat-header-cell *matHeaderCellDef i18n> Exchange </mat-header-cell> 
-				<mat-cell *matCellDef="let element"> {{element.exchange}} </mat-cell> 
+				<mat-cell *matCellDef="let element" class="cell"> {{element.exchange}} </mat-cell> 
 			</ng-container> 
 			<ng-container matColumnDef="currpair"> 
 				<mat-header-cell *matHeaderCellDef i18n> Currency Pair </mat-header-cell> 
-				<mat-cell *matCellDef="let element"> {{element.currpair}} </mat-cell> </ng-container> 
+				<mat-cell *matCellDef="let element" class="cell"> {{element.currpair}} </mat-cell> </ng-container> 
 			<ng-container matColumnDef="last"> 
 				<mat-header-cell *matHeaderCellDef i18n> Last </mat-header-cell> 
-				<mat-cell *matCellDef="let element"> 
-					<div class="lastquote">{{element.last < 0.01 ? '--' : element.last | number:'1.2'}} 
-						<div class="popup">
-							<ul>
-								<li><span i18n>High</span> {{element.high < 0.01 ? '--' : element.high | number:'1.2'}}</li>
- 								<li><span i18n>Low</span> {{element.low < 0.01 ? '--' : element.low | number:'1.2'}}</li>
-							</ul>
-						</div> 
-					</div>  
+				<mat-cell *matCellDef="let element" class="cell"> 
+					<div>{{element.last < 0.01 ? '--' : element.last | number:'1.2'}}</div>  
+					<div class="popup">
+						<ul>
+							<li><span i18n>High</span> {{element.high < 0.01 ? '--' : element.high | number:'1.2'}}</li>
+							<li><span i18n>Low</span> {{element.low < 0.01 ? '--' : element.low | number:'1.2'}}</li>
+						</ul>
+					</div> 
 				</mat-cell> 
 			</ng-container> 
 			<ng-container matColumnDef="volume"> 
 				<mat-header-cell *matHeaderCellDef i18n> Volume </mat-header-cell> 
-				<mat-cell *matCellDef="let element"> {{element.volume < 1 ? '--' : element.volume | number:'1.2'}} </mat-cell> 
+				<mat-cell *matCellDef="let element" class="cell"> {{element.volume < 1 ? '--' : element.volume | number:'1.2'}} </mat-cell> 
 			</ng-container> 
 			<mat-header-row *matHeaderRowDef="['exchange', 'currpair', 'last', 'volume']"></mat-header-row>
 		<mat-row *matRowDef="let row; columns: ['exchange', 'currpair', 'last', 'volume'];" 
