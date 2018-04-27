@@ -48,7 +48,7 @@ export class BsdetailComponent implements OnInit {
         .switchMap((params: ParamMap) => this.serviceBs.getTodayQuotes(params.get('currpair')))
         .subscribe(quotes => {
             this.todayQuotes = quotes;
-            this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getMinutes().toString());
+            this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());
             this.chartdata = this.todayQuotes.map(quote => quote.last);
             });
     }  
@@ -66,11 +66,11 @@ export class BsdetailComponent implements OnInit {
         .subscribe(quotes => {
             this.todayQuotes = quotes;
             if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())            
+                this.chartlabels = this.todayQuotes.map(quote => (new Date(quote.createdAt).getUTCDate() +1).toString())            
             else if(this.timeframe === this.utils.timeframes[1]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString())
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())
              else 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getMinutes().toString());                                       
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());                                       
             this.chartdata = this.todayQuotes.map(quote => quote.last);
             });
     }

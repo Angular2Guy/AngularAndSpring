@@ -59,7 +59,7 @@ export class CbdetailComponent implements OnInit {
                 return this.serviceCb.getTodayQuotes();})
             .subscribe(quotes => {
                 this.todayQuotes = quotes;
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getMinutes().toString());
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());
                 if(this.currpair === this.serviceCb.BTCUSD) {
                     this.chartdata = this.todayQuotes.map(quote => quote.usd);
                 } else if(this.currpair === this.serviceCb.ETHUSD) {
@@ -84,11 +84,11 @@ export class CbdetailComponent implements OnInit {
         .subscribe(quotes => {
             this.todayQuotes = quotes; 
             if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())            
+                this.chartlabels = this.todayQuotes.map(quote => (new Date(quote.createdAt).getUTCDate() +1).toString())            
             else if(this.timeframe === this.utils.timeframes[1]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString())
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())
              else 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getMinutes().toString());                                       
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());                                       
             
             if(this.currpair === this.serviceCb.BTCUSD) {
                 this.chartdata = this.todayQuotes.map(quote => quote.usd);
