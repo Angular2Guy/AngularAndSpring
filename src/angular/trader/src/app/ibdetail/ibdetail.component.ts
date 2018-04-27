@@ -65,7 +65,7 @@ export class IbdetailComponent implements OnInit {
         .subscribe(quotes => { 
             this.todayQuotes = quotes;
             if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
-                this.chartlabels = this.todayQuotes.map(quote => (new Date(quote.createdAt).getUTCDate() +1).toString())            
+                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getUTCDate().toString())            
             else if(this.timeframe === this.utils.timeframes[1]) 
                 this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())
              else 
