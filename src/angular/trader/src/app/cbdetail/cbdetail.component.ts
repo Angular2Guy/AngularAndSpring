@@ -15,6 +15,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { trigger, state, animate, transition, style } from '@angular/animations';
 import 'rxjs/add/operator/switchMap';
 import { QuoteCb, QuoteCbSmall } from '../common/quoteCb';
 import { CoinbaseService } from '../services/coinbase.service';
@@ -23,7 +24,15 @@ import { CommonUtils } from '../common/commonUtils';
 @Component({
   selector: 'app-cbdetail',
   templateUrl: './cbdetail.component.html',
-  styleUrls: ['./cbdetail.component.scss']
+  styleUrls: ['./cbdetail.component.scss'],
+  animations: [
+               trigger('showChart', [
+                 state('true' , style({ opacity: 1 })),
+                 state('false', style({ opacity: 0 })),
+                 transition('1 => 0', animate('300ms')),
+                 transition('0 => 1', animate('300ms'))
+               ])
+             ]
 })
 export class CbdetailComponent implements OnInit {
 

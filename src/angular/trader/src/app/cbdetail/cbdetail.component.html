@@ -48,10 +48,12 @@
 			</tbody>
 		</table>	
 		<div class="detailLinks">
-			<a [routerLink]="['/overview']" i18n>back</a> 
-			<mat-radio-group class="radioGroup" [(ngModel)]="timeframe" (change)="changeTf()">
-				 <mat-radio-button class="radioButton" *ngFor="let tf of utils.timeframes" [value]="tf"><span i18n>{tf, plural, =1 {today} other {{{tf}} days}}</span></mat-radio-button>				 
-			</mat-radio-group>	
+			<a [routerLink]="['/overview']" i18n>back</a>
+			<span [@showChart]="chartlabels.length > 0"> 
+				<mat-radio-group class="radioGroup" [(ngModel)]="timeframe" (change)="changeTf()">
+					 <mat-radio-button class="radioButton" *ngFor="let tf of utils.timeframes" [value]="tf"><span i18n>{tf, plural, =1 {today} other {{{tf}} days}}</span></mat-radio-button>				 
+				</mat-radio-group>	
+			</span>
 		</div>	
 		<div *ngIf="chartlabels.length > 0" style="display: block;">
 			<canvas baseChart height="200" width="720"
