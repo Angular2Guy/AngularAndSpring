@@ -16,11 +16,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PlatformLocation } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { QuoteBs } from '../common/quoteBs';
 import { QuoteCbSmall, QuoteCb } from '../common/quoteCb';
 import { QuoteIb } from '../common/quoteIb';
@@ -39,23 +36,23 @@ export class CoinbaseService {
     }
 
     getCurrentQuote(): Observable<QuoteCb> {
-        return this.http.get(this._coinbase+'/current', this._reqOptionsArgs).map(res => this.lowercaseKeys(<QuoteCb>res)).catch(this._utils.handleError);
+        return this.http.get<QuoteCb>(this._coinbase+'/current', this._reqOptionsArgs).pipe(map(res => this.lowercaseKeys(<QuoteCb>res)), catchError(this._utils.handleError<QuoteCb>('getCurrentQuote')));
     }
     
     getTodayQuotes(): Observable<QuoteCbSmall[]> {
-        return this.http.get(this._coinbase+'/today', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<QuoteCbSmall[]>(this._coinbase+'/today', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteCbSmall[]>('getTodayQuotes')));
     }
     
     get7DayQuotes(): Observable<QuoteCbSmall[]> {
-        return this.http.get(this._coinbase+'/7days', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<QuoteCbSmall[]>(this._coinbase+'/7days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteCbSmall[]>('get7DayQuotes')));
     }
     
     get30DayQuotes(): Observable<QuoteCbSmall[]> {
-        return this.http.get(this._coinbase+'/30days', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<QuoteCbSmall[]>(this._coinbase+'/30days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteCbSmall[]>('get30DayQuotes')));
     }
     
     get90DayQuotes(): Observable<QuoteCbSmall[]> {
-        return this.http.get(this._coinbase+'/90days', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<QuoteCbSmall[]>(this._coinbase+'/90days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteCbSmall[]>('get90DayQuotes')));
     }
     
     private lowercaseKeys(quote: QuoteCb): QuoteCb {

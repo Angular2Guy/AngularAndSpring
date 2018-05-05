@@ -16,10 +16,10 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
-import 'rxjs/add/operator/switchMap';
 import { BitfinexService } from '../services/bitfinex.service';
 import { QuoteBf } from '../common/quoteBf';
 import { CommonUtils } from '../common/commonUtils';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-bfdetail',
@@ -47,14 +47,12 @@ export class BfdetailComponent implements OnInit {
 
     constructor(private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService) { }
 
-    ngOnInit() {
-        this.route.paramMap
-        .switchMap((params: ParamMap) => this.serviceBf.getCurrentQuote(params.get('currpair')))
+    ngOnInit() {        
+        this.serviceBf.getCurrentQuote(this.route.snapshot.paramMap.get('currpair'))
         .subscribe(quote => {
             this.currQuote = quote;
-            this.currPair = this.utils.getCurrpairName(this.currQuote.pair);});
-        this.route.paramMap
-            .switchMap((params: ParamMap) => this.serviceBf.getTodayQuotes(params.get('currpair')))
+            this.currPair = this.utils.getCurrpairName(this.currQuote.pair);});        
+            this.serviceBf.getTodayQuotes(this.route.snapshot.paramMap.get('currpair'))
             .subscribe(quotes => {
                 this.todayQuotes = quotes;
                 this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());
@@ -65,14 +63,14 @@ export class BfdetailComponent implements OnInit {
     changeTf() {
         this.chartdata = [];
         this.chartlabels = [];
-        this.route.paramMap
-        .switchMap((params: ParamMap) => {            
-            if(this.timeframe === this.utils.timeframes[1]) return this.serviceBf.get7DayQuotes(params.get('currpair'));
-            if(this.timeframe === this.utils.timeframes[2]) return this.serviceBf.get30DayQuotes(params.get('currpair'));
-            if(this.timeframe === this.utils.timeframes[3]) return this.serviceBf.get90DayQuotes(params.get('currpair')) 
-                else return this.serviceBf.getTodayQuotes(params.get('currpair'));
-        })            
-        .subscribe(quotes => { 
+        const currpair = this.route.snapshot.paramMap.get('currpair'); 
+        let quoteObserv: Observable<QuoteBf[]>;
+        if(this.timeframe === this.utils.timeframes[1]) quoteObserv = this.serviceBf.get7DayQuotes(currpair);
+        if(this.timeframe === this.utils.timeframes[2]) quoteObserv = this.serviceBf.get30DayQuotes(currpair);
+        if(this.timeframe === this.utils.timeframes[3]) quoteObserv = this.serviceBf.get90DayQuotes(currpair) 
+            else quoteObserv = this.serviceBf.getTodayQuotes(currpair);
+        
+        quoteObserv.subscribe(quotes => { 
             this.todayQuotes = quotes;
             if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
                 this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getUTCDate().toString())            

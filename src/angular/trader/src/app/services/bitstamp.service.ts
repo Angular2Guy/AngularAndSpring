@@ -16,11 +16,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PlatformLocation } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { QuoteBs } from '../common/quoteBs';
 import { QuoteCb } from '../common/quoteCb';
 import { QuoteIb } from '../common/quoteIb';
@@ -46,26 +43,26 @@ export class BitstampService {
     }
 
     getCurrentQuote(currencypair: string): Observable<QuoteBs> {
-        return this.http.get(this._bitstamp+'/'+currencypair+'/current', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<QuoteBs>(this._bitstamp+'/'+currencypair+'/current', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs>('getCurrentQuote')));
     }
      
     getTodayQuotes(currencypair: string): Observable<QuoteBs[]> {
-        return this.http.get(this._bitstamp+'/'+currencypair+'/today', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<QuoteBs[]>(this._bitstamp+'/'+currencypair+'/today', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs[]>('getTodayQuotes')));
     }
     
     get7DayQuotes(currencypair: string): Observable<QuoteBs[]> {
-        return this.http.get(this._bitstamp+'/'+currencypair+'/7days', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<QuoteBs[]>(this._bitstamp+'/'+currencypair+'/7days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs[]>('get7DayQuotes')));
     }
     
     get30DayQuotes(currencypair: string): Observable<QuoteBs[]> {
-        return this.http.get(this._bitstamp+'/'+currencypair+'/30days', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<QuoteBs[]>(this._bitstamp+'/'+currencypair+'/30days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs[]>('get30DayQuotes')));
     }
     
     get90DayQuotes(currencypair: string): Observable<QuoteBs[]> {
-        return this.http.get(this._bitstamp+'/'+currencypair+'/90days', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<QuoteBs[]>(this._bitstamp+'/'+currencypair+'/90days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs[]>('get90DayQuotes')));
     }
     
     getOrderbook(currencypair: string): Observable<OrderbookBs> {
-        return this.http.get(this._bitstamp+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).catch(this._utils.handleError);
+        return this.http.get<OrderbookBs>(this._bitstamp+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<OrderbookBs>('getOrderbook')));
     }
 }

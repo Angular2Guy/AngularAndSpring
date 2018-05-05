@@ -16,7 +16,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
-import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs';
 import { QuoteCb, QuoteCbSmall } from '../common/quoteCb';
 import { CoinbaseService } from '../services/coinbase.service';
 import { CommonUtils } from '../common/commonUtils';
@@ -56,16 +56,11 @@ export class CbdetailComponent implements OnInit {
     }    
 
     ngOnInit() {
-        this.route.paramMap
-            .switchMap((params: ParamMap) => { 
-                this.currpair = params.get('currpair');
-                this.myCurrPair = this.utils.getCurrpairName(this.currpair);
-                return this.serviceCb.getCurrentQuote();})
+        this.currpair = this.route.snapshot.paramMap.get('currpair');
+        this.myCurrPair = this.utils.getCurrpairName(this.currpair);
+        this.serviceCb.getCurrentQuote()
             .subscribe(quote => this.currQuote = quote);
-        this.route.paramMap
-            .switchMap((params: ParamMap) => {
-                this.currpair = params.get('currpair'); 
-                return this.serviceCb.getTodayQuotes();})
+        this.serviceCb.getTodayQuotes()
             .subscribe(quotes => {
                 this.todayQuotes = quotes;
                 this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());
@@ -82,15 +77,14 @@ export class CbdetailComponent implements OnInit {
     changeTf() {
         this.chartdata = [];
         this.chartlabels = [];
-        this.route.paramMap
-        .switchMap((params: ParamMap) => {  
-            this.currpair = params.get('currpair');
-            if(this.timeframe === this.utils.timeframes[1]) return this.serviceCb.get7DayQuotes();
-            if(this.timeframe === this.utils.timeframes[2]) return this.serviceCb.get30DayQuotes();
-            if(this.timeframe === this.utils.timeframes[3]) return this.serviceCb.get90DayQuotes() 
-                else return this.serviceCb.getTodayQuotes();
-        })            
-        .subscribe(quotes => {
+        this.currpair = this.route.snapshot.paramMap.get('currpair');
+        let quoteObserv: Observable<QuoteCbSmall[]>;
+        if(this.timeframe === this.utils.timeframes[1]) quoteObserv = this.serviceCb.get7DayQuotes();
+        if(this.timeframe === this.utils.timeframes[2]) quoteObserv = this.serviceCb.get30DayQuotes();
+        if(this.timeframe === this.utils.timeframes[3]) quoteObserv = this.serviceCb.get90DayQuotes() 
+            else quoteObserv = this.serviceCb.getTodayQuotes();
+        
+        quoteObserv.subscribe(quotes => {
             this.todayQuotes = quotes; 
             if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
                 this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getUTCDate().toString())            

@@ -16,11 +16,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PlatformLocation } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { MyUser } from '../common/myUser';
 import { Utils } from './utils';
 import { AuthCheck } from '../common/authcheck';
@@ -35,32 +32,32 @@ export class MyuserService {
   }
 
   postLogin(user: MyUser): Observable<MyUser> {
-      return this.http.post(this.myUserUrl+'/login', user, this._reqOptionsArgs).map(res => {
-              let retval = <MyUser>res;
-              localStorage.setItem("salt", retval.salt);              
-              return retval;
-          }).catch(this._utils.handleError);
+      return this.http.post<MyUser>(this.myUserUrl+'/login', user, this._reqOptionsArgs).pipe(map(res => {
+          let retval = <MyUser>res;
+          localStorage.setItem("salt", retval.salt);              
+          return retval;
+      }),catchError(this._utils.handleError<MyUser>('postLogin')));      
   }
 
   postSignin(user: MyUser): Observable<MyUser> {
-      return this.http.post(this.myUserUrl+'/signin', user, this._reqOptionsArgs).map(res => {
+      return this.http.post<MyUser>(this.myUserUrl+'/signin', user, this._reqOptionsArgs).pipe(map(res => {
               let retval = <MyUser>res;              
               retval.salt = 'xxx';
               retval.password = 'yyy';
               return retval;
-          }).catch(this._utils.handleError);
+          }),catchError(this._utils.handleError<MyUser>('postSignin')));
   }
   
   postCheckAuthorisation(path: string): Observable<AuthCheck> {      
       let authcheck = new AuthCheck();
       authcheck.hash = this.salt;
       authcheck.path = path;
-      return this.http.post(this.myUserUrl+'/authorize', authcheck, this._reqOptionsArgs).catch(this._utils.handleError);
+      return this.http.post<AuthCheck>(this.myUserUrl+'/authorize', authcheck, this._reqOptionsArgs).pipe(catchError(this._utils.handleError<AuthCheck>('postCheckAuthorisation')));
   }
      
   postLogout(hash: string): Observable<MyUser> {
       localStorage.clear();      
-      return this.http.post(this.myUserUrl+'/logout', hash, this._reqOptionsArgs).catch(this._utils.handleError);
+      return this.http.post<MyUser>(this.myUserUrl+'/logout', hash, this._reqOptionsArgs).pipe(catchError(this._utils.handleError<MyUser>('postLogout')));
   }
   
   get salt():string {
