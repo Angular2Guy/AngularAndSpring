@@ -13,8 +13,8 @@ notifications:
   on_failure: always
 
 before_install:
-  - nvm install 6.9
-  - nvm use 6.9
+  - nvm install 8.9
+  - nvm use 8.9
 
       
 script:
