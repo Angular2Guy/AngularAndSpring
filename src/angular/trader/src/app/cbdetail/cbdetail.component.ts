@@ -80,8 +80,8 @@ export class CbdetailComponent implements OnInit {
         this.currpair = this.route.snapshot.paramMap.get('currpair');
         let quoteObserv: Observable<QuoteCbSmall[]>;
         if(this.timeframe === this.utils.timeframes[1]) quoteObserv = this.serviceCb.get7DayQuotes();
-        if(this.timeframe === this.utils.timeframes[2]) quoteObserv = this.serviceCb.get30DayQuotes();
-        if(this.timeframe === this.utils.timeframes[3]) quoteObserv = this.serviceCb.get90DayQuotes() 
+        else if(this.timeframe === this.utils.timeframes[2]) quoteObserv = this.serviceCb.get30DayQuotes();
+        else if(this.timeframe === this.utils.timeframes[3]) quoteObserv = this.serviceCb.get90DayQuotes() 
             else quoteObserv = this.serviceCb.getTodayQuotes();
         
         quoteObserv.subscribe(quotes => {

@@ -44,7 +44,7 @@ export class BitfinexService {
       return this.http.get<QuoteBf[]>(this._bitfinex+'/'+currencypair+'/today', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBf[]>('getTodayQuotes')));
   }
 
-  get7DayQuotes(currencypair: string): Observable<QuoteBf[]> {
+  get7DayQuotes(currencypair: string): Observable<QuoteBf[]> {      
       return this.http.get<QuoteBf[]>(this._bitfinex+'/'+currencypair+'/7days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBf[]>('get7DayQuotes')));
   }
 

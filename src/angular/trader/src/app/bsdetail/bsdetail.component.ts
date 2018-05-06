@@ -66,8 +66,8 @@ export class BsdetailComponent implements OnInit {
         const currpair = this.route.snapshot.paramMap.get('currpair');
         let quoteObserv: Observable<QuoteBs[]>;
             if(this.timeframe === this.utils.timeframes[1]) quoteObserv = this.serviceBs.get7DayQuotes(currpair);
-            if(this.timeframe === this.utils.timeframes[2]) quoteObserv = this.serviceBs.get30DayQuotes(currpair);
-            if(this.timeframe === this.utils.timeframes[3]) quoteObserv = this.serviceBs.get90DayQuotes(currpair) 
+            else if(this.timeframe === this.utils.timeframes[2]) quoteObserv = this.serviceBs.get30DayQuotes(currpair);
+            else if(this.timeframe === this.utils.timeframes[3]) quoteObserv = this.serviceBs.get90DayQuotes(currpair) 
                 else quoteObserv = this.serviceBs.getTodayQuotes(currpair);
         
         quoteObserv.subscribe(quotes => {
