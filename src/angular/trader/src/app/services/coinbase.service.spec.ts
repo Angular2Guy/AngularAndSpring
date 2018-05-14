@@ -17,14 +17,14 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { CoinbaseService } from './coinbase.service';
 
-describe('CoinbaseService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [CoinbaseService]
-    });
-  });
-
-  it('should be created', inject([CoinbaseService], (service: CoinbaseService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+//describe('CoinbaseService', () => {
+//  beforeEach(() => {
+//    TestBed.configureTestingModule({
+//      providers: [CoinbaseService]
+//    });
+//  });
+//
+//  it('should be created', inject([CoinbaseService], (service: CoinbaseService) => {
+//    expect(service).toBeTruthy();
+//  }));
+//});

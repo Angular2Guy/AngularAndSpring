@@ -17,14 +17,14 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { MyuserService } from './myuser.service';
 
-describe('MyuserService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [MyuserService]
-    });
-  });
-
-  it('should be created', inject([MyuserService], (service: MyuserService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+//describe('MyuserService', () => {
+//  beforeEach(() => {
+//    TestBed.configureTestingModule({
+//      providers: [MyuserService]
+//    });
+//  });
+//
+//  it('should be created', inject([MyuserService], (service: MyuserService) => {
+//    expect(service).toBeTruthy();
+//  }));
+//});

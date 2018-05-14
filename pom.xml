@@ -124,7 +124,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>angular-cli build de</id>
+						<id>angular-cli build</id>
 						<goals>
 							<goal>exec</goal>
 						</goals>
@@ -134,6 +134,21 @@
 							<arguments>
 								<argument>run</argument>
 								<argument>build</argument>
+							</arguments>
+							<workingDirectory>src/angular/trader</workingDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>angular-cli test</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<executable>npm</executable>
+							<arguments>
+								<argument>run</argument>
+								<argument>test</argument>
 							</arguments>
 							<workingDirectory>src/angular/trader</workingDirectory>
 						</configuration>

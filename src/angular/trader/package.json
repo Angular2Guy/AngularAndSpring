@@ -6,7 +6,8 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.js",
     "build": "ng build --prod --aot --base-href /de/ --output-path dist/de/ --i18n-locale de --deploy-url /de/ --i18nFile=./i18n/messages.de.xlf && ng build --prod --aot --base-href /en/ --deploy-url /en/ --output-path dist/en/ --i18n-locale en --i18nFile=./i18n/messages.xlf",
-    "test": "ng test",
+    "test": "ng test --browsers PhantomJS --watch=false",
+    "test-junit": "ng test --browsers PhantomJS --reporters junit --watch=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "prebuild": "rimraf ./dist && mkdirp ./dist",
@@ -57,6 +58,9 @@
     "tslint": "~5.9.1",
     "rimraf": "^2.6.1",
     "mkdirp": "^0.5.1",
-    "copyfiles": "^1.2.0"
+    "copyfiles": "^1.2.0",
+    "karma-junit-reporter": "~1.2.0",
+    "karma-phantomjs-launcher": "~1.0.4",
+    "phantomjs-prebuilt": "~2.1.14"
   }
 }
