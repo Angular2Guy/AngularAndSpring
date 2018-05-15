@@ -37,7 +37,7 @@ class MockBfService extends BitfinexService {
         super(http1, pl1);
     }
     getCurrentQuote(currencypair: string): Observable<QuoteBf> {
-        let quoteBf = { 
+        let quoteBf: QuoteBf = { 
                 _id: 'id',
                 pair: 'pair',
                 createdAt: new Date('2018-01-01'),
@@ -83,19 +83,6 @@ describe('BfdetailComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BfdetailComponent);
     component = fixture.componentInstance;
-    const quoteBf = { 
-            _id: 'id',
-            pair: 'pair',
-            createdAt: new Date('2018-01-01'),
-            mid: 1,
-            bid: 2,
-            ask: 3,
-            last_price: 4,
-            low: 5,
-            high: 6,
-            volume: 7,
-            timestamp: 'timestamp'
-     };
     fixture.detectChanges();          
   });
 
