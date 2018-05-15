@@ -14,27 +14,119 @@
    limitations under the License.
  */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
+import { BitfinexService} from '../services/bitfinex.service';
 import { BfdetailComponent } from './bfdetail.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { MaterialModule } from '../material.module';
+import { ChartsModule } from 'ng2-charts';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
-//describe('BfdetailComponent', () => {
-//  let component: BfdetailComponent;
-//  let fixture: ComponentFixture<BfdetailComponent>;
-//
-//  beforeEach(async(() => {
-//    TestBed.configureTestingModule({
-//      declarations: [ BfdetailComponent ]
-//    })
-//    .compileComponents();
-//  }));
-//
-//  beforeEach(() => {
-//    fixture = TestBed.createComponent(BfdetailComponent);
-//    component = fixture.componentInstance;
-//    fixture.detectChanges();
-//  });
-//
-//  it('should create', () => {
-//    expect(component).toBeTruthy();
-//  });
-//});
+describe('BfdetailComponent', () => {
+  let component: BfdetailComponent;
+  let fixture: ComponentFixture<BfdetailComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [ 
+                RouterTestingModule,
+                BrowserModule,
+                FormsModule,
+                ReactiveFormsModule,
+                HttpModule,
+                HttpClientModule,
+                BrowserAnimationsModule,
+                MaterialModule,
+                ChartsModule,                
+              ],
+      declarations: [ BfdetailComponent ],
+      providers: [ BitfinexService]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(BfdetailComponent);
+    component = fixture.componentInstance;
+    const quoteBf = { 
+            _id: 'id',
+            pair: 'pair',
+            createdAt: new Date('2018-01-01'),
+            mid: 1,
+            bid: 2,
+            ask: 3,
+            last_price: 4,
+            low: 5,
+            high: 6,
+            volume: 7,
+            timestamp: 'timestamp'
+     };
+    component.currQuote = quoteBf;
+    component.currPair = 'currPair';
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+  
+  it('should have value', () => {
+      expect(component.currQuote.mid).toBe(1);
+  });
+  it('should show currpair', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('.currPair')).nativeElement;      
+      expect(el.textContent).toEqual('currPair');      
+  });
+  it('should show last_price', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('#last_price')).nativeElement;      
+      expect(el.textContent).toEqual('4.00');      
+  });
+  it('should show high', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('#high')).nativeElement;      
+      expect(el.textContent).toEqual('6.00');      
+  });
+  it('should show low', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('#low')).nativeElement;      
+      expect(el.textContent).toEqual('5.00');      
+  });
+  it('should show bid', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('#bid')).nativeElement;      
+      expect(el.textContent).toEqual('2.00');      
+  });
+  it('should show ask', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('#ask')).nativeElement;      
+      expect(el.textContent).toEqual('3.00');      
+  });
+  it('should show mid', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('#mid')).nativeElement;      
+      expect(el.textContent).toEqual('1.00');      
+  });
+  it('should show currPair', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('#currPair')).nativeElement;      
+      expect(el.textContent).toEqual('currPair');      
+  });
+  it('should show createdAt', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement;      
+      expect(el.textContent).toEqual('01:00:00');      
+  });
+  it('should show volume', () => {
+      const de: DebugElement = fixture.debugElement;
+      const el: HTMLElement = de.query(By.css('#volume')).nativeElement;      
+      expect(el.textContent).toEqual('7.00');      
+  });
+});

@@ -14,7 +14,7 @@
    limitations under the License.
  */
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { BitfinexService } from '../services/bitfinex.service';
 import { QuoteBf } from '../common/quoteBf';
