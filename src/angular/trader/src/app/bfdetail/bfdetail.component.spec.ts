@@ -96,9 +96,7 @@ describe('BfdetailComponent', () => {
             volume: 7,
             timestamp: 'timestamp'
      };
-    fixture.detectChanges();
-    component.currQuote = quoteBf;
-    component.currPair = 'currPair';        
+    fixture.detectChanges();          
   });
 
   it('should create', () => {
@@ -107,12 +105,7 @@ describe('BfdetailComponent', () => {
   
   it('should have value', () => {
       expect(component.currQuote.mid).toBe(1);
-  });
-//  it('should show currpair', () => {
-//      const de: DebugElement = fixture.debugElement;
-//      const el: HTMLElement = de.query(By.css('.currPair')).nativeElement;      
-//      expect(el.textContent).toEqual('currPair');      
-//  });  
+  }); 
   it('should show last_price', () => {
       const de: DebugElement = fixture.debugElement;
       const el: HTMLElement = de.query(By.css('#last_price')).nativeElement;      
@@ -143,11 +136,6 @@ describe('BfdetailComponent', () => {
       const el: HTMLElement = de.query(By.css('#mid')).nativeElement;      
       expect(el.textContent).toEqual('1.00');      
   });
-//  it('should show currPair', () => {
-//      const de: DebugElement = fixture.debugElement;
-//      const el: HTMLElement = de.query(By.css('#currPair')).nativeElement;      
-//      expect(el.textContent).toEqual('currPair');      
-//  });
   it('should show createdAt', () => {
       const de: DebugElement = fixture.debugElement;
       const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement;      
