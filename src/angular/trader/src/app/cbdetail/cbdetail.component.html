@@ -7,15 +7,15 @@
 					<td><span i18n>Pair</span>:</td>
 					<td>{{myCurrPair}}</td>
 					<td><span i18n>Last Usd</span>:</td>
-					<td>{{currQuote?.usd | number:'1.2'}}</td>				
+					<td id="usd">{{currQuote?.usd | number:'1.2'}}</td>				
 					<td><span i18n>Last Eur</span>:</td>
-					<td>{{currQuote?.eur | number:'1.2'}}</td>
+					<td id="eur">{{currQuote?.eur | number:'1.2'}}</td>
 					<td><span i18n>Last Yen</span>:</td>
-					<td>{{currQuote?.jpy | number:'1.2'}}</td>
+					<td id="jpy">{{currQuote?.jpy | number:'1.2'}}</td>
 					<td><span i18n>Last Pound</span>:</td>
-					<td>{{currQuote?.gbp | number:'1.2'}}</td>
+					<td id="gbp">{{currQuote?.gbp | number:'1.2'}}</td>
 					<td><span i18n>Timestamp</span>:</td>
-					<td>{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
+					<td id="createdAt">{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
 				</tr>					
 				<tr *ngIf="currpair === ETHUSD">
 					<td><span i18n>Pair</span>:</td>

@@ -55,7 +55,7 @@ export class CoinbaseService {
         return this.http.get<QuoteCbSmall[]>(this._coinbase+'/90days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteCbSmall[]>('get90DayQuotes')));
     }
     
-    private lowercaseKeys(quote: QuoteCb): QuoteCb {
+    lowercaseKeys(quote: QuoteCb): QuoteCb {
         for (let p in quote) {
           if( quote.hasOwnProperty(p) && p !== '_id' && p !== 'createdAt') {
             quote[p.toLowerCase()] = quote[p];  
