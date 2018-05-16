@@ -5,31 +5,31 @@
 			<tbody>
 				<tr>					
 					<td><span i18n>Last</span>:</td>
-					<td>{{currQuote?.last | number:'1.2'}}</td>
+					<td id="last">{{currQuote?.last | number:'1.2'}}</td>
 					<td><span i18n>High</span>:</td>
-					<td>{{currQuote?.high | number:'1.2'}}</td>
+					<td id="high">{{currQuote?.high | number:'1.2'}}</td>
 					<td><span i18n>Low</span>:</td>
-					<td>{{currQuote?.low | number:'1.2'}}</td>										
+					<td id="low">{{currQuote?.low | number:'1.2'}}</td>										
 				</tr>
 				<tr>
 					<td><span i18n>Bid</span>:</td>
-					<td>{{currQuote?.bid | number:'1.2'}}</td>
+					<td id="bid">{{currQuote?.bid | number:'1.2'}}</td>
 					<td><span i18n>Ask</span>:</td>
-					<td>{{currQuote?.ask | number:'1.2'}}</td>
+					<td id="ask">{{currQuote?.ask | number:'1.2'}}</td>
 					<td><span i18n>Open</span>:</td>
-					<td>{{currQuote?.open | number:'1.2'}}</td>									
+					<td id="open">{{currQuote?.open | number:'1.2'}}</td>									
 				</tr>
 				<tr>
 					<td><span i18n>Vwap</span>:</td>
-					<td>{{currQuote?.vwap | number:'1.2'}}</td>
+					<td id="vwap">{{currQuote?.vwap | number:'1.2'}}</td>
 					<td><span i18n>Pair</span>:</td>
-					<td>{{currPair}}</td>
+					<td id="currPair">{{currPair}}</td>
 					<td><span i18n>Timestamp</span>:</td>
-					<td>{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
+					<td id="createdAt">{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
 				</tr>
 				<tr>
 					<td><span i18n>Volume</span>:</td>
-					<td>{{currQuote?.volume | number:'1.2'}}</td>
+					<td id="volume">{{currQuote?.volume | number:'1.2'}}</td>
 				</tr>					
 			</tbody>
 		</table>
