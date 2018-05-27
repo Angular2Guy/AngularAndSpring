@@ -71,6 +71,11 @@
 			<artifactId>urlrewritefilter</artifactId>
 			<version>4.0.3</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.5.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -82,17 +87,8 @@
 				<groupId>com.spotify</groupId>
 				<artifactId>dockerfile-maven-plugin</artifactId>
 				<version>1.4.0</version>
-				<!-- 
-				<executions>
-					<execution>
-						<id>default</id>
-						<goals>
-							<goal>build</goal>
-							<goal>push</goal>
-						</goals>
-					</execution>
-				</executions>
-				 -->
+				<!-- <executions> <execution> <id>default</id> <goals> <goal>build</goal> 
+					<goal>push</goal> </goals> </execution> </executions> -->
 				<configuration>
 					<repository>${docker.image.prefix}/${project.artifactId}</repository>
 					<tag>${project.version}</tag>

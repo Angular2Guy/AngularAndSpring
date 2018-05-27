@@ -32,6 +32,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.data.PrepareData;
 import ch.xxx.trader.dtos.QuoteBf;
+import ch.xxx.trader.dtos.QuotePdf;
+import ch.xxx.trader.reports.ReportGenerator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -42,6 +44,9 @@ public class BitfinexController {
 
 	@Autowired
 	private ReactiveMongoOperations operations;
+	
+	@Autowired 
+	private ReportGenerator reportGenerator;
 
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
@@ -53,6 +58,7 @@ public class BitfinexController {
 				.flatMap(res -> res.bodyToMono(String.class));
 	}
 
+	
 	@GetMapping
 	public Flux<QuoteBf> allQuotes() {
 		return this.operations.findAll(QuoteBf.class);
@@ -65,7 +71,7 @@ public class BitfinexController {
 	}
 
 	@GetMapping("/{pair}/{timeFrame}")
-	public Flux<QuoteBf> tfQuotes(@PathVariable String timeFrame, @PathVariable String pair) {
+	public Flux<QuoteBf> tfQuotes(@PathVariable String timeFrame, @PathVariable String pair) {		
 		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
 			return this.operations.find(query, QuoteBf.class).filter(q -> filterEvenMinutes(q));
@@ -82,7 +88,18 @@ public class BitfinexController {
 
 		return Flux.empty();
 	}
+	
+	@GetMapping(path="/{pair}/{timeframe}/pdf", produces=MediaType.APPLICATION_PDF_VALUE)
+	public Mono<byte[]> pdfReport(@PathVariable String timeframe, @PathVariable String pair) {
+		Query query = MongoUtils.buildTodayQuery(Optional.of(pair));	
+		return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class).filter(q -> filterEvenMinutes(q)).map(q -> convert(q)));
+	}
 
+	private QuotePdf convert(QuoteBf quote) {
+		QuotePdf quotePdf = new QuotePdf(quote.getLast_price(), quote.getPair(), quote.getVolume(), quote.getCreatedAt(), quote.getBid(), quote.getAsk());		
+		return quotePdf;
+	}
+	
 	@GetMapping("/btcusd")
 	public Flux<QuoteBf> allQuotesBtcUsd() {
 		Query query = new Query();
