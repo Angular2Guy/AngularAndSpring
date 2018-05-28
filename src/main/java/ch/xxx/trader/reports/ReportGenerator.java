@@ -1,6 +1,10 @@
 package ch.xxx.trader.reports;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +31,10 @@ public class ReportGenerator {
 		byte[] result = new byte[0];
 		try {
 			JasperReport jasperReport = JasperCompileManager.compileReport(this.getClass().getClassLoader().getResourceAsStream("currencyReport.jrxml"));
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,null, new JRBeanCollectionDataSource(quotes.collectList().block()));
+			Map<String,Object> params = new HashMap<>();
+			List<QuotePdf> myQuotes = quotes.collectList().block();
+			params.put("quotes", new JRBeanCollectionDataSource(myQuotes));
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,params, new JRBeanCollectionDataSource(myQuotes));
 			
 			JRPdfExporter pdfExporter = new JRPdfExporter();
             pdfExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
