@@ -78,4 +78,10 @@ export class IbdetailComponent implements OnInit {
             this.chartdata = this.todayQuotes.map(quote => quote.lastPrice);
             });
     }
+    
+    showReport() {
+        const currpair = this.route.snapshot.paramMap.get('currpair');
+        let url = '/itbit' + this.utils.createReportUrl(this.timeframe, currpair);
+        window.open(url);
+    }
 }

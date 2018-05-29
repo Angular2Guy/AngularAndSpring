@@ -49,4 +49,18 @@ export class CommonUtils {
     getCurrpairName(key: string) {
         return this.currpairs.get(key);
     }
+    
+    createReportUrl(timeframe: number, currpair: string): string {
+        let url = '/';
+        if(timeframe === this.timeframes[1]) {
+            url = url + currpair + '/7days/pdf'; 
+        } else if(timeframe === this.timeframes[2]) {
+            url = url + currpair + '/30days/pdf';
+        } else if(timeframe === this.timeframes[3]) {
+            url = url + currpair + '/90days/pdf';
+        } else {
+            url = url + currpair + '/today/pdf';
+        }
+        return url;
+    }
 }

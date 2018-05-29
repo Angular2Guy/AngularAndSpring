@@ -82,4 +82,10 @@ export class BsdetailComponent implements OnInit {
             });
     }
     
+    showReport() {
+        const currpair = this.route.snapshot.paramMap.get('currpair');
+        let url = '/bitstamp' + this.utils.createReportUrl(this.timeframe, currpair);
+        window.open(url);
+    }
+    
 }
