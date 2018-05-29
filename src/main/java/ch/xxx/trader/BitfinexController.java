@@ -58,11 +58,12 @@ public class BitfinexController {
 				.flatMap(res -> res.bodyToMono(String.class));
 	}
 
-	
+	/*
 	@GetMapping
 	public Flux<QuoteBf> allQuotes() {
 		return this.operations.findAll(QuoteBf.class);
 	}
+	*/
 
 	@GetMapping("/{pair}/current")
 	public Mono<QuoteBf> currentQuote(@PathVariable String pair) {
@@ -89,17 +90,30 @@ public class BitfinexController {
 		return Flux.empty();
 	}
 	
-	@GetMapping(path="/{pair}/{timeframe}/pdf", produces=MediaType.APPLICATION_PDF_VALUE)
-	public Mono<byte[]> pdfReport(@PathVariable String timeframe, @PathVariable String pair) {
-		Query query = MongoUtils.buildTodayQuery(Optional.of(pair));	
-		return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class).filter(q -> filterEvenMinutes(q)).map(q -> convert(q)));
+	@GetMapping(path="/{pair}/{timeFrame}/pdf", produces=MediaType.APPLICATION_PDF_VALUE)
+	public Mono<byte[]> pdfReport(@PathVariable String timeFrame, @PathVariable String pair) {
+		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class).filter(this::filter10Minutes).map(this::convert));
+		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class, PrepareData.BF_HOUR_COL).map(this::convert));
+		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class, PrepareData.BF_DAY_COL).map(this::convert));
+		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class, PrepareData.BF_DAY_COL).map(this::convert));
+		}
+		
+		return Mono.empty();
 	}
 
 	private QuotePdf convert(QuoteBf quote) {
 		QuotePdf quotePdf = new QuotePdf(quote.getLast_price(), quote.getPair(), quote.getVolume(), quote.getCreatedAt(), quote.getBid(), quote.getAsk());		
 		return quotePdf;
 	}
-	
+	/*
 	@GetMapping("/btcusd")
 	public Flux<QuoteBf> allQuotesBtcUsd() {
 		Query query = new Query();
@@ -127,8 +141,12 @@ public class BitfinexController {
 		query.addCriteria(Criteria.where("pair").is("xrpusd"));
 		return this.operations.find(query, QuoteBf.class);
 	}
-
+	*/
 	private boolean filterEvenMinutes(QuoteBf quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}
+	
+	private boolean filter10Minutes(QuoteBf quote) {
+		return MongoUtils.filter10Minutes(quote.getCreatedAt());
+	}	
 }

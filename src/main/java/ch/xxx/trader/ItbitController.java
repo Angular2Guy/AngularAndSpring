@@ -32,7 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.data.PrepareData;
+import ch.xxx.trader.dtos.QuoteBs;
 import ch.xxx.trader.dtos.QuoteIb;
+import ch.xxx.trader.dtos.QuotePdf;
+import ch.xxx.trader.reports.ReportGenerator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -44,6 +47,9 @@ public class ItbitController {
 	
 	@Autowired
 	private ReactiveMongoOperations operations;
+	
+	@Autowired 
+	private ReportGenerator reportGenerator;
 	
 	public ItbitController() {
 		this.currpairs.put("btcusd", "XBTUSD");
@@ -59,12 +65,12 @@ public class ItbitController {
 		WebClient wc = WebUtils.buildWebClient(URLIB);		
 		return wc.get().uri("/v1/markets/"+currpair+"/order_book/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
 	}
-	
+	/*
 	@GetMapping
 	public Flux<QuoteIb> allQuotes() {
 		return this.operations.findAll(QuoteIb.class);
 	}
-	
+	*/
 	@GetMapping("/{pair}/current")
 	public Mono<QuoteIb> currentQuote(@PathVariable String pair) {
 		pair = this.currpairs.get(pair);
@@ -92,7 +98,36 @@ public class ItbitController {
 		return Flux.empty();
 	}		
 	
+	@GetMapping(path="/{pair}/{timeFrame}/pdf", produces=MediaType.APPLICATION_PDF_VALUE)
+	public Mono<byte[]> pdfReport(@PathVariable String timeFrame, @PathVariable String pair) {
+		pair = this.currpairs.get(pair);
+		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class).filter(this::filter10Minutes).map(this::convert));
+		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, PrepareData.BF_HOUR_COL).map(this::convert));
+		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, PrepareData.BF_DAY_COL).map(this::convert));
+		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, PrepareData.BF_DAY_COL).map(this::convert));
+		}
+		
+		return Mono.empty();
+	}
+
+	private QuotePdf convert(QuoteIb quote) {
+		QuotePdf quotePdf = new QuotePdf(quote.getLastPrice(), quote.getPair(), quote.getVolume24h(), quote.getCreatedAt(), quote.getBid(), quote.getAsk());		
+		return quotePdf;
+	}
+	
     private boolean filterEvenMinutes(QuoteIb quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}
+    
+	private boolean filter10Minutes(QuoteIb quote) {
+		return MongoUtils.filter10Minutes(quote.getCreatedAt());
+	}	
 }

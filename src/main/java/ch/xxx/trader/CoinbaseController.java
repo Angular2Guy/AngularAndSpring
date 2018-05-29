@@ -36,12 +36,12 @@ public class CoinbaseController {
 	
 	@Autowired
 	private ReactiveMongoOperations operations;
-	
+	/*
 	@GetMapping
 	public Flux<QuoteCb> allQuotes() {
 		return this.operations.findAll(QuoteCb.class);
 	}
-	
+	*/
 	@GetMapping("/today")
 	public Flux<QuoteCbSmall> todayQuotesBc() {
 		Query query = MongoUtils.buildTodayQuery(Optional.empty());

@@ -90,4 +90,8 @@ public class MongoUtils {
 	public static final boolean filterEvenMinutes(Date date) {
 		return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).getMinute() % 2 == 0;
 	}
+	
+	public static final boolean filter10Minutes(Date date) {
+		return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).getMinute() % 10 == 0;
+	}
 }

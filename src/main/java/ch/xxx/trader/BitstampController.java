@@ -31,7 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.data.PrepareData;
+import ch.xxx.trader.dtos.QuoteBf;
 import ch.xxx.trader.dtos.QuoteBs;
+import ch.xxx.trader.dtos.QuotePdf;
+import ch.xxx.trader.reports.ReportGenerator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -42,6 +45,9 @@ public class BitstampController {
 
 	@Autowired
 	private ReactiveMongoOperations operations;
+	
+	@Autowired 
+	private ReportGenerator reportGenerator;
 
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
@@ -52,12 +58,12 @@ public class BitstampController {
 		return wc.get().uri("/v2/order_book/" + currpair + "/").accept(MediaType.APPLICATION_JSON).exchange()
 				.flatMap(res -> res.bodyToMono(String.class));
 	}
-
+/*
 	@GetMapping
 	public Flux<QuoteBs> allQuotes() {
 		return this.operations.findAll(QuoteBs.class);
 	}
-
+*/
 	@GetMapping("/{pair}/current")
 	public Mono<QuoteBs> currentQuoteBtc(@PathVariable String pair) {				
 			Query query = MongoUtils.buildCurrentQuery(Optional.of(pair));
@@ -83,6 +89,31 @@ public class BitstampController {
 		return Flux.empty();
 	}
 	
+	@GetMapping(path="/{pair}/{timeFrame}/pdf", produces=MediaType.APPLICATION_PDF_VALUE)
+	public Mono<byte[]> pdfReport(@PathVariable String timeFrame, @PathVariable String pair) {
+		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBs.class).filter(this::filter10Minutes).map(this::convert));
+		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBs.class, PrepareData.BF_HOUR_COL).map(this::convert));
+		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBs.class, PrepareData.BF_DAY_COL).map(this::convert));
+		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBs.class, PrepareData.BF_DAY_COL).map(this::convert));
+		}
+		
+		return Mono.empty();
+	}
+
+	private QuotePdf convert(QuoteBs quote) {
+		QuotePdf quotePdf = new QuotePdf(quote.getLast(), quote.getPair(), quote.getVolume(), quote.getCreatedAt(), quote.getBid(), quote.getAsk());		
+		return quotePdf;
+	}
+	
+	/*
 	@GetMapping("/btceur")
 	public Flux<QuoteBs> allQuotesBtc() {
 		Query query = new Query();
@@ -138,8 +169,12 @@ public class BitstampController {
 		query.addCriteria(Criteria.where("pair").is("xrpusd"));
 		return this.operations.find(query, QuoteBs.class);
 	}
-
+*/
 	private boolean filterEvenMinutes(QuoteBs quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}
+	
+	private boolean filter10Minutes(QuoteBs quote) {
+		return MongoUtils.filter10Minutes(quote.getCreatedAt());
+	}	
 }
