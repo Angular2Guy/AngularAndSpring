@@ -1,5 +1,8 @@
 package ch.xxx.trader.data;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -12,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -36,9 +40,8 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class PrepareData {
-	private static final Logger log = LoggerFactory.getLogger(ScheduledTask.class);
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-	private final Map<Integer, Method> cbMethodCache = new HashMap<Integer, Method>();
+	private static final Logger log = LoggerFactory.getLogger(ScheduledTask.class);	
+	private static final Map<Integer, MethodHandle> cbMethodCache = new ConcurrentHashMap<>();
 	public static final String BS_HOUR_COL = "quoteBsHour";
 	public static final String BS_DAY_COL = "quoteBsDay";
 	public static final String BF_HOUR_COL = "quoteBfHour";
@@ -213,7 +216,7 @@ public class PrepareData {
 		}
 	}
 
-	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+//	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 20 0 ? * ?")
 	public void createCbHourlyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
@@ -239,7 +242,7 @@ public class PrepareData {
 		}
 	}
 
-	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+//	@Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 20 1 ? * ?")
 	public void createCbDailyAvg() {
 		Tuple<Calendar, Calendar> timeFrame = createTimeFrame(CB_DAY_COL, QuoteCb.class,false);
@@ -287,7 +290,7 @@ public class PrepareData {
 
 		quoteCb = quotes.stream().filter(quote -> {
 			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
-		}).reduce(quoteCb, (q1, q2) -> avgCbQuoteHour(q1, q2, count));
+		}).reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
 
 		hourQuotes.add(quoteCb);
 		return hourQuotes;
@@ -320,14 +323,14 @@ public class PrepareData {
 			quoteCb = quotes.stream().filter(quote -> {
 				return quote.getCreatedAt().after(hours.get(x).getTime())
 						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
-			}).reduce(quoteCb, (q1, q2) -> avgCbQuoteHour(q1, q2, count));
+			}).reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
 
 			hourQuotes.add(quoteCb);
 		}
 		return hourQuotes;
 	}
 
-	private QuoteCb avgCbQuoteHour(QuoteCb q1, QuoteCb q2, long count) {
+	private QuoteCb avgCbQuotePeriod(QuoteCb q1, QuoteCb q2, long count) {
 		Class[] types = new Class[170];
 		for (int i = 0; i < 170; i++) {
 			types[i] = BigDecimal.class;
@@ -339,8 +342,8 @@ public class PrepareData {
 			IntStream.range(0, QuoteCb.class.getConstructor(types).getParameterAnnotations().length)// .parallel()
 					.forEach(x -> {
 						try {
-							Method method = this.cbMethodCache.get(Integer.valueOf(x));
-							if (method == null) {
+							MethodHandle mh = this.cbMethodCache.get(Integer.valueOf(x));
+							if (mh == null) {
 								JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
 										.getParameterAnnotations()[x][0];
 								String fieldName = annotation.value();
@@ -350,14 +353,14 @@ public class PrepareData {
 								if ("getTry".equals(methodName)) {
 									methodName = methodName + "1";
 								}
-								method = QuoteCb.class.getMethod(methodName);
-								this.cbMethodCache.put(Integer.valueOf(x), method);
+								MethodType desc = MethodType.methodType(BigDecimal.class);
+								mh = MethodHandles.lookup().findVirtual(QuoteCb.class, methodName, desc);
+								this.cbMethodCache.put(Integer.valueOf(x), mh);
 							}
-							BigDecimal num1 = (BigDecimal) method.invoke(q1);
-							BigDecimal num2 = (BigDecimal) method.invoke(q2);
+							BigDecimal num1 = (BigDecimal) mh.invokeExact(q1);
+							BigDecimal num2 = (BigDecimal) mh.invokeExact(q2);
 							bds[x] = avgHourValue(num1, num2, count);
-						} catch (NoSuchMethodException | SecurityException | IllegalAccessException
-								| IllegalArgumentException | InvocationTargetException e) {
+						} catch (Throwable e) {
 							throw new RuntimeException(e);
 						}
 					});
