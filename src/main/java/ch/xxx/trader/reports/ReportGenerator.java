@@ -1,8 +1,8 @@
 package ch.xxx.trader.reports;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +29,7 @@ public class ReportGenerator {
 	
 	public Mono<byte[]> generateReport( Flux<QuotePdf> quotes) {
 		byte[] result = new byte[0];
+		Date start = new Date();
 		try {
 			JasperReport jasperReport = JasperCompileManager.compileReport(this.getClass().getClassLoader().getResourceAsStream("currencyReport.jrxml"));
 			Map<String,Object> params = new HashMap<>();
@@ -46,6 +47,7 @@ public class ReportGenerator {
 		} catch (JRException e) {
 			log.error("Report generation failed.",e);
 		}
+		log.info("Report generated in: "+ (new Date().getTime() - start.getTime()) +"ms");
 		return Mono.just(result);
 	}
 }

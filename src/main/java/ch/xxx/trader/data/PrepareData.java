@@ -40,7 +40,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class PrepareData {
-	private static final Logger log = LoggerFactory.getLogger(ScheduledTask.class);	
+	private static final Logger log = LoggerFactory.getLogger(PrepareData.class);	
 	private static final Map<Integer, MethodHandle> cbMethodCache = new ConcurrentHashMap<>();
 	public static final String BS_HOUR_COL = "quoteBsHour";
 	public static final String BS_DAY_COL = "quoteBsDay";
