@@ -18,9 +18,11 @@ package ch.xxx.trader;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +42,8 @@ import ch.xxx.trader.dtos.AuthCheck;
 import ch.xxx.trader.dtos.MyUser;
 import ch.xxx.trader.jwt.JwtTokenProvider;
 import ch.xxx.trader.jwt.Role;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -52,16 +57,19 @@ public class MyUserController {
 	private JwtTokenProvider jwtTokenProvider;
 
 	@PostMapping("/authorize")
-	public Mono<AuthCheck> postAuthorize(@RequestBody AuthCheck authcheck,HttpServletRequest request, 
-	        HttpServletResponse response) {				
+	public Mono<AuthCheck> postAuthorize(@RequestBody AuthCheck authcheck, @RequestHeader Map<String,String> header) {				
+		Optional<String> token = WebUtils.extractToken(header);
 		Query query = new Query();
 		query.addCriteria(Criteria.where("salt").is(authcheck.getHash()));
 		return this.operations.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
-				.map(user -> mapMyUser(user, authcheck));
+				.map(user -> mapMyUser(user, authcheck, token));
 	}
 
-	private AuthCheck mapMyUser(MyUser myUser, AuthCheck authcheck) {
-		if (myUser.getUserId() != null) {
+	private AuthCheck mapMyUser(MyUser myUser, AuthCheck authcheck, Optional<String> token) {
+		Optional<Jws<Claims>> claims = this.jwtTokenProvider.getClaims(token);
+		if (myUser.getUserId() != null && claims.isPresent() 
+				&& myUser.getUserId().equals(claims.get().getBody().getSubject())
+				&& new Date().before(claims.get().getBody().getExpiration())) {
 			return new AuthCheck(authcheck.getHash(), authcheck.getPath(), true);
 		}
 		return new AuthCheck(authcheck.getHash(), authcheck.getPath(), false);

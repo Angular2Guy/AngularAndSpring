@@ -17,5 +17,5 @@ export class AuthCheck {
     createdAt: Date;
     hash: string;
     path: string;
-    authorized: boolean;    
+    authorized: boolean;      
 }

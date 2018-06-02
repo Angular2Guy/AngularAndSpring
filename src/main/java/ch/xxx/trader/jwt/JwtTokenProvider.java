@@ -4,6 +4,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +12,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtTokenProvider {
-	
+		
 	@Value("${security.jwt.token.secret-key}")
 	private String secretKey;
 
@@ -39,5 +42,11 @@ public class JwtTokenProvider {
 				.compact();
 	}
 	
-	
+	public Optional<Jws<Claims>> getClaims(Optional<String> token) {
+		if(!token.isPresent()) {
+			return Optional.empty();
+		}
+		String encodedSecretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+		return Optional.of(Jwts.parser().setSigningKey(encodedSecretKey).parseClaimsJws(token.get()));
+	}
 }

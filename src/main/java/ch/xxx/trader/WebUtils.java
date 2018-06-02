@@ -2,6 +2,8 @@ package ch.xxx.trader;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +18,7 @@ public class WebUtils {
 	public static final String LASTOBCALLBS = "LAST_ORDERBOOK_CALL_BITSTAMP";
 	public static final String LASTOBCALLIB = "LAST_ORDERBOOK_CALL_ITBIT";
 	public static final String SECURITYCONTEXT = "SPRING_SECURITY_CONTEXT";
+	public static final String AUTHORIZATION = "Authorization";
 
 	public static boolean checkOBRequest(HttpServletRequest request, String sessionKey) {
 		Instant last = (Instant) request.getSession().getAttribute(sessionKey);
@@ -35,4 +38,11 @@ public class WebUtils {
 		return WebClient.builder().clientConnector(connector).baseUrl(url).build();
 	}
 
+	public static Optional<String> extractToken(Map<String,String> headers) {
+		String authStr = headers.get(AUTHORIZATION);
+		if(authStr != null) {
+			authStr = authStr.startsWith("Bearer ") ? authStr.substring(7) : null;
+		}
+		return Optional.ofNullable(authStr);
+	}
 }

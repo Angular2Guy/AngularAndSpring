@@ -24,7 +24,7 @@ public class AuthCheck {
 	private final Date createdAt = new Date();
 	private final String hash;
 	private final String path;
-	private final boolean authorized;
+	private final boolean authorized;	
 	
 	public AuthCheck(@JsonProperty("hash") String hash,@JsonProperty("path") String path, @JsonProperty("authorized") boolean authorized) {
 		super();
