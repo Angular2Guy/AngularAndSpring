@@ -63,6 +63,7 @@ export class BitstampService {
     }
     
     getOrderbook(currencypair: string): Observable<OrderbookBs> {
-        return this.http.get<OrderbookBs>(this._bitstamp+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<OrderbookBs>('getOrderbook')));
+        let reqOptions = {headers: this._utils.createTokenHeader()};
+        return this.http.get<OrderbookBs>(this._bitstamp+'/'+currencypair+'/orderbook/', reqOptions).pipe(catchError(this._utils.handleError<OrderbookBs>('getOrderbook')));
     }
 }

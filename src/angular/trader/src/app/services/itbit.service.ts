@@ -56,6 +56,7 @@ export class ItbitService {
     }
     
     getOrderbook(currencypair: string): Observable<OrderbookIb> {
-        return this.http.get<OrderbookIb>(this._itbit+'/'+currencypair+'/orderbook/', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<OrderbookIb>('getOrderbook')));
+        let reqOptions = {headers: this._utils.createTokenHeader()};
+        return this.http.get<OrderbookIb>(this._itbit+'/'+currencypair+'/orderbook/', reqOptions).pipe(catchError(this._utils.handleError<OrderbookIb>('getOrderbook')));
     }
 }

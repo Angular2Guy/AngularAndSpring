@@ -23,4 +23,5 @@ export class MyUser {
 	ethAmount: number;
 	ltcAmount: number;
 	xrpAmount: number;
+    token: string;
 }

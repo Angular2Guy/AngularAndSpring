@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Document
@@ -43,7 +44,9 @@ public class MyUser implements UserDetails {
 	@JsonProperty
 	private String salt;
 	@JsonProperty
-	private String email;		
+	private String email;	
+	@JsonProperty
+	private String token;
 	
 	public ObjectId get_id() {
 		return _id;
@@ -102,5 +105,11 @@ public class MyUser implements UserDetails {
 	}
 	public Date getCreatedAt() {
 		return createdAt;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

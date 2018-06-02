@@ -17,6 +17,7 @@ package ch.xxx.trader;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.xxx.trader.dtos.AuthCheck;
 import ch.xxx.trader.dtos.MyUser;
+import ch.xxx.trader.jwt.JwtTokenProvider;
+import ch.xxx.trader.jwt.Role;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -45,6 +48,8 @@ public class MyUserController {
 	private ReactiveMongoOperations operations;
 	@Autowired
 	private PasswordEncryption passwordEncryption;
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 
 	@PostMapping("/authorize")
 	public Mono<AuthCheck> postAuthorize(@RequestBody AuthCheck authcheck,HttpServletRequest request, 
@@ -112,6 +117,8 @@ public class MyUserController {
 					SecurityContextHolder.getContext().setAuthentication(auth);
 					session.setAttribute(WebUtils.SECURITYCONTEXT, SecurityContextHolder.getContext());
 				}
+				String jwtToken = this.jwtTokenProvider.createToken(user.getUserId(), Arrays.asList(Role.USERS));
+				user.setToken(jwtToken);
 				user.setPassword("XXX");
 				return user;
 			}
