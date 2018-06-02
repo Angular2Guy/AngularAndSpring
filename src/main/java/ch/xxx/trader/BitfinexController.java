@@ -24,6 +24,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +49,7 @@ public class BitfinexController {
 	@Autowired 
 	private ReportGenerator reportGenerator;
 
+//	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
 		if (!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBF)) {
