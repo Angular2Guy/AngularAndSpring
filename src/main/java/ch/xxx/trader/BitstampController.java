@@ -15,14 +15,13 @@
  */
 package ch.xxx.trader;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,10 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.data.PrepareData;
-import ch.xxx.trader.dtos.QuoteBf;
 import ch.xxx.trader.dtos.QuoteBs;
 import ch.xxx.trader.dtos.QuotePdf;
+import ch.xxx.trader.jwt.JwtTokenProvider;
 import ch.xxx.trader.reports.ReportGenerator;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -50,11 +51,17 @@ public class BitstampController {
 	
 	@Autowired 
 	private ReportGenerator reportGenerator;
+	
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 
-	@PreAuthorize("hasRole('USERS')")
+//	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
 		if (!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBS)) {
+			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
+		}		
+		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
 			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
 		}
 		WebClient wc = WebUtils.buildWebClient(URLBS);

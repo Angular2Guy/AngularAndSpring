@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,9 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.data.PrepareData;
-import ch.xxx.trader.dtos.QuoteBs;
 import ch.xxx.trader.dtos.QuoteIb;
 import ch.xxx.trader.dtos.QuotePdf;
+import ch.xxx.trader.jwt.JwtTokenProvider;
 import ch.xxx.trader.reports.ReportGenerator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -52,16 +51,22 @@ public class ItbitController {
 	@Autowired 
 	private ReportGenerator reportGenerator;
 	
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
+	
 	public ItbitController() {
 		this.currpairs.put("btcusd", "XBTUSD");
 		this.currpairs.put("btceur", "XBTEUR");
 	}
 	
-	@PreAuthorize("hasRole('USERS')")
+//	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
 		if(!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLIB)) {
 			return Mono.just("{\"bids\": [], \"asks\": [] }");
+		}
+		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
+			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
 		}
 		currpair = currpair.equals("btcusd") ? "XBTUSD" : currpair; 
 		WebClient wc = WebUtils.buildWebClient(URLIB);		

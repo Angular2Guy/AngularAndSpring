@@ -34,6 +34,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ch.xxx.trader.data.PrepareData;
 import ch.xxx.trader.dtos.QuoteBf;
 import ch.xxx.trader.dtos.QuotePdf;
+import ch.xxx.trader.jwt.JwtTokenProvider;
 import ch.xxx.trader.reports.ReportGenerator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -48,12 +49,18 @@ public class BitfinexController {
 	
 	@Autowired 
 	private ReportGenerator reportGenerator;
+	
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 
 //	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
 		if (!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBF)) {
 			return Mono.just("{\n" + "  \"bids\":[],\n" + "  \"asks\":[]\n" + "}");
+		}
+		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
+			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
 		}
 		WebClient wc = WebUtils.buildWebClient(URLBF);
 		return wc.get().uri("/v1/book/" + currpair + "/").accept(MediaType.APPLICATION_JSON).exchange()

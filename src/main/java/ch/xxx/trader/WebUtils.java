@@ -2,6 +2,7 @@ package ch.xxx.trader;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,7 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ch.xxx.trader.jwt.JwtTokenProvider;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.netty.channel.ChannelOption;
+import reactor.core.publisher.Mono;
 
 public class WebUtils {
 
@@ -40,9 +45,22 @@ public class WebUtils {
 
 	public static Optional<String> extractToken(Map<String,String> headers) {
 		String authStr = headers.get(AUTHORIZATION);
-		if(authStr != null) {
-			authStr = authStr.startsWith("Bearer ") ? authStr.substring(7) : null;
+		return extractToken(Optional.ofNullable(authStr));
+	}
+	
+	private static Optional<String> extractToken(Optional<String> authStr) {		
+		if(authStr.isPresent()) {
+			authStr = Optional.ofNullable(authStr.get().startsWith("Bearer ") ? authStr.get().substring(7) : null);
 		}
-		return Optional.ofNullable(authStr);
+		return authStr;
+	}
+	
+	public static boolean checkToken(HttpServletRequest request, JwtTokenProvider jwtTokenProvider) {
+		Optional<String> tokenStr = WebUtils.extractToken(Optional.ofNullable(request.getHeader(WebUtils.AUTHORIZATION)));		
+		Optional<Jws<Claims>> claims = jwtTokenProvider.getClaims(tokenStr);
+		if(claims.isPresent() && new Date().before(claims.get().getBody().getExpiration()) && claims.get().getBody().get("auth").toString().contains("USERS")) {
+			return true;
+		}
+		return false;
 	}
 }
