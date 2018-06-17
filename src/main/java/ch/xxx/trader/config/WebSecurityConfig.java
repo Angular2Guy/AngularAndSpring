@@ -10,26 +10,32 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import ch.xxx.trader.MyAuthenticationProvider;
+import ch.xxx.trader.jwt.JwtTokenFilterConfigurer;
+import ch.xxx.trader.jwt.JwtTokenProvider;
 
 @Configuration
 @Order(SecurityProperties.DEFAULT_FILTER_ORDER)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {	
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	private MyAuthenticationProvider authProvider;
 	
 	@Autowired
-    private MyAuthenticationProvider authProvider;
-	
+	private JwtTokenProvider jwtTokenProvider;
+
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {	
+	protected void configure(HttpSecurity http) throws Exception {
 		http.httpBasic();
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.authorizeRequests().anyRequest().permitAll().anyRequest().anonymous();
-		http.antMatcher("/**/orderbook").authorizeRequests().anyRequest().authenticated(); 
+		http.antMatcher("/**/orderbook").authorizeRequests().anyRequest().authenticated();
 		http.csrf().disable();
+		http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 	}
-	
+
 	@Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {  
-        auth.authenticationProvider(authProvider);
-    }		
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(authProvider);
+	}
 	
 }

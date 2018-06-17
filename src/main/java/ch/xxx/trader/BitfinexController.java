@@ -50,8 +50,6 @@ public class BitfinexController {
 	@Autowired 
 	private ReportGenerator reportGenerator;
 	
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
 
 //	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
@@ -59,20 +57,13 @@ public class BitfinexController {
 		if (!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBF)) {
 			return Mono.just("{\n" + "  \"bids\":[],\n" + "  \"asks\":[]\n" + "}");
 		}
-		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
-			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
-		}
+//		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
+//			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
+//		}
 		WebClient wc = WebUtils.buildWebClient(URLBF);
 		return wc.get().uri("/v1/book/" + currpair + "/").accept(MediaType.APPLICATION_JSON).exchange()
 				.flatMap(res -> res.bodyToMono(String.class));
 	}
-
-	/*
-	@GetMapping
-	public Flux<QuoteBf> allQuotes() {
-		return this.operations.findAll(QuoteBf.class);
-	}
-	*/
 
 	@GetMapping("/{pair}/current")
 	public Mono<QuoteBf> currentQuote(@PathVariable String pair) {
@@ -122,35 +113,7 @@ public class BitfinexController {
 		QuotePdf quotePdf = new QuotePdf(quote.getLast_price(), quote.getPair(), quote.getVolume(), quote.getCreatedAt(), quote.getBid(), quote.getAsk());		
 		return quotePdf;
 	}
-	/*
-	@GetMapping("/btcusd")
-	public Flux<QuoteBf> allQuotesBtcUsd() {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("pair").is("btcusd"));
-		return this.operations.find(query, QuoteBf.class);
-	}
-
-	@GetMapping("/ethusd")
-	public Flux<QuoteBf> allQuotesEthUsd() {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("pair").is("ethusd"));
-		return this.operations.find(query, QuoteBf.class);
-	}
-
-	@GetMapping("/ltcusd")
-	public Flux<QuoteBf> allQuotesLtcUsd() {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("pair").is("ltcusd"));
-		return this.operations.find(query, QuoteBf.class);
-	}
-
-	@GetMapping("/xrpusd")
-	public Flux<QuoteBf> allQuotesXrpUsd() {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("pair").is("xrpusd"));
-		return this.operations.find(query, QuoteBf.class);
-	}
-	*/
+	
 	private boolean filterEvenMinutes(QuoteBf quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}

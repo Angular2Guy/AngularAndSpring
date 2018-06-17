@@ -119,12 +119,12 @@ public class MyUserController {
 				return new MyUser();
 			}
 			if (user.getPassword().equals(encryptedPassword)) {				
-				if(session != null) {	
-					Authentication auth = 
-							  new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword(), user.getAuthorities());
-					SecurityContextHolder.getContext().setAuthentication(auth);
-					session.setAttribute(WebUtils.SECURITYCONTEXT, SecurityContextHolder.getContext());
-				}
+//				if(session != null) {	
+//					Authentication auth = 
+//							  new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword(), user.getAuthorities());
+//					SecurityContextHolder.getContext().setAuthentication(auth);
+//					session.setAttribute(WebUtils.SECURITYCONTEXT, SecurityContextHolder.getContext());
+//				}
 				String jwtToken = this.jwtTokenProvider.createToken(user.getUserId(), Arrays.asList(Role.USERS));
 				user.setToken(jwtToken);
 				user.setPassword("XXX");

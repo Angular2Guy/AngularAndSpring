@@ -51,9 +51,6 @@ public class ItbitController {
 	@Autowired 
 	private ReportGenerator reportGenerator;
 	
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
-	
 	public ItbitController() {
 		this.currpairs.put("btcusd", "XBTUSD");
 		this.currpairs.put("btceur", "XBTEUR");
@@ -65,19 +62,14 @@ public class ItbitController {
 		if(!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLIB)) {
 			return Mono.just("{\"bids\": [], \"asks\": [] }");
 		}
-		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
-			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
-		}
+//		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
+//			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
+//		}
 		currpair = currpair.equals("btcusd") ? "XBTUSD" : currpair; 
 		WebClient wc = WebUtils.buildWebClient(URLIB);		
 		return wc.get().uri("/v1/markets/"+currpair+"/order_book/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
 	}
-	/*
-	@GetMapping
-	public Flux<QuoteIb> allQuotes() {
-		return this.operations.findAll(QuoteIb.class);
-	}
-	*/
+
 	@GetMapping("/{pair}/current")
 	public Mono<QuoteIb> currentQuote(@PathVariable String pair) {
 		pair = this.currpairs.get(pair);

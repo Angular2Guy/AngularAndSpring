@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -34,6 +35,9 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 		query.addCriteria(Criteria.where("userId").is(name));
 		MyUser user = operations.findOne(query, MyUser.class).block();
 		String encryptedPw = null;
+		if(user == null) {
+			throw new BadCredentialsException("User not found");
+		}
 		try {
 			encryptedPw = this.passwordEncryption.getEncryptedPassword(password, user.getSalt());
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
