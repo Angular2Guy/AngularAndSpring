@@ -23,15 +23,11 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -97,20 +93,19 @@ public class MyUserController {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("salt").is(hash));
 		return this.operations.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
-				.map(user1 -> loginHelp(user1, "", request.getSession()));
+				.map(user1 -> loginHelp(user1, ""));
 	}
 
 	@PostMapping("/login")
 	public Mono<MyUser> postUserLogin(@RequestBody MyUser myUser,HttpServletRequest request)
-			throws NoSuchAlgorithmException, InvalidKeySpecException {
-		HttpSession session = request.getSession();
+			throws NoSuchAlgorithmException, InvalidKeySpecException {		
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(myUser.getUserId()));
 		return this.operations.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
-				.map(user1 -> loginHelp(user1, myUser.getPassword(), session));
+				.map(user1 -> loginHelp(user1, myUser.getPassword()));
 	}
 
-	private MyUser loginHelp(MyUser user, String passwd, HttpSession session) {
+	private MyUser loginHelp(MyUser user, String passwd) {
 		if (user.getUserId() != null) {
 			String encryptedPassword;
 			try {
@@ -119,19 +114,12 @@ public class MyUserController {
 				return new MyUser();
 			}
 			if (user.getPassword().equals(encryptedPassword)) {				
-//				if(session != null) {	
-//					Authentication auth = 
-//							  new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword(), user.getAuthorities());
-//					SecurityContextHolder.getContext().setAuthentication(auth);
-//					session.setAttribute(WebUtils.SECURITYCONTEXT, SecurityContextHolder.getContext());
-//				}
 				String jwtToken = this.jwtTokenProvider.createToken(user.getUserId(), Arrays.asList(Role.USERS));
 				user.setToken(jwtToken);
 				user.setPassword("XXX");
 				return user;
 			}
 		}
-		session.invalidate();
 		return new MyUser();
 	}
 }
