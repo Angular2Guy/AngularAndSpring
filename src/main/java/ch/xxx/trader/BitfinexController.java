@@ -53,10 +53,7 @@ public class BitfinexController {
 
 //	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
-		if (!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBF)) {
-			return Mono.just("{\n" + "  \"bids\":[],\n" + "  \"asks\":[]\n" + "}");
-		}
+	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {		
 //		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
 //			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
 //		}

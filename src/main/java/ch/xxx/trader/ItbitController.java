@@ -58,10 +58,7 @@ public class ItbitController {
 	
 //	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
-		if(!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLIB)) {
-			return Mono.just("{\"bids\": [], \"asks\": [] }");
-		}
+	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {		
 //		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
 //			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
 //		}

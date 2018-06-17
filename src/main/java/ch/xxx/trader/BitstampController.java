@@ -54,10 +54,7 @@ public class BitstampController {
 	
 //	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {
-		if (!WebUtils.checkOBRequest(request, WebUtils.LASTOBCALLBS)) {
-			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
-		}		
+	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {				
 //		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
 //			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
 //		}
