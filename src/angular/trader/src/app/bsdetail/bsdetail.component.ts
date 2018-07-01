@@ -47,8 +47,9 @@ export class BsdetailComponent implements OnInit {
     
     constructor(private route: ActivatedRoute, private router: Router, private serviceBs: BitstampService) { }
 
-    ngOnInit() {        
-        this.serviceBs.getCurrentQuote(this.route.snapshot.paramMap.get('currpair'))
+    ngOnInit() { 
+        this.route.params.subscribe(params => {            
+        this.serviceBs.getCurrentQuote(params.currpair)
         .subscribe(quote => {
             this.currQuote = quote;
             this.currPair = this.utils.getCurrpairName(this.currQuote.pair);});        
@@ -58,6 +59,7 @@ export class BsdetailComponent implements OnInit {
             this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());
             this.chartdata = this.todayQuotes.map(quote => quote.last);
             });
+        });
     }  
     
     changeTf() {

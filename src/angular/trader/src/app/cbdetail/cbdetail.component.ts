@@ -21,19 +21,19 @@ import { QuoteCb, QuoteCbSmall } from '../common/quoteCb';
 import { CoinbaseService } from '../services/coinbase.service';
 import { CommonUtils } from '../common/commonUtils';
 
-@Component({
-  selector: 'app-cbdetail',
-  templateUrl: './cbdetail.component.html',
-  styleUrls: ['./cbdetail.component.scss'],
-  animations: [
-               trigger('showChart', [
-                 state('true' , style({ opacity: 1 })),
-                 state('false', style({ opacity: 0 })),
-                 transition('1 => 0', animate('300ms')),
-                 transition('0 => 1', animate('300ms'))
-               ])
-             ]
-})
+@Component( {
+    selector: 'app-cbdetail',
+    templateUrl: './cbdetail.component.html',
+    styleUrls: ['./cbdetail.component.scss'],
+    animations: [
+        trigger( 'showChart', [
+            state( 'true', style( { opacity: 1 } ) ),
+            state( 'false', style( { opacity: 0 } ) ),
+            transition( '1 => 0', animate( '300ms' ) ),
+            transition( '0 => 1', animate( '300ms' ) )
+        ] )
+    ]
+} )
 export class CbdetailComponent implements OnInit {
 
     currQuote: QuoteCb;
@@ -48,58 +48,61 @@ export class CbdetailComponent implements OnInit {
     ETHUSD: string;
     LTCUSD: string;
     timeframe = this.utils.timeframes[0];
-    
-    constructor(private route: ActivatedRoute, private router: Router, private serviceCb: CoinbaseService) { 
+
+    constructor( private route: ActivatedRoute, private router: Router, private serviceCb: CoinbaseService ) {
         this.BTCUSD = this.serviceCb.BTCUSD;
         this.ETHUSD = this.serviceCb.ETHUSD;
         this.LTCUSD = this.serviceCb.LTCUSD;
-    }    
+    }
 
     ngOnInit() {
-        this.currpair = this.route.snapshot.paramMap.get('currpair');
-        this.myCurrPair = this.utils.getCurrpairName(this.currpair);
-        this.serviceCb.getCurrentQuote()
-            .subscribe(quote => this.currQuote = quote);
-        this.serviceCb.getTodayQuotes()
-            .subscribe(quotes => {
-                this.todayQuotes = quotes;
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());
-                if(this.currpair === this.serviceCb.BTCUSD) {
-                    this.chartdata = this.todayQuotes.map(quote => quote.usd);
-                } else if(this.currpair === this.serviceCb.ETHUSD) {
-                    this.chartdata = this.todayQuotes.map(quote => quote.usd/quote.eth)
-                } else if(this.currpair === this.serviceCb.LTCUSD) {
-                    this.chartdata = this.todayQuotes.map(quote => quote.usd/quote.ltc)
-                }
-            });
+        this.route.params.subscribe( params => {
+            this.currpair = params.currpair;
+            this.myCurrPair = this.utils.getCurrpairName( this.currpair );
+            this.serviceCb.getCurrentQuote()
+                .subscribe( quote => this.currQuote = quote );
+            this.serviceCb.getTodayQuotes()
+                .subscribe( quotes => {
+                    this.todayQuotes = quotes;
+                    this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
+                    if ( this.currpair === this.serviceCb.BTCUSD ) {
+                        this.chartdata = this.todayQuotes.map( quote => quote.usd );
+                    } else if ( this.currpair === this.serviceCb.ETHUSD ) {
+                        this.chartdata = this.todayQuotes.map( quote => quote.usd / quote.eth )
+                    } else if ( this.currpair === this.serviceCb.LTCUSD ) {
+                        this.chartdata = this.todayQuotes.map( quote => quote.usd / quote.ltc )
+                    }
+                } );
+        } );
     }
 
     changeTf() {
         this.chartdata = [];
         this.chartlabels = [];
-        this.currpair = this.route.snapshot.paramMap.get('currpair');
+        this.currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteCbSmall[]>;
-        if(this.timeframe === this.utils.timeframes[1]) quoteObserv = this.serviceCb.get7DayQuotes();
-        else if(this.timeframe === this.utils.timeframes[2]) quoteObserv = this.serviceCb.get30DayQuotes();
-        else if(this.timeframe === this.utils.timeframes[3]) quoteObserv = this.serviceCb.get90DayQuotes() 
-            else quoteObserv = this.serviceCb.getTodayQuotes();
-        
-        quoteObserv.subscribe(quotes => {
-            this.todayQuotes = quotes; 
-            if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getUTCDate().toString())            
-            else if(this.timeframe === this.utils.timeframes[1]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())
-             else 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());                                       
-            
-            if(this.currpair === this.serviceCb.BTCUSD) {
-                this.chartdata = this.todayQuotes.map(quote => quote.usd);
-            } else if(this.currpair === this.serviceCb.ETHUSD) {
-                this.chartdata = this.todayQuotes.map(quote => quote.usd/quote.eth)
-            } else if(this.currpair === this.serviceCb.LTCUSD) {
-                this.chartdata = this.todayQuotes.map(quote => quote.usd/quote.ltc)
-            }});
+        if ( this.timeframe === this.utils.timeframes[1] ) quoteObserv = this.serviceCb.get7DayQuotes();
+        else if ( this.timeframe === this.utils.timeframes[2] ) quoteObserv = this.serviceCb.get30DayQuotes();
+        else if ( this.timeframe === this.utils.timeframes[3] ) quoteObserv = this.serviceCb.get90DayQuotes()
+        else quoteObserv = this.serviceCb.getTodayQuotes();
+
+        quoteObserv.subscribe( quotes => {
+            this.todayQuotes = quotes;
+            if ( this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3] )
+                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getUTCDate().toString() )
+            else if ( this.timeframe === this.utils.timeframes[1] )
+                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getDay().toString() )
+            else
+                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
+
+            if ( this.currpair === this.serviceCb.BTCUSD ) {
+                this.chartdata = this.todayQuotes.map( quote => quote.usd );
+            } else if ( this.currpair === this.serviceCb.ETHUSD ) {
+                this.chartdata = this.todayQuotes.map( quote => quote.usd / quote.eth )
+            } else if ( this.currpair === this.serviceCb.LTCUSD ) {
+                this.chartdata = this.todayQuotes.map( quote => quote.usd / quote.ltc )
+            }
+        } );
     }
-    
+
 }

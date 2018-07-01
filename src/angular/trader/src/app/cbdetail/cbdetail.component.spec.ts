@@ -110,15 +110,18 @@ describe('CbdetailComponent', () => {
       const el: HTMLElement = de.query(By.css('#gbp')).nativeElement;
       expect(el.textContent).toEqual('6,168.36');      
   });
+  
   it('should show createdAt', () => {
       component.currpair = 'btcusd';
       fixture.autoDetectChanges();
       const de: DebugElement = fixture.debugElement;
       const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement;
       const myDate = new Date('2018-05-16T19:20:26');
-      let dateStr = (myDate.getHours().toString().length === 1 ? '0'+ myDate.getHours() : myDate.getHours()) 
+      const timezoneOffset = myDate.getTimezoneOffset() / 60;      
+      let dateStr = (myDate.getHours().toString().length === 1 ? '0'+ (myDate.getHours() - timezoneOffset) : myDate.getHours() - timezoneOffset) 
       +':'+(myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
       +':'+(myDate.getSeconds().toString().length === 1 ? '0' + myDate.getSeconds() : myDate.getSeconds());
       expect(el.textContent).toEqual(dateStr);      
   });
+  
 });

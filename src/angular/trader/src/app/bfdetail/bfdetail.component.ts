@@ -21,19 +21,19 @@ import { QuoteBf } from '../common/quoteBf';
 import { CommonUtils } from '../common/commonUtils';
 import { Observable } from 'rxjs';
 
-@Component({
-  selector: 'app-bfdetail',
-  templateUrl: './bfdetail.component.html',
-  styleUrls: ['./bfdetail.component.scss'],
-  animations: [
-               trigger('showChart', [
-                 state('true' , style({ opacity: 1 })),
-                 state('false', style({ opacity: 0 })),
-                 transition('1 => 0', animate('300ms')),
-                 transition('0 => 1', animate('300ms'))
-               ])
-             ]
-})
+@Component( {
+    selector: 'app-bfdetail',
+    templateUrl: './bfdetail.component.html',
+    styleUrls: ['./bfdetail.component.scss'],
+    animations: [
+        trigger( 'showChart', [
+            state( 'true', style( { opacity: 1 } ) ),
+            state( 'false', style( { opacity: 0 } ) ),
+            transition( '1 => 0', animate( '300ms' ) ),
+            transition( '0 => 1', animate( '300ms' ) )
+        ] )
+    ]
+} )
 export class BfdetailComponent implements OnInit {
 
     currQuote: QuoteBf;
@@ -45,46 +45,49 @@ export class BfdetailComponent implements OnInit {
     currPair = "";
     timeframe = this.utils.timeframes[0];
 
-    constructor(private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService) { }
+    constructor( private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService ) { }
 
-    ngOnInit() {        
-        this.serviceBf.getCurrentQuote(this.route.snapshot.paramMap.get('currpair'))
-        .subscribe(quote => {
-            this.currQuote = quote;
-            this.currPair = this.utils.getCurrpairName(this.currQuote.pair);});        
-            this.serviceBf.getTodayQuotes(this.route.snapshot.paramMap.get('currpair'))
-            .subscribe(quotes => {
-                this.todayQuotes = quotes;
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());
-                this.chartdata = this.todayQuotes.map(quote => quote.last_price);
-        });
-    }  
+    ngOnInit() {
+        this.route.params.subscribe( params => {            
+            this.serviceBf.getCurrentQuote( params.currpair )
+                .subscribe( quote => {
+                    this.currQuote = quote;
+                    this.currPair = this.utils.getCurrpairName( this.currQuote.pair );
+                } );
+            this.serviceBf.getTodayQuotes( this.route.snapshot.paramMap.get( 'currpair' ) )
+                .subscribe( quotes => {
+                    this.todayQuotes = quotes;
+                    this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
+                    this.chartdata = this.todayQuotes.map( quote => quote.last_price );
+                } );
+        } );
+    }
 
     changeTf() {
         this.chartdata = [];
         this.chartlabels = [];
-        const currpair = this.route.snapshot.paramMap.get('currpair'); 
+        const currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteBf[]>;
-        if(this.timeframe === this.utils.timeframes[1]) quoteObserv = this.serviceBf.get7DayQuotes(currpair);
-        else if(this.timeframe === this.utils.timeframes[2]) quoteObserv = this.serviceBf.get30DayQuotes(currpair);
-        else if(this.timeframe === this.utils.timeframes[3]) quoteObserv = this.serviceBf.get90DayQuotes(currpair) 
-            else quoteObserv = this.serviceBf.getTodayQuotes(currpair);
-        
-        quoteObserv.subscribe(quotes => {             
+        if ( this.timeframe === this.utils.timeframes[1] ) quoteObserv = this.serviceBf.get7DayQuotes( currpair );
+        else if ( this.timeframe === this.utils.timeframes[2] ) quoteObserv = this.serviceBf.get30DayQuotes( currpair );
+        else if ( this.timeframe === this.utils.timeframes[3] ) quoteObserv = this.serviceBf.get90DayQuotes( currpair )
+        else quoteObserv = this.serviceBf.getTodayQuotes( currpair );
+
+        quoteObserv.subscribe( quotes => {
             this.todayQuotes = quotes;
-            if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getUTCDate().toString())            
-            else if(this.timeframe === this.utils.timeframes[1]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())
-             else 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());                                       
-            this.chartdata = this.todayQuotes.map(quote => quote.last_price);
-            });
+            if ( this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3] )
+                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getUTCDate().toString() )
+            else if ( this.timeframe === this.utils.timeframes[1] )
+                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getDay().toString() )
+            else
+                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
+            this.chartdata = this.todayQuotes.map( quote => quote.last_price );
+        } );
     }
-    
+
     showReport() {
-        const currpair = this.route.snapshot.paramMap.get('currpair');
-        let url = '/bitfinex' + this.utils.createReportUrl(this.timeframe, currpair);
-        window.open(url);
+        const currpair = this.route.snapshot.paramMap.get( 'currpair' );
+        let url = '/bitfinex' + this.utils.createReportUrl( this.timeframe, currpair );
+        window.open( url );
     }
 }
