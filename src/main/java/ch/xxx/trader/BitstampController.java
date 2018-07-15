@@ -52,12 +52,8 @@ public class BitstampController {
 	@Autowired 
 	private ReportGenerator reportGenerator;
 	
-//	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {				
-//		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
-//			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
-//		}
 		WebClient wc = WebUtils.buildWebClient(URLBS);
 		return wc.get().uri("/v2/order_book/" + currpair + "/").accept(MediaType.APPLICATION_JSON).exchange()
 				.flatMap(res -> res.bodyToMono(String.class));

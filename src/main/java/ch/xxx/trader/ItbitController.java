@@ -56,12 +56,8 @@ public class ItbitController {
 		this.currpairs.put("btceur", "XBTEUR");
 	}
 	
-//	@PreAuthorize("hasRole('USERS')")
 	@GetMapping("/{currpair}/orderbook")
 	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {		
-//		if(!WebUtils.checkToken(request, jwtTokenProvider)) {
-//			return Mono.just("{\"timestamp\": \"\", \"bids\": [], \"asks\": [] }");
-//		}
 		currpair = currpair.equals("btcusd") ? "XBTUSD" : currpair; 
 		WebClient wc = WebUtils.buildWebClient(URLIB);		
 		return wc.get().uri("/v1/markets/"+currpair+"/order_book/").accept(MediaType.APPLICATION_JSON).exchange().flatMap(res -> res.bodyToMono(String.class));
