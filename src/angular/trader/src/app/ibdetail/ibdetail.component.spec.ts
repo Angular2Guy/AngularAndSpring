@@ -138,10 +138,9 @@ describe('IbdetailComponent', () => {
       const de: DebugElement = fixture.debugElement;
       const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement; 
       const myDate = component.currQuote.createdAt;
-      let dateStr = (myDate.getHours().toString().length === 1 ? '0'+ myDate.getHours() : myDate.getHours()) 
-      +':'+(myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
+      let dateStr = (myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
       +':'+(myDate.getSeconds().toString().length === 1 ? '0' + myDate.getSeconds() : myDate.getSeconds());
-      expect(el.textContent).toEqual(dateStr);      
+      expect(el.textContent.substr(3,el.textContent.length)).toEqual(dateStr);      
   });
   it('should show volume24', () => {
       const de: DebugElement = fixture.debugElement;

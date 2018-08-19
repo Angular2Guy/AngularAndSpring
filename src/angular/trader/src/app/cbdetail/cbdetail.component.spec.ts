@@ -118,10 +118,9 @@ describe('CbdetailComponent', () => {
       const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement;
       const myDate = new Date('2018-05-16T19:20:26');
       const timezoneOffset = myDate.getTimezoneOffset() / 60;      
-      let dateStr = (myDate.getHours().toString().length === 1 ? '0'+ (myDate.getHours() - timezoneOffset) : myDate.getHours() - timezoneOffset) 
-      +':'+(myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
+      let dateStr = (myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
       +':'+(myDate.getSeconds().toString().length === 1 ? '0' + myDate.getSeconds() : myDate.getSeconds());
-      expect(el.textContent).toEqual(dateStr);      
+      expect(el.textContent.substr(3,el.textContent.length)).toEqual(dateStr);      
   });
   
 });
