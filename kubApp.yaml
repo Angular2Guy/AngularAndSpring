@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
       - name: angularandspring
-        image: angular2guy/angularandspring:latest
-       	env:
-       	- name: MONGODB_HOST
-       	  value: mongodb
+        image: angular2guy/angularandspring:latest 
+        env:
+        - name: MONGODB_HOST
+          value: mongodb
         ports:
         - containerPort: 8080
  
