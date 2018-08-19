@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: angularandspring
+  labels:
+    app: angularandspring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: angularandspring
+  template:
+    metadata:
+      labels:
+        app: angularandspring
+    spec:
+      containers:
+      - name: angularandspring
+        image: angular2guy/angularandspring:latest
+       	env:
+       	- name: MONGODB_HOST
+       	  value: mongodb
+        ports:
+        - containerPort: 8080
+ 
