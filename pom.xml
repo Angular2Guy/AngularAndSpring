@@ -32,13 +32,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>de.flapdoodle.embed</groupId>
-			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-		</dependency>
-
+		</dependency>		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -238,12 +232,12 @@
 							<repository>${docker.image.prefix}/${project.artifactId}</repository>
 							<tag>${project.version}</tag>
 							<buildArgs>
-								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-							</buildArgs>
+								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>								
+							</buildArgs>						
 						</configuration>
 					</plugin>
 				</plugins>
-			</build>
+			</build>			 
 		</profile>
 	</profiles>
 </project>
