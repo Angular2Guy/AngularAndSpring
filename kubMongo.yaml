@@ -19,3 +19,10 @@ spec:
         image: mongo:3.6.6
         ports:
         - containerPort: 27017
+        volumeMounts:
+        - name: hostvol
+          mountPath: /data
+      volumes:
+      - name: hostvol
+        hostPath:
+          path: /data/mongo                    
