@@ -4,9 +4,12 @@ metadata:
   name: mongo-pv-claim
   labels:
     app: mongopv
-spec:
+spec:  
   accessModes:
     - ReadWriteOnce
+  # storageClassName: local-storage
+  storageClassName: manual
   resources:
     requests:
       storage: 1Gi
+  
