@@ -18,11 +18,12 @@ spec:
       - name: mongodb
         image: mongo:3.6.6
         ports:
-        - containerPort: 27017
+        - containerPort: 27017              	
         volumeMounts:
         - name: hostvol
-          mountPath: /data
+          mountPath: /data/db
       volumes:
       - name: hostvol
         persistentVolumeClaim:
           claimName: mongo-pv-claim
+      
