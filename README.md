@@ -19,6 +19,10 @@ If the user logs in the user can see the relevant part of the orderbooks for an 
 
 The application has two scheduled jobs. The first is the ScheduledTask class. It reads the rates of the crypto currencies once a minute with different initial delays. That job provides one mongodb collection per exchange. The collections can have different documents with currency pairs like Usd to BitCoin or Eur to Ether or one document with all currency pairs, depends on what the exchanges provide. These collections provide the data for the current day chart and the current quote. To display the 7 day, 30 day, 90 day charts, hourly or daily quotes are required. Once a day the PrepareData class runs jobs to calculate the hourly and daily quotes. The jobs run between 0 and 2 o’clock. If no values are available the for the timeframe(hour, day) a value of zero is shown. For the 7 day chart the hourly data is used and for the 30 and 90 day charts the daily data is used. The SchedulingConfig class provides a config that provides the scheduler with 5 threads to enable the running of ScheduledTask class for the imports and the PrepareData class for aggregation concurrently. 
 
+## Minikube setup
+
+The application can now be run in a Minikube cluster. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory. Further documentation can be found in the wiki.
+
 ## Setup
 
 MongoDB 3.4.x or newer.
