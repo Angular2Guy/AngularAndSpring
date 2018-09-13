@@ -13,7 +13,7 @@
     "prebuild": "rimraf ./dist && mkdirp ./dist",
     "postbuild": "npm run deploy",
     "predeploy": "rimraf ../../main/resources/static/de && mkdirp ../../main/resources/static/de && rimraf ../../main/resources/static/en && mkdirp ../../main/resources/static/en",
-    "deploy": "copyfiles -f dist/en/** ../../main/resources/static/en/ && copyfiles -f dist/de/** ../../main/resources/static/de/"
+    "deploy": "cpx 'dist/**' ../../main/resources/static/"
   },
   "private": true,
   "dependencies": {
@@ -58,7 +58,7 @@
     "tslint": "~5.9.1",
     "rimraf": "^2.6.1",
     "mkdirp": "^0.5.1",
-    "copyfiles": "^1.2.0",
+    "cpx": "^1.5.0",
     "karma-junit-reporter": "~1.2.0",
     "karma-phantomjs-launcher": "~1.0.4",
     "phantomjs-prebuilt": "~2.1.14"
