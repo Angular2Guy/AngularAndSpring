@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -81,6 +81,25 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.0</version>
 		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -107,7 +126,6 @@
 			<plugin>
 				<artifactId>exec-maven-plugin</artifactId>
 				<groupId>org.codehaus.mojo</groupId>
-				<version>1.4.0</version>
 				<executions>
 					<execution>
 						<id>npm install</id>
@@ -232,12 +250,12 @@
 							<repository>${docker.image.prefix}/${project.artifactId}</repository>
 							<tag>${project.version}</tag>
 							<buildArgs>
-								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>								
-							</buildArgs>						
+								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+							</buildArgs>
 						</configuration>
 					</plugin>
 				</plugins>
-			</build>			 
+			</build>
 		</profile>
 	</profiles>
 </project>
