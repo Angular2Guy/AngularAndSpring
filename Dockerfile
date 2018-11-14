@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk
+FROM openjdk:11-jre-slim
 VOLUME /tmp
 RUN sh -c 'touch /app.jar'
 ARG JAR_FILE

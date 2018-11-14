@@ -33,7 +33,6 @@ import ch.xxx.trader.dtos.QuoteBf;
 import ch.xxx.trader.dtos.QuoteBs;
 import ch.xxx.trader.dtos.QuoteIb;
 import ch.xxx.trader.dtos.WrapperCb;
-import io.netty.channel.ChannelOption;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -51,8 +50,7 @@ public class ScheduledTask {
 	
 	private WebClient buildWebClient(String url) {
 		ReactorClientHttpConnector connector =
-	            new ReactorClientHttpConnector(options ->
-	                    options.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000));
+	            new ReactorClientHttpConnector();
 		return WebClient.builder().clientConnector(connector).baseUrl(url).build();
 	}
 	

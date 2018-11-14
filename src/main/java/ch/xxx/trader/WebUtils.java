@@ -14,8 +14,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ch.xxx.trader.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.netty.channel.ChannelOption;
-import reactor.core.publisher.Mono;
 
 public class WebUtils {
 
@@ -38,8 +36,7 @@ public class WebUtils {
 	}
 
 	public static WebClient buildWebClient(String url) {
-		ReactorClientHttpConnector connector = new ReactorClientHttpConnector(
-				options -> options.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000));
+		ReactorClientHttpConnector connector = new ReactorClientHttpConnector();
 		return WebClient.builder().clientConnector(connector).baseUrl(url).build();
 	}
 
