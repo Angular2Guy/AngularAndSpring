@@ -1,0 +1,8 @@
+webAppName: angularandspring
+dbName: mongodb
+webImageName: angular2guy/angularandspring
+webImageVersion: latest
+dbImageName: mongo
+dbImageVersion: 3.6.6
+volumeClaimName: mongo-pv-claim
+persistentVolumeName: task-pv-volume

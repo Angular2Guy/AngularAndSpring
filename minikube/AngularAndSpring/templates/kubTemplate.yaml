@@ -1,0 +1,111 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistentVolumeName }}
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  hostPath:
+    path: /data/mongo1
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.volumeClaimName }}
+  labels:
+    app: mongopv
+spec:  
+  accessModes:
+    - ReadWriteOnce
+  # storageClassName: local-storage
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.dbName }}
+  labels:
+    appdb: {{ .Values.dbName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      appdb: {{ .Values.dbName }}
+  template:
+    metadata:
+      labels:
+        appdb: {{ .Values.dbName }}
+    spec:
+      containers:
+      - name: {{ .Values.dbName }}
+        image: "{{ .Values.dbImageName }}:{{ .Values.dbImageVersion }}"
+        ports:
+        - containerPort: 27017              	
+        volumeMounts:
+        - name: hostvol
+          mountPath: /data/db
+      volumes:
+      - name: hostvol
+        persistentVolumeClaim:
+          claimName: {{ .Values.volumeClaimName }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.dbName }}
+  labels:
+    app: {{ .Values.dbName }}
+spec:
+  ports:
+  - port: 27017
+    protocol: TCP
+  selector:
+    appdb: {{ .Values.dbName }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.webAppName }}
+  labels:
+    app: {{ .Values.webAppName }}    
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.webAppName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.webAppName }}
+    spec:
+      containers:
+      - name: {{ .Values.webAppName }}
+        image: "{{ .Values.webImageName }}:{{ .Values.webImageVersion }}" 
+        env:
+        - name: MONGODB_HOST
+          value: {{ .Values.dbName }}
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.webAppName }} 
+  labels:
+    run: {{ .Values.webAppName }} 
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    protocol: TCP
+  selector:
+    app: {{ .Values.webAppName }}                 
