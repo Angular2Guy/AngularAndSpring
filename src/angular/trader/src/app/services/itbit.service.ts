@@ -24,7 +24,7 @@ import { QuoteIb } from '../common/quoteIb';
 import { Utils } from './utils';
 import { OrderbookIb } from '../common/orderbookIb';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class ItbitService {
     private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
     private readonly _itbit = '/itbit';    

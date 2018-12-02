@@ -22,7 +22,7 @@ import { QuoteBf } from '../common/quoteBf';
 import { Utils } from './utils';
 import { OrderbookBf } from '../common/orderbookBf';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class BitfinexService {
   private _reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
   private readonly _bitfinex = '/bitfinex';  

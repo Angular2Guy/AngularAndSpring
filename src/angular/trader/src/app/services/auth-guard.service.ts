@@ -19,7 +19,7 @@ import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { MyuserService } from './myuser.service';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class AuthGuardService implements CanActivate {
 
   constructor(private myuserService: MyuserService) { }

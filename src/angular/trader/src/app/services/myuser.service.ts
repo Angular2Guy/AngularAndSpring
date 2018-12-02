@@ -22,7 +22,7 @@ import { MyUser } from '../common/myUser';
 import { Utils } from './utils';
 import { AuthCheck } from '../common/authcheck';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class MyuserService {
   private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
   private _utils = new Utils();

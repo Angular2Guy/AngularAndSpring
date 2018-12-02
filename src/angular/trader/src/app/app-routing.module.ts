@@ -20,7 +20,6 @@ import { BsdetailComponent } from './bsdetail/bsdetail.component';
 import { IbdetailComponent } from './ibdetail/ibdetail.component';
 import { CbdetailComponent } from './cbdetail/cbdetail.component';
 import { BfdetailComponent } from './bfdetail/bfdetail.component';
-import { OrderbooksComponent } from './orderbooks/orderbooks.component';
 import { AuthGuardService } from './services/auth-guard.service';
 
 const routes: Routes = [
@@ -29,7 +28,7 @@ const routes: Routes = [
     {path: 'ibdetail/:currpair', component: IbdetailComponent},
     {path: 'cbdetail/:currpair', component: CbdetailComponent},
     {path: 'bfdetail/:currpair', component: BfdetailComponent},
-    {path: 'orderbooks', component: OrderbooksComponent, canActivate: [AuthGuardService]},
+    {path: 'orderbooks', loadChildren: './orderbooks/orderbooks.module#OrderbooksModule', canActivate: [AuthGuardService]},
     {path: '**', component: QuoteoverviewComponent}
 ];
 

@@ -35,7 +35,6 @@ import { CbdetailComponent } from './cbdetail/cbdetail.component';
 import { BfdetailComponent } from './bfdetail/bfdetail.component';
 import { LoginComponent } from './login/login.component';
 import { MyuserService } from './services/myuser.service';
-import { OrderbooksComponent } from './orderbooks/orderbooks.component';
 import { AuthGuardService } from './services/auth-guard.service';
 
   
@@ -48,8 +47,7 @@ import { AuthGuardService } from './services/auth-guard.service';
     CbdetailComponent,
     BfdetailComponent,
     LoginComponent,
-    OrderbooksComponent
-    
+//    OrderbooksComponent    
   ],
   entryComponents: [
     LoginComponent
@@ -65,12 +63,12 @@ import { AuthGuardService } from './services/auth-guard.service';
     ChartsModule,
     AppRoutingModule
   ],
-  providers: [BitstampService, 
-              CoinbaseService, 
-              ItbitService,
-              BitfinexService,
-              MyuserService,
-              AuthGuardService],
+//  providers: [BitstampService, 
+//              CoinbaseService, 
+//              ItbitService,
+//              BitfinexService,
+//              MyuserService,
+//              AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

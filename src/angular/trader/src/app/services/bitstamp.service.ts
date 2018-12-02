@@ -24,7 +24,7 @@ import { QuoteIb } from '../common/quoteIb';
 import { Utils } from './utils';
 import { OrderbookBs } from '../common/orderbookBs';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class BitstampService {    
    
     private _reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };

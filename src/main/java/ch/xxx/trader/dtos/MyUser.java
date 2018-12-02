@@ -36,7 +36,7 @@ public class MyUser implements UserDetails {
 	@Id
 	private ObjectId _id;
 	@JsonProperty
-	private final Date createdAt = new Date();	
+	private Date createdAt = new Date();	
 	@JsonProperty
 	private String userId;
 	@JsonProperty
@@ -105,6 +105,9 @@ public class MyUser implements UserDetails {
 	}
 	public Date getCreatedAt() {
 		return createdAt;
+	}
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 	public String getToken() {
 		return token;

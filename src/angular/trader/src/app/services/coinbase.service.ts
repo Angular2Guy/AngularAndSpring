@@ -23,7 +23,7 @@ import { QuoteCbSmall, QuoteCb } from '../common/quoteCb';
 import { QuoteIb } from '../common/quoteIb';
 import { Utils } from './utils';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class CoinbaseService {
     private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
     private readonly _coinbase = '/coinbase';
