@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader;
+package ch.xxx.trader.controller;
 
 import java.util.Optional;
 
@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.xxx.trader.data.PrepareData;
 import ch.xxx.trader.dtos.QuoteCb;
 import ch.xxx.trader.dtos.QuoteCbSmall;
+import ch.xxx.trader.utils.MongoUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

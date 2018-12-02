@@ -1,4 +1,4 @@
-package ch.xxx.trader;
+package ch.xxx.trader.utils;
 
 import java.time.Duration;
 import java.time.Instant;

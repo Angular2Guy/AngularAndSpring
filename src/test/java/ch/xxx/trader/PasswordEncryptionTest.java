@@ -21,6 +21,8 @@ import java.security.spec.InvalidKeySpecException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import ch.xxx.trader.utils.PasswordEncryption;
+
 
 
 public class PasswordEncryptionTest {
