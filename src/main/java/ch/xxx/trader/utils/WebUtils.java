@@ -21,7 +21,7 @@ public class WebUtils {
 	public static final String LASTOBCALLBS = "LAST_ORDERBOOK_CALL_BITSTAMP";
 	public static final String LASTOBCALLIB = "LAST_ORDERBOOK_CALL_ITBIT";
 	public static final String SECURITYCONTEXT = "SPRING_SECURITY_CONTEXT";
-	public static final String AUTHORIZATION = "Authorization";
+	public static final String AUTHORIZATION = "authorization";
 
 	public static boolean checkOBRequest(HttpServletRequest request, String sessionKey) {
 		Instant last = (Instant) request.getSession().getAttribute(sessionKey);
