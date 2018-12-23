@@ -13,20 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { QuoteoverviewComponent } from './quoteoverview/quoteoverview.component';
-import { AuthGuardService } from './services/auth-guard.service';
+import { BsdetailComponent } from "./bsdetail/bsdetail.component";
+import { IbdetailComponent } from "./ibdetail/ibdetail.component";
+import { CbdetailComponent } from "./cbdetail/cbdetail.component";
+import { BfdetailComponent } from "./bfdetail/bfdetail.component";
 
 const routes: Routes = [
-    {path: 'overview', component: QuoteoverviewComponent},
-    {path: 'details', loadChildren: './details/details.module#DetailsModule'},
-    {path: 'orderbooks', loadChildren: './orderbooks/orderbooks.module#OrderbooksModule', canActivate: [AuthGuardService]},
-    {path: '**', component: QuoteoverviewComponent}
-];
+                        {path: 'bsdetail/:currpair', component: BsdetailComponent},
+                        {path: 'ibdetail/:currpair', component: IbdetailComponent},
+                        {path: 'cbdetail/:currpair', component: CbdetailComponent},
+                        {path: 'bfdetail/:currpair', component: BfdetailComponent},
+                        ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class DetailsRoutingModule { }

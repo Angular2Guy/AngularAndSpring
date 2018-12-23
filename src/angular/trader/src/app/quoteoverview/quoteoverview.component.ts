@@ -94,15 +94,15 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
     selectedRow(row: Myrow):void {
       //console.log(row);
       if(row.exchange === 'Bitstamp') {
-          this.router.navigateByUrl("bsdetail/"+row.pair);
+          this.router.navigateByUrl("details/bsdetail/"+row.pair);
       } else if(row.exchange === 'Itbit' && row.pair === 'XBTUSD') {
-          this.router.navigateByUrl("ibdetail/"+this.serviceIb.BTCUSD);
+          this.router.navigateByUrl("details/ibdetail/"+this.serviceIb.BTCUSD);
       } else if (row.exchange === 'Itbit' && row.pair === 'XBTEUR') {
-          this.router.navigateByUrl("ibdetail/"+this.serviceIb.BTCEUR);
+          this.router.navigateByUrl("details/ibdetail/"+this.serviceIb.BTCEUR);
       } else if(row.exchange === 'Coinbase') {
-          this.router.navigateByUrl("cbdetail/"+row.pair);
+          this.router.navigateByUrl("details/cbdetail/"+row.pair);
       } else if(row.exchange === 'Bitfinex') {
-          this.router.navigateByUrl("bfdetail/"+row.pair);
+          this.router.navigateByUrl("details/bfdetail/"+row.pair);
       }
     }
       

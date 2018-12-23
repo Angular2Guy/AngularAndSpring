@@ -17,9 +17,9 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { Observable } from 'rxjs';
-import { BitstampService } from '../services/bitstamp.service';
-import { QuoteBs } from '../common/quoteBs';
-import { CommonUtils } from '../common/commonUtils';
+import { BitstampService } from '../../services/bitstamp.service';
+import { QuoteBs } from '../../common/quoteBs';
+import { CommonUtils } from '../../common/commonUtils';
 
 @Component({
   selector: 'app-bsdetail',

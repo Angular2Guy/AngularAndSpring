@@ -17,9 +17,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { Observable } from 'rxjs';
-import { QuoteCb, QuoteCbSmall } from '../common/quoteCb';
-import { CoinbaseService } from '../services/coinbase.service';
-import { CommonUtils } from '../common/commonUtils';
+import { QuoteCb, QuoteCbSmall } from '../../common/quoteCb';
+import { CoinbaseService } from '../../services/coinbase.service';
+import { CommonUtils } from '../../common/commonUtils';
 
 @Component( {
     selector: 'app-cbdetail',

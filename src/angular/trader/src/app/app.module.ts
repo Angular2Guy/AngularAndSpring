@@ -27,27 +27,17 @@ import { BitstampService } from './services/bitstamp.service';
 import { CoinbaseService } from './services/coinbase.service';
 import { ItbitService } from './services/itbit.service';
 import { BitfinexService} from './services/bitfinex.service';
-import { BsdetailComponent } from './bsdetail/bsdetail.component';
-import { IbdetailComponent } from './ibdetail/ibdetail.component';
-import { MaterialModule } from './material.module';
-import { ChartsModule } from 'ng2-charts';
-import { CbdetailComponent } from './cbdetail/cbdetail.component';
-import { BfdetailComponent } from './bfdetail/bfdetail.component';
 import { LoginComponent } from './login/login.component';
 import { MyuserService } from './services/myuser.service';
 import { AuthGuardService } from './services/auth-guard.service';
+import { MatTableModule,MatToolbarModule,MatTabsModule,MatButtonModule, MatDialogModule,MatFormFieldModule,MatInputModule } from '@angular/material';
 
   
 @NgModule({
   declarations: [
     AppComponent,
     QuoteoverviewComponent,
-    BsdetailComponent,
-    IbdetailComponent,
-    CbdetailComponent,
-    BfdetailComponent,
     LoginComponent,
-//    OrderbooksComponent    
   ],
   entryComponents: [
     LoginComponent
@@ -58,17 +48,16 @@ import { AuthGuardService } from './services/auth-guard.service';
     ReactiveFormsModule,
     HttpModule,
     HttpClientModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    ChartsModule,
-    AppRoutingModule
+    BrowserAnimationsModule,  
+    AppRoutingModule,
+    MatTableModule,
+    MatToolbarModule,
+    MatTabsModule, 
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
-//  providers: [BitstampService, 
-//              CoinbaseService, 
-//              ItbitService,
-//              BitfinexService,
-//              MyuserService,
-//              AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -16,15 +16,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
-import { BitfinexService } from '../services/bitfinex.service';
-import { QuoteBf } from '../common/quoteBf';
-import { CommonUtils } from '../common/commonUtils';
 import { Observable } from 'rxjs';
+import { QuoteIb } from '../../common/quoteIb';
+import { ItbitService } from '../../services/itbit.service';
+import { CommonUtils } from '../../common/commonUtils';
 
 @Component( {
-    selector: 'app-bfdetail',
-    templateUrl: './bfdetail.component.html',
-    styleUrls: ['./bfdetail.component.scss'],
+    selector: 'app-ibdetail',
+    templateUrl: './ibdetail.component.html',
+    styleUrls: ['./ibdetail.component.scss'],
     animations: [
         trigger( 'showChart', [
             state( 'true', style( { opacity: 1 } ) ),
@@ -34,10 +34,9 @@ import { Observable } from 'rxjs';
         ] )
     ]
 } )
-export class BfdetailComponent implements OnInit {
-
-    currQuote: QuoteBf;
-    todayQuotes: QuoteBf[] = [];
+export class IbdetailComponent implements OnInit {
+    currQuote: QuoteIb;
+    todayQuotes: QuoteIb[] = [];
     chartdata: number[] = [];
     chartlabels: string[] = [];
     chartType = "line";
@@ -45,20 +44,18 @@ export class BfdetailComponent implements OnInit {
     currPair = "";
     timeframe = this.utils.timeframes[0];
 
-    constructor( private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService ) { }
+    constructor( private route: ActivatedRoute, private router: Router, private serviceIb: ItbitService ) { }
 
     ngOnInit() {
-        this.route.params.subscribe( params => {            
-            this.serviceBf.getCurrentQuote( params.currpair )
-                .subscribe( quote => {
-                    this.currQuote = quote;
-                    this.currPair = this.utils.getCurrpairName( this.currQuote.pair );
-                } );
-            this.serviceBf.getTodayQuotes( this.route.snapshot.paramMap.get( 'currpair' ) )
+        this.route.params.subscribe( params => {
+            this.currPair = params.currpair;
+            this.serviceIb.getCurrentQuote( this.currPair )
+                .subscribe( quote => this.currQuote = quote );
+            this.serviceIb.getTodayQuotes( this.currPair )
                 .subscribe( quotes => {
                     this.todayQuotes = quotes;
                     this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
-                    this.chartdata = this.todayQuotes.map( quote => quote.last_price );
+                    this.chartdata = this.todayQuotes.map( quote => quote.lastPrice );
                 } );
         } );
     }
@@ -67,12 +64,11 @@ export class BfdetailComponent implements OnInit {
         this.chartdata = [];
         this.chartlabels = [];
         const currpair = this.route.snapshot.paramMap.get( 'currpair' );
-        let quoteObserv: Observable<QuoteBf[]>;
-        if ( this.timeframe === this.utils.timeframes[1] ) quoteObserv = this.serviceBf.get7DayQuotes( currpair );
-        else if ( this.timeframe === this.utils.timeframes[2] ) quoteObserv = this.serviceBf.get30DayQuotes( currpair );
-        else if ( this.timeframe === this.utils.timeframes[3] ) quoteObserv = this.serviceBf.get90DayQuotes( currpair )
-        else quoteObserv = this.serviceBf.getTodayQuotes( currpair );
-
+        let quoteObserv: Observable<QuoteIb[]>;
+        if ( this.timeframe === this.utils.timeframes[1] ) quoteObserv = this.serviceIb.get7DayQuotes( currpair );
+        else if ( this.timeframe === this.utils.timeframes[2] ) quoteObserv = this.serviceIb.get30DayQuotes( currpair );
+        else if ( this.timeframe === this.utils.timeframes[3] ) quoteObserv = this.serviceIb.get90DayQuotes( currpair )
+        else quoteObserv = this.serviceIb.getTodayQuotes( currpair );
         quoteObserv.subscribe( quotes => {
             this.todayQuotes = quotes;
             if ( this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3] )
@@ -81,13 +77,13 @@ export class BfdetailComponent implements OnInit {
                 this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getDay().toString() )
             else
                 this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
-            this.chartdata = this.todayQuotes.map( quote => quote.last_price );
+            this.chartdata = this.todayQuotes.map( quote => quote.lastPrice );
         } );
     }
 
     showReport() {
         const currpair = this.route.snapshot.paramMap.get( 'currpair' );
-        let url = '/bitfinex' + this.utils.createReportUrl( this.timeframe, currpair );
+        let url = '/itbit' + this.utils.createReportUrl( this.timeframe, currpair );
         window.open( url );
     }
 }
