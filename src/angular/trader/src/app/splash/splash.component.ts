@@ -11,7 +11,7 @@ import { trigger, state, animate, transition, style } from '@angular/animations'
                    state( 'true', style( { opacity: 1 } ) ),
                    state( 'false', style( { opacity: 0 } ) ),
                    transition( '1 => 0', animate( '750ms' ) ),
-                   transition( '0 => 1', animate( '7500ms' ) )
+                   transition( '0 => 1', animate( '750ms' ) )
                ])]  
 })
 export class SplashComponent implements OnInit,AfterViewInit {    
