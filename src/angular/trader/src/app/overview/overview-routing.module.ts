@@ -15,18 +15,16 @@
  */
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuardService } from './services/auth-guard.service';
-import { SplashComponent } from "./splash/splash.component";
+import { QuoteoverviewComponent } from "./quoteoverview/quoteoverview.component";
 
-const routes: Routes = [
-    {path: 'overview', loadChildren: './overview/overview.module#OverviewModule'},
-    {path: 'details', loadChildren: './details/details.module#DetailsModule'},
-    {path: 'orderbooks', loadChildren: './orderbooks/orderbooks.module#OrderbooksModule', canActivate: [AuthGuardService]},
-    {path: '**', component: SplashComponent}
-];
+const routes: Routes = [{
+    path: '',
+    component: QuoteoverviewComponent
+    }];
+                     
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class OverviewRoutingModule { }

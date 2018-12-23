@@ -15,48 +15,28 @@
  */
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { QuoteoverviewComponent } from './quoteoverview/quoteoverview.component';
-import { BitstampService } from './services/bitstamp.service';
-import { CoinbaseService } from './services/coinbase.service';
-import { ItbitService } from './services/itbit.service';
-import { BitfinexService} from './services/bitfinex.service';
-import { LoginComponent } from './login/login.component';
-import { MyuserService } from './services/myuser.service';
-import { AuthGuardService } from './services/auth-guard.service';
-import { MatTableModule,MatToolbarModule,MatTabsModule,MatButtonModule, MatDialogModule,MatFormFieldModule,MatInputModule } from '@angular/material';
+import { SplashComponent } from './splash/splash.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
   
 @NgModule({
   declarations: [
     AppComponent,
-    QuoteoverviewComponent,
-    LoginComponent,
-  ],
-  entryComponents: [
-    LoginComponent
+    SplashComponent,
   ],
   imports: [    
     BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
     HttpModule,
     HttpClientModule,
-    BrowserAnimationsModule,  
-    AppRoutingModule,
-    MatTableModule,
-    MatToolbarModule,
-    MatTabsModule, 
-    MatButtonModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule
+    MatProgressSpinnerModule
   ],
   bootstrap: [AppComponent]
 })

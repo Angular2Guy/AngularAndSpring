@@ -14,21 +14,21 @@
    limitations under the License.
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { BitstampService } from '../services/bitstamp.service';
-import { CoinbaseService } from '../services/coinbase.service';
-import { ItbitService } from '../services/itbit.service';
-import { BitfinexService } from '../services/bitfinex.service';
-import { QuoteBs } from '../common/quoteBs';
-import { QuoteCb } from '../common/quoteCb';
-import { QuoteIb } from '../common/quoteIb';
-import { QuoteBf } from '../common/quoteBf';
+import { BitstampService } from '../../services/bitstamp.service';
+import { CoinbaseService } from '../../services/coinbase.service';
+import { ItbitService } from '../../services/itbit.service';
+import { BitfinexService } from '../../services/bitfinex.service';
+import { QuoteBs } from '../../common/quoteBs';
+import { QuoteCb } from '../../common/quoteCb';
+import { QuoteIb } from '../../common/quoteIb';
+import { QuoteBf } from '../../common/quoteBf';
 import { Observable, of, Subject } from 'rxjs';
 import {DataSource, CollectionViewer} from '@angular/cdk/collections';
 import { Router } from '@angular/router';
-import { CommonUtils } from "../common/commonUtils";
+import { CommonUtils } from "../../common/commonUtils";
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { LoginComponent } from '../login/login.component';
-import { MyuserService } from '../services/myuser.service';
+import { MyuserService } from '../../services/myuser.service';
 
 @Component({
   selector: 'app-quoteoverview',
