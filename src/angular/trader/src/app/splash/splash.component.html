@@ -1,8 +1,8 @@
 <div class="container">
-	<div class="content" i18n>Welcome to AngularAndSpring</div>							
+	<div class="content" [@showSplash]="myState" i18n>Welcome to AngularAndSpring</div>							
 </div>
 <div class="container">
-	<div class="content">
+	<div class="content" [@showSplash]="myState">
 		<mat-progress-spinner
 			class="example-margin"
 			mode="indeterminate"
