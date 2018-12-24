@@ -23,7 +23,7 @@ import { IbdetailComponent } from "./ibdetail/ibdetail.component";
 import { CbdetailComponent } from "./cbdetail/cbdetail.component";
 import { BsdetailComponent } from "./bsdetail/bsdetail.component";
 import { BfdetailComponent } from "./bfdetail/bfdetail.component";
-import { MatToolbarModule, MatRadioModule } from '@angular/material';
+import { MatToolbarModule, MatRadioModule, MatButtonModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -32,6 +32,7 @@ import { MatToolbarModule, MatRadioModule } from '@angular/material';
     ReactiveFormsModule,
     MatToolbarModule,
     MatRadioModule,
+    MatButtonModule,
     DetailsRoutingModule,
     ChartsModule,
   ],
