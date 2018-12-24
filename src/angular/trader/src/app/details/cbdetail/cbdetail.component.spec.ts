@@ -24,7 +24,6 @@ import { ChartsModule } from 'ng2-charts';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
-import { PlatformLocation } from "@angular/common";
 import { RouterTestingModule } from '@angular/router/testing';
 import { CbdetailComponent } from './cbdetail.component';
 import { CoinbaseService } from '../../services/coinbase.service';
@@ -58,7 +57,7 @@ class MockService extends CoinbaseService {
 describe('CbdetailComponent', () => {
   let component: CbdetailComponent;
   let fixture: ComponentFixture<CbdetailComponent>;
-  let mockService = new MockService(null,null);
+  let mockService = new MockService(null);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

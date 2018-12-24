@@ -29,12 +29,11 @@ import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
 import { QuoteBf } from '../../common/quoteBf';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { PlatformLocation } from '@angular/common';
 import { MatToolbarModule, MatRadioModule } from '@angular/material';
 
 class MockBfService extends BitfinexService {
-    constructor(private http1: HttpClient, private pl1: PlatformLocation ) {
-        super(http1, pl1);
+    constructor(private http1: HttpClient) {
+        super(http1);
     }
     getCurrentQuote(currencypair: string): Observable<QuoteBf> {
         let quoteBf: QuoteBf = { 
@@ -60,7 +59,7 @@ class MockBfService extends BitfinexService {
 describe('BfdetailComponent', () => {
   let component: BfdetailComponent;
   let fixture: ComponentFixture<BfdetailComponent>;
-  let mockService = new MockBfService(null,null); 
+  let mockService = new MockBfService(null); 
 
   beforeEach(async(() => {              
     TestBed.configureTestingModule({

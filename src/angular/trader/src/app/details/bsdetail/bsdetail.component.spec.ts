@@ -27,13 +27,12 @@ import { of, Observable } from 'rxjs';
 import { BsdetailComponent } from './bsdetail.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BitstampService } from '../../services/bitstamp.service';
-import { PlatformLocation } from "@angular/common";
 import { QuoteBs } from '../../common/quoteBs';
 import { MatToolbarModule, MatRadioModule } from '@angular/material';
 
 class MockService extends BitstampService {
-    constructor(private http1: HttpClient, private pl1: PlatformLocation ) {
-        super(http1, pl1);
+    constructor(private http1: HttpClient) {
+        super(http1);
     }
 
     getCurrentQuote(currencypair: string): Observable<QuoteBs> {
@@ -62,7 +61,7 @@ class MockService extends BitstampService {
 describe('BsdetailComponent', () => {
   let component: BsdetailComponent;
   let fixture: ComponentFixture<BsdetailComponent>;
-  let mockService = new MockService(null,null);
+  let mockService = new MockService(null);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
