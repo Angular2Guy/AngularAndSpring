@@ -23,10 +23,10 @@ export class CommonUtils {
     public timeframes = [1, 7, 30, 90];
     
     constructor() { 
-        let serviceBs = new BitstampService(null, null);
-        let serviceCb = new CoinbaseService(null, null);
-        let serviceIb = new ItbitService(null,null);
-        let serviceBf = new BitfinexService(null, null);
+        let serviceBs = new BitstampService(null);
+        let serviceCb = new CoinbaseService(null);
+        let serviceIb = new ItbitService(null);
+        let serviceBf = new BitfinexService(null);
         this.currpairs.set(serviceBs.BTCEUR, "Bitcoin Eur");
         this.currpairs.set(serviceBs.ETHEUR, "Ether Eur");
         this.currpairs.set(serviceBs.LTCEUR, "Litecoin Eur");

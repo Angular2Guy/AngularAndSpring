@@ -15,7 +15,6 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { PlatformLocation } from '@angular/common';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { QuoteBs } from '../common/quoteBs';
@@ -32,7 +31,7 @@ export class CoinbaseService {
     ETHUSD = 'ethusd';
     LTCUSD = 'ltcusd';
     
-    constructor(private http: HttpClient, private pl: PlatformLocation ) { 
+    constructor(private http: HttpClient) { 
     }
 
     getCurrentQuote(): Observable<QuoteCb> {

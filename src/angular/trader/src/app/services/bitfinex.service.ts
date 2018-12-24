@@ -15,7 +15,6 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { PlatformLocation } from '@angular/common';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { QuoteBf } from '../common/quoteBf';
@@ -33,7 +32,7 @@ export class BitfinexService {
   
   private _utils = new Utils();
   
-  constructor(private http: HttpClient, private pl: PlatformLocation ) { 
+  constructor(private http: HttpClient) { 
   }
 
   getCurrentQuote(currencypair: string): Observable<QuoteBf> { 

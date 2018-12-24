@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Http, Response, RequestOptionsArgs, Headers } from '@angular/http';
 import { Observable, of } from 'rxjs';
 import { HttpHeaders } from "@angular/common/http";
 

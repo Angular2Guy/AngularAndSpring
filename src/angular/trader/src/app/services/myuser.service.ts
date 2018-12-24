@@ -15,7 +15,6 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { PlatformLocation } from '@angular/common';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { MyUser } from '../common/myUser';
@@ -28,7 +27,7 @@ export class MyuserService {
   private _utils = new Utils();
   private myUserUrl = "/myuser";
   
-  constructor(private http: HttpClient, private pl: PlatformLocation ) { 
+  constructor(private http: HttpClient) { 
   }
 
   postLogin(user: MyUser): Observable<MyUser> {
