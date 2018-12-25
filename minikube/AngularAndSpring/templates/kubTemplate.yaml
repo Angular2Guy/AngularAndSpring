@@ -90,6 +90,7 @@ spec:
       containers:
       - name: {{ .Values.webAppName }}
         image: "{{ .Values.webImageName }}:{{ .Values.webImageVersion }}" 
+        imagePullPolicy: Always
         env:
         - name: MONGODB_HOST
           value: {{ .Values.dbName }}
