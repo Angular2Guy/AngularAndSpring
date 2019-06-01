@@ -33,7 +33,17 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chromium','PhantomJS'],
+    browsers: ['Chromium', 'ChromeHeadless', 'ChromiumHeadless'],
+    customLaunchers: {
+        ChromeHeadless: {
+          base: 'Chrome',
+          flags: ['--no-sandbox','--headless', '--disable-gpu', '--remote-debugging-port=9222']
+        },
+        ChromiumHeadless: {
+            base: 'Chromium',
+            flags: ['--no-sandbox','--headless', '--disable-gpu', '--remote-debugging-port=9222']
+          }
+      },
     singleRun: false
   });
 };

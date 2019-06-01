@@ -17,7 +17,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ChartsModule } from 'ng2-charts';
@@ -28,7 +27,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { IbdetailComponent } from './ibdetail.component';
 import { ItbitService } from '../../services/itbit.service';
 import { QuoteIb } from '../../common/quoteIb';
-import { MatToolbarModule, MatRadioModule } from '@angular/material';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 class MockService extends ItbitService {
     constructor(private http1: HttpClient) {
@@ -73,8 +73,7 @@ describe('IbdetailComponent', () => {
         imports: [RouterTestingModule,
                   BrowserModule,
                   FormsModule,
-                  ReactiveFormsModule,
-                  HttpModule,
+                  ReactiveFormsModule,                  
                   HttpClientModule,
                   BrowserAnimationsModule,                 
                   ChartsModule, 

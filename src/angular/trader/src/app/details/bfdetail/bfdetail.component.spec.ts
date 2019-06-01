@@ -20,7 +20,6 @@ import { BfdetailComponent } from './bfdetail.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { ChartsModule } from 'ng2-charts';
@@ -29,7 +28,8 @@ import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
 import { QuoteBf } from '../../common/quoteBf';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { MatToolbarModule, MatRadioModule } from '@angular/material';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 class MockBfService extends BitfinexService {
     constructor(private http1: HttpClient) {
@@ -67,9 +67,8 @@ describe('BfdetailComponent', () => {
                 RouterTestingModule,
                 BrowserModule,
                 FormsModule,
-                ReactiveFormsModule,
-                HttpModule,
                 HttpClientModule,
+                ReactiveFormsModule,                                
                 BrowserAnimationsModule,                
                 ChartsModule,
                 MatToolbarModule, 

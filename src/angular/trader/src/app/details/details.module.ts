@@ -23,7 +23,9 @@ import { IbdetailComponent } from "./ibdetail/ibdetail.component";
 import { CbdetailComponent } from "./cbdetail/cbdetail.component";
 import { BsdetailComponent } from "./bsdetail/bsdetail.component";
 import { BfdetailComponent } from "./bfdetail/bfdetail.component";
-import { MatToolbarModule, MatRadioModule, MatButtonModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   imports: [

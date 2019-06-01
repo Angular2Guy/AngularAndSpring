@@ -17,9 +17,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient} from '@angular/common/http';
 import { ChartsModule } from 'ng2-charts';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
@@ -28,7 +27,8 @@ import { BsdetailComponent } from './bsdetail.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BitstampService } from '../../services/bitstamp.service';
 import { QuoteBs } from '../../common/quoteBs';
-import { MatToolbarModule, MatRadioModule } from '@angular/material';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 class MockService extends BitstampService {
     constructor(private http1: HttpClient) {
@@ -68,8 +68,7 @@ describe('BsdetailComponent', () => {
       imports: [RouterTestingModule,
                 BrowserModule,
                 FormsModule,
-                ReactiveFormsModule,
-                HttpModule,
+                ReactiveFormsModule,                
                 HttpClientModule,
                 BrowserAnimationsModule,                
                 ChartsModule,
