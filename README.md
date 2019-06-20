@@ -29,7 +29,7 @@ MongoDB 3.4.x or newer.
 
 Eclipse Oxygen JEE or newer.
 
-Plugin Typescript.Java 1.4.0 or newer.
+Install Eclipse Plugin 'Eclipse Wild Web Developer' of the Eclipse Marketplace.
 
 Maven 3.3.3 or newer.
 
