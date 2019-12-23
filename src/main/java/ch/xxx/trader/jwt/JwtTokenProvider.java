@@ -37,6 +37,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.dtos.MyUser;
+import ch.xxx.trader.exceptions.JwtTokenValidationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -103,7 +104,7 @@ public class JwtTokenProvider {
 			Jwts.parser().setSigningKey(encodedSecretKey).parseClaimsJws(token);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
-			throw new RuntimeException("Expired or invalid JWT token");
+			throw new JwtTokenValidationException("Expired or invalid JWT token", e);
 		}
 	}
 

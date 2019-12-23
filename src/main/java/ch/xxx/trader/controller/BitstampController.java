@@ -15,7 +15,6 @@
  */
 package ch.xxx.trader.controller;
 
-import java.util.Date;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,12 +32,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ch.xxx.trader.data.PrepareData;
 import ch.xxx.trader.dtos.QuoteBs;
 import ch.xxx.trader.dtos.QuotePdf;
-import ch.xxx.trader.jwt.JwtTokenProvider;
 import ch.xxx.trader.reports.ReportGenerator;
 import ch.xxx.trader.utils.MongoUtils;
 import ch.xxx.trader.utils.WebUtils;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

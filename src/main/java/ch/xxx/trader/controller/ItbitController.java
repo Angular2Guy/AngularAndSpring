@@ -34,7 +34,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ch.xxx.trader.data.PrepareData;
 import ch.xxx.trader.dtos.QuoteIb;
 import ch.xxx.trader.dtos.QuotePdf;
-import ch.xxx.trader.jwt.JwtTokenProvider;
 import ch.xxx.trader.reports.ReportGenerator;
 import ch.xxx.trader.utils.MongoUtils;
 import ch.xxx.trader.utils.WebUtils;
