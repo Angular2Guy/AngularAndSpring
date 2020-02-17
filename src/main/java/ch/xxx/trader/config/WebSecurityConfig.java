@@ -46,12 +46,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests().anyRequest().anonymous().and()
 		.csrf().disable()
 		.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
-//		http.httpBasic();
-//		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//		http.authorizeRequests().anyRequest().permitAll().anyRequest().anonymous();
-//		http.antMatcher("/**/orderbook").authorizeRequests().anyRequest().authenticated();
-//		http.csrf().disable();
-//		http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 	}
 
 	@Override
