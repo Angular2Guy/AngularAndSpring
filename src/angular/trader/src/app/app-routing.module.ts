@@ -19,9 +19,9 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { SplashComponent } from "./splash/splash.component";
 
 const routes: Routes = [
-    {path: 'overview', loadChildren: './overview/overview.module#OverviewModule'},
-    {path: 'details', loadChildren: './details/details.module#DetailsModule'},
-    {path: 'orderbooks', loadChildren: './orderbooks/orderbooks.module#OrderbooksModule', canActivate: [AuthGuardService]},
+    {path: 'overview', loadChildren: () => import('./overview/overview.module').then(m => m.OverviewModule)},
+    {path: 'details', loadChildren: () => import('./details/details.module').then(m => m.DetailsModule)},
+    {path: 'orderbooks', loadChildren: () => import('./orderbooks/orderbooks.module').then(m => m.OrderbooksModule), canActivate: [AuthGuardService]},
     {path: '**', component: SplashComponent}
 ];
 
