@@ -14,28 +14,29 @@
     "prebuild": "rimraf ./dist && mkdirp ./dist",
     "postbuild": "npm run deploy",
     "predeploy": "rimraf ../../main/resources/static/de && mkdirp ../../main/resources/static/de && rimraf ../../main/resources/static/en && mkdirp ../../main/resources/static/en",
-    "deploy": "cpx 'dist/**' ../../main/resources/static/"
+    "deploy": "cpx 'dist/testproject/**' ../../main/resources/static/"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^9.0.1",
+    "@angular/cdk": "^9.0.0",
     "@angular/common": "^9.0.1",
     "@angular/compiler": "^9.0.1",
     "@angular/core": "^9.0.1",
     "@angular/forms": "^9.0.1",
+    "@angular/localize": "^9.0.1",
+    "@angular/material": "^9.0.0",
     "@angular/platform-browser": "^9.0.1",
     "@angular/platform-browser-dynamic": "^9.0.1",
     "@angular/router": "^9.0.1",
+    "chart.js": "~2.9.3",
     "core-js": "^2.5.7",
+    "material-design-icons": "3.0.1",
+    "ng2-charts": "2.3.0",
     "rxjs": "^6.5.4",
     "tslib": "^1.10.0",
-    "zone.js": "~0.10.2",
     "web-animations-js": "^2.3.1",
-    "chart.js": "~2.9.3",
-    "ng2-charts": "2.3.0",
-    "@angular/material": "^9.0.0",
-    "@angular/cdk": "^9.0.0",
-    "material-design-icons": "3.0.1"
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.900.2",

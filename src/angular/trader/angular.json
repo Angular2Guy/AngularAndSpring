@@ -9,11 +9,11 @@
       "projectType": "application",
       "prefix": "app",
       "i18n": {
-  		"locales": {
-          "de": "src/locale/messages.de.xlf"
-  		},
-  		"sourceLocale": "en"
-	  },
+        "locales": {
+          "de": "i18n/messages.de.xlf"
+        },
+        "sourceLocale": "en"
+      },
       "schematics": {
         "@schematics/angular:component": {
           "styleext": "scss"
@@ -27,7 +27,7 @@
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.app.json",
+            "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -39,11 +39,15 @@
           },
           "configurations": {
             "de": {
-        	  "localize": ["de"]
-      		},
-      		"en": {
-              "localize": ["en"]
-      		},
+              "localize": [
+                "de"
+              ]
+            },
+            "en": {
+              "localize": [
+                "en"
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -88,8 +92,8 @@
           "options": {
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
             "styles": [
               "src/styles.scss"
             ],
@@ -104,8 +108,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
+              "tsconfig.app.json",
+              "tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -137,5 +141,8 @@
       }
     }
   },
-  "defaultProject": "testproject"
+  "defaultProject": "testproject",
+  "cli": {
+    "analytics": false
+  }
 }
