@@ -15,8 +15,6 @@
  */
 package ch.xxx.trader.dtos;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CurrencyCb {

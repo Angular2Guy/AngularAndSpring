@@ -4,14 +4,12 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -278,7 +276,7 @@ public class PrepareData {
 		}
 		QuoteCb quoteCb = null;
 		try {
-			quoteCb = QuoteCb.class.getConstructor(types).newInstance(params);
+			quoteCb = QuoteCb.class.getConstructor(types).newInstance((Object[]) params);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException(e);
@@ -308,7 +306,7 @@ public class PrepareData {
 			}
 			QuoteCb quoteCb = null;
 			try {
-				quoteCb = QuoteCb.class.getConstructor(types).newInstance(params);
+				quoteCb = QuoteCb.class.getConstructor(types).newInstance((Object[]) params);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				throw new RuntimeException(e);
@@ -342,7 +340,7 @@ public class PrepareData {
 			IntStream.range(0, QuoteCb.class.getConstructor(types).getParameterAnnotations().length)// .parallel()
 					.forEach(x -> {
 						try {
-							MethodHandle mh = this.cbMethodCache.get(Integer.valueOf(x));
+							MethodHandle mh = PrepareData.cbMethodCache.get(Integer.valueOf(x));
 							if (mh == null) {
 								JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
 										.getParameterAnnotations()[x][0];
@@ -355,7 +353,7 @@ public class PrepareData {
 								}
 								MethodType desc = MethodType.methodType(BigDecimal.class);
 								mh = MethodHandles.lookup().findVirtual(QuoteCb.class, methodName, desc);
-								this.cbMethodCache.put(Integer.valueOf(x), mh);
+								PrepareData.cbMethodCache.put(Integer.valueOf(x), mh);
 							}
 							BigDecimal num1 = (BigDecimal) mh.invokeExact(q1);
 							BigDecimal num2 = (BigDecimal) mh.invokeExact(q2);
@@ -364,7 +362,7 @@ public class PrepareData {
 							throw new RuntimeException(e);
 						}
 					});
-			result = QuoteCb.class.getConstructor(types).newInstance(bds);
+			result = QuoteCb.class.getConstructor(types).newInstance((Object[]) bds);
 			result.setCreatedAt(q1.getCreatedAt());
 		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException e) {

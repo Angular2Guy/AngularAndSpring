@@ -20,6 +20,7 @@ import java.util.Date;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,8 +30,10 @@ public class QuoteBf implements Quote {
 
 	@Id
 	private ObjectId _id;
+	@Indexed
 	@JsonProperty
 	private String pair;
+	@Indexed
 	@JsonProperty
 	private Date createdAt = new Date();
 
