@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.dtos.MyUser;
@@ -43,6 +42,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtTokenProvider {
@@ -63,18 +63,18 @@ public class JwtTokenProvider {
 
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + validityInMilliseconds);
-		String encodedSecretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+		SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
 
 		return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(validity)
-				.signWith(SignatureAlgorithm.HS256, encodedSecretKey).compact();
+				.signWith(key, SignatureAlgorithm.HS256).compact();
 	}
 
 	public Optional<Jws<Claims>> getClaims(Optional<String> token) {
 		if (!token.isPresent()) {
 			return Optional.empty();
 		}
-		String encodedSecretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-		return Optional.of(Jwts.parser().setSigningKey(encodedSecretKey).parseClaimsJws(token.get()));
+		SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+		return Optional.of(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token.get()));
 	}
 
 	public Authentication getAuthentication(String token) {
@@ -86,8 +86,8 @@ public class JwtTokenProvider {
 	}
 
 	public String getUsername(String token) {
-		String encodedSecretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-		return Jwts.parser().setSigningKey(encodedSecretKey).parseClaimsJws(token).getBody().getSubject();
+		SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
 	}
 
 	public String resolveToken(HttpServletRequest req) {
@@ -101,7 +101,7 @@ public class JwtTokenProvider {
 	public boolean validateToken(String token) {
 		String encodedSecretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 		try {
-			Jwts.parser().setSigningKey(encodedSecretKey).parseClaimsJws(token);
+			Jwts.parserBuilder().setSigningKey(encodedSecretKey).build().parseClaimsJws(token);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
 			throw new JwtTokenValidationException("Expired or invalid JWT token", e);
