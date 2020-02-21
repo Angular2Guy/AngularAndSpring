@@ -15,7 +15,6 @@
  */
 package ch.xxx.trader.jwt;
 
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -99,9 +98,9 @@ public class JwtTokenProvider {
 	}
 
 	public boolean validateToken(String token) {
-		String encodedSecretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+		SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
 		try {
-			Jwts.parserBuilder().setSigningKey(encodedSecretKey).build().parseClaimsJws(token);
+			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
 			throw new JwtTokenValidationException("Expired or invalid JWT token", e);
