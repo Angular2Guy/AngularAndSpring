@@ -13,8 +13,8 @@
     "e2e": "ng e2e",
     "prebuild": "rimraf ./dist && mkdirp ./dist",
     "postbuild": "npm run deploy",
-    "predeploy": "rimraf ../../main/resources/static/de && mkdirp ../../main/resources/static/de && rimraf ../../main/resources/static/en && mkdirp ../../main/resources/static/en",
-    "deploy": "cpx 'dist/testproject/**' ../../main/resources/static/"
+    "predeploy": "rimraf ../../main/resources/static/*",
+    "deploy": "cpx 'base/*' dist/testproject/ && cpx 'dist/testproject/**' ../../main/resources/static/"
   },
   "private": true,
   "dependencies": {
