@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { BitfinexService } from '../../services/bitfinex.service';
 import { QuoteBf } from '../../common/quoteBf';
-import { CommonUtils } from '../../common/commonUtils';
 import { Observable } from 'rxjs';
+import { DetailBase, Tuple } from '../../common/detail-base';
 
 @Component( {
     selector: 'app-bfdetail',
@@ -34,18 +34,15 @@ import { Observable } from 'rxjs';
         ] )
     ]
 } )
-export class BfdetailComponent implements OnInit {
+export class BfdetailComponent extends DetailBase implements OnInit {
 
     currQuote: QuoteBf;
-    todayQuotes: QuoteBf[] = [];
-    chartdata: number[] = [];
-    chartlabels: string[] = [];
-    chartType = "line";
-    utils = new CommonUtils();
-    currPair = "";
-    timeframe = this.utils.timeframes[0];
+    todayQuotes: QuoteBf[] = [];   
 
-    constructor( private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService ) { }
+    constructor( private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService, 
+		@Inject(LOCALE_ID) private myLocale: string) { 
+			super(myLocale);
+		}
 
     ngOnInit() {
         this.route.params.subscribe( params => {            
@@ -57,15 +54,12 @@ export class BfdetailComponent implements OnInit {
             this.serviceBf.getTodayQuotes( this.route.snapshot.paramMap.get( 'currpair' ) )
                 .subscribe( quotes => {
                     this.todayQuotes = quotes;
-                    this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
-                    this.chartdata = this.todayQuotes.map( quote => quote.last_price );
+					this.updateChartData(quotes.map(quote => new Tuple<string,number>(quote.timestamp, quote.last_price)));
                 } );
         } );
     }
 
     changeTf() {
-        this.chartdata = [];
-        this.chartlabels = [];
         const currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteBf[]>;
         if ( this.timeframe === this.utils.timeframes[1] ) quoteObserv = this.serviceBf.get7DayQuotes( currpair );
@@ -75,13 +69,7 @@ export class BfdetailComponent implements OnInit {
 
         quoteObserv.subscribe( quotes => {
             this.todayQuotes = quotes;
-            if ( this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3] )
-                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getUTCDate().toString() )
-            else if ( this.timeframe === this.utils.timeframes[1] )
-                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getDay().toString() )
-            else
-                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
-            this.chartdata = this.todayQuotes.map( quote => quote.last_price );
+            this.updateChartData(quotes.map(quote => new Tuple<string,number>(quote.timestamp, quote.last_price))); 
         } );
     }
 

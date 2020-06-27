@@ -16,10 +16,10 @@
 export interface QuoteBs {
     _id: string;
     pair: string;
-    createdAt: Date;
+    createdAt: string;
     high: number;
     last: number;
-    timestamp: Date;
+    timestamp: string;
     bid: number;
     vwap: number;
     volume: number;

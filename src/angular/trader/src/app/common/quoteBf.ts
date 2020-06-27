@@ -16,7 +16,7 @@
 export interface QuoteBf {
     _id: string;
     pair: string;
-    createdAt: Date;
+    createdAt: string;
     mid: number;
     bid: number;
     ask: number;

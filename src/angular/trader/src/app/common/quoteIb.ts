@@ -15,7 +15,7 @@
  */
 export interface QuoteIb {
     _id: string;
-    createdAt: Date;
+    createdAt: string;
     pair: string;
     bid: number;
     bidAmt: number;
@@ -30,5 +30,5 @@ export interface QuoteIb {
     openToday: number;
     vwapToday: number;
     vwap24h: number;
-    serverTimeUTC: Date;
+    serverTimeUTC: string;
 }

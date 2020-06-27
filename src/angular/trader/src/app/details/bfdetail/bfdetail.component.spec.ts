@@ -18,18 +18,17 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BitfinexService} from '../../services/bitfinex.service';
 import { BfdetailComponent } from './bfdetail.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { ChartsModule } from 'ng2-charts';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
 import { QuoteBf } from '../../common/quoteBf';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 class MockBfService extends BitfinexService {
     constructor(private http1: HttpClient) {
@@ -39,7 +38,7 @@ class MockBfService extends BitfinexService {
         let quoteBf: QuoteBf = { 
                 _id: 'id',
                 pair: 'pair',
-                createdAt: new Date('2018-01-01'),
+                createdAt: '2018-01-01',
                 mid: 1,
                 bid: 2,
                 ask: 3,
@@ -70,7 +69,7 @@ describe('BfdetailComponent', () => {
                 HttpClientModule,
                 ReactiveFormsModule,                                
                 BrowserAnimationsModule,                
-                ChartsModule,
+                NgxChartsModule, 
                 MatToolbarModule, 
                 MatRadioModule
               ],
@@ -125,7 +124,7 @@ describe('BfdetailComponent', () => {
   it('should show createdAt', () => {
       const de: DebugElement = fixture.debugElement;
       const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement; 
-      const myDate = component.currQuote.createdAt;
+      const myDate = new Date(component.currQuote.createdAt);
       let dateStr = (myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
           +':'+(myDate.getSeconds().toString().length === 1 ? '0' + myDate.getSeconds() : myDate.getSeconds());
       expect(el.textContent.substr(3,el.textContent.length)).toEqual(dateStr);      

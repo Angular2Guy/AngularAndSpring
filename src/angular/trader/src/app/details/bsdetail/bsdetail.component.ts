@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { Component, OnInit, LOCALE_ID, Inject } from '@angular/core';
+import {ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { Observable } from 'rxjs';
 import { BitstampService } from '../../services/bitstamp.service';
 import { QuoteBs } from '../../common/quoteBs';
-import { CommonUtils } from '../../common/commonUtils';
+import { DetailBase, Tuple } from 'src/app/common/detail-base';
 
 @Component({
   selector: 'app-bsdetail',
@@ -34,18 +34,15 @@ import { CommonUtils } from '../../common/commonUtils';
                ])
              ]
 })
-export class BsdetailComponent implements OnInit {
+export class BsdetailComponent extends DetailBase implements OnInit {
 
     currQuote: QuoteBs;
-    todayQuotes: QuoteBs[] = [];
-    chartdata: number[] = [];
-    chartlabels: string[] = [];
-    chartType = "line";
-    utils = new CommonUtils();
-    currPair = "";    
-    timeframe = this.utils.timeframes[0];
+    todayQuotes: QuoteBs[] = [];    
     
-    constructor(private route: ActivatedRoute, private router: Router, private serviceBs: BitstampService) { }
+    constructor(private route: ActivatedRoute, private router: Router, private serviceBs: BitstampService,
+	@Inject(LOCALE_ID) private myLocale: string) { 
+		super(myLocale);
+	}
 
     ngOnInit() { 
         this.route.params.subscribe(params => {            
@@ -56,15 +53,12 @@ export class BsdetailComponent implements OnInit {
         this.serviceBs.getTodayQuotes(this.route.snapshot.paramMap.get('currpair'))
         .subscribe(quotes => {
             this.todayQuotes = quotes;
-            this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());
-            this.chartdata = this.todayQuotes.map(quote => quote.last);
+			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.timestamp, quote.last)));
             });
         });
     }  
     
     changeTf() {
-        this.chartdata = [];
-        this.chartlabels = [];
         const currpair = this.route.snapshot.paramMap.get('currpair');
         let quoteObserv: Observable<QuoteBs[]>;
             if(this.timeframe === this.utils.timeframes[1]) quoteObserv = this.serviceBs.get7DayQuotes(currpair);
@@ -74,13 +68,7 @@ export class BsdetailComponent implements OnInit {
         
         quoteObserv.subscribe(quotes => {
             this.todayQuotes = quotes;
-            if(this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getUTCDate().toString())            
-            else if(this.timeframe === this.utils.timeframes[1]) 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getDay().toString())
-             else 
-                this.chartlabels = this.todayQuotes.map(quote => new Date(quote.createdAt).getHours().toString());                                       
-            this.chartdata = this.todayQuotes.map(quote => quote.last);
+			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.timestamp, quote.last)));
             });
     }
     

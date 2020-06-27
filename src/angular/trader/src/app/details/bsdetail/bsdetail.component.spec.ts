@@ -19,7 +19,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { HttpClientModule, HttpClient} from '@angular/common/http';
-import { ChartsModule } from 'ng2-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
@@ -39,10 +39,10 @@ class MockService extends BitstampService {
         const result: QuoteBs = {
             _id: '_id',
             pair: 'pair',
-            createdAt: new Date('2018-01-01'),
+            createdAt: '2018-01-01',
             high: 1,
             last: 2,
-            timestamp: new Date('2018-01-01'),
+            timestamp: '2018-01-01',
             bid: 3,
             vwap: 4,
             volume: 5,
@@ -71,7 +71,7 @@ describe('BsdetailComponent', () => {
                 ReactiveFormsModule,                
                 HttpClientModule,
                 BrowserAnimationsModule,                
-                ChartsModule,
+				NgxChartsModule,
                 MatToolbarModule, 
                 MatRadioModule],
       declarations: [ BsdetailComponent ],
@@ -130,7 +130,7 @@ describe('BsdetailComponent', () => {
   it('should show createdAt', () => {
       const de: DebugElement = fixture.debugElement;
       const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement; 
-      const myDate = component.currQuote.createdAt;
+      const myDate = new Date(component.currQuote.createdAt);
       let dateStr = (myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
       +':'+(myDate.getSeconds().toString().length === 1 ? '0' + myDate.getSeconds() : myDate.getSeconds());
       expect(el.textContent.substr(3,el.textContent.length)).toEqual(dateStr);      

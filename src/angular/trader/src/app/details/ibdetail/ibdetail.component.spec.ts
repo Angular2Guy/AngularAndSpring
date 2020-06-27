@@ -19,7 +19,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { ChartsModule } from 'ng2-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
@@ -38,7 +38,7 @@ class MockService extends ItbitService {
     getCurrentQuote(currencypair: string): Observable<QuoteIb> {
         const result: QuoteIb = {
             _id: 'id',
-            createdAt: new Date('2018-01-01'),
+            createdAt: '2018-01-01',
             pair: 'pair',
             bid: 1,
             bidAmt: 2,
@@ -53,7 +53,7 @@ class MockService extends ItbitService {
             openToday: 11,
             vwapToday: 12,
             vwap24h: 13,
-            serverTimeUTC: new Date('2018-01-01')
+            serverTimeUTC: '2018-01-01'
         };
         return of(result);
     }
@@ -76,7 +76,7 @@ describe('IbdetailComponent', () => {
                   ReactiveFormsModule,                  
                   HttpClientModule,
                   BrowserAnimationsModule,                 
-                  ChartsModule, 
+				  NgxChartsModule,
                   MatToolbarModule, 
                   MatRadioModule],
       declarations: [ IbdetailComponent ],
@@ -136,7 +136,7 @@ describe('IbdetailComponent', () => {
   it('should show createdAt', () => {
       const de: DebugElement = fixture.debugElement;
       const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement; 
-      const myDate = component.currQuote.createdAt;
+      const myDate = new Date(component.currQuote.createdAt);
       let dateStr = (myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
       +':'+(myDate.getSeconds().toString().length === 1 ? '0' + myDate.getSeconds() : myDate.getSeconds());
       expect(el.textContent.substr(3,el.textContent.length)).toEqual(dateStr);      

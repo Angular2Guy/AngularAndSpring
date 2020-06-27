@@ -43,25 +43,32 @@
 					<td><span i18n>Last Pound</span>:</td>
 					<td>{{currQuote?.gbp / currQuote?.ltc | number:'1.2'}}</td>
 					<td><span i18n>Timestamp</span>:</td>
-					<td>{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
+					<td id="createdAt">{{ currQuote?.createdAt | date:'HH:mm:ss' }}</td>
 				</tr>
 			</tbody>
 		</table>	
 		<div class="detailLinks">
 			<a [routerLink]="['/overview']" i18n>back</a>
-			<span [@showChart]="chartlabels.length > 0"> 
+			<span *ngIf="todayQuotes.length > 0">
 				<mat-radio-group class="radioGroup" [(ngModel)]="timeframe" (change)="changeTf()">
 					 <mat-radio-button class="radioButton" *ngFor="let tf of utils.timeframes" [value]="tf"><span i18n>{tf, plural, =1 {today} other {{{tf}} days}}</span></mat-radio-button>				 
 				</mat-radio-group>	
 			</span>
 		</div>	
-		<div *ngIf="chartlabels.length > 0" style="display: block;">
-			<canvas baseChart height="200" width="720"
-                [data]="chartdata"
-                [labels]="chartlabels" 
-                [legend]=false
-                [chartType]="chartType"></canvas>
-    	</div>		
+		<div #chartContainer class="chart-container">
+			<ngx-charts-line-chart *ngIf="todayQuotes.length > 0" 	
+			  [legend]="legend"
+			  [showXAxisLabel]="showXAxisLabel"
+			  [showYAxisLabel]="showYAxisLabel"
+			  [xAxis]="xAxis"
+			  [yAxis]="yAxis"
+			  [xAxisLabel]="xAxisLabel"
+			  [yAxisLabel]="yAxisLabel"
+			  [timeline]="timeline"
+			  [autoScale]="autoScale"
+			  [results]="multi">
+			</ngx-charts-line-chart>
+		</div>		
 		<br /> {{todayQuotes?.length }}
 	</div>
 </div>

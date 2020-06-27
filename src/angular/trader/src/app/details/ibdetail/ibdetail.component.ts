@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { Observable } from 'rxjs';
 import { QuoteIb } from '../../common/quoteIb';
 import { ItbitService } from '../../services/itbit.service';
-import { CommonUtils } from '../../common/commonUtils';
+import { DetailBase, Tuple } from 'src/app/common/detail-base';
 
 @Component( {
     selector: 'app-ibdetail',
@@ -34,17 +34,14 @@ import { CommonUtils } from '../../common/commonUtils';
         ] )
     ]
 } )
-export class IbdetailComponent implements OnInit {
+export class IbdetailComponent extends DetailBase implements OnInit {
     currQuote: QuoteIb;
     todayQuotes: QuoteIb[] = [];
-    chartdata: number[] = [];
-    chartlabels: string[] = [];
-    chartType = "line";
-    utils = new CommonUtils();
-    currPair = "";
-    timeframe = this.utils.timeframes[0];
 
-    constructor( private route: ActivatedRoute, private router: Router, private serviceIb: ItbitService ) { }
+    constructor( private route: ActivatedRoute, private router: Router, private serviceIb: ItbitService, 
+		@Inject(LOCALE_ID) private myLocale: string) { 
+		super(myLocale); 
+	}
 
     ngOnInit() {
         this.route.params.subscribe( params => {
@@ -54,15 +51,12 @@ export class IbdetailComponent implements OnInit {
             this.serviceIb.getTodayQuotes( this.currPair )
                 .subscribe( quotes => {
                     this.todayQuotes = quotes;
-                    this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
-                    this.chartdata = this.todayQuotes.map( quote => quote.lastPrice );
+					this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.lastPrice)));
                 } );
         } );
     }
 
     changeTf() {
-        this.chartdata = [];
-        this.chartlabels = [];
         const currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteIb[]>;
         if ( this.timeframe === this.utils.timeframes[1] ) quoteObserv = this.serviceIb.get7DayQuotes( currpair );
@@ -71,13 +65,7 @@ export class IbdetailComponent implements OnInit {
         else quoteObserv = this.serviceIb.getTodayQuotes( currpair );
         quoteObserv.subscribe( quotes => {
             this.todayQuotes = quotes;
-            if ( this.timeframe === this.utils.timeframes[2] || this.timeframe === this.utils.timeframes[3] )
-                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getUTCDate().toString() )
-            else if ( this.timeframe === this.utils.timeframes[1] )
-                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getDay().toString() )
-            else
-                this.chartlabels = this.todayQuotes.map( quote => new Date( quote.createdAt ).getHours().toString() );
-            this.chartdata = this.todayQuotes.map( quote => quote.lastPrice );
+			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.lastPrice)));
         } );
     }
 

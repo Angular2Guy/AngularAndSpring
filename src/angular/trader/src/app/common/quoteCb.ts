@@ -15,7 +15,7 @@
  */
 export interface QuoteCbSmall {
     _id: string;
-    createdAt: Date;
+    createdAt: string;
     usd: number;
     eur: number;
     eth: number;
@@ -25,7 +25,7 @@ export interface QuoteCbSmall {
 export interface QuoteCb {
     
     _id: string;
-    createdAt: Date;
+    createdAt: string;
     aed: number;
     afn: number;
     all: number;
