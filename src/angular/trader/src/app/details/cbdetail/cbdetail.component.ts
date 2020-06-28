@@ -17,7 +17,7 @@ import { Component, OnInit, LOCALE_ID, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { Observable } from 'rxjs';
-import { QuoteCb, QuoteCbSmall } from '../../common/quoteCb';
+import { QuoteCb, QuoteCbSmall } from '../../common/quote-cb';
 import { CoinbaseService } from '../../services/coinbase.service';
 import { DetailBase, Tuple } from 'src/app/common/detail-base';
 

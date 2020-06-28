@@ -17,7 +17,7 @@ import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { Observable } from 'rxjs';
-import { QuoteIb } from '../../common/quoteIb';
+import { QuoteIb } from '../../common/quote-ib';
 import { ItbitService } from '../../services/itbit.service';
 import { DetailBase, Tuple } from 'src/app/common/detail-base';
 

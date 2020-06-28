@@ -17,7 +17,7 @@ import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { BitfinexService } from '../../services/bitfinex.service';
-import { QuoteBf } from '../../common/quoteBf';
+import { QuoteBf } from '../../common/quote-bf';
 import { Observable } from 'rxjs';
 import { DetailBase, Tuple } from '../../common/detail-base';
 

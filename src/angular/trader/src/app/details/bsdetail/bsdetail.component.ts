@@ -18,7 +18,7 @@ import {ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 import { Observable } from 'rxjs';
 import { BitstampService } from '../../services/bitstamp.service';
-import { QuoteBs } from '../../common/quoteBs';
+import { QuoteBs } from '../../common/quote-bs';
 import { DetailBase, Tuple } from 'src/app/common/detail-base';
 
 @Component({

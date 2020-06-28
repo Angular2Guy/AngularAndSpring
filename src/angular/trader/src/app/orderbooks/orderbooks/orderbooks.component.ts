@@ -18,9 +18,9 @@ import { BitstampService } from '../../services/bitstamp.service';
 import { ItbitService } from '../../services/itbit.service';
 import { BitfinexService } from '../../services/bitfinex.service';
 import { Router } from '@angular/router';
-import { OrderbookBs } from '../../common/orderbookBs';
-import { OrderbookBf, OrderBf } from '../../common/orderbookBf';
-import { OrderbookIb } from '../../common/orderbookIb';
+import { OrderbookBs } from '../../common/orderbook-bs';
+import { OrderbookBf, OrderBf } from '../../common/orderbook-bf';
+import { OrderbookIb } from '../../common/orderbook-ib';
 
 @Component( {
     selector: 'app-orderbooks',
