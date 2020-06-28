@@ -39,7 +39,7 @@
 				<mat-radio-group class="radioGroup" [(ngModel)]="timeframe" (change)="changeTf()">
 					 <mat-radio-button class="radioButton" *ngFor="let tf of utils.timeframes" [value]="tf"><span i18n>{tf, plural, =1 {today} other {{{tf}} days}}</span></mat-radio-button>				 
 				</mat-radio-group>		
-				<button mat-button class="radioButton" (click)="showReport()" *ngIf="todayQuotes.length > 0" i18n>show report</button>	
+				<button mat-button class="radioButton" (click)="showReport()" [ngStyle]="{'visibility': todayQuotes.length > 0 ? 'visible' : 'hidden'}" i18n>show report</button>	
 			</span>
 		</div>	
     	<div #chartContainer class="chart-container">
