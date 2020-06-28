@@ -49,7 +49,7 @@
 		</table>	
 		<div class="detailLinks">
 			<a [routerLink]="['/overview']" i18n>back</a>
-			<span *ngIf="todayQuotes.length > 0">
+			<span>
 				<mat-radio-group class="radioGroup" [(ngModel)]="timeframe" (change)="changeTf()">
 					 <mat-radio-button class="radioButton" *ngFor="let tf of utils.timeframes" [value]="tf"><span i18n>{tf, plural, =1 {today} other {{{tf}} days}}</span></mat-radio-button>				 
 				</mat-radio-group>	

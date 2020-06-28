@@ -53,7 +53,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
         this.serviceBs.getTodayQuotes(this.route.snapshot.paramMap.get('currpair'))
         .subscribe(quotes => {
             this.todayQuotes = quotes;
-			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.timestamp, quote.last)));
+			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.last)));
             });
         });
     }  
@@ -67,8 +67,8 @@ export class BsdetailComponent extends DetailBase implements OnInit {
                 else quoteObserv = this.serviceBs.getTodayQuotes(currpair);
         
         quoteObserv.subscribe(quotes => {
-            this.todayQuotes = quotes;
-			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.timestamp, quote.last)));
+            this.todayQuotes = quotes;			
+			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.last)));
             });
     }
     
