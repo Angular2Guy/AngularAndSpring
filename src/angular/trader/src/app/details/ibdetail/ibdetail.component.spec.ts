@@ -26,7 +26,7 @@ import { of, Observable } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IbdetailComponent } from './ibdetail.component';
 import { ItbitService } from '../../services/itbit.service';
-import { QuoteIb } from '../../common/quoteIb';
+import { QuoteIb } from '../../common/quote-ib';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 

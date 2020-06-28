@@ -26,7 +26,7 @@ import { of, Observable } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CbdetailComponent } from './cbdetail.component';
 import { CoinbaseService } from '../../services/coinbase.service';
-import { QuoteCb, QuoteCbSmall } from '../../common/quoteCb';
+import { QuoteCb, QuoteCbSmall } from '../../common/quote-cb';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 

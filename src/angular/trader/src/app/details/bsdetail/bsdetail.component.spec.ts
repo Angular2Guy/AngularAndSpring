@@ -26,7 +26,7 @@ import { of, Observable } from 'rxjs';
 import { BsdetailComponent } from './bsdetail.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BitstampService } from '../../services/bitstamp.service';
-import { QuoteBs } from '../../common/quoteBs';
+import { QuoteBs } from '../../common/quote-bs';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 

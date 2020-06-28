@@ -24,7 +24,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
-import { QuoteBf } from '../../common/quoteBf';
+import { QuoteBf } from '../../common/quote-bf';
 import { HttpClient } from '@angular/common/http';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
