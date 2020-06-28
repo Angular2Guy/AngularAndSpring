@@ -1,4 +1,4 @@
-import { CommonUtils } from './commonUtils';
+import { CommonUtils } from './common-utils';
 import { formatDate } from '@angular/common';
 
 /**

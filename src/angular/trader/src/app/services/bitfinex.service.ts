@@ -17,9 +17,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { QuoteBf } from '../common/quoteBf';
+import { QuoteBf } from '../common/quote-bf';
 import { Utils } from './utils';
-import { OrderbookBf } from '../common/orderbookBf';
+import { OrderbookBf } from '../common/orderbook-bf';
 
 @Injectable({providedIn: 'root'})
 export class BitfinexService {

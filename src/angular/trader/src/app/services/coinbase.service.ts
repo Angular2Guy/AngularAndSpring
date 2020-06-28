@@ -17,9 +17,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { QuoteBs } from '../common/quoteBs';
-import { QuoteCbSmall, QuoteCb } from '../common/quoteCb';
-import { QuoteIb } from '../common/quoteIb';
+import { QuoteBs } from '../common/quote-bs';
+import { QuoteCbSmall, QuoteCb } from '../common/quote-cb';
+import { QuoteIb } from '../common/quote-ib';
 import { Utils } from './utils';
 
 @Injectable({providedIn: 'root'})

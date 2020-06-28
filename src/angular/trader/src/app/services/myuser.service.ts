@@ -17,7 +17,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { MyUser } from '../common/myUser';
+import { MyUser } from '../common/my-user';
 import { Utils } from './utils';
 import { AuthCheck } from '../common/authcheck';
 
