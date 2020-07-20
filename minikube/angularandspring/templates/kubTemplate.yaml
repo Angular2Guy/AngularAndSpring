@@ -94,6 +94,8 @@ spec:
         env:
         - name: MONGODB_HOST
           value: {{ .Values.dbName }}
+        - name: JWTTOKEN_SECRET
+          value: {{ .Values.jwtTokenSecrect }}
         ports:
         - containerPort: 8080
 ---

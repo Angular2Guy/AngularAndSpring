@@ -21,6 +21,9 @@ spec:
         env:
         - name: MONGODB_HOST
           value: mongodb
+        - name: JWTTOKEN_SECRET
+        # change this secret to a random alphanumeric string of the same length or longer
+          value: secret-key1234567890abcdefghijklmnopqrstuvwxyz
         ports:
         - containerPort: 8080
  
