@@ -2,115 +2,19 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" datatype="plaintext" original="ng2.template">
     <body>
-      <trans-unit id="08c74dc9762957593b91f6eb5d65efdfc975bf48" datatype="html">
-        <source>Username</source>
-        <target>Username</target>
+      <trans-unit id="5d28f74b7b733d493cbbff1b0e18e6ada78782f5" datatype="html">
+        <source>Welcome to AngularAndSpring</source>
+        <target>Welcome to AngularAndSpring</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">9</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">34</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="c32ef07f8803a223a83ed17024b38e8d82292407" datatype="html">
-        <source>Password</source>
-        <target>Password</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">15</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">40</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">44</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="9c9649f1af9f523dd494fcbbcb4f59127e1d2d25" datatype="html">
-        <source>Login Failed</source>
-        <target>Login Failed</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">18</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="be5c752b58791dd799bc5d5482d4351e06f18673" datatype="html">
-        <source>Ok</source>
-        <target>Ok</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">22</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">60</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
-        <source>Cancel</source>
-        <target>Cancel</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">23</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">61</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6765b4c916060f6bc42d9bb69e80377dbcb5e4e9" datatype="html">
-        <source>Login</source>
-        <target>Login</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">3</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
-          <context context-type="linenumber">6</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8055e7b92d40f781799dd53a2057ebdda99cf19e" datatype="html">
-        <source>Passwords do not match</source>
-        <target>Passwords do not match</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">47</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="244aae9346da82b0922506c2d2581373a15641cc" datatype="html">
-        <source>Email</source>
-        <target>Email</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">53</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="f207549116db16b24fe3e996bb65157802fdd793" datatype="html">
-        <source>Signin Failed</source>
-        <target>Signin Failed</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">56</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5a49f221378f8688a0cf91b1a3207407623f1918" datatype="html">
-        <source>Signin</source>
-        <target>Signin</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/login/login.component.ts</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="sourcefile">src/app/splash/splash.component.html</context>
+          <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a2b3e383050197bd2730301ac40387b2228d93e0" datatype="html">
         <source>Curreny Table</source>
         <target>Curreny Table</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
@@ -118,11 +22,23 @@
         <source>Orderbooks</source>
         <target>Orderbooks</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6765b4c916060f6bc42d9bb69e80377dbcb5e4e9" datatype="html">
+        <source>Login</source>
+        <target>Login</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
@@ -130,7 +46,7 @@
         <source>Logout</source>
         <target>Logout</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
@@ -138,15 +54,15 @@
         <source> Exchange </source>
         <target> Exchange </target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="10e3d08b21501f9f3ed66b583b52c00ca963d81f" datatype="html">
         <source> Currency Pair </source>
-        <target> Currency Pair </target> 
+        <target> Currency Pair </target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
@@ -154,63 +70,27 @@
         <source> Last </source>
         <target> Last </target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
           <context context-type="linenumber">19</context>
-        </context-group>
-      </trans-unit>
-	  <trans-unit id="21c7cbaff37471ead857f208b2eb92ffb4d08c5d" datatype="html">
-        <source> Volume </source>
-        <target> Volume </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
-          <context context-type="linenumber">32</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5533c9aacc3ebd25fca0ae27bfe1b8022429b78d" datatype="html">
-        <source>Bitstamp</source>
-        <target>Bitstamp</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
-          <context context-type="linenumber">2</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
-          <context context-type="linenumber">9</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5c729788ba138508aca1bec050b610f7bf81db3e" datatype="html">
-        <source>Last</source>
-        <target>Last</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
-          <context context-type="linenumber">7</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
-          <context context-type="linenumber">7</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
-          <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="72279141a67cc042d9864102b703216cc8a428a3" datatype="html">
         <source>High</source>
         <target>High</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
           <context context-type="linenumber">24</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
@@ -218,35 +98,159 @@
         <source>Low</source>
         <target>Low</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/quoteoverview/quoteoverview.component.ts</context>
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="21c7cbaff37471ead857f208b2eb92ffb4d08c5d" datatype="html">
+        <source> Volume </source>
+        <target> Volume </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/quoteoverview/quoteoverview.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="08c74dc9762957593b91f6eb5d65efdfc975bf48" datatype="html">
+        <source>Username</source>
+        <target>Username</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c32ef07f8803a223a83ed17024b38e8d82292407" datatype="html">
+        <source>Password</source>
+        <target>Password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9c9649f1af9f523dd494fcbbcb4f59127e1d2d25" datatype="html">
+        <source>Login Failed</source>
+        <target>Login Failed</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="be5c752b58791dd799bc5d5482d4351e06f18673" datatype="html">
+        <source>Ok</source>
+        <target>Ok</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
+        <source>Cancel</source>
+        <target>Cancel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8055e7b92d40f781799dd53a2057ebdda99cf19e" datatype="html">
+        <source>Passwords do not match</source>
+        <target>Passwords do not match</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="244aae9346da82b0922506c2d2581373a15641cc" datatype="html">
+        <source>Email</source>
+        <target>Email</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f207549116db16b24fe3e996bb65157802fdd793" datatype="html">
+        <source>Signin Failed</source>
+        <target>Signin Failed</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5a49f221378f8688a0cf91b1a3207407623f1918" datatype="html">
+        <source>Signin</source>
+        <target>Signin</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/overview/login/login.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="37ccfddc37dd72d77aebf74b487f6bcd12d95771" datatype="html">
+        <source>ItBit</source>
+        <target>ItBit</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5c729788ba138508aca1bec050b610f7bf81db3e" datatype="html">
+        <source>Last</source>
+        <target>Last</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
+          <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9310d4be621ac60b19a4d73258b25f2b411971e7" datatype="html">
         <source>Bid</source>
         <target>Bid</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
@@ -254,15 +258,15 @@
         <source>Ask</source>
         <target>Ask</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
@@ -270,11 +274,11 @@
         <source>Open</source>
         <target>Open</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">19</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
@@ -282,11 +286,11 @@
         <source>Vwap</source>
         <target>Vwap</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">23</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
           <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
@@ -294,27 +298,27 @@
         <source>Pair</source>
         <target>Pair</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
-          <context context-type="linenumber">25</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">7</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">35</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
@@ -322,27 +326,27 @@
         <source>Timestamp</source>
         <target>Timestamp</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">27</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
-          <context context-type="linenumber">27</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">31</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">45</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
@@ -350,15 +354,15 @@
         <source>Volume</source>
         <target>Volume</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">31</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
           <context context-type="linenumber">31</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
@@ -366,19 +370,19 @@
         <source>back</source>
         <target>back</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
           <context context-type="linenumber">37</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
-          <context context-type="linenumber">37</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">51</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
@@ -386,35 +390,43 @@
         <source>{VAR_PLURAL, plural, =1 {today} other {<x id="INTERPOLATION" equiv-text="{{tf}}"/> days} }</source>
         <target>{VAR_PLURAL, plural, =1 {today} other {<x id="INTERPOLATION" equiv-text="{{tf}}"/> days} }</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bsdetail/bsdetail.component.ts</context>
-          <context context-type="linenumber">39</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
+          <context context-type="linenumber">40</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
-          <context context-type="linenumber">39</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
+          <context context-type="linenumber">54</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
+          <context context-type="linenumber">40</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="37ccfddc37dd72d77aebf74b487f6bcd12d95771" datatype="html">
-        <source>ItBit</source>
-        <target>ItBit</target>
+      <trans-unit id="429dabdac80000dbaf5dfdbbcae7e80dccf1b019" datatype="html">
+        <source>show report</source>
+        <target>show report</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/ibdetail/ibdetail.component.ts</context>
-          <context context-type="linenumber">2</context>
+          <context context-type="sourcefile">src/app/details/ibdetail/ibdetail.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7e06b8dd9f29261827018351cd71efe1c87839de" datatype="html">
         <source>Coinbase</source>
         <target>Coinbase</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
@@ -422,15 +434,15 @@
         <source>Last Usd</source>
         <target>Last Usd</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">23</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
@@ -438,15 +450,15 @@
         <source>Last Eur</source>
         <target>Last Eur</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
@@ -454,15 +466,15 @@
         <source>Last Yen</source>
         <target>Last Yen</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">27</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
@@ -470,27 +482,39 @@
         <source>Last Pound</source>
         <target>Last Pound</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">29</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/cbdetail/cbdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/cbdetail/cbdetail.component.html</context>
           <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5533c9aacc3ebd25fca0ae27bfe1b8022429b78d" datatype="html">
+        <source>Bitstamp</source>
+        <target>Bitstamp</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/details/bsdetail/bsdetail.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
+          <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9a5199120eed9f3adc5797d81d91b03ad7b3147c" datatype="html">
         <source>Bitfinex</source>
         <target>Bitfinex</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
@@ -498,7 +522,7 @@
         <source>Mid</source>
         <target>Mid</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/bfdetail/bfdetail.component.ts</context>
+          <context context-type="sourcefile">src/app/details/bfdetail/bfdetail.component.html</context>
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
@@ -506,7 +530,7 @@
         <source>Itbit</source>
         <target>Itbit</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
@@ -514,7 +538,7 @@
         <source>Buy</source>
         <target>Buy</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
@@ -522,7 +546,7 @@
         <source>Sell</source>
         <target>Sell</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
@@ -530,7 +554,7 @@
         <source>Search</source>
         <target>Search</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
@@ -538,7 +562,7 @@
         <source>Back</source>
         <target>Back</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
@@ -546,7 +570,7 @@
         <source>Bitstamp Orders</source>
         <target>Bitstamp Orders</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">52</context>
         </context-group>
       </trans-unit>
@@ -554,15 +578,15 @@
         <source>Price</source>
         <target>Price</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">53</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">62</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
@@ -570,15 +594,15 @@
         <source>Amount</source>
         <target>Amount</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">53</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">62</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
@@ -586,7 +610,7 @@
         <source>Itbit Orders</source>
         <target>Itbit Orders</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
@@ -594,7 +618,7 @@
         <source>Bitfinex Orders</source>
         <target>Bitfinex Orders</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/orderbooks/orderbooks.component.ts</context>
+          <context context-type="sourcefile">src/app/orderbooks/orderbooks/orderbooks.component.html</context>
           <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
