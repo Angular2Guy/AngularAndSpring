@@ -31,27 +31,15 @@ public class PasswordEncryption {
 
 	public boolean authenticate(String attemptedPassword, String encryptedPassword, String salt)
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
-		// Encrypt the clear-text password using the same salt that was used to
-		// encrypt the original password
 		String encryptedAttemptedPassword = getEncryptedPassword(attemptedPassword, salt);
-		// Authentication succeeds if encrypted password that the user entered
-		// is equal to the stored hash
 		return encryptedPassword.equals(encryptedAttemptedPassword);
 
 	}
 
 	public String getEncryptedPassword(String password, String salt)
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
-		// PBKDF2 with SHA-1 as the hashing algorithm. Note that the NIST
-		// specifically names SHA-1 as an acceptable hashing algorithm for PBKDF2
-		String algorithm = "PBKDF2WithHmacSHA1";
-		// SHA-1 generates 160 bit hashes, so that's what makes sense here
-		int derivedKeyLength = 160;
-		// Pick an iteration count that works for you. The NIST recommends at
-		// least 1,000 iterations:
-		// http://csrc.nist.gov/publications/nistpubs/800-132/nist-sp800-132.pdf
-		// iOS 4.x reportedly uses 10,000:
-		// http://blog.crackpassword.com/2010/09/smartphone-forensics-cracking-blackberry-backup-passwords/
+		String algorithm = "PBKDF2WithHmacSHA256";
+		int derivedKeyLength = 256;
 		int iterations = 20000;
 		char[] pwd = new String(password).toCharArray();		
 		KeySpec spec = new PBEKeySpec(pwd, Base64.getDecoder().decode(salt), iterations, derivedKeyLength);
@@ -61,9 +49,7 @@ public class PasswordEncryption {
 	}
 
 	public String generateSalt() throws NoSuchAlgorithmException {
-		// VERY important to use SecureRandom instead of just Random
 		SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-		// Generate a 8 byte (64 bit) salt as recommended by RSA PKCS5
 		byte[] salt = new byte[8];
 		random.nextBytes(salt);
 		return Base64.getEncoder().encodeToString(salt);
