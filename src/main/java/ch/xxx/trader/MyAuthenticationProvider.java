@@ -30,6 +30,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.dtos.MyUser;
@@ -40,8 +41,8 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 	private static final Logger log = LoggerFactory.getLogger(MyAuthenticationProvider.class);
 	@Autowired
 	private ReactiveMongoOperations operations;
-	@Autowired
-	private PasswordEncryption passwordEncryption;
+//	@Autowired
+//	private PasswordEncryption passwordEncryption;
 	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -54,11 +55,12 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 		if(user == null) {
 			throw new BadCredentialsException("User not found");
 		}
-		try {
-			encryptedPw = this.passwordEncryption.getEncryptedPassword(password, user.getSalt());
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-			log.error("Pw decrytion error: ",e);
-		}
+//		try {
+			encryptedPw = new BCryptPasswordEncoder().encode(password);
+//			encryptedPw = this.passwordEncryption.getEncryptedPassword(password, user.getSalt());
+//		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+//			log.error("Pw decrytion error: ",e);
+//		}
 		if(encryptedPw == null || !encryptedPw.equals(user.getPassword())) {
 			throw new AuthenticationCredentialsNotFoundException("User: "+name+" not found.");
 		}
