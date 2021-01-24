@@ -31,7 +31,7 @@
     "@angular/router": "^10.0.1",    
     "core-js": "^2.5.7",
     "material-design-icons": "3.0.1",
-    "@swimlane/ngx-charts": "^14.0.0",
+    
     "rxjs": "^6.5.4",
     "tslib": "^2.0.0",
     "web-animations-js": "^2.3.2",
