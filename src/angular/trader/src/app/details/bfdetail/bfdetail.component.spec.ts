@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BitfinexService} from '../../services/bitfinex.service';
 import { BfdetailComponent } from './bfdetail.component';
@@ -28,7 +28,6 @@ import { QuoteBf } from '../../common/quote-bf';
 import { HttpClient } from '@angular/common/http';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 class MockBfService extends BitfinexService {
     constructor(private http1: HttpClient) {
@@ -60,7 +59,7 @@ describe('BfdetailComponent', () => {
   let fixture: ComponentFixture<BfdetailComponent>;
   let mockService = new MockBfService(null); 
 
-  beforeEach(async(() => {              
+  beforeEach(waitForAsync(() => {              
     TestBed.configureTestingModule({
       imports: [ 
                 RouterTestingModule,
@@ -69,7 +68,6 @@ describe('BfdetailComponent', () => {
                 HttpClientModule,
                 ReactiveFormsModule,                                
                 BrowserAnimationsModule,                
-                NgxChartsModule, 
                 MatToolbarModule, 
                 MatRadioModule
               ],

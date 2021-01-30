@@ -13,13 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { HttpClientModule, HttpClient} from '@angular/common/http';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
@@ -63,7 +62,7 @@ describe('BsdetailComponent', () => {
   let fixture: ComponentFixture<BsdetailComponent>;
   let mockService = new MockService(null);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule,
                 BrowserModule,
@@ -71,7 +70,6 @@ describe('BsdetailComponent', () => {
                 ReactiveFormsModule,                
                 HttpClientModule,
                 BrowserAnimationsModule,                
-				NgxChartsModule,
                 MatToolbarModule, 
                 MatRadioModule],
       declarations: [ BsdetailComponent ],
