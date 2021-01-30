@@ -3,6 +3,9 @@ language: java
 jdk:
   - oraclejdk11
 
+addons:
+  chrome: beta
+
 services:
   - docker
   
