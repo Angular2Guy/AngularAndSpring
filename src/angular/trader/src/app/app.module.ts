@@ -22,6 +22,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SplashComponent } from './splash/splash.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 		BrowserAnimationsModule,
 		HttpClientModule,
 		MatProgressSpinnerModule,
+		NgxChartsModule,
 	],
 	bootstrap: [AppComponent]
 })

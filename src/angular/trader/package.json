@@ -12,7 +12,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "prebuild": "rimraf ./dist && mkdirp ./dist",
-    "postinstall": "ngcc",
     "postbuild": "npm run deploy",
     "predeploy": "rimraf ../../main/resources/static/*",
     "deploy": "cpx 'base/*' dist/testproject/ && cpx 'dist/testproject/**' ../../main/resources/static/"
@@ -36,18 +35,7 @@
     "tslib": "^2.0.0",
     "web-animations-js": "^2.3.2",
     "zone.js": "~0.10.3",
-    "ngx-simple-charts": "^0.0.1",
-    "d3-array": "^2.9.1",
-    "d3-axis": "^2.0.0",
-    "d3-brush": "^2.1.0",
-    "d3-color": "^2.0.0",
-    "d3-format": "^2.0.0",
-    "d3-interpolate": "^2.0.1",
-    "d3-scale": "^3.2.3",
-    "d3-selection": "^2.0.0",
-    "d3-shape": "^2.0.0",
-    "d3-time-format": "^3.0.0",
-    "d3-transition": "^2.0.0"
+    "ngx-simple-charts": "^0.0.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1101.1",
