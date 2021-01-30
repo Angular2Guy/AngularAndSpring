@@ -25,8 +25,7 @@ import { BfdetailComponent } from "./bfdetail/bfdetail.component";
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
-//import { NgxSimpleChartsModule } from 'ngx-simple-charts';
-import { NgxSimpleChartsModule } from '../charts/ngx-simple-charts.module';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   imports: [
@@ -37,7 +36,7 @@ import { NgxSimpleChartsModule } from '../charts/ngx-simple-charts.module';
     MatRadioModule,
     MatButtonModule,
     DetailsRoutingModule,
-	NgxSimpleChartsModule,    
+	NgxChartsModule,    
   ],
   declarations: [
     IbdetailComponent,
