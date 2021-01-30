@@ -1,0 +1,42 @@
+.d3-chart {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+.d3-chart-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+::ng-deep .line {
+    fill: none;
+    stroke: #1E90FF;
+    stroke-width: 3;
+}
+
+::ng-deep .line-missing {
+    fill: none;
+    stroke: #7CFC00;
+    stroke-width: 3;
+}
+
+::ng-deep .overlay {
+    fill: none;
+    pointer-events: all;
+}
+
+::ng-deep .dot {
+    fill: #ff0000;
+    stroke: #fff;
+}
+
+::ng-deep .focus circle {
+    fill: none;
+    stroke: #0000ff;
+}

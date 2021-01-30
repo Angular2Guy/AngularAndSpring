@@ -1,5 +1,6 @@
 import { CommonUtils } from './common-utils';
 import { formatDate } from '@angular/common';
+import { ChartPoint } from 'ngx-simple-charts';
 
 /**
  *    Copyright 2019 Sven Loesekann
@@ -36,6 +37,7 @@ export class Tuple<A,B> {
 }
 
 export abstract class DetailBase {
+	chartPoints: ChartPoint[] = [];
 	multi: MyChartData[] = [{ name: 'none', series: [] }];	
 	legend = false;
 	showLabels = true;
