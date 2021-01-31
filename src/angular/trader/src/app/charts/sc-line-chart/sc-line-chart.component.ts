@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { select, Selection, ContainerElement } from 'd3-selection';
 import { ChartPoint } from '../model/chart-point';
 import { scaleLinear, scaleTime, ScaleLinear, ScaleTime } from 'd3-scale';
@@ -24,7 +24,7 @@ import { axisBottom, axisLeft } from 'd3-axis';
 	styleUrls: ['./sc-line-chart.component.scss'],
 	encapsulation: ViewEncapsulation.Emulated,
 })
-export class ScLineChartComponent implements OnInit, OnChanges {
+export class ScLineChartComponent implements AfterViewInit, OnChanges {
 	@ViewChild("svgchart")
 	private chartContainer!: ElementRef;
 	private d3Svg!: Selection<ContainerElement, ChartPoint, HTMLElement, any>;
@@ -35,7 +35,7 @@ export class ScLineChartComponent implements OnInit, OnChanges {
 	private gyAttribute!: Selection<SVGGElement, ChartPoint, HTMLElement, any>;
 	private gPathAttribute!: Selection<SVGPathElement, ChartPoint, HTMLElement, any>;
 
-	ngOnInit(): void {
+	ngAfterViewInit(): void {
 		this.d3Svg = select<ContainerElement, ChartPoint>(this.chartContainer.nativeElement);
 
 		this.gAttribute = this.d3Svg.append('g').attr('transform', 'translate(0,0)');
