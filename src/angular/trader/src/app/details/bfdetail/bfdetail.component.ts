@@ -37,7 +37,7 @@ import { DetailBase, Tuple } from '../../common/detail-base';
 export class BfdetailComponent extends DetailBase implements OnInit {
 
     currQuote: QuoteBf;
-    todayQuotes: QuoteBf[] = [];       
+    todayQuotes: QuoteBf[] = [];   
 
     constructor( private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService, 
 		@Inject(LOCALE_ID) private myLocale: string) { 

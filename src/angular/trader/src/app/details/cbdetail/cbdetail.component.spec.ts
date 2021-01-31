@@ -19,7 +19,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
@@ -67,7 +66,6 @@ describe('CbdetailComponent', () => {
                   ReactiveFormsModule,                  
                   HttpClientModule,
                   BrowserAnimationsModule,
-                  NgxChartsModule, 
                   MatToolbarModule, 
                   MatRadioModule],
       declarations: [ CbdetailComponent ],
