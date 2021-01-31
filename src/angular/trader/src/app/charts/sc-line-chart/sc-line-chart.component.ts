@@ -62,11 +62,12 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 			console.log(`contentHeight: ${contentHeight} contentWidth: ${contentWidth} chartPoints: ${this.chartPoints.length}`);
 			return;
 		}
-
+		console.log(`chartPoints: ${this.chartPoints.length} chartPointList: ${this.chartPoints[0].chartPointList.length}`);
+		
 		let xScale: ScaleLinear<number, number, never> | ScaleTime<number, number, never>;
 		if (this.chartPoints[0].chartPointList[0].x instanceof Date) {
 			xScale = scaleTime()
-				.domain(extent(this.chartPoints[0].chartPointList[0], p => p.x as Date) as [Date, Date])
+				.domain(extent(this.chartPoints[0].chartPointList, p => p.x as Date) as [Date, Date])
 				.range([0, contentWidth])
 		} else {
 			xScale = scaleLinear()
@@ -95,8 +96,6 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 
 		this.gyAttribute
 			.attr("transform", "translate(" + 0 + "," + contentHeight + ")")
-			.call(axisLeft(yScale));
-
-		
+			.call(axisLeft(yScale));		
 	}
 }
