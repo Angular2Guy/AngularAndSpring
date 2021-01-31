@@ -14,3 +14,8 @@ export interface ChartPoint{
 	y: number;
 	x: string | Date;
 }
+
+export interface ChartPoints {
+	name: string;
+	chartPointList: ChartPoint[]; 
+}

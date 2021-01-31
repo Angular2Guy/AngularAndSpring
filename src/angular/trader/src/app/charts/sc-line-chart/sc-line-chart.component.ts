@@ -12,11 +12,11 @@
  */
 import { Component, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { select, Selection, ContainerElement } from 'd3-selection';
-import { ChartPoint } from '../model/chart-point';
 import { scaleLinear, scaleTime, ScaleLinear, ScaleTime } from 'd3-scale';
 import { extent } from 'd3-array';
 import { line, curveMonotoneX } from 'd3-shape';
 import { axisBottom, axisLeft } from 'd3-axis';
+import { ChartPoints, ChartPoint } from '../model/chart-points';
 
 @Component({
 	selector: 'sc-line-chart',
@@ -29,7 +29,7 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 	private chartContainer!: ElementRef;
 	private d3Svg!: Selection<ContainerElement, ChartPoint, HTMLElement, any>;
 	@Input()
-	private chartPoints: ChartPoint[] = [];
+	private chartPoints: ChartPoints[] = [];
 	private gAttribute!: Selection<SVGGElement, ChartPoint, HTMLElement, any>;
 	private gxAttribute!: Selection<SVGGElement, ChartPoint, HTMLElement, any>;
 	private gyAttribute!: Selection<SVGGElement, ChartPoint, HTMLElement, any>;
@@ -57,24 +57,25 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 	private updateChart(): void {
 		const contentWidth = isNaN(parseInt(this.d3Svg.style('width').replace(/[^0-9\.]+/g, ''), 10)) ? 0 : parseInt(this.d3Svg.style('width').replace(/[^0-9\.]+/g, ''), 10);
 		const contentHeight = isNaN(parseInt(this.d3Svg.style('height').replace(/[^0-9\.]+/g, ''), 10)) ? 0 : parseInt(this.d3Svg.style('height').replace(/[^0-9\.]+/g, ''), 10);
-		if (contentHeight < 1 || contentWidth < 1 && this.chartPoints.length > 0) {
+		if (contentHeight < 1 || contentWidth < 1 || !this.chartPoints || this.chartPoints.length === 0 
+			|| !this.chartPoints[0].chartPointList || this.chartPoints[0].chartPointList.length === 0) {
 			console.log(`contentHeight: ${contentHeight} contentWidth: ${contentWidth} chartPoints: ${this.chartPoints.length}`);
 			return;
 		}
 
 		let xScale: ScaleLinear<number, number, never> | ScaleTime<number, number, never>;
-		if (this.chartPoints.length > 0 && this.chartPoints[0].x instanceof Date) {
+		if (this.chartPoints[0].chartPointList[0].x instanceof Date) {
 			xScale = scaleTime()
-				.domain(extent(this.chartPoints, p => p.x as Date) as [Date, Date])
+				.domain(extent(this.chartPoints[0].chartPointList[0], p => p.x as Date) as [Date, Date])
 				.range([0, contentWidth])
 		} else {
 			xScale = scaleLinear()
-				.domain([0, this.chartPoints.length - 1]).nice()
+				.domain([0, this.chartPoints[0].chartPointList.length - 1]).nice()
 				.range([0, contentWidth]);
 		}
 
 		const yScale = scaleLinear()
-			.domain(extent<ChartPoint, number>(this.chartPoints, p => p.y) as [number, number]).nice()
+			.domain(extent<ChartPoint, number>(this.chartPoints[0].chartPointList, p => p.y) as [number, number]).nice()
 			.range([0, contentWidth]);
 
 		const myLine = line()
@@ -82,6 +83,11 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 			.x((p, i) => xScale(i))
 			.y((p) => yScale((p as unknown as ChartPoint).y))
 			.curve((p) => curveMonotoneX(p));
+			
+		this.gPathAttribute.datum(this.chartPoints[0].chartPointList.filter((p) => p.y !== null && !isNaN(p.y)))
+			.attr('class', 'line').attr('d', myLine as any);
+		this.gPathAttribute.datum(this.chartPoints[0].chartPointList.filter((p) => isNaN(p.y) || p.y === null))
+			.attr('class', 'line').attr('d', myLine as any);
 
 		this.gxAttribute
 			.attr("transform", "translate(" + 0 + "," + contentWidth + ")")
@@ -91,9 +97,6 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 			.attr("transform", "translate(" + 0 + "," + contentHeight + ")")
 			.call(axisLeft(yScale));
 
-		this.gPathAttribute.datum(this.chartPoints.filter((p) => p.y !== null && !isNaN(p.y)))
-			.attr('class', 'line').attr('d', myLine as any);
-		this.gPathAttribute.datum(this.chartPoints.filter((p) => isNaN(p.y) || p.y === null))
-			.attr('class', 'line').attr('d', myLine as any);
+		
 	}
 }
