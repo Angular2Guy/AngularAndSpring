@@ -38,19 +38,8 @@
 				<button mat-button class="radioButton" (click)="showReport()" [ngStyle]="{'visibility': todayQuotes.length > 0 ? 'visible' : 'hidden'}" i18n>show report</button>
 			</span>		
 		</div>			
-    	<div #chartContainer class="chart-container">
-			<ngx-charts-line-chart *ngIf="todayQuotes.length > 0" 	
-			  [legend]="legend"
-			  [showXAxisLabel]="showXAxisLabel"
-			  [showYAxisLabel]="showYAxisLabel"
-			  [xAxis]="xAxis"
-			  [yAxis]="yAxis"
-			  [xAxisLabel]="xAxisLabel"
-			  [yAxisLabel]="yAxisLabel"
-			  [timeline]="timeline"
-			  [autoScale]="autoScale"
-			  [results]="multi">
-			</ngx-charts-line-chart>
+    	<div #chartContainer class="chart-container">			
+			<sc-line-chart [chartPoints]="chartPoints"></sc-line-chart>			
 		</div>	    			
 		<div> {{todayQuotes?.length }} </div>
 	</div>

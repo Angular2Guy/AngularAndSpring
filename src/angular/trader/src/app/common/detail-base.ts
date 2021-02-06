@@ -1,5 +1,6 @@
 import { CommonUtils } from './common-utils';
 import { formatDate } from '@angular/common';
+import { ChartPoint,ChartPoints } from '../charts/model/chart-points';
 
 /**
  *    Copyright 2019 Sven Loesekann
@@ -13,16 +14,6 @@ import { formatDate } from '@angular/common';
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-export interface MyChartData {
-	name: string;
-	series: MyChartValue[];
-}
-
-export interface MyChartValue {
-	name: string;
-	value: number;
-}
-
 export class Tuple<A,B> {
 	constructor(private myA: A, private myB: B) {}
 	 
@@ -36,29 +27,19 @@ export class Tuple<A,B> {
 }
 
 export abstract class DetailBase {
-	multi: MyChartData[] = [{ name: 'none', series: [] }];	
-	legend = false;
-	showLabels = true;
-	animations = true;
-	xAxis = true;
-	yAxis = true;
-	showYAxisLabel = true;
-	showXAxisLabel = true;
-	xAxisLabel: string = 'Time';
-	yAxisLabel: string = 'Value';
-	timeline = true;
-	autoScale = true;
+	chartPoints: ChartPoints[] = [];
 	utils = new CommonUtils();
     currPair = "";
     timeframe = this.utils.timeframes[0];
+	readonly yScaleWidth = 50;
+	readonly xScaleHeight = 20;
 	
 	constructor(protected locale: string) {}
 	
 	protected updateChartData(values: Tuple<string, number>[]): void {
-		const dateFormatStr = this.timeframe === this.utils.timeframes[0] ? 'mediumTime' : 'shortDate';
-		const quotes = values.map(tuple => ({ name: formatDate(tuple.A, dateFormatStr, this.locale), value: tuple.B } as MyChartValue));
-		const myChartData = { name: this.currPair, series: quotes } as MyChartData;
-		this.multi = [myChartData];
-		//console.log(this.multi);
+		const myChartPoint = values.map(myCP => ({x: new Date(myCP.A), y: myCP.B} as ChartPoint));
+		this.chartPoints = [{name: this.currPair, chartPointList: myChartPoint, 
+			yScaleWidth: this.yScaleWidth, xScaleHeight: this.xScaleHeight} as ChartPoints];
+		//console.log(this.chartPoints);
 	}
 }

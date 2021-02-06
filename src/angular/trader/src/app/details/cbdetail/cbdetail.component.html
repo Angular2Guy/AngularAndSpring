@@ -56,18 +56,7 @@
 			</span>
 		</div>	
 		<div #chartContainer class="chart-container">
-			<ngx-charts-line-chart *ngIf="todayQuotes.length > 0" 	
-			  [legend]="legend"
-			  [showXAxisLabel]="showXAxisLabel"
-			  [showYAxisLabel]="showYAxisLabel"
-			  [xAxis]="xAxis"
-			  [yAxis]="yAxis"
-			  [xAxisLabel]="xAxisLabel"
-			  [yAxisLabel]="yAxisLabel"
-			  [timeline]="timeline"
-			  [autoScale]="autoScale"
-			  [results]="multi">
-			</ngx-charts-line-chart>
+			<sc-line-chart [chartPoints]="chartPoints"></sc-line-chart>
 		</div>		
 		<div> {{todayQuotes?.length }} </div>
 	</div>
