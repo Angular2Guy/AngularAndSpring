@@ -10,15 +10,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ScLineChartComponent } from './sc-line-chart/sc-line-chart.component';
-import { NgxSimpleChartsService } from './service/ngx-simple-charts.service';
+import { Injectable } from '@angular/core';
 
-@NgModule({
-  declarations: [ScLineChartComponent],
-  imports: [CommonModule],
-  exports: [ScLineChartComponent],
-  providers: [NgxSimpleChartsService]
-})
-export class NgxSimpleChartsModule { }
+@Injectable()
+export class NgxSimpleChartsService {
+
+  constructor() { }
+}
