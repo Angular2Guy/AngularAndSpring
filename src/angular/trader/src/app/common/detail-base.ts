@@ -31,12 +31,15 @@ export abstract class DetailBase {
 	utils = new CommonUtils();
     currPair = "";
     timeframe = this.utils.timeframes[0];
+	readonly yScaleWidth = 50;
+	readonly xScaleHeight = 20;
 	
 	constructor(protected locale: string) {}
 	
 	protected updateChartData(values: Tuple<string, number>[]): void {
 		const myChartPoint = values.map(myCP => ({x: new Date(myCP.A), y: myCP.B} as ChartPoint));
-		this.chartPoints = [{name: this.currPair, chartPointList: myChartPoint} as ChartPoints];
+		this.chartPoints = [{name: this.currPair, chartPointList: myChartPoint, 
+			yScaleWidth: this.yScaleWidth, xScaleHeight: this.xScaleHeight} as ChartPoints];
 		//console.log(this.chartPoints);
 	}
 }

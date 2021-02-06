@@ -17,5 +17,7 @@ export interface ChartPoint{
 
 export interface ChartPoints {
 	name: string;
+	yScaleWidth: number;
+	xScaleHeight: number;
 	chartPointList: ChartPoint[]; 
 }

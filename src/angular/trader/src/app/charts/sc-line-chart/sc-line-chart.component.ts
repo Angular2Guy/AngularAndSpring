@@ -62,26 +62,24 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 			console.log(`contentHeight: ${contentHeight} contentWidth: ${contentWidth} chartPoints: ${this.chartPoints.length}`);
 			return;
 		}
-		console.log(`chartPoints: ${this.chartPoints.length} chartPointList: ${this.chartPoints[0].chartPointList.length}`);
+		//console.log(`chartPoints: ${this.chartPoints.length} chartPointList: ${this.chartPoints[0].chartPointList.length}`);
 		
-		const yScaleWidth = 50;
-		const xScaleHeight = 20;
 		let xScale: ScaleLinear<number, number, never> | ScaleTime<number, number, never>;
 		if (this.chartPoints[0].chartPointList[0].x instanceof Date) {
 			xScale = scaleTime()
 				.domain(extent(this.chartPoints[0].chartPointList, p => p.x as Date) as [Date, Date])
-				.range([0, contentWidth - yScaleWidth])
+				.range([0, contentWidth - this.chartPoints[0].yScaleWidth])
 		} else {
 			xScale = scaleLinear()
 				.domain([0, this.chartPoints[0].chartPointList.length - 1]).nice()
-				.range([0, contentWidth - yScaleWidth]);
+				.range([0, contentWidth - this.chartPoints[0].yScaleWidth]);
 		}
 
 		console.log(xScale);
 
 		const yScale = scaleLinear()
 			.domain(extent<ChartPoint, number>(this.chartPoints[0].chartPointList, p => p.y) as [number, number]).nice()
-			.range([contentHeight - xScaleHeight, 0]);
+			.range([contentHeight - this.chartPoints[0].xScaleHeight, 0]);
 
 		const myLine = line()
 			.defined(p => (p as unknown as ChartPoint).y !== null && !isNaN((p as unknown as ChartPoint).y))
@@ -91,15 +89,15 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 		
 		
 		this.gPathAttribute.datum(this.chartPoints[0].chartPointList)
-			.attr('transform', 'translate('+ yScaleWidth +', 0)')
+			.attr('transform', 'translate('+ this.chartPoints[0].yScaleWidth +', 0)')
 			.attr('class', 'line').attr('d', myLine as any);
 
 		this.gxAttribute
-			.attr("transform", "translate(" + (yScaleWidth) + "," + (contentHeight - xScaleHeight) + ")")
+			.attr("transform", "translate(" + (this.chartPoints[0].yScaleWidth) + "," + (contentHeight - this.chartPoints[0].xScaleHeight) + ")")
 			.call(axisBottom(xScale));
 
 		this.gyAttribute
-			.attr("transform", "translate(" + (yScaleWidth) + "," + 0 + ")")
+			.attr("transform", "translate(" + (this.chartPoints[0].yScaleWidth) + "," + 0 + ")")
 			.call(axisLeft(yScale));		
 	}
 }
