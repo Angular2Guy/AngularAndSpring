@@ -1,6 +1,6 @@
 # This is an example application to show howto use Spring Boot, Angular and Mongodb with the Webflux features of Spring.
 
-![Build Status](https://travis-ci.org/Angular2Guy/AngularAndSpring.svg?branch=master)
+[comment]: # (![Build Status](https://travis-ci.org/Angular2Guy/AngularAndSpring.svg?branch=master))
 
 Author: Sven Loesekann
 
