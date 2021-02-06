@@ -75,8 +75,6 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 				.range([0, contentWidth - this.chartPoints[0].yScaleWidth]);
 		}
 
-		console.log(xScale);
-
 		const yScale = scaleLinear()
 			.domain(extent<ChartPoint, number>(this.chartPoints[0].chartPointList, p => p.y) as [number, number]).nice()
 			.range([contentHeight - this.chartPoints[0].xScaleHeight, 0]);
