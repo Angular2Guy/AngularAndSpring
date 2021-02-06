@@ -85,7 +85,7 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 
 		const myLine = line()
 			.defined(p => (p as unknown as ChartPoint).y !== null && !isNaN((p as unknown as ChartPoint).y))
-			.x((p, i) => xScale(i))
+			.x((p) => xScale((p as unknown as ChartPoint).x))
 			.y((p) => yScale((p as unknown as ChartPoint).y))
 			.curve((p) => curveMonotoneX(p));
 		
