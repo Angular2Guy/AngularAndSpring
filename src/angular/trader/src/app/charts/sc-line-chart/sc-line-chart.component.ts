@@ -91,6 +91,7 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 		
 		
 		this.gPathAttribute.datum(this.chartPoints[0].chartPointList)
+			.attr('transform', 'translate('+ yScaleWidth +', 0)')
 			.attr('class', 'line').attr('d', myLine as any);
 
 		this.gxAttribute
