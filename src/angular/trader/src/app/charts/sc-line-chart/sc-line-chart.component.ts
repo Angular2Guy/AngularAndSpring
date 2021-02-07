@@ -56,7 +56,7 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 	private updateChart(): void {
 		const contentWidth = isNaN(parseInt(this.d3Svg.style('width').replace(/[^0-9\.]+/g, ''), 10)) ? 0 : parseInt(this.d3Svg.style('width').replace(/[^0-9\.]+/g, ''), 10);
 		const contentHeight = isNaN(parseInt(this.d3Svg.style('height').replace(/[^0-9\.]+/g, ''), 10)) ? 0 : parseInt(this.d3Svg.style('height').replace(/[^0-9\.]+/g, ''), 10);
-		this.d3Svg.attr("viewBox", [0, 0, contentWidth, contentHeight])
+		this.d3Svg.attr("viewBox", [0, 0, contentWidth, contentHeight] as any)
 		if (contentHeight < 1 || contentWidth < 1 || !this.chartPoints || this.chartPoints.length === 0 
 			|| !this.chartPoints[0].chartPointList || this.chartPoints[0].chartPointList.length === 0) {
 			console.log(`contentHeight: ${contentHeight} contentWidth: ${contentWidth} chartPoints: ${this.chartPoints.length}`);
@@ -64,7 +64,7 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 		}
 		//console.log(`chartPoints: ${this.chartPoints.length} chartPointList: ${this.chartPoints[0].chartPointList.length}`);
 		
-		let xScale: ScaleLinear<number, number, never> | ScaleTime<number, number, never>;
+		let xScale: ScaleTime<number, number, never> | ScaleLinear<number, number, never>;
 		if (this.chartPoints[0].chartPointList[0].x instanceof Date) {
 			xScale = scaleTime()
 				.domain(extent(this.chartPoints[0].chartPointList, p => p.x as Date) as [Date, Date])
@@ -75,7 +75,7 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 				.range([0, contentWidth - this.chartPoints[0].yScaleWidth]);
 		}
 
-		console.log(xScale);
+		//console.log(xScale);
 
 		const yScale = scaleLinear()
 			.domain(extent<ChartPoint, number>(this.chartPoints[0].chartPointList, p => p.y) as [number, number]).nice()
@@ -83,7 +83,7 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 
 		const myLine = line()
 			.defined(p => (p as unknown as ChartPoint).y !== null && !isNaN((p as unknown as ChartPoint).y))
-			.x((p) => xScale((p as unknown as ChartPoint).x))
+			.x((p,i) => xScale((p as unknown as ChartPoint).x instanceof Date ? (p as unknown as ChartPoint).x as Date: i))
 			.y((p) => yScale((p as unknown as ChartPoint).y))
 			.curve((p) => curveMonotoneX(p));
 		
