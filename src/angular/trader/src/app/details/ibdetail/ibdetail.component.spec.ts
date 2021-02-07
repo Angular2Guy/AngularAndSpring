@@ -28,6 +28,7 @@ import { ItbitService } from '../../services/itbit.service';
 import { QuoteIb } from '../../common/quote-ib';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { NgxSimpleChartsModule } from 'src/app/charts/ngx-simple-charts.module';
 
 class MockService extends ItbitService {
     constructor(private http1: HttpClient) {
@@ -76,7 +77,8 @@ describe('IbdetailComponent', () => {
                   HttpClientModule,
                   BrowserAnimationsModule,                 
                   MatToolbarModule, 
-                  MatRadioModule],
+                  MatRadioModule,
+				  NgxSimpleChartsModule],
       declarations: [ IbdetailComponent ],
       providers:  [{provide: ItbitService, useValue: mockService } ]
     })
