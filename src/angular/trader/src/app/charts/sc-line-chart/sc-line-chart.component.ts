@@ -17,7 +17,7 @@ import { extent } from 'd3-array';
 import { line, curveMonotoneX } from 'd3-shape';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { ChartPoints, ChartPoint } from '../model/chart-points';
-
+/*
 @Component({
 	selector: 'sc-line-chart',
 	templateUrl: './sc-line-chart.component.html',
@@ -101,3 +101,4 @@ export class ScLineChartComponent implements AfterViewInit, OnChanges {
 			.call(axisLeft(yScale));		
 	}
 }
+*/

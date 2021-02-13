@@ -14,7 +14,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { NgxSimpleChartsService } from './ngx-simple-charts.service';
 import { NgxSimpleChartsModule } from '../ngx-simple-charts.module';
-
+/*
 describe('NgxSimpleChartsService', () => {
   let service: NgxSimpleChartsService;
 
@@ -27,3 +27,4 @@ describe('NgxSimpleChartsService', () => {
     expect(service).toBeTruthy();
   });
 });
+*/
