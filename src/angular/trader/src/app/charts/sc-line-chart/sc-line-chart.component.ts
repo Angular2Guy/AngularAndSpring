@@ -25,7 +25,7 @@ import { ChartPoints, ChartPoint } from '../model/chart-points';
 	encapsulation: ViewEncapsulation.Emulated,
 })
 export class ScLineChartComponent implements AfterViewInit, OnChanges {
-	@ViewChild("svgchart")
+	@ViewChild("svgchart",{static: true})
 	private chartContainer!: ElementRef;
 	private d3Svg!: Selection<ContainerElement, ChartPoint, HTMLElement, any>;
 	@Input()

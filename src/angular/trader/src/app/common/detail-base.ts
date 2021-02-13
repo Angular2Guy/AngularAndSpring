@@ -1,6 +1,7 @@
 import { CommonUtils } from './common-utils';
 import { formatDate } from '@angular/common';
 import { ChartPoint,ChartPoints } from '../charts/model/chart-points';
+//import { ChartPoint,ChartPoints } from 'ngx-simple-charts';
 
 /**
  *    Copyright 2019 Sven Loesekann

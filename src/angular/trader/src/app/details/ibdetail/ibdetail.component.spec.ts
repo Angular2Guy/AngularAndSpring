@@ -29,6 +29,7 @@ import { QuoteIb } from '../../common/quote-ib';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgxSimpleChartsModule } from 'src/app/charts/ngx-simple-charts.module';
+//import { NgxSimpleChartsModule } from 'ngx-simple-charts';
 
 class MockService extends ItbitService {
     constructor(private http1: HttpClient) {
