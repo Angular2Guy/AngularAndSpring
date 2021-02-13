@@ -12,8 +12,8 @@
  */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ScLineChartComponent } from './sc-line-chart/sc-line-chart.component';
-import { NgxSimpleChartsService } from './service/ngx-simple-charts.service';
+//import { ScLineChartComponent } from './sc-line-chart/sc-line-chart.component';
+//import { NgxSimpleChartsService } from './service/ngx-simple-charts.service';
 /**
 @NgModule({
   declarations: [ScLineChartComponent],
