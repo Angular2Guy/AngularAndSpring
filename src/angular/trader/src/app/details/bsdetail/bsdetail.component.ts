@@ -37,45 +37,50 @@ import { DetailBase, Tuple } from 'src/app/common/detail-base';
 export class BsdetailComponent extends DetailBase implements OnInit {
 
     currQuote: QuoteBs;
-    todayQuotes: QuoteBs[] = [];    
-    
+    todayQuotes: QuoteBs[] = [];
+
     constructor(private route: ActivatedRoute, private router: Router, private serviceBs: BitstampService,
-	@Inject(LOCALE_ID) private myLocale: string) { 
+	@Inject(LOCALE_ID) private myLocale: string) {
 		super(myLocale);
 	}
 
-    ngOnInit() { 
-        this.route.params.subscribe(params => {            
+    ngOnInit() {
+        this.route.params.subscribe(params => {
         this.serviceBs.getCurrentQuote(params.currpair)
         .subscribe(quote => {
             this.currQuote = quote;
-            this.currPair = this.utils.getCurrpairName(this.currQuote.pair);});        
+            this.currPair = this.utils.getCurrpairName(this.currQuote.pair);});
         this.serviceBs.getTodayQuotes(this.route.snapshot.paramMap.get('currpair'))
         .subscribe(quotes => {
             this.todayQuotes = quotes;
 			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.last)));
             });
         });
-    }  
-    
+    }
+
     changeTf() {
         const currpair = this.route.snapshot.paramMap.get('currpair');
         let quoteObserv: Observable<QuoteBs[]>;
-            if(this.timeframe === this.utils.timeframes[1]) quoteObserv = this.serviceBs.get7DayQuotes(currpair);
-            else if(this.timeframe === this.utils.timeframes[2]) quoteObserv = this.serviceBs.get30DayQuotes(currpair);
-            else if(this.timeframe === this.utils.timeframes[3]) quoteObserv = this.serviceBs.get90DayQuotes(currpair) 
-                else quoteObserv = this.serviceBs.getTodayQuotes(currpair);
-        
+            if(this.timeframe === this.utils.timeframes[1]) {
+				quoteObserv = this.serviceBs.get7DayQuotes(currpair);
+			} else if(this.timeframe === this.utils.timeframes[2]) {
+				quoteObserv = this.serviceBs.get30DayQuotes(currpair);
+			} else if(this.timeframe === this.utils.timeframes[3]) {
+				quoteObserv = this.serviceBs.get90DayQuotes(currpair);
+			} else {
+				quoteObserv = this.serviceBs.getTodayQuotes(currpair);
+			}
+
         quoteObserv.subscribe(quotes => {
-            this.todayQuotes = quotes;			
+            this.todayQuotes = quotes;
 			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.last)));
             });
     }
-    
+
     showReport() {
         const currpair = this.route.snapshot.paramMap.get('currpair');
-        let url = '/bitstamp' + this.utils.createReportUrl(this.timeframe, currpair);
+        const url = '/bitstamp' + this.utils.createReportUrl(this.timeframe, currpair);
         window.open(url);
     }
-    
+
 }

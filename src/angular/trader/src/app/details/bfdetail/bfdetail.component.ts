@@ -37,15 +37,15 @@ import { DetailBase, Tuple } from '../../common/detail-base';
 export class BfdetailComponent extends DetailBase implements OnInit {
 
     currQuote: QuoteBf;
-    todayQuotes: QuoteBf[] = [];   
+    todayQuotes: QuoteBf[] = [];
 
-    constructor( private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService, 
-		@Inject(LOCALE_ID) private myLocale: string) { 
+    constructor( private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService,
+		@Inject(LOCALE_ID) private myLocale: string) {
 			super(myLocale);
 		}
 
     ngOnInit() {
-        this.route.params.subscribe( params => {            
+        this.route.params.subscribe( params => {
             this.serviceBf.getCurrentQuote( params.currpair )
                 .subscribe( quote => {
                     this.currQuote = quote;
@@ -62,20 +62,25 @@ export class BfdetailComponent extends DetailBase implements OnInit {
     changeTf() {
         const currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteBf[]>;
-        if ( this.timeframe === this.utils.timeframes[1] ) quoteObserv = this.serviceBf.get7DayQuotes( currpair );
-        else if ( this.timeframe === this.utils.timeframes[2] ) quoteObserv = this.serviceBf.get30DayQuotes( currpair );
-        else if ( this.timeframe === this.utils.timeframes[3] ) quoteObserv = this.serviceBf.get90DayQuotes( currpair )
-        else quoteObserv = this.serviceBf.getTodayQuotes( currpair );
+        if ( this.timeframe === this.utils.timeframes[1] ) {
+			quoteObserv = this.serviceBf.get7DayQuotes( currpair );
+		} else if ( this.timeframe === this.utils.timeframes[2] ) {
+			quoteObserv = this.serviceBf.get30DayQuotes( currpair );
+		} else if ( this.timeframe === this.utils.timeframes[3] ) {
+			quoteObserv = this.serviceBf.get90DayQuotes( currpair );
+		} else {
+			quoteObserv = this.serviceBf.getTodayQuotes( currpair );
+		}
 
         quoteObserv.subscribe( quotes => {
             this.todayQuotes = quotes;
-            this.updateChartData(quotes.map(quote => new Tuple<string,number>(quote.createdAt, quote.last_price))); 
+            this.updateChartData(quotes.map(quote => new Tuple<string,number>(quote.createdAt, quote.last_price)));
         } );
     }
 
     showReport() {
         const currpair = this.route.snapshot.paramMap.get( 'currpair' );
-        let url = '/bitfinex' + this.utils.createReportUrl( this.timeframe, currpair );
+        const url = '/bitfinex' + this.utils.createReportUrl( this.timeframe, currpair );
         window.open( url );
     }
 }

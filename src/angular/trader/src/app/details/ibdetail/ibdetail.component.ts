@@ -38,9 +38,9 @@ export class IbdetailComponent extends DetailBase implements OnInit {
     currQuote: QuoteIb;
     todayQuotes: QuoteIb[] = [];
 
-    constructor( private route: ActivatedRoute, private router: Router, private serviceIb: ItbitService, 
-		@Inject(LOCALE_ID) private myLocale: string) { 
-		super(myLocale); 
+    constructor( private route: ActivatedRoute, private router: Router, private serviceIb: ItbitService,
+		@Inject(LOCALE_ID) private myLocale: string) {
+		super(myLocale);
 	}
 
     ngOnInit() {
@@ -59,10 +59,15 @@ export class IbdetailComponent extends DetailBase implements OnInit {
     changeTf() {
         const currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteIb[]>;
-        if ( this.timeframe === this.utils.timeframes[1] ) quoteObserv = this.serviceIb.get7DayQuotes( currpair );
-        else if ( this.timeframe === this.utils.timeframes[2] ) quoteObserv = this.serviceIb.get30DayQuotes( currpair );
-        else if ( this.timeframe === this.utils.timeframes[3] ) quoteObserv = this.serviceIb.get90DayQuotes( currpair )
-        else quoteObserv = this.serviceIb.getTodayQuotes( currpair );
+        if ( this.timeframe === this.utils.timeframes[1] ) {
+			quoteObserv = this.serviceIb.get7DayQuotes( currpair );
+		} else if ( this.timeframe === this.utils.timeframes[2] ) {
+			 quoteObserv = this.serviceIb.get30DayQuotes( currpair );
+		} else if ( this.timeframe === this.utils.timeframes[3] ) {
+			 quoteObserv = this.serviceIb.get90DayQuotes( currpair );
+		} else {
+			quoteObserv = this.serviceIb.getTodayQuotes( currpair );
+		}
         quoteObserv.subscribe( quotes => {
             this.todayQuotes = quotes;
 			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.lastPrice)));
@@ -71,7 +76,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
 
     showReport() {
         const currpair = this.route.snapshot.paramMap.get( 'currpair' );
-        let url = '/itbit' + this.utils.createReportUrl( this.timeframe, currpair );
+        const url = '/itbit' + this.utils.createReportUrl( this.timeframe, currpair );
         window.open( url );
     }
 }

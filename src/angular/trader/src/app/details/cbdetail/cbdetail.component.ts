@@ -39,13 +39,16 @@ export class CbdetailComponent extends DetailBase implements OnInit {
     currQuote: QuoteCb;
     todayQuotes: QuoteCbSmall[] = [];
     currpair: string;
-    myCurrPair = "";
-    BTCUSD: string;
-    ETHUSD: string;
-    LTCUSD: string;
+    myCurrPair = '';
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    readonly BTCUSD: string;
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+    readonly ETHUSD: string;
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+    readonly LTCUSD: string;
 
-    constructor( private route: ActivatedRoute, private router: Router, private serviceCb: CoinbaseService, 
-		@Inject(LOCALE_ID) private myLocale: string) { 
+    constructor( private route: ActivatedRoute, private router: Router, private serviceCb: CoinbaseService,
+		@Inject(LOCALE_ID) private myLocale: string) {
 		super(myLocale);
         this.BTCUSD = this.serviceCb.BTCUSD;
         this.ETHUSD = this.serviceCb.ETHUSD;
@@ -75,10 +78,15 @@ export class CbdetailComponent extends DetailBase implements OnInit {
     changeTf() {
         this.currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteCbSmall[]>;
-        if ( this.timeframe === this.utils.timeframes[1] ) quoteObserv = this.serviceCb.get7DayQuotes();
-        else if ( this.timeframe === this.utils.timeframes[2] ) quoteObserv = this.serviceCb.get30DayQuotes();
-        else if ( this.timeframe === this.utils.timeframes[3] ) quoteObserv = this.serviceCb.get90DayQuotes()
-        else quoteObserv = this.serviceCb.getTodayQuotes();
+        if ( this.timeframe === this.utils.timeframes[1] ) {
+			quoteObserv = this.serviceCb.get7DayQuotes();
+		} else if ( this.timeframe === this.utils.timeframes[2] ) {
+			quoteObserv = this.serviceCb.get30DayQuotes();
+		} else if ( this.timeframe === this.utils.timeframes[3] ) {
+			quoteObserv = this.serviceCb.get90DayQuotes();
+		} else {
+			quoteObserv = this.serviceCb.getTodayQuotes();
+		}
 
         quoteObserv.subscribe( quotes => {
             this.todayQuotes = quotes;

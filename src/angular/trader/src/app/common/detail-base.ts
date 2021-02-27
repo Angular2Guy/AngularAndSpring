@@ -1,8 +1,3 @@
-import { CommonUtils } from './common-utils';
-import { formatDate } from '@angular/common';
-//import { ChartPoint,ChartPoints } from '../charts/model/chart-points';
-import { ChartPoint,ChartPoints } from 'ngx-simple-charts';
-
 /**
  *    Copyright 2019 Sven Loesekann
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +10,18 @@ import { ChartPoint,ChartPoints } from 'ngx-simple-charts';
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+import { CommonUtils } from './common-utils';
+import { formatDate } from '@angular/common';
+import { ChartPoint,ChartPoints } from 'ngx-simple-charts';
+
 export class Tuple<A,B> {
 	constructor(private myA: A, private myB: B) {}
-	 
+
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	get A() {
 		return this.myA;
 	}
-	
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	get B() {
 		return this.myB;
 	}
@@ -30,16 +30,16 @@ export class Tuple<A,B> {
 export abstract class DetailBase {
 	chartPoints: ChartPoints[] = [];
 	utils = new CommonUtils();
-    currPair = "";
+    currPair = '';
     timeframe = this.utils.timeframes[0];
 	readonly yScaleWidth = 50;
 	readonly xScaleHeight = 20;
-	
+
 	constructor(protected locale: string) {}
-	
+
 	protected updateChartData(values: Tuple<string, number>[]): void {
 		const myChartPoint = values.map(myCP => ({x: new Date(myCP.A), y: myCP.B} as ChartPoint));
-		this.chartPoints = [{name: this.currPair, chartPointList: myChartPoint, 
+		this.chartPoints = [{name: this.currPair, chartPointList: myChartPoint,
 			yScaleWidth: this.yScaleWidth, xScaleHeight: this.xScaleHeight} as ChartPoints];
 		//console.log(this.chartPoints);
 	}
