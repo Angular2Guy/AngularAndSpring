@@ -17,11 +17,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DetailsRoutingModule } from './details-routing.module';
-import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { IbdetailComponent } from "./ibdetail/ibdetail.component";
-import { CbdetailComponent } from "./cbdetail/cbdetail.component";
-import { BsdetailComponent } from "./bsdetail/bsdetail.component";
-import { BfdetailComponent } from "./bfdetail/bfdetail.component";
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { IbdetailComponent } from './ibdetail/ibdetail.component';
+import { CbdetailComponent } from './cbdetail/cbdetail.component';
+import { BsdetailComponent } from './bsdetail/bsdetail.component';
+import { BfdetailComponent } from './bfdetail/bfdetail.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -30,14 +30,14 @@ import { NgxSimpleChartsModule } from 'ngx-simple-charts';
 
 @NgModule({
   imports: [
-    CommonModule,    
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatToolbarModule,
     MatRadioModule,
     MatButtonModule,
     DetailsRoutingModule,
-    NgxSimpleChartsModule,    
+    NgxSimpleChartsModule,
   ],
   declarations: [
     IbdetailComponent,
