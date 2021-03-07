@@ -18,8 +18,8 @@ package ch.xxx.trader;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import ch.xxx.trader.utils.PasswordEncryption;
 
@@ -32,21 +32,21 @@ public class PasswordEncryptionTest {
 	public void abcEncryption() throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String salt = pe.generateSalt();
 		String encryptedPassword = pe.getEncryptedPassword("abc", salt);
-		Assert.assertTrue(pe.authenticate("abc", encryptedPassword, salt));
+		Assertions.assertTrue(pe.authenticate("abc", encryptedPassword, salt));
 	}
 	
 	@Test
 	public void strNumEncryption() throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String salt = pe.generateSalt();
 		String encryptedPassword = pe.getEncryptedPassword("abc123", salt);
-		Assert.assertTrue(pe.authenticate("abc123", encryptedPassword, salt));
+		Assertions.assertTrue(pe.authenticate("abc123", encryptedPassword, salt));
 	}	
 	
 	@Test
 	public void realPwdEncryption() throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String salt = pe.generateSalt();
 		String encryptedPassword = pe.getEncryptedPassword("abc123%&/?!", salt);
-		Assert.assertTrue(pe.authenticate("abc123%&/?!", encryptedPassword, salt));
+		Assertions.assertTrue(pe.authenticate("abc123%&/?!", encryptedPassword, salt));
 	}
 	
 }
