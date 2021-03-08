@@ -47,7 +47,7 @@ public class ForwardServletFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest myRequest = (HttpServletRequest) request;
-		LOG.info(String.format("ServletPath: %s", myRequest.getServletPath()));
+//		LOG.info(String.format("ServletPath: %s", myRequest.getServletPath()));
 		if(REST_PATHS.stream()
 //				.peek(restEndPoint -> LOG.info(restEndPoint + " " + myRequest.getServletPath() + " "
 //						+ myRequest.getServletPath().indexOf(restEndPoint)))
@@ -63,7 +63,7 @@ public class ForwardServletFilter implements Filter {
 			Locale userLocale = StreamSupport.stream(iterable.spliterator(), false)
 					.filter(myLocale -> SUPPORTED_LOCALES.contains(myLocale)).findFirst().orElse(Locale.ENGLISH);
 			String forwardPath = String.format("/%s/index.html", userLocale.getLanguage());
-			LOG.info(String.format("Forward to: %s", forwardPath));
+//			LOG.info(String.format("Forward to: %s", forwardPath));
 			RequestDispatcher dispatcher = myRequest.getServletContext().getRequestDispatcher(forwardPath);
 			dispatcher.forward(myRequest, response);
 			return;

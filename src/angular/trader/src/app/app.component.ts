@@ -27,10 +27,13 @@ export class AppComponent implements OnInit {
   constructor(@Inject(LOCALE_ID) private locale: string) {}
 
   ngOnInit(): void {
-	console.log(window.history.state);
-	console.log(window.location.href);
-	/*if(environment.production) {
-		window.history.pushState({foo: 'bar'},'', 'details/bsdetail/btcusd');
-	}*/
+	//console.log(window.location.href);
+	//console.log(this.locale);
+	if(environment.production && window.location.href.split('/').length > 3) {
+		let urlStr = '/' + window.location.href.split('/').slice(3).join('/');
+		urlStr = urlStr.indexOf(`/${this.locale}/`) !== 0 ? `/${this.locale}` + urlStr : urlStr;
+		//console.log(urlStr);
+		window.history.pushState({foo: 'bar'},'', urlStr);
+	}
   }
 }
