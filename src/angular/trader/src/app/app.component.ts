@@ -13,13 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
+import { environment } from './../environments/environment';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'app';
+
+  constructor(@Inject(LOCALE_ID) private locale: string) {}
+
+  ngOnInit(): void {
+	console.log(window.history.state);
+	console.log(window.location.href);
+	/*if(environment.production) {
+		window.history.pushState({foo: 'bar'},'', 'details/bsdetail/btcusd');
+	}*/
+  }
 }

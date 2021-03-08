@@ -16,17 +16,18 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from './services/auth-guard.service';
-import { SplashComponent } from "./splash/splash.component";
+import { SplashComponent } from './splash/splash.component';
 
 const routes: Routes = [
     {path: 'overview', loadChildren: () => import('./overview/overview.module').then(m => m.OverviewModule)},
     {path: 'details', loadChildren: () => import('./details/details.module').then(m => m.DetailsModule)},
-    {path: 'orderbooks', loadChildren: () => import('./orderbooks/orderbooks.module').then(m => m.OrderbooksModule), canActivate: [AuthGuardService]},
+    {path: 'orderbooks', loadChildren: () => import('./orderbooks/orderbooks.module')
+		.then(m => m.OrderbooksModule), canActivate: [AuthGuardService]},
     {path: '**', component: SplashComponent}
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, { enableTracing: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
