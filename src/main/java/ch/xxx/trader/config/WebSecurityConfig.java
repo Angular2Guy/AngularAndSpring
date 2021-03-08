@@ -24,7 +24,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import ch.xxx.trader.MyAuthenticationProvider;
 import ch.xxx.trader.jwt.JwtTokenFilterConfigurer;
 import ch.xxx.trader.jwt.JwtTokenProvider;
 

@@ -39,7 +39,6 @@ import ch.xxx.trader.dtos.AuthCheck;
 import ch.xxx.trader.dtos.MyUser;
 import ch.xxx.trader.jwt.JwtTokenProvider;
 import ch.xxx.trader.jwt.Role;
-import ch.xxx.trader.utils.PasswordEncryption;
 import ch.xxx.trader.utils.WebUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 import org.tuckey.web.filters.urlrewrite.Conf;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
-@Component
+//@Component
 public class MyUrlRewriteFilter extends UrlRewriteFilter {
 
     private static final String CONFIG_LOCATION = "classpath:/urlrewrite.xml";

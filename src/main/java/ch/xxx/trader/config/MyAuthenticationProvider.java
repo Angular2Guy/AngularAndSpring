@@ -13,10 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+package ch.xxx.trader.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +31,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.dtos.MyUser;
-import ch.xxx.trader.utils.PasswordEncryption;
 
 @Component
 public class MyAuthenticationProvider implements AuthenticationProvider {
