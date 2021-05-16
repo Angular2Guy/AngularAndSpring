@@ -27,7 +27,7 @@ public class MongoDbConfiguration extends AbstractReactiveMongoConfiguration {
 
 	@Override
 	protected String getDatabaseName() {
-		return "trader-test";
+		return "traderdb";
 	}
 
 	@Override

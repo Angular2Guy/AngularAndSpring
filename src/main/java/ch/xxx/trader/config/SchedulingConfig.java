@@ -24,8 +24,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
+import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
+
 @Configuration
 @EnableScheduling
+@EnableSchedulerLock(defaultLockAtMostFor = "10m")
 public class SchedulingConfig implements SchedulingConfigurer {
 
     @Override

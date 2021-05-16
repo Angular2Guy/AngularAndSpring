@@ -68,6 +68,16 @@
 			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>net.javacrumbs.shedlock</groupId>
+			<artifactId>shedlock-spring</artifactId>
+			<version>4.23.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.javacrumbs.shedlock</groupId>
+			<artifactId>shedlock-provider-mongo-reactivestreams</artifactId>
+			<version>4.23.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
 			<version>4.0.3</version>

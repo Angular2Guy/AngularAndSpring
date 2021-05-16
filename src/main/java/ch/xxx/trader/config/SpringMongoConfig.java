@@ -30,9 +30,13 @@ import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
 
+import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMongoLockProvider;
+
 @Configuration
 public class SpringMongoConfig  {
 	private static final Logger log = LoggerFactory.getLogger(SpringMongoConfig.class);
+	private static final String SCHED_LOCK_DB = "schedLock";
 	
     @Value("${spring.data.mongodb.host}")
     private String mongoHost;        	
@@ -60,4 +64,9 @@ public class SpringMongoConfig  {
 	public ServerCodecConfigurer serverCodecConfigurer() {
 		return new DefaultServerCodecConfigurer();
 	}
+    
+    @Bean
+    public LockProvider lockProvider(MongoClient mongo) {
+        return new ReactiveStreamsMongoLockProvider(mongo.getDatabase(SCHED_LOCK_DB));
+    }
 }
