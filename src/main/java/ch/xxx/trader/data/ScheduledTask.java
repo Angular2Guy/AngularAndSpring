@@ -69,7 +69,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 3000)
-	@SchedulerLock(name = "BitstampQuoteBTC_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitstampQuoteBTC_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteBTC() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bsWebClient;
@@ -89,7 +89,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 6000)
-	@SchedulerLock(name = "BitstampQuoteETH_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitstampQuoteETH_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteETH() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bsWebClient;
@@ -109,7 +109,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 9000)
-	@SchedulerLock(name = "BitstampQuoteLTC_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitstampQuoteLTC_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteLTC() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bsWebClient;
@@ -129,7 +129,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 12000)
-	@SchedulerLock(name = "BitstampQuoteXRP_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitstampQuoteXRP_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteXRP() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bsWebClient;
@@ -149,7 +149,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 15000)
-	@SchedulerLock(name = "CoinbaseQuote_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "CoinbaseQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertCoinbaseQuote() {
 		Date start = new Date();
 		WebClient wc = this.cbWebClient;
@@ -169,7 +169,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 18000)
-	@SchedulerLock(name = "ItbitQuote_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "ItbitQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitQuote() {
 		Date start = new Date();
 		WebClient wc = this.ibWebClient;
@@ -188,7 +188,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 21000)
-	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitUsdQuote() {
 		Date start = new Date();
 		WebClient wc = this.ibWebClient;
@@ -207,7 +207,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 24000)
-	@SchedulerLock(name = "BitstampQuoteBTCUSD_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitstampQuoteBTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteBTCUSD() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bsWebClient;
@@ -227,7 +227,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 27000)
-	@SchedulerLock(name = "BitstampQuoteETHUSD_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitstampQuoteETHUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteETHUSD() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bsWebClient;
@@ -247,7 +247,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 30000)
-	@SchedulerLock(name = "BitstampQuoteLTCUSD_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitstampQuoteLTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteLTCUSD() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bsWebClient;
@@ -267,7 +267,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 33000)
-	@SchedulerLock(name = "BitstampQuoteXRPUSD_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitstampQuoteXRPUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteXRPUSD() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bsWebClient;
@@ -287,7 +287,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 36000)
-	@SchedulerLock(name = "BitfinexQuoteBTCUSD_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitfinexQuoteBTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteBTCUSD() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bfWebClient;
@@ -307,7 +307,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 39000)
-	@SchedulerLock(name = "BitfinexQuoteETHUSD_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitfinexQuoteETHUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteETHUSD() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bfWebClient;
@@ -327,7 +327,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 42000)
-	@SchedulerLock(name = "BitfinexQuoteLTCUSD_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitfinexQuoteLTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteLTCUSD() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bfWebClient;
@@ -347,7 +347,7 @@ public class ScheduledTask {
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 45000)
-	@SchedulerLock(name = "BitfinexQuoteXRPUSD_scheduledTask", lockAtLeastFor = "30s", lockAtMostFor = "55s")
+	@SchedulerLock(name = "BitfinexQuoteXRPUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteXRPUSD() throws InterruptedException {
 		Date start = new Date();
 		WebClient wc = this.bfWebClient;
