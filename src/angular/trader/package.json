@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.js",
+    "start": "ng serve --hmr --proxy-config proxy.conf.js",
     "build": "ng build --prod --localize",
     "test": "ng test --browsers ChromeHeadless --watch=false",
     "test-chromium": "ng test --browsers ChromiumHeadless --watch=false",
@@ -36,7 +36,7 @@
     "tslib": "^2.0.0",
     "web-animations-js": "^2.3.2",
     "zone.js": "~0.11.4",
-    "ngx-simple-charts": "^0.0.5"
+    "ngx-simple-charts": "^0.0.6"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.0.1",
