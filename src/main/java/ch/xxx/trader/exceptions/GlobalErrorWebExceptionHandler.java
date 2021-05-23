@@ -15,7 +15,7 @@
  */
 package ch.xxx.trader.exceptions;
 
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.springframework.boot.autoconfigure.web.WebProperties.Resources;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
@@ -35,9 +35,9 @@ import reactor.core.publisher.Mono;
 @Order(-2)
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
 	
-	public GlobalErrorWebExceptionHandler(ErrorAttributes errorAttributes, ResourceProperties resourceProperties,
+	public GlobalErrorWebExceptionHandler(ErrorAttributes errorAttributes, Resources resources,
 			ApplicationContext applicationContext, ServerCodecConfigurer serverCodecConfigurer) {
-		super(errorAttributes, resourceProperties, applicationContext);
+		super(errorAttributes, resources, applicationContext);		
 		super.setMessageWriters(serverCodecConfigurer.getWriters());
 		super.setMessageReaders(serverCodecConfigurer.getReaders());
 	}
