@@ -15,8 +15,6 @@
  */
 package ch.xxx.trader.adapter.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,8 +36,8 @@ public class BitfinexController {
 	}
 
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {		
-		return this.bitfinexService.getOrderbook(currpair, request);
+	public Mono<String> getOrderbook(@PathVariable String currpair) {		
+		return this.bitfinexService.getOrderbook(currpair);
 	}
 
 	@GetMapping("/{pair}/current")

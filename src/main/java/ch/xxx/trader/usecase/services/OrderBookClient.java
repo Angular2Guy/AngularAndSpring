@@ -15,13 +15,10 @@
  */
 package ch.xxx.trader.usecase.services;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.bind.annotation.PathVariable;
-
 import reactor.core.publisher.Mono;
 
 public interface OrderBookClient {
-	Mono<String> getOrderbookBitfinex(@PathVariable String currpair, HttpServletRequest request);
-	Mono<String> getOrderbookBitstamp(String currpair, HttpServletRequest request);
+	Mono<String> getOrderbookBitfinex(String currpair);
+	Mono<String> getOrderbookBitstamp(String currpair);
+	Mono<String> getOrderbookItbit(String currpair);
 }

@@ -22,6 +22,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.usecase.services.OrderBookClient;
 import reactor.core.publisher.Mono;
 
@@ -29,16 +30,23 @@ import reactor.core.publisher.Mono;
 public class RestOrderBookClient implements OrderBookClient {
 	private static final String URLBF = "https://api.bitfinex.com";
 	private static final String URLBS = "https://www.bitstamp.net/api";
+	private static final String URLIB = "https://api.itbit.com";
 
-	public Mono<String> getOrderbookBitfinex(String currpair, HttpServletRequest request) {
+	public Mono<String> getOrderbookBitfinex(String currpair) {
 		WebClient wc = this.buildWebClient(URLBF);
 		return wc.get().uri("/v1/book/" + currpair + "/").accept(MediaType.APPLICATION_JSON)
 				.exchangeToMono(res -> res.bodyToMono(String.class));
 	}
 
-	public Mono<String> getOrderbookBitstamp(String currpair, HttpServletRequest request) {
+	public Mono<String> getOrderbookBitstamp(String currpair) {
 		WebClient wc = this.buildWebClient(URLBS);
 		return wc.get().uri("/v2/order_book/" + currpair + "/").accept(MediaType.APPLICATION_JSON)
+				.exchangeToMono(res -> res.bodyToMono(String.class));
+	}
+
+	public Mono<String> getOrderbookItbit(String currpair) {
+		WebClient wc = WebUtils.buildWebClient(URLIB);
+		return wc.get().uri("/v1/markets/" + currpair + "/order_book/").accept(MediaType.APPLICATION_JSON)
 				.exchangeToMono(res -> res.bodyToMono(String.class));
 	}
 

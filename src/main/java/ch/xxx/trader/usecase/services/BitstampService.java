@@ -17,8 +17,6 @@ package ch.xxx.trader.usecase.services;
 
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -43,8 +41,8 @@ public class BitstampService {
 		this.reportGenerator = reportGenerator;
 	}
 
-	public Mono<String> getOrderbook(String currpair, HttpServletRequest request) {
-		return this.orderBookClient.getOrderbookBitstamp(currpair, request);
+	public Mono<String> getOrderbook(String currpair) {
+		return this.orderBookClient.getOrderbookBitstamp(currpair);
 	}
 
 	public Mono<QuoteBs> currentQuoteBtc(String pair) {

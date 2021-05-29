@@ -38,8 +38,8 @@ public class BitstampController {
 	}
 	
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair, HttpServletRequest request) {				
-		return this.bitstampService.getOrderbook(currpair, request);
+	public Mono<String> getOrderbook(@PathVariable String currpair) {				
+		return this.bitstampService.getOrderbook(currpair);
 	}
 
 	@GetMapping("/{pair}/current")
