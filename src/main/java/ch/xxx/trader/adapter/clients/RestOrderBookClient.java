@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.usecase.services.OrderBookClient;
@@ -29,12 +28,20 @@ import reactor.core.publisher.Mono;
 @Service
 public class RestOrderBookClient implements OrderBookClient {
 	private static final String URLBF = "https://api.bitfinex.com";
-	
-	public Mono<String> getOrderbookBitfinex(@PathVariable String currpair, HttpServletRequest request) {		
+	private static final String URLBS = "https://www.bitstamp.net/api";
+
+	public Mono<String> getOrderbookBitfinex(String currpair, HttpServletRequest request) {
 		WebClient wc = this.buildWebClient(URLBF);
-		return wc.get().uri("/v1/book/" + currpair + "/").accept(MediaType.APPLICATION_JSON).exchangeToMono(res -> res.bodyToMono(String.class));				
+		return wc.get().uri("/v1/book/" + currpair + "/").accept(MediaType.APPLICATION_JSON)
+				.exchangeToMono(res -> res.bodyToMono(String.class));
 	}
-	
+
+	public Mono<String> getOrderbookBitstamp(String currpair, HttpServletRequest request) {
+		WebClient wc = this.buildWebClient(URLBS);
+		return wc.get().uri("/v2/order_book/" + currpair + "/").accept(MediaType.APPLICATION_JSON)
+				.exchangeToMono(res -> res.bodyToMono(String.class));
+	}
+
 	private WebClient buildWebClient(String url) {
 		ReactorClientHttpConnector connector = new ReactorClientHttpConnector();
 		return WebClient.builder().clientConnector(connector).baseUrl(url).build();

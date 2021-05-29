@@ -23,4 +23,5 @@ import reactor.core.publisher.Mono;
 
 public interface OrderBookClient {
 	Mono<String> getOrderbookBitfinex(@PathVariable String currpair, HttpServletRequest request);
+	Mono<String> getOrderbookBitstamp(String currpair, HttpServletRequest request);
 }
