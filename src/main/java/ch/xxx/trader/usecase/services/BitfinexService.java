@@ -33,7 +33,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.adapter.cron.PrepareData;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.Tuple;
 import ch.xxx.trader.domain.dtos.QuoteBf;

@@ -23,7 +23,6 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -52,8 +51,11 @@ public class ScheduledTask {
 	private WebClient ibWebClient;
 	private WebClient bfWebClient;
 
-	@Autowired
-	private ReactiveMongoOperations operations;
+	private final ReactiveMongoOperations operations;
+	
+	public ScheduledTask(ReactiveMongoOperations operations) {
+		this.operations = operations;
+	}
 
 	@PostConstruct
 	public void init() {
