@@ -20,29 +20,31 @@ import java.util.Optional;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import ch.xxx.trader.adapter.cron.PrepareData;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.dtos.QuoteBf;
-import ch.xxx.trader.domain.dtos.QuotePdf;
+import ch.xxx.trader.usecase.mappers.ReportMapper;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 public class BitfinexService {
-	private final ReactiveMongoOperations operations;	
+	private final ReactiveMongoOperations operations;
 	private final ReportGenerator reportGenerator;
 	private final OrderBookClient orderBookClient;
-	
-	public BitfinexService(ReactiveMongoOperations operations, ReportGenerator reportGenerator, OrderBookClient orderBookClient) {
+	private final ReportMapper reportMapper;
+
+	public BitfinexService(ReactiveMongoOperations operations, ReportGenerator reportGenerator,
+			OrderBookClient orderBookClient, ReportMapper reportMapper) {
 		this.operations = operations;
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
+		this.reportMapper = reportMapper;
 	}
-	
-	public Mono<String> getOrderbook(String currpair) {		
-		return this.orderBookClient.getOrderbookBitfinex(currpair);				
+
+	public Mono<String> getOrderbook(String currpair) {
+		return this.orderBookClient.getOrderbookBitfinex(currpair);
 	}
 
 	public Mono<QuoteBf> currentQuote(String pair) {
@@ -50,7 +52,7 @@ public class BitfinexService {
 		return this.operations.findOne(query, QuoteBf.class);
 	}
 
-	public Flux<QuoteBf> tfQuotes(String timeFrame, String pair) {		
+	public Flux<QuoteBf> tfQuotes(String timeFrame, String pair) {
 		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
 			return this.operations.find(query, QuoteBf.class).filter(q -> filterEvenMinutes(q));
@@ -67,34 +69,32 @@ public class BitfinexService {
 
 		return Flux.empty();
 	}
-	
+
 	public Mono<byte[]> pdfReport(String timeFrame, String pair) {
 		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class).filter(this::filter10Minutes).map(this::convert));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class)
+					.filter(this::filter10Minutes).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class, PrepareData.BF_HOUR_COL).map(this::convert));
+			return this.reportGenerator.generateReport(this.operations
+					.find(query, QuoteBf.class, PrepareData.BF_HOUR_COL).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class, PrepareData.BF_DAY_COL).map(this::convert));
+			return this.reportGenerator.generateReport(
+					this.operations.find(query, QuoteBf.class, PrepareData.BF_DAY_COL).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteBf.class, PrepareData.BF_DAY_COL).map(this::convert));
+			return this.reportGenerator.generateReport(
+					this.operations.find(query, QuoteBf.class, PrepareData.BF_DAY_COL).map(this.reportMapper::convert));
 		}
-		
 		return Mono.empty();
 	}
 
-	private QuotePdf convert(QuoteBf quote) {
-		QuotePdf quotePdf = new QuotePdf(quote.getLast_price(), quote.getPair(), quote.getVolume(), quote.getCreatedAt(), quote.getBid(), quote.getAsk());		
-		return quotePdf;
-	}
-	
 	private boolean filterEvenMinutes(QuoteBf quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}
-	
+
 	private boolean filter10Minutes(QuoteBf quote) {
 		return MongoUtils.filter10Minutes(quote.getCreatedAt());
 	}

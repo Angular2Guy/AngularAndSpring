@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.adapter.cron.PrepareData;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.dtos.QuoteIb;
-import ch.xxx.trader.domain.dtos.QuotePdf;
+import ch.xxx.trader.usecase.mappers.ReportMapper;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -36,11 +36,13 @@ public class ItbitService {
 	private final ReactiveMongoOperations operations;
 	private final ReportGenerator reportGenerator;
 	private final OrderBookClient orderBookClient;
+	private final ReportMapper reportMapper;
 	
-	public ItbitService(ReactiveMongoOperations operations, ReportGenerator reportGenerator, OrderBookClient orderBookClient) {
+	public ItbitService(ReactiveMongoOperations operations, ReportGenerator reportGenerator, OrderBookClient orderBookClient,ReportMapper reportMapper) {
 		this.operations = operations;
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
+		this.reportMapper = reportMapper;
 		this.currpairs.put("btcusd", "XBTUSD");
 		this.currpairs.put("btceur", "XBTEUR");		
 	}
@@ -79,24 +81,19 @@ public class ItbitService {
 		final String newPair = this.currpairs.get(pair);
 		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class).filter(this::filter10Minutes).map(this::convert));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class).filter(this::filter10Minutes).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build7DayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, PrepareData.IB_HOUR_COL).map(this::convert));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, PrepareData.IB_HOUR_COL).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build30DayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, PrepareData.IB_DAY_COL).map(this::convert));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, PrepareData.IB_DAY_COL).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build90DayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, PrepareData.IB_DAY_COL).map(this::convert));
+			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, PrepareData.IB_DAY_COL).map(this.reportMapper::convert));
 		}
 		
 		return Mono.empty();
-	}
-
-	private QuotePdf convert(QuoteIb quote) {
-		QuotePdf quotePdf = new QuotePdf(quote.getLastPrice(), quote.getPair(), quote.getVolume24h(), quote.getCreatedAt(), quote.getBid(), quote.getAsk());		
-		return quotePdf;
 	}
 	
     private boolean filterEvenMinutes(QuoteIb quote) {
