@@ -15,68 +15,47 @@
  */
 package ch.xxx.trader.adapter.controller;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.xxx.trader.adapter.cron.PrepareData;
-import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.dtos.QuoteCb;
 import ch.xxx.trader.domain.dtos.QuoteCbSmall;
+import ch.xxx.trader.usecase.services.CoinbaseService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/coinbase")
 public class CoinbaseController {
+	private final CoinbaseService coinbaseService;
 	
-	@Autowired
-	private ReactiveMongoOperations operations;
+	public CoinbaseController(CoinbaseService coinbaseService) {
+		this.coinbaseService = coinbaseService;
+	}
 
 	@GetMapping("/today")
 	public Flux<QuoteCbSmall> todayQuotesBc() {
-		Query query = MongoUtils.buildTodayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class)
-				.filter(q -> filterEvenMinutes(q))
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+		return this.coinbaseService.todayQuotesBc();
 	}
 	
 	@GetMapping("/7days")
 	public Flux<QuoteCbSmall> sevenDaysQuotesBc() {
-		Query query = MongoUtils.build7DayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class,PrepareData.CB_HOUR_COL)
-				.filter(q -> filterEvenMinutes(q))
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+		return this.coinbaseService.sevenDaysQuotesBc();
 	}
 	
 	@GetMapping("/30days")
 	public Flux<QuoteCbSmall> thirtyDaysQuotesBc() {
-		Query query = MongoUtils.build30DayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class,PrepareData.CB_DAY_COL)
-				.filter(q -> filterEvenMinutes(q))
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+		return this.coinbaseService.thirtyDaysQuotesBc();
 	}
 	
 	@GetMapping("/90days")
 	public Flux<QuoteCbSmall> nintyDaysQuotesBc() {
-		Query query = MongoUtils.build90DayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class,PrepareData.CB_DAY_COL)
-				.filter(q -> filterEvenMinutes(q))
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+		return this.coinbaseService.nintyDaysQuotesBc();
 	}
 	
 	@GetMapping("/current")
 	public Mono<QuoteCb> currentQuoteBc() {
-		Query query = MongoUtils.buildCurrentQuery(Optional.empty());
-		return this.operations.findOne(query,QuoteCb.class);
-	}
-	
-	private boolean filterEvenMinutes(QuoteCb quote) {
-		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
-	}
+		return this.coinbaseService.currentQuoteBc();
+	}	
 }
