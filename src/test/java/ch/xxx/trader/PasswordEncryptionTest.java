@@ -21,7 +21,7 @@ import java.security.spec.InvalidKeySpecException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import ch.xxx.trader.utils.PasswordEncryption;
+import ch.xxx.trader.domain.common.PasswordEncryption;
 
 
 
