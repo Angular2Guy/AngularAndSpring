@@ -54,47 +54,49 @@ public class CoinbaseService {
 	private static final Map<Integer, MethodHandle> cbMethodCache = new ConcurrentHashMap<>();
 	public static final String CB_HOUR_COL = "quoteCbHour";
 	public static final String CB_DAY_COL = "quoteCbDay";
-	private final ReactiveMongoOperations operations;
+	private final MyMongoRepository myMongoRepository;
+	private final ServiceUtils serviceUtils;
 	
-	public CoinbaseService(ReactiveMongoOperations operations) {
-		this.operations = operations;
+	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
+		this.myMongoRepository = myMongoRepository;
+		this.serviceUtils = serviceUtils;
 	}
 	
 	public Flux<QuoteCbSmall> todayQuotesBc() {
 		Query query = MongoUtils.buildTodayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class)
+		return this.myMongoRepository.find(query,QuoteCb.class)
 				.filter(q -> filterEvenMinutes(q))
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
 	}
 	
 	public Flux<QuoteCbSmall> sevenDaysQuotesBc() {
 		Query query = MongoUtils.build7DayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class, CB_HOUR_COL)
+		return this.myMongoRepository.find(query,QuoteCb.class, CB_HOUR_COL)
 				.filter(q -> filterEvenMinutes(q))
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
 	}
 	
 	public Flux<QuoteCbSmall> thirtyDaysQuotesBc() {
 		Query query = MongoUtils.build30DayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class, CB_DAY_COL)
+		return this.myMongoRepository.find(query,QuoteCb.class, CB_DAY_COL)
 				.filter(q -> filterEvenMinutes(q))
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
 	}
 	
 	public Flux<QuoteCbSmall> nintyDaysQuotesBc() {
 		Query query = MongoUtils.build90DayQuery(Optional.empty());
-		return this.operations.find(query,QuoteCb.class, CB_DAY_COL)
+		return this.myMongoRepository.find(query,QuoteCb.class, CB_DAY_COL)
 				.filter(q -> filterEvenMinutes(q))
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
 	}
 	
 	public Mono<QuoteCb> currentQuoteBc() {
 		Query query = MongoUtils.buildCurrentQuery(Optional.empty());
-		return this.operations.findOne(query,QuoteCb.class);
+		return this.myMongoRepository.findOne(query,QuoteCb.class);
 	}
 
 	public void createCbHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = ServiceUtils.createTimeFrame(this.operations, CB_HOUR_COL, QuoteCb.class, true);
+		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -106,9 +108,9 @@ public class CoinbaseService {
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Coinbase
-			Collection<QuoteCb> collectCb = this.operations.find(query, QuoteCb.class).collectList()
+			Collection<QuoteCb> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, begin, end)).block();
-			this.operations.insertAll(Mono.just(collectCb), CB_HOUR_COL).blockLast();
+			this.myMongoRepository.insertAll(Mono.just(collectCb), CB_HOUR_COL).blockLast();
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -118,7 +120,7 @@ public class CoinbaseService {
 	}
 
 	public void createCbDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = ServiceUtils.createTimeFrame(this.operations, CB_DAY_COL, QuoteCb.class,false);
+		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class,false);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -130,9 +132,9 @@ public class CoinbaseService {
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Coinbase
-			Collection<QuoteCb> collectCb = this.operations.find(query, QuoteCb.class).collectList()
+			Collection<QuoteCb> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, begin, end)).block();
-			this.operations.insertAll(Mono.just(collectCb), CB_DAY_COL).blockLast();
+			this.myMongoRepository.insertAll(Mono.just(collectCb), CB_DAY_COL).blockLast();
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -170,7 +172,7 @@ public class CoinbaseService {
 	}
 
 	private Collection<QuoteCb> makeCbQuoteHour(List<QuoteCb> quotes, Calendar begin, Calendar end) {
-		List<Calendar> hours = ServiceUtils.createDayHours(begin);
+		List<Calendar> hours = this.serviceUtils.createDayHours(begin);
 		List<QuoteCb> hourQuotes = new LinkedList<QuoteCb>();
 		for (int i = 0; i < 24; i++) {
 			BigDecimal[] params = new BigDecimal[170];
@@ -232,7 +234,7 @@ public class CoinbaseService {
 							}
 							BigDecimal num1 = (BigDecimal) mh.invokeExact(q1);
 							BigDecimal num2 = (BigDecimal) mh.invokeExact(q2);
-							bds[x] = ServiceUtils.avgHourValue(num1, num2, count);
+							bds[x] = this.serviceUtils.avgHourValue(num1, num2, count);
 						} catch (Throwable e) {
 							throw new RuntimeException(e);
 						}

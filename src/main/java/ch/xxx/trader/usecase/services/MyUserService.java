@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,21 +38,21 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class MyUserService {
-	private final ReactiveMongoOperations operations;	
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncryption passwordEncryption; 
+	private final MyMongoRepository myMongoRepository;
 	
-	public MyUserService(ReactiveMongoOperations operations, JwtTokenProvider jwtTokenProvider, PasswordEncryption passwordEncryption) {
-		this.operations = operations;
+	public MyUserService(JwtTokenProvider jwtTokenProvider, PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository) {
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.passwordEncryption = passwordEncryption;
+		this.myMongoRepository = myMongoRepository;
 	}
 
 	public Mono<AuthCheck> postAuthorize(AuthCheck authcheck, Map<String,String> header) {				
 		Optional<String> token = WebUtils.extractToken(header);
 		Query query = new Query();
 		query.addCriteria(Criteria.where("salt").is(authcheck.getHash()));
-		return this.operations.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
+		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
 				.map(user -> mapMyUser(user, authcheck, token));
 	}
 
@@ -71,14 +70,14 @@ public class MyUserService {
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(myUser.getUserId()));
-		MyUser user = this.operations.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser())).block();
+		MyUser user = this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser())).block();
 		if (user.getUserId() == null) {
 			String salt = this.passwordEncryption.generateSalt();
 //			String encryptedPassword = this.passwordEncryption.getEncryptedPassword(myUser.getPassword(), salt);
 			String encryptedPassword = new BCryptPasswordEncoder().encode(myUser.getPassword());
 			myUser.setPassword(encryptedPassword);
 			myUser.setSalt(salt);
-			this.operations.save(myUser).block();
+			this.myMongoRepository.save(myUser).block();
 			return Mono.just(myUser);
 		}
 		return Mono.just(new MyUser());
@@ -87,7 +86,7 @@ public class MyUserService {
 	public Mono<MyUser> postLogout(String hash) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("salt").is(hash));
-		return this.operations.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
+		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
 				.map(user1 -> loginHelp(user1, ""));
 	}
 
@@ -95,7 +94,7 @@ public class MyUserService {
 			throws NoSuchAlgorithmException, InvalidKeySpecException {		
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(myUser.getUserId()));
-		return this.operations.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
+		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
 				.map(user1 -> loginHelp(user1, myUser.getPassword()));
 	}
 

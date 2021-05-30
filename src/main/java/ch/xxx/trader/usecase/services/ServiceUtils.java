@@ -22,14 +22,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.Tuple;
 import ch.xxx.trader.domain.dtos.Quote;
 
+@Service
 public class ServiceUtils {
-	public static List<Calendar> createDayHours(Calendar begin) {
+	private final MyMongoRepository myMongoRepository;
+	
+	public ServiceUtils(MyMongoRepository myMongoRepository) {
+		this.myMongoRepository = myMongoRepository;
+	}
+
+	public List<Calendar> createDayHours(Calendar begin) {
 		List<Calendar> hours = new LinkedList<Calendar>();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(begin.getTime());
@@ -42,21 +49,21 @@ public class ServiceUtils {
 		return hours;
 	}
 	
-	public static BigDecimal avgHourValue(BigDecimal v1, BigDecimal v2, long count) {
+	public BigDecimal avgHourValue(BigDecimal v1, BigDecimal v2, long count) {
 		return v1.add(v2 == null ? BigDecimal.ZERO
 				: v2.divide(BigDecimal.valueOf(count == 0 ? 1 : count), 10, RoundingMode.HALF_UP));
 	}
 	
-	public static Tuple<Calendar, Calendar> createTimeFrame(ReactiveMongoOperations operations, String colName, Class<? extends Quote> colType, boolean hour) {
-		if (!operations.collectionExists(colName).block()) {
-			operations.createCollection(colName).block();
+	public Tuple<Calendar, Calendar> createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
+		if (!this.myMongoRepository.collectionExists(colName).block()) {
+			this.myMongoRepository.createCollection(colName).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
-		Quote firstQuote = operations.findOne(query, colType).block();
+		Quote firstQuote = this.myMongoRepository.findOne(query, colType).block();
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		Quote lastHourQuote = operations.findOne(query, colType, colName).block();
+		Quote lastHourQuote = this.myMongoRepository.findOne(query, colType, colName).block();
 		Calendar globalBeginn = Calendar.getInstance();
 		if (lastHourQuote == null) {
 			globalBeginn.setTime(firstQuote.getCreatedAt());

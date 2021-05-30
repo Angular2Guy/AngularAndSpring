@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -47,16 +46,18 @@ public class ItbitService {
 	public static final String IB_HOUR_COL = "quoteIbHour";
 	public static final String IB_DAY_COL = "quoteIbDay";
 	private final Map<String,String> currpairs = new HashMap<String,String>();
-	private final ReactiveMongoOperations operations;
 	private final ReportGenerator reportGenerator;
 	private final OrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
+	private final MyMongoRepository myMongoRepository;
+	private final ServiceUtils serviceUtils;
 	
-	public ItbitService(ReactiveMongoOperations operations, ReportGenerator reportGenerator, OrderBookClient orderBookClient,ReportMapper reportMapper) {
-		this.operations = operations;
+	public ItbitService(ReportGenerator reportGenerator, OrderBookClient orderBookClient,ReportMapper reportMapper, MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
+		this.myMongoRepository = myMongoRepository;
+		this.serviceUtils = serviceUtils;
 		this.currpairs.put("btcusd", "XBTUSD");
 		this.currpairs.put("btceur", "XBTEUR");		
 	}
@@ -69,23 +70,23 @@ public class ItbitService {
 	public Mono<QuoteIb> currentQuote(String pair) {
 		final String newPair = this.currpairs.get(pair);
 		Query query = MongoUtils.buildCurrentQuery(Optional.of(newPair));
-		return this.operations.findOne(query, QuoteIb.class);
+		return this.myMongoRepository.findOne(query, QuoteIb.class);
 	}
 
 	public Flux<QuoteIb> tfQuotes(String timeFrame, String pair) {
 		final String newPair = this.currpairs.get(pair);
 		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(newPair));
-			return this.operations.find(query, QuoteIb.class).filter(q -> filterEvenMinutes(q));
+			return this.myMongoRepository.find(query, QuoteIb.class).filter(q -> filterEvenMinutes(q));
 		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build7DayQuery(Optional.of(newPair));
-			return this.operations.find(query, QuoteIb.class, IB_HOUR_COL);
+			return this.myMongoRepository.find(query, QuoteIb.class, IB_HOUR_COL);
 		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build30DayQuery(Optional.of(newPair));
-			return this.operations.find(query, QuoteIb.class, IB_DAY_COL);
+			return this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
 		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build90DayQuery(Optional.of(newPair));
-			return this.operations.find(query, QuoteIb.class, IB_DAY_COL);
+			return this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
 		}
 
 		return Flux.empty();
@@ -95,23 +96,23 @@ public class ItbitService {
 		final String newPair = this.currpairs.get(pair);
 		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class).filter(this::filter10Minutes).map(this.reportMapper::convert));
+			return this.reportGenerator.generateReport(this.myMongoRepository.find(query, QuoteIb.class).filter(this::filter10Minutes).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build7DayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, IB_HOUR_COL).map(this.reportMapper::convert));
+			return this.reportGenerator.generateReport(this.myMongoRepository.find(query, QuoteIb.class, IB_HOUR_COL).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build30DayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
+			return this.reportGenerator.generateReport(this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build90DayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(this.operations.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
+			return this.reportGenerator.generateReport(this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
 		}
 		
 		return Mono.empty();
 	}
 	
 	public void createIbHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = ServiceUtils.createTimeFrame(this.operations, IB_HOUR_COL, QuoteIb.class, true);
+		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(IB_HOUR_COL, QuoteIb.class, true);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -122,12 +123,12 @@ public class ItbitService {
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Itbit
-			List<Collection<QuoteIb>> collectIb = this.operations.find(query, QuoteIb.class)
+			List<Collection<QuoteIb>> collectIb = this.myMongoRepository.find(query, QuoteIb.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream().map(key -> makeIbQuoteHour(key, multimap, begin, end))
 							.collect(Collectors.toList()))
 					.block();
-			collectIb.forEach(col -> this.operations.insertAll(Mono.just(col), IB_HOUR_COL).blockLast());
+			collectIb.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), IB_HOUR_COL).blockLast());
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -136,7 +137,7 @@ public class ItbitService {
 	}
 
 	public void createIbDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = ServiceUtils.createTimeFrame(this.operations, IB_DAY_COL, QuoteIb.class,false);
+		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(IB_DAY_COL, QuoteIb.class,false);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -147,12 +148,12 @@ public class ItbitService {
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
 			// Itbit
-			List<Collection<QuoteIb>> collectIb = this.operations.find(query, QuoteIb.class)
+			List<Collection<QuoteIb>> collectIb = this.myMongoRepository.find(query, QuoteIb.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream().map(key -> makeIbQuoteDay(key, multimap, begin, end))
 							.collect(Collectors.toList()))
 					.block();
-			collectIb.forEach(col -> this.operations.insertAll(Mono.just(col), IB_DAY_COL).blockLast());
+			collectIb.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), IB_DAY_COL).blockLast());
 
 			begin.add(Calendar.DAY_OF_YEAR, 1);
 			end.add(Calendar.DAY_OF_YEAR, 1);
@@ -170,7 +171,7 @@ public class ItbitService {
 	
 	private Collection<QuoteIb> makeIbQuoteHour(String key, Map<String, Collection<QuoteIb>> multimap, Calendar begin,
 			Calendar end) {
-		List<Calendar> hours = ServiceUtils.createDayHours(begin);
+		List<Calendar> hours = this.serviceUtils.createDayHours(begin);
 		List<QuoteIb> hourQuotes = new LinkedList<QuoteIb>();
 		for (int i = 0; i < 24; i++) {
 			QuoteIb quoteIb = new QuoteIb(key, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
@@ -211,18 +212,18 @@ public class ItbitService {
 	}
 	
 	private QuoteIb avgIbQuote(QuoteIb q1, QuoteIb q2, long count) {
-		QuoteIb myQuote = new QuoteIb(q1.getPair(), ServiceUtils.avgHourValue(q1.getBid(), q2.getBid(), count),
-				ServiceUtils.avgHourValue(q1.getBidAmt(), q2.getBidAmt(), count), ServiceUtils.avgHourValue(q1.getAsk(), q2.getAsk(), count),
-				ServiceUtils.avgHourValue(q1.getAskAmt(), q2.getAskAmt(), count),
-				ServiceUtils.avgHourValue(q1.getLastPrice(), q2.getLastPrice(), count),
-				ServiceUtils.avgHourValue(q1.getStAmt(), q2.getStAmt(), count),
-				ServiceUtils.avgHourValue(q1.getVolume24h(), q2.getVolume24h(), count),
-				ServiceUtils.avgHourValue(q1.getVolumeToday(), q2.getVolumeToday(), count),
-				ServiceUtils.avgHourValue(q1.getHigh24h(), q2.getHigh24h(), count),
-				ServiceUtils.avgHourValue(q1.getLow24h(), q2.getLow24h(), count),
-				ServiceUtils.avgHourValue(q1.getOpenToday(), q2.getOpenToday(), count),
-				ServiceUtils.avgHourValue(q1.getVwapToday(), q2.getVwapToday(), count),
-				ServiceUtils.avgHourValue(q1.getVwap24h(), q2.getVwap24h(), count), q1.getServerTimeUTC());
+		QuoteIb myQuote = new QuoteIb(q1.getPair(), this.serviceUtils.avgHourValue(q1.getBid(), q2.getBid(), count),
+				this.serviceUtils.avgHourValue(q1.getBidAmt(), q2.getBidAmt(), count), this.serviceUtils.avgHourValue(q1.getAsk(), q2.getAsk(), count),
+				this.serviceUtils.avgHourValue(q1.getAskAmt(), q2.getAskAmt(), count),
+				this.serviceUtils.avgHourValue(q1.getLastPrice(), q2.getLastPrice(), count),
+				this.serviceUtils.avgHourValue(q1.getStAmt(), q2.getStAmt(), count),
+				this.serviceUtils.avgHourValue(q1.getVolume24h(), q2.getVolume24h(), count),
+				this.serviceUtils.avgHourValue(q1.getVolumeToday(), q2.getVolumeToday(), count),
+				this.serviceUtils.avgHourValue(q1.getHigh24h(), q2.getHigh24h(), count),
+				this.serviceUtils.avgHourValue(q1.getLow24h(), q2.getLow24h(), count),
+				this.serviceUtils.avgHourValue(q1.getOpenToday(), q2.getOpenToday(), count),
+				this.serviceUtils.avgHourValue(q1.getVwapToday(), q2.getVwapToday(), count),
+				this.serviceUtils.avgHourValue(q1.getVwap24h(), q2.getVwap24h(), count), q1.getServerTimeUTC());
 		myQuote.setCreatedAt(q1.getCreatedAt());
 		return myQuote;
 	}	

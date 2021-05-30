@@ -35,10 +35,11 @@ import ch.xxx.trader.domain.dtos.MyUser;
 @Component
 public class MyAuthenticationProvider implements AuthenticationProvider {
 	private static final Logger log = LoggerFactory.getLogger(MyAuthenticationProvider.class);
-	@Autowired
-	private ReactiveMongoOperations operations;
-//	@Autowired
-//	private PasswordEncryption passwordEncryption;
+	private final MyMongoRepository myMongoRepository;
+	
+	public MyAuthenticationProvider(MyMongoRepository myMongoRepository) {
+		this.myMongoRepository = myMongoRepository;
+	}
 	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -46,7 +47,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 		String password = authentication.getCredentials().toString();		
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(name));
-		MyUser user = operations.findOne(query, MyUser.class).block();
+		MyUser user = this.myMongoRepository.findOne(query, MyUser.class).block();
 		String encryptedPw = null;
 		if(user == null) {
 			throw new BadCredentialsException("User not found");
