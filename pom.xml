@@ -19,15 +19,17 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.3</version>
+		<version>2.5.0</version>
 		<relativePath />
 		<!-- lookup parent from repository -->
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>11</java.version>
+		<java.version>16</java.version>
 		<docker.image.prefix>angular2guy</docker.image.prefix>
+		<!-- <npm.test.script>test-chromium</npm.test.script> -->
+		<npm.test.script>test</npm.test.script>
 	</properties>
 	<licenses>
 		<license>
@@ -85,7 +87,7 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>6.5.1</version>
+			<version>6.17.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -177,8 +179,7 @@
 							<executable>npm</executable>
 							<arguments>
 								<argument>run</argument>
-								<argument>test</argument>
-								<!-- <argument>test-chromium</argument> -->
+								<argument>${npm.test.script}</argument>
 							</arguments>
 							<workingDirectory>src/angular/trader</workingDirectory>
 						</configuration>
@@ -251,32 +252,7 @@
 					<name>docker</name>
 					<value>true</value>
 				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.spotify</groupId>
-						<artifactId>dockerfile-maven-plugin</artifactId>
-						<version>1.4.4</version>
-						<executions>
-							<execution>
-								<id>default</id>
-								<goals>
-									<goal>build</goal>
-									<goal>push</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<repository>${docker.image.prefix}/${project.artifactId}</repository>
-							<tag>${project.version}</tag>
-							<buildArgs>
-								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-							</buildArgs>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
+			</activation>			
 		</profile>
 	</profiles>
 </project>
