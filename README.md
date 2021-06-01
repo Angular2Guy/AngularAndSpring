@@ -27,14 +27,16 @@ The application can now be run in a Minikube cluster. The setup has a persistent
 
 MongoDB 3.4.x or newer.
 
-Eclipse Oxygen JEE or newer.
+Eclipse 2021-03 JEE or newer.
 
-Install Eclipse Plugin 'Eclipse Wild Web Developer' of the Eclipse Marketplace.
+Install Eclipse Plugin 'Eclipse Wild Web Developer' of the Eclipse Marketplace.(free)
 
-Maven 3.3.3 or newer.
+Install Eclipse Plugin 'Java 16 Support for Eclipse 2021-03' of the Eclipse Marktplace.(free)
 
-Nodejs 12.16.x or newer
+Java 16 or newer
 
-Npm 6.13.x or newer
+Nodejs 14.15.x or newer
 
-Angular Cli 9 or newer.
+Npm 6.14.x or newer
+
+Angular Cli 12 or newer.
