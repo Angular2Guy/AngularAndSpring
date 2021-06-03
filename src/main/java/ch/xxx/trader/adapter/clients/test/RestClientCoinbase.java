@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.adapter.clients;
+package ch.xxx.trader.adapter.clients.test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,8 +40,7 @@ public class RestClientCoinbase {
 //		client.testIt();
 		WebClient wc = WebClient.create(URL);		
 		QuoteCb quoteCb = wc.get().uri("/exchange-rates?currency=BTC")
-                .accept(MediaType.APPLICATION_JSON_UTF8).exchange()
-                .flatMap(response ->	response.bodyToMono(WrapperCb.class))
+                .accept(MediaType.APPLICATION_JSON).exchangeToMono(response ->	response.bodyToMono(WrapperCb.class))
                 .flatMap(resp -> Mono.just(resp.getData()))
                 .flatMap(resp2 -> Mono.just(resp2.getRates()))
                 .block();		

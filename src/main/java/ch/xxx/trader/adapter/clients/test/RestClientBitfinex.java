@@ -13,22 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.adapter.clients;
+package ch.xxx.trader.adapter.clients.test;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.xxx.trader.domain.model.QuoteIb;
+import ch.xxx.trader.domain.model.QuoteBf;
 
-public class RestClientItbit {
-
-	private static final String URL = "https://api.itbit.com";
+public class RestClientBitfinex {
+	private static final String URL = "https://api.bitfinex.com";
 	
 	public static void main(String[] args) {
 		WebClient wc = WebClient.create(URL);
-		QuoteIb quote = wc.get().uri("/v1/markets/XBTUSD/ticker")
-                .accept(MediaType.APPLICATION_JSON).exchange().flatMap(response -> response.bodyToMono(QuoteIb.class))
-                .block();
+		QuoteBf quote = wc.get().uri("/v1/pubticker/xrpusd")
+                .accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBf.class))
+                .map(res -> {res.setPair("xprusd");return res;}).block();
 		System.out.println(quote.toString());
 	}
+
 }

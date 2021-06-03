@@ -41,8 +41,11 @@ public class SpringMongoConfig  {
     @Value("${spring.data.mongodb.host}")
     private String mongoHost;        	
 
-    @Autowired
-    private MongoMappingContext mongoMappingContext;
+    private final MongoMappingContext mongoMappingContext;
+    
+    public SpringMongoConfig(MongoMappingContext mongoMappingContext) {
+    	this.mongoMappingContext = mongoMappingContext;
+    }
 
     @PostConstruct
     public void init() {

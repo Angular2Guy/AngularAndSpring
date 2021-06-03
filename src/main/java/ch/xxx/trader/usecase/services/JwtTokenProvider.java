@@ -53,8 +53,11 @@ public class JwtTokenProvider {
 	@Value("${security.jwt.token.expire-length}")
 	private long validityInMilliseconds; // 24h
 
-	@Autowired
-	private ReactiveMongoOperations operations;
+	private final ReactiveMongoOperations operations;
+	
+	public JwtTokenProvider(ReactiveMongoOperations operations) {
+		this.operations = operations;
+	}
 
 	public String createToken(String username, List<Role> roles) {
 		Claims claims = Jwts.claims().setSubject(username);

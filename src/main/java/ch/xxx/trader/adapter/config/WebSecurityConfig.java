@@ -31,12 +31,15 @@ import ch.xxx.trader.usecase.services.MyAuthenticationProvider;
 @Order(SecurityProperties.DEFAULT_FILTER_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private MyAuthenticationProvider authProvider;
+	private final MyAuthenticationProvider authProvider;
 	
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
+	private final JwtTokenProvider jwtTokenProvider;
 
+	public WebSecurityConfig(MyAuthenticationProvider authProvider, JwtTokenProvider jwtTokenProvider) {
+		this.jwtTokenProvider = jwtTokenProvider;
+		this.authProvider = authProvider;
+	}
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.httpBasic().and()

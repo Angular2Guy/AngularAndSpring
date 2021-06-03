@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.adapter.clients;
+package ch.xxx.trader.adapter.clients.test;
 
 import java.math.BigDecimal;
 import java.net.URI;

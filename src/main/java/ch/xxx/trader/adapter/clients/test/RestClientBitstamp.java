@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.adapter.clients;
+package ch.xxx.trader.adapter.clients.test;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,7 +26,7 @@ public class RestClientBitstamp {
 	public static void main(String[] args) {
 		WebClient wc = WebClient.create(URL);
 		QuoteBs quote = wc.get().uri("/v2/ticker/xrpeur/")
-                .accept(MediaType.APPLICATION_JSON).exchange().flatMap(response -> response.bodyToMono(QuoteBs.class))
+                .accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
                 .map(res -> {res.setPair("xrpeur");return res;}).block();
 		System.out.println(quote.toString());
 	}
