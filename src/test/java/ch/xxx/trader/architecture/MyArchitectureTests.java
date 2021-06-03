@@ -44,7 +44,7 @@ import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @AnalyzeClasses(packages = "ch.xxx.trader", importOptions = { DoNotIncludeTests.class })
 public class MyArchitectureTests {
-	private static final ArchRule NO_FIELD_INJECTION = createNoFieldInjectionRule();
+	private static final ArchRule NO_CLASSES_SHOULD_USE_FIELD_INJECTION = createNoFieldInjectionRule();
 	
 	private JavaClasses importedClasses = new ClassFileImporter().importPackages("ch.xxx.trader");
 
@@ -98,7 +98,7 @@ public class MyArchitectureTests {
 	@Test
 	public void rule() {
 		ArchRule archRule = CompositeArchRule.of(GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS)
-				.and(NO_FIELD_INJECTION).because("Good practice");
+				.and(NO_CLASSES_SHOULD_USE_FIELD_INJECTION).because("Good practice");
 		JavaClasses classesToCheck = this.importedClasses
 				.that(JavaClass.Predicates.resideOutsideOfPackages("..adapter.clients.test.."));
 		archRule.check(classesToCheck);
