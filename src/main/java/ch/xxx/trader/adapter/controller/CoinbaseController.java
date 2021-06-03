@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.xxx.trader.domain.dtos.QuoteCb;
-import ch.xxx.trader.domain.dtos.QuoteCbSmall;
+import ch.xxx.trader.domain.model.QuoteCb;
+import ch.xxx.trader.domain.model.QuoteCbSmall;
 import ch.xxx.trader.usecase.services.CoinbaseService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

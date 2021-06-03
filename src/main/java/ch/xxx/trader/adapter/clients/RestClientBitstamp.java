@@ -18,7 +18,7 @@ package ch.xxx.trader.adapter.clients;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.xxx.trader.domain.dtos.QuoteBs;
+import ch.xxx.trader.domain.model.QuoteBs;
 
 public class RestClientBitstamp {
 	private static final String URL = "https://www.bitstamp.net/api";

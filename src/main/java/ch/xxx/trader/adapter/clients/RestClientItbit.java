@@ -18,7 +18,7 @@ package ch.xxx.trader.adapter.clients;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.xxx.trader.domain.dtos.QuoteIb;
+import ch.xxx.trader.domain.model.QuoteIb;
 
 public class RestClientItbit {
 

@@ -30,10 +30,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.xxx.trader.domain.dtos.QuoteBf;
-import ch.xxx.trader.domain.dtos.QuoteBs;
-import ch.xxx.trader.domain.dtos.QuoteIb;
-import ch.xxx.trader.domain.dtos.WrapperCb;
+import ch.xxx.trader.domain.model.QuoteBf;
+import ch.xxx.trader.domain.model.QuoteBs;
+import ch.xxx.trader.domain.model.QuoteIb;
+import ch.xxx.trader.domain.model.WrapperCb;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import reactor.core.publisher.Mono;
 

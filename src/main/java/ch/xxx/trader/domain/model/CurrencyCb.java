@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.domain.dtos;
+package ch.xxx.trader.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

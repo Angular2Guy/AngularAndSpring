@@ -1,4 +1,4 @@
-package ch.xxx.trader.domain.dtos;
+package ch.xxx.trader.domain.model;
 
 import java.util.Date;
 

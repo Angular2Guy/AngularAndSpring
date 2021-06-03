@@ -30,7 +30,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import ch.xxx.trader.domain.dtos.MyUser;
+import ch.xxx.trader.domain.model.MyUser;
 
 @Component
 public class MyAuthenticationProvider implements AuthenticationProvider {

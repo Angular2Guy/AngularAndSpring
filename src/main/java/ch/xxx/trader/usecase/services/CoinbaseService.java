@@ -33,24 +33,22 @@ import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import ch.xxx.trader.adapter.cron.PrepareData;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.Tuple;
-import ch.xxx.trader.domain.dtos.QuoteCb;
-import ch.xxx.trader.domain.dtos.QuoteCbSmall;
+import ch.xxx.trader.domain.model.QuoteCb;
+import ch.xxx.trader.domain.model.QuoteCbSmall;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 public class CoinbaseService {
-	private static final Logger log = LoggerFactory.getLogger(PrepareData.class);	
+	private static final Logger log = LoggerFactory.getLogger(CoinbaseService.class);	
 	private static final Map<Integer, MethodHandle> cbMethodCache = new ConcurrentHashMap<>();
 	public static final String CB_HOUR_COL = "quoteCbHour";
 	public static final String CB_DAY_COL = "quoteCbDay";

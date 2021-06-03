@@ -35,8 +35,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.domain.common.Role;
-import ch.xxx.trader.domain.dtos.MyUser;
 import ch.xxx.trader.domain.exceptions.JwtTokenValidationException;
+import ch.xxx.trader.domain.model.MyUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

@@ -15,8 +15,6 @@
  */
 package ch.xxx.trader.adapter.clients;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;

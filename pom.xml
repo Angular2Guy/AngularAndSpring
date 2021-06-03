@@ -110,6 +110,12 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.tngtech.archunit</groupId>
+			<artifactId>archunit-junit5</artifactId>
+			<version>0.19.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -213,7 +219,7 @@
 									<pluginExecutionFilter>
 										<artifactId>exec-maven-plugin</artifactId>
 										<groupId>org.codehaus.mojo</groupId>
-										<versionRange>[1.4.0,)</versionRange>
+										<versionRange>3.0.0</versionRange>
 										<goals>
 											<goal>exec</goal>
 										</goals>
@@ -252,7 +258,7 @@
 					<name>docker</name>
 					<value>true</value>
 				</property>
-			</activation>			
+			</activation>
 		</profile>
 	</profiles>
 </project>

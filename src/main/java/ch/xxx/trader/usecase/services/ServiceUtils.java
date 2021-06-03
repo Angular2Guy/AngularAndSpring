@@ -26,7 +26,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.Tuple;
-import ch.xxx.trader.domain.dtos.Quote;
+import ch.xxx.trader.domain.model.Quote;
 
 @Service
 public class ServiceUtils {

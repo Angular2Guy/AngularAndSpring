@@ -32,7 +32,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import ch.xxx.trader.usecase.services.JwtTokenProvider;
 
 public class JwtTokenFilter extends GenericFilterBean {
-	private final Logger LOG = LoggerFactory.getLogger(JwtTokenFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenFilter.class);
 	private JwtTokenProvider jwtTokenProvider;
 
 	public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {

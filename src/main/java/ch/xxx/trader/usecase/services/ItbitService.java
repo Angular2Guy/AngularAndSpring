@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.Tuple;
-import ch.xxx.trader.domain.dtos.QuoteIb;
+import ch.xxx.trader.domain.model.QuoteIb;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
