@@ -96,7 +96,7 @@ public class MyArchitectureTests {
 	}
 
 	@Test
-	public void rule() {
+	public void ruleGeneralCodingRules() {
 		ArchRule archRule = CompositeArchRule.of(GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS)
 				.and(NO_CLASSES_SHOULD_USE_FIELD_INJECTION).because("Good practice");
 		JavaClasses classesToCheck = this.importedClasses
