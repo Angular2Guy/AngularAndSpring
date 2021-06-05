@@ -118,6 +118,18 @@ spec:
           {{- include "helpers.list-envApp-variables" . | indent 10 }}        
         ports:
         - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: "/actuator/health/livenessState"
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        startupProbe:
+          httpGet:
+            path: "/actuator/health/readinessState"
+            port: 8080
+          failureThreshold: 60
+          periodSeconds: 5
 ---
 apiVersion: v1
 kind: Service
