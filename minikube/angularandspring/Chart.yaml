@@ -3,3 +3,4 @@ appVersion: "1.0"
 description: "AngularAndSpring Config"
 name: angularandspring
 version: 0.1.0
+icon: "https://angular.io/assets/images/logos/angular/angular.png"

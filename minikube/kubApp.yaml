@@ -18,6 +18,13 @@ spec:
       - name: angularandspring
         image: angular2guy/angularandspring:latest 
         imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "1G"
+            cpu: "1"
+          requests:
+            memory: "768M"
+            cpu: "0.5"
         env:
         - name: MONGODB_HOST
           value: mongodb

@@ -3,8 +3,15 @@ dbName: mongodb
 webImageName: angular2guy/angularandspring
 webImageVersion: latest
 dbImageName: mongo
-dbImageVersion: 3.6.6
+dbImageVersion: 3.6
 volumeClaimName: mongo-pv-claim
 persistentVolumeName: task-pv-volume
-# change this secret to a random alphanumeric string of the same length or longer
-jwtTokenSecrect: secret-key1234567890abcdefghijklmnopqrstuvwxyz
+
+secret:
+  name: app-env-secret
+
+envApp:
+  normal: 
+    MONGODB_HOST: mongodb
+  secret:
+    JWTTOKEN_SECRET: secret-key1234567890abcdefghijklmnopqrstuvwxyz

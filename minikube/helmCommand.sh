@@ -1,2 +1,2 @@
 #!/bin/sh
-helm install angularandspring ./angularandspring --set serviceType=NodePortcd 
+helm install angularandspring ./angularandspring --set serviceType=NodePort

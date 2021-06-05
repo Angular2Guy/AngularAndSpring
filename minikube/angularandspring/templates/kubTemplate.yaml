@@ -1,5 +1,15 @@
-kind: PersistentVolume
 apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.secret.name }}
+type: Opaque
+data:
+  {{- range $key, $val := .Values.envApp.secret }}
+  {{ $key }}: {{ $val | b64enc }}
+  {{- end}}
+---
+apiVersion: v1
+kind: PersistentVolume
 metadata:
   name: {{ .Values.persistentVolumeName }}
   labels:
@@ -7,7 +17,7 @@ metadata:
 spec:
   storageClassName: manual
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   capacity:
     storage: 1Gi
   hostPath:
@@ -22,8 +32,7 @@ metadata:
     app: mongopv
 spec:  
   accessModes:
-    - ReadWriteOnce
-  # storageClassName: local-storage
+  - ReadWriteOnce
   storageClassName: manual
   resources:
     requests:
@@ -48,6 +57,13 @@ spec:
       containers:
       - name: {{ .Values.dbName }}
         image: "{{ .Values.dbImageName }}:{{ .Values.dbImageVersion }}"
+        resources:
+          limits:
+            memory: "2G"
+            cpu: "1.5"
+          requests:
+            memory: "1G"
+            cpu: "0.5"
         ports:
         - containerPort: 27017
         volumeMounts:
@@ -91,11 +107,15 @@ spec:
       - name: {{ .Values.webAppName }}
         image: "{{ .Values.webImageName }}:{{ .Values.webImageVersion }}" 
         imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "1G"
+            cpu: "0.5"
+          requests:
+            memory: "768M"
+            cpu: "0.5"
         env:
-        - name: MONGODB_HOST
-          value: {{ .Values.dbName }}
-        - name: JWTTOKEN_SECRET
-          value: {{ .Values.jwtTokenSecrect }}
+          {{- include "helpers.list-envApp-variables" . | indent 10 }}        
         ports:
         - containerPort: 8080
 ---
