@@ -115,7 +115,7 @@ spec:
             memory: "768M"
             cpu: "0.5"
         env:
-          {{- include "helpers.list-envApp-variables" . | indent 10 }}        
+          {{- include "helpers.list-envApp-variables" . | indent 10 }}
         ports:
         - containerPort: 8080
         livenessProbe:
