@@ -59,7 +59,7 @@ public class MyArchitectureTests {
 			.beFreeOfCycles();
 
 	@ArchTest
-	static final ArchRule cyclesUseCases = SlicesRuleDefinition.slices().matching("..usecase..").should()
+	static final ArchRule cyclesUseCases = SlicesRuleDefinition.slices().matching("..usecase.(*)..").should()
 			.beFreeOfCycles();
 
 	@ArchTest
