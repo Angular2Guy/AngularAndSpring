@@ -110,6 +110,16 @@
 			<artifactId>jaxb-api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<dependency>
 			<groupId>com.tngtech.archunit</groupId>
 			<artifactId>archunit-junit5</artifactId>
 			<version>0.19.0</version>
@@ -219,7 +229,7 @@
 									<pluginExecutionFilter>
 										<artifactId>exec-maven-plugin</artifactId>
 										<groupId>org.codehaus.mojo</groupId>
-										<versionRange>3.0.0</versionRange>
+										<versionRange>[3.0.0,)</versionRange>
 										<goals>
 											<goal>exec</goal>
 										</goals>
@@ -249,16 +259,6 @@
 					<groupId>de.flapdoodle.embed</groupId>
 					<artifactId>de.flapdoodle.embed.mongo</artifactId>
 				</dependency>
-				<dependency>
-					<groupId>io.springfox</groupId>
-					<artifactId>springfox-swagger2</artifactId>
-					<version>2.9.2</version>
-				</dependency>				
-				<dependency>
-					<groupId>io.springfox</groupId>
-					<artifactId>springfox-swagger-ui</artifactId>
-					<version>2.9.2</version>
-				</dependency>			
 			</dependencies>
 		</profile>
 		<profile>
