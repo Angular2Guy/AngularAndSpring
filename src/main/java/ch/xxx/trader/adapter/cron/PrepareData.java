@@ -40,7 +40,7 @@ public class PrepareData {
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 5 0 ? * ?")
 	public void createBsHourlyAvg() {
-		this.bitstampService.createBsDailyAvg();		
+		this.bitstampService.createBsHourlyAvg();;		
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
