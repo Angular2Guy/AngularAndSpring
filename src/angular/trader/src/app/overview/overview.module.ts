@@ -1,5 +1,5 @@
-/**
- *    Copyright 2016 Sven Loesekann
+/*
+   Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,12 +16,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { BitstampService } from '../services/bitstamp.service';
-import { CoinbaseService } from '../services/coinbase.service';
-import { ItbitService } from '../services/itbit.service';
-import { BitfinexService} from '../services/bitfinex.service';
-import { MyuserService } from '../services/myuser.service';
-import { AuthGuardService } from '../services/auth-guard.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,8 +24,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { OverviewRoutingModule } from './overview-routing.module';
-import { LoginComponent } from "./login/login.component";
-import { QuoteoverviewComponent } from "./quoteoverview/quoteoverview.component";
+import { LoginComponent } from './login/login.component';
+import { QuoteoverviewComponent } from './quoteoverview/quoteoverview.component';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
@@ -43,7 +37,7 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
       OverviewRoutingModule,
       MatTableModule,
       MatToolbarModule,
-      MatTabsModule, 
+      MatTabsModule,
       MatButtonModule,
       MatDialogModule,
       MatFormFieldModule,
@@ -51,7 +45,7 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
       FormsModule,
       ReactiveFormsModule
     ],
-    
+
   declarations: [
       LoginComponent,
       QuoteoverviewComponent
