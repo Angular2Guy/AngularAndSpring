@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ export interface QuoteBf {
     mid: number;
     bid: number;
     ask: number;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     last_price: number;
     low: number;
     high: number;

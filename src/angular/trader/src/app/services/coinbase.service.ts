@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,44 +24,52 @@ import { Utils } from './utils';
 
 @Injectable({providedIn: 'root'})
 export class CoinbaseService {
-    private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
-    private readonly _coinbase = '/coinbase';
-    private _utils = new Utils();
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     BTCUSD = 'btcusd';
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     ETHUSD = 'ethusd';
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     LTCUSD = 'ltcusd';
-    
-    constructor(private http: HttpClient) { 
-    }
+    private reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
+    private readonly coinbase = '/coinbase';
+    private utils = new Utils();
+
+    constructor(private http: HttpClient) {}
 
     getCurrentQuote(): Observable<QuoteCb> {
-        return this.http.get<QuoteCb>(this._coinbase+'/current', this._reqOptionsArgs).pipe(map(res => this.lowercaseKeys(<QuoteCb>res)), catchError(this._utils.handleError<QuoteCb>('getCurrentQuote')));
+        return this.http.get<QuoteCb>(this.coinbase+'/current', this.reqOptionsArgs)
+			.pipe(map(res => this.lowercaseKeys(res as QuoteCb)),
+				catchError(this.utils.handleError<QuoteCb>('getCurrentQuote')));
     }
-    
+
     getTodayQuotes(): Observable<QuoteCbSmall[]> {
-        return this.http.get<QuoteCbSmall[]>(this._coinbase+'/today', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteCbSmall[]>('getTodayQuotes')));
+        return this.http.get<QuoteCbSmall[]>(this.coinbase+'/today', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteCbSmall[]>('getTodayQuotes')));
     }
-    
+
     get7DayQuotes(): Observable<QuoteCbSmall[]> {
-        return this.http.get<QuoteCbSmall[]>(this._coinbase+'/7days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteCbSmall[]>('get7DayQuotes')));
+        return this.http.get<QuoteCbSmall[]>(this.coinbase+'/7days', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteCbSmall[]>('get7DayQuotes')));
     }
-    
+
     get30DayQuotes(): Observable<QuoteCbSmall[]> {
-        return this.http.get<QuoteCbSmall[]>(this._coinbase+'/30days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteCbSmall[]>('get30DayQuotes')));
+        return this.http.get<QuoteCbSmall[]>(this.coinbase+'/30days', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteCbSmall[]>('get30DayQuotes')));
     }
-    
+
     get90DayQuotes(): Observable<QuoteCbSmall[]> {
-        return this.http.get<QuoteCbSmall[]>(this._coinbase+'/90days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteCbSmall[]>('get90DayQuotes')));
+        return this.http.get<QuoteCbSmall[]>(this.coinbase+'/90days', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteCbSmall[]>('get90DayQuotes')));
     }
-    
+
     lowercaseKeys(quote: QuoteCb): QuoteCb {
-        for (let p in quote) {
+        for (const p in quote) {
           if( quote.hasOwnProperty(p) && p !== '_id' && p !== 'createdAt') {
-            quote[p.toLowerCase()] = quote[p];  
+            quote[p.toLowerCase()] = quote[p];
             //console.log( p + " , " + quote[p] + "\n");
             //console.log( p.toLowerCase() + " , " + quote[p.toLowerCase()] + "\n");
-          } 
-        }     
+          }
+        }
         return quote;
     }
 }

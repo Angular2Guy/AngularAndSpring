@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,5 +17,5 @@ export class AuthCheck {
     createdAt: Date;
     hash: string;
     path: string;
-    authorized: boolean;      
+    authorized: boolean;
 }

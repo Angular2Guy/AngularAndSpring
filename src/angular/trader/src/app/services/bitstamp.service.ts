@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,45 +24,58 @@ import { Utils } from './utils';
 import { OrderbookBs } from '../common/orderbook-bs';
 
 @Injectable({providedIn: 'root'})
-export class BitstampService {    
-   
-    private _reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
-    private readonly _bitstamp = '/bitstamp';    
-    BTCEUR = 'btceur';
-    ETHEUR = 'etheur';
-    LTCEUR = 'ltceur';
-    XRPEUR = 'xrpeur';
-    BTCUSD = 'btcusd';
-    ETHUSD = 'ethusd';
-    LTCUSD = 'ltcusd';
-    XRPUSD = 'xrpusd';
-    private _utils = new Utils(); 
+export class BitstampService {
 
-    constructor(private http: HttpClient) { 
-    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    BTCEUR = 'btceur';
+// eslint-disable-next-line @typescript-eslint/naming-convention
+    ETHEUR = 'etheur';
+// eslint-disable-next-line @typescript-eslint/naming-convention
+    LTCEUR = 'ltceur';
+// eslint-disable-next-line @typescript-eslint/naming-convention
+    XRPEUR = 'xrpeur';
+// eslint-disable-next-line @typescript-eslint/naming-convention
+    BTCUSD = 'btcusd';
+// eslint-disable-next-line @typescript-eslint/naming-convention
+    ETHUSD = 'ethusd';
+// eslint-disable-next-line @typescript-eslint/naming-convention
+    LTCUSD = 'ltcusd';
+// eslint-disable-next-line @typescript-eslint/naming-convention
+    XRPUSD = 'xrpusd';
+    private reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
+    private readonly bitstamp = '/bitstamp';
+    private utils = new Utils();
+
+    constructor(private http: HttpClient) {}
 
     getCurrentQuote(currencypair: string): Observable<QuoteBs> {
-        return this.http.get<QuoteBs>(this._bitstamp+'/'+currencypair+'/current', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs>('getCurrentQuote')));
+        return this.http.get<QuoteBs>(this.bitstamp+'/'+currencypair+'/current', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteBs>('getCurrentQuote')));
     }
-     
+
     getTodayQuotes(currencypair: string): Observable<QuoteBs[]> {
-        return this.http.get<QuoteBs[]>(this._bitstamp+'/'+currencypair+'/today', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs[]>('getTodayQuotes')));
+        return this.http.get<QuoteBs[]>(this.bitstamp+'/'+currencypair+'/today', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteBs[]>('getTodayQuotes')));
     }
-    
+
     get7DayQuotes(currencypair: string): Observable<QuoteBs[]> {
-        return this.http.get<QuoteBs[]>(this._bitstamp+'/'+currencypair+'/7days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs[]>('get7DayQuotes')));
+        return this.http.get<QuoteBs[]>(this.bitstamp+'/'+currencypair+'/7days', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteBs[]>('get7DayQuotes')));
     }
-    
+
     get30DayQuotes(currencypair: string): Observable<QuoteBs[]> {
-        return this.http.get<QuoteBs[]>(this._bitstamp+'/'+currencypair+'/30days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs[]>('get30DayQuotes')));
+        return this.http.get<QuoteBs[]>(this.bitstamp+'/'+currencypair+'/30days', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteBs[]>('get30DayQuotes')));
     }
-    
+
     get90DayQuotes(currencypair: string): Observable<QuoteBs[]> {
-        return this.http.get<QuoteBs[]>(this._bitstamp+'/'+currencypair+'/90days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBs[]>('get90DayQuotes')));
+        return this.http.get<QuoteBs[]>(this.bitstamp+'/'+currencypair+'/90days', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteBs[]>('get90DayQuotes')));
     }
-    
+
     getOrderbook(currencypair: string): Observable<OrderbookBs> {
-        let reqOptions = {headers: this._utils.createTokenHeader()};
-        return this.http.get<OrderbookBs>(this._bitstamp+'/'+currencypair+'/orderbook/', reqOptions).pipe(catchError(this._utils.handleError<OrderbookBs>('getOrderbook')));
+        const reqOptions = {headers: this.utils.createTokenHeader()};
+        return this.http.get<OrderbookBs>(this.bitstamp+'/'+currencypair+'/orderbook/', reqOptions)
+			.pipe(catchError(this.utils.handleError<OrderbookBs>('getOrderbook')));
     }
 }

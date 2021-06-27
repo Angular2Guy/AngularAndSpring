@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,40 +23,49 @@ import { OrderbookBf } from '../common/orderbook-bf';
 
 @Injectable({providedIn: 'root'})
 export class BitfinexService {
-  private _reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
-  private readonly _bitfinex = '/bitfinex';  
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BTCUSD = 'btcusd';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ETHUSD = 'ethusd';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   LTCUSD = 'ltcusd';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   XRPUSD = 'xrpusd';
-  
-  private _utils = new Utils();
-  
-  constructor(private http: HttpClient) { 
+  private reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
+  private readonly bitfinex = '/bitfinex';
+
+  private utils = new Utils();
+
+  constructor(private http: HttpClient) {}
+
+  getCurrentQuote(currencypair: string): Observable<QuoteBf> {
+      return this.http.get<QuoteBf>(this.bitfinex+'/'+currencypair+'/current', this.reqOptionsArgs)
+		.pipe(catchError(this.utils.handleError<QuoteBf>('getCurrentQuote')));
   }
 
-  getCurrentQuote(currencypair: string): Observable<QuoteBf> { 
-      return this.http.get<QuoteBf>(this._bitfinex+'/'+currencypair+'/current', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBf>('getCurrentQuote')));
-  }
-   
   getTodayQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get<QuoteBf[]>(this._bitfinex+'/'+currencypair+'/today', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBf[]>('getTodayQuotes')));
+      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/today', this.reqOptionsArgs)
+		.pipe(catchError(this.utils.handleError<QuoteBf[]>('getTodayQuotes')));
   }
 
-  get7DayQuotes(currencypair: string): Observable<QuoteBf[]> {      
-      return this.http.get<QuoteBf[]>(this._bitfinex+'/'+currencypair+'/7days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBf[]>('get7DayQuotes')));
+  get7DayQuotes(currencypair: string): Observable<QuoteBf[]> {
+      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/7days', this.reqOptionsArgs)
+		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get7DayQuotes')));
   }
 
   get30DayQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get<QuoteBf[]>(this._bitfinex+'/'+currencypair+'/30days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBf[]>('get30DayQuotes')));
+      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/30days', this.reqOptionsArgs)
+		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get30DayQuotes')));
   }
-  
+
   get90DayQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get<QuoteBf[]>(this._bitfinex+'/'+currencypair+'/90days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteBf[]>('get90DayQuotes')));
+      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/90days', this.reqOptionsArgs)
+		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get90DayQuotes')));
   }
-  
+
   getOrderbook(currencypair: string): Observable<OrderbookBf> {
-      let reqOptions = {headers: this._utils.createTokenHeader()};
-      return this.http.get<OrderbookBf>(this._bitfinex+'/'+currencypair+'/orderbook/', reqOptions).pipe(catchError(this._utils.handleError<OrderbookBf>('getOrderbook')));
+      const reqOptions = {headers: this.utils.createTokenHeader()};
+      return this.http.get<OrderbookBf>(this.bitfinex+'/'+currencypair+'/orderbook/', reqOptions)
+		.pipe(catchError(this.utils.handleError<OrderbookBf>('getOrderbook')));
   }
 }

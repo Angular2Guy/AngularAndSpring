@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@ export class MyUser {
 	userId: string;
 	password: string;
 	salt: string;
-	email: string;	
+	email: string;
 	btcAmount: number;
 	ethAmount: number;
 	ltcAmount: number;

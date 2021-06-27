@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,7 @@
    limitations under the License.
  */
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Router } from "@angular/router";
+import { Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
 
 @Component({
@@ -27,17 +27,17 @@ import { trigger, state, animate, transition, style } from '@angular/animations'
                    state( 'false', style( { opacity: 0 } ) ),
                    transition( '1 => 0', animate( '750ms' ) ),
                    transition( '0 => 1', animate( '750ms' ) )
-               ])]  
+               ])]
 })
-export class SplashComponent implements OnInit,AfterViewInit {    
+export class SplashComponent implements OnInit,AfterViewInit {
   myState = false;
-  
+
   constructor(private router: Router) { }
 
-  ngOnInit() {      
-      this.router.navigateByUrl("overview");
+  ngOnInit() {
+      this.router.navigateByUrl('overview');
   }
-  
+
   ngAfterViewInit(): void {
       setTimeout(() => this.myState = true);
   }

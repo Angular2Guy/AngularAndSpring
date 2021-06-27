@@ -21,7 +21,7 @@ import { QuoteBs } from '../../common/quote-bs';
 import { QuoteCb } from '../../common/quote-cb';
 import { QuoteIb } from '../../common/quote-ib';
 import { QuoteBf } from '../../common/quote-bf';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import {DataSource, CollectionViewer} from '@angular/cdk/collections';
 import { Router } from '@angular/router';
 import { CommonUtils } from '../../common/common-utils';

@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,10 @@
 
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { BsdetailComponent } from "./bsdetail/bsdetail.component";
-import { IbdetailComponent } from "./ibdetail/ibdetail.component";
-import { CbdetailComponent } from "./cbdetail/cbdetail.component";
-import { BfdetailComponent } from "./bfdetail/bfdetail.component";
+import { BsdetailComponent } from './bsdetail/bsdetail.component';
+import { IbdetailComponent } from './ibdetail/ibdetail.component';
+import { CbdetailComponent } from './cbdetail/cbdetail.component';
+import { BfdetailComponent } from './bfdetail/bfdetail.component';
 
 const routes: Routes = [
                         {path: 'bsdetail/:currpair', component: BsdetailComponent},

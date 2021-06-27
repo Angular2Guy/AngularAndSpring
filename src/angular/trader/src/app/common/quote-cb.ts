@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ export interface QuoteCbSmall {
 }
 
 export interface QuoteCb {
-    
     _id: string;
     createdAt: string;
     aed: number;
@@ -86,7 +85,7 @@ export interface QuoteCb {
     gtq: number;
     gyd: number;
     hkd: number;
-    hnl: number;   
+    hnl: number;
     hrk: number;
     htg: number;
     huf: number;
@@ -170,7 +169,7 @@ export interface QuoteCb {
     tnd: number;
     top: number;
     try1: number;
-    ttd: number;           
+    ttd: number;
     twd: number;
     tzs: number;
     uah: number;

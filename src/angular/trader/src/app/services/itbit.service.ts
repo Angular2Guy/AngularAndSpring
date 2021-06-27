@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,37 +25,44 @@ import { OrderbookIb } from '../common/orderbook-ib';
 
 @Injectable({providedIn: 'root'})
 export class ItbitService {
-    private _reqOptionsArgs= { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
-    private readonly _itbit = '/itbit';    
-    private _utils = new Utils();
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     BTCEUR = 'btceur';
+// eslint-disable-next-line @typescript-eslint/naming-convention
     BTCUSD = 'btcusd';
-    
-    constructor(private http: HttpClient) { 
-    }
+    private reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
+    private readonly itbit = '/itbit';
+    private utils = new Utils();
+
+    constructor(private http: HttpClient) {}
 
     getCurrentQuote(currencypair: string): Observable<QuoteIb> {
-        return this.http.get<QuoteIb>(this._itbit+'/'+currencypair+'/current', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteIb>('getCurrentQuote')));
+        return this.http.get<QuoteIb>(this.itbit+'/'+currencypair+'/current', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteIb>('getCurrentQuote')));
     }
-    
+
     getTodayQuotes(currencypair: string): Observable<QuoteIb[]> {
-        return this.http.get<QuoteIb[]>(this._itbit+'/'+currencypair+'/today', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteIb[]>('getTodayQuotes')));
+        return this.http.get<QuoteIb[]>(this.itbit+'/'+currencypair+'/today', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteIb[]>('getTodayQuotes')));
     }
-    
+
     get7DayQuotes(currencypair: string): Observable<QuoteIb[]> {
-        return this.http.get<QuoteIb[]>(this._itbit+'/'+currencypair+'/7days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteIb[]>('get7DayQuotes')));
+        return this.http.get<QuoteIb[]>(this.itbit+'/'+currencypair+'/7days', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteIb[]>('get7DayQuotes')));
     }
-    
+
     get30DayQuotes(currencypair: string): Observable<QuoteIb[]> {
-        return this.http.get<QuoteIb[]>(this._itbit+'/'+currencypair+'/30days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteIb[]>('get30DayQuotes')));
+        return this.http.get<QuoteIb[]>(this.itbit+'/'+currencypair+'/30days', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteIb[]>('get30DayQuotes')));
     }
-    
+
     get90DayQuotes(currencypair: string): Observable<QuoteIb[]> {
-        return this.http.get<QuoteIb[]>(this._itbit+'/'+currencypair+'/90days', this._reqOptionsArgs).pipe(catchError(this._utils.handleError<QuoteIb[]>('get30DayQuotes')));
+        return this.http.get<QuoteIb[]>(this.itbit+'/'+currencypair+'/90days', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteIb[]>('get30DayQuotes')));
     }
-    
+
     getOrderbook(currencypair: string): Observable<OrderbookIb> {
-        let reqOptions = {headers: this._utils.createTokenHeader()};
-        return this.http.get<OrderbookIb>(this._itbit+'/'+currencypair+'/orderbook/', reqOptions).pipe(catchError(this._utils.handleError<OrderbookIb>('getOrderbook')));
+        const reqOptions = {headers: this.utils.createTokenHeader()};
+        return this.http.get<OrderbookIb>(this.itbit+'/'+currencypair+'/orderbook/', reqOptions)
+			.pipe(catchError(this.utils.handleError<OrderbookIb>('getOrderbook')));
     }
 }

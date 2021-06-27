@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,13 +29,13 @@ import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from
 export class LoginComponent implements OnInit {
   signinForm: FormGroup;
   loginForm: FormGroup;
-  private user = new MyUser();
   loginFailed = false;
   signinFailed = false;
   pwMatching = true;
-  
+  private user = new MyUser();
+
   constructor(public dialogRef: MatDialogRef<QuoteoverviewComponent>,
-          @Inject(MAT_DIALOG_DATA) public data: any, private myuserService: MyuserService, fb: FormBuilder) { 
+          @Inject(MAT_DIALOG_DATA) public data: any, private myuserService: MyuserService, fb: FormBuilder) {
       this.signinForm = fb.group({
           username: ['', Validators.required],
           password: ['', Validators.required],
@@ -46,19 +46,19 @@ export class LoginComponent implements OnInit {
       });
       this.loginForm = fb.group({
           username: ['', Validators.required],
-          password: ['', Validators.required]          
+          password: ['', Validators.required]
       });
   }
 
-  ngOnInit() {
-      
-  }
+  ngOnInit() {}
 
   validate(group: FormGroup) {
       if(group.get('password').touched || group.get('password2').touched) {
           this.pwMatching = group.get('password').value === group.get('password2').value && group.get('password').value !== '';
           if(!this.pwMatching) {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               group.get('password').setErrors({MatchPassword: true});
+			  // eslint-disable-next-line @typescript-eslint/naming-convention
               group.get('password2').setErrors({MatchPassword: true});
           } else {
               group.get('password').setErrors(null);
@@ -67,9 +67,9 @@ export class LoginComponent implements OnInit {
       }
       return this.pwMatching;
   }
-  
+
   onSigninClick(): void {
-      let myUser = new MyUser();
+      const myUser = new MyUser();
       myUser.userId = this.signinForm.get('username').value;
       myUser.password = this.signinForm.get('password').value;
       myUser.email = this.signinForm.get('email').value;
@@ -77,37 +77,37 @@ export class LoginComponent implements OnInit {
 //      console.log(myUser);
       this.myuserService.postSignin(myUser).subscribe(us => this.signin(us),err => console.log(err));
   }
-  
+
   onLoginClick(): void {
-      let myUser = new MyUser();
+      const myUser = new MyUser();
       myUser.userId = this.loginForm.get('username').value;
       myUser.password = this.loginForm.get('password').value;
 //      console.log(myUser);
       this.myuserService.postLogin(myUser).subscribe(us => this.login(us),err => console.log(err));
   }
-  
-  signin(us: MyUser):void {
-      this.user = us;   
+
+  signin(us: MyUser): void {
+      this.user = us;
       this.data.hash = null;
       if(this.user.userId !== null) {
           this.signinFailed = false;
           this.dialogRef.close();
       } else {
           this.signinFailed = true;
-      }      
+      }
   }
-  
-  login(us: MyUser):void {
+
+  login(us: MyUser): void {
       this.user = us;
       if(this.user.userId !== null) {
           this.loginFailed = false;
-          this.data.hash = us.salt;                    
-          this.dialogRef.close(this.data.hash);          
+          this.data.hash = us.salt;
+          this.dialogRef.close(this.data.hash);
       } else {
           this.loginFailed = true;
-      }      
+      }
   }
-  
+
   onCancelClick(): void {
       this.dialogRef.close();
   }
