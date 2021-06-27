@@ -79,7 +79,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v2/ticker/btceur/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("btceur");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitstampQuote Btc " + dateFormat.format(new Date()) + " "
@@ -99,7 +99,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v2/ticker/etheur/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("etheur");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitstampQuote Eth " + dateFormat.format(new Date()) + " "
@@ -119,7 +119,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v2/ticker/ltceur/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("ltceur");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitstampQuote Ltc " + dateFormat.format(new Date()) + " "
@@ -139,7 +139,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v2/ticker/xrpeur/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("xrpeur");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitstampQuote Xrp " + dateFormat.format(new Date()) + " "
@@ -159,7 +159,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/exchange-rates?currency=BTC").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(WrapperCb.class))
 					.flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
-						log.info(resp2.getRates().toString());
+//						log.info(resp2.getRates().toString());
 						return Mono.just(resp2.getRates());
 					})).then().block(Duration.ofSeconds(3));
 			log.info("CoinbaseQuote " + dateFormat.format(new Date()) + " " + (new Date().getTime() - start.getTime())
@@ -178,7 +178,7 @@ public class ScheduledTask {
 		try {
 			operations.insert(wc.get().uri("/v1/markets/XBTEUR/ticker").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteIb.class)).map(res -> {
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("ItbitQuote Btc " + dateFormat.format(new Date()) + " " + (new Date().getTime() - start.getTime())
@@ -197,7 +197,7 @@ public class ScheduledTask {
 		try {
 			operations.insert(wc.get().uri("/v1/markets/XBTUSD/ticker").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteIb.class)).map(res -> {
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("ItbitQuote Btc Usd " + dateFormat.format(new Date()) + " "
@@ -217,7 +217,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v2/ticker/btcusd/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("btcusd");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitstampQuote Btc Usd " + dateFormat.format(new Date()) + " "
@@ -237,7 +237,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v2/ticker/ethusd/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("ethusd");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitstampQuote Eth Usd " + dateFormat.format(new Date()) + " "
@@ -257,7 +257,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v2/ticker/ltcusd/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("ltcusd");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitstampQuote Ltc Usd " + dateFormat.format(new Date()) + " "
@@ -277,7 +277,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v2/ticker/xrpusd/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("xrpusd");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitstampQuote Xrp Usd " + dateFormat.format(new Date()) + " "
@@ -297,7 +297,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v1/pubticker/btcusd").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBf.class)).map(res -> {
 						res.setPair("btcusd");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitfinexQuote Btc Usd " + dateFormat.format(new Date()) + " "
@@ -317,7 +317,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v1/pubticker/ethusd").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBf.class)).map(res -> {
 						res.setPair("ethusd");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitfinexQuote Eth Usd " + dateFormat.format(new Date()) + " "
@@ -337,7 +337,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v1/pubticker/ltcusd").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBf.class)).map(res -> {
 						res.setPair("ltcusd");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitfinexQuote Ltc Usd " + dateFormat.format(new Date()) + " "
@@ -357,7 +357,7 @@ public class ScheduledTask {
 			operations.insert(wc.get().uri("/v1/pubticker/xrpusd").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBf.class)).map(res -> {
 						res.setPair("xrpusd");
-						log.info(res.toString());
+//						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
 			log.info("BitfinexQuote Xrp Usd " + dateFormat.format(new Date()) + " "
