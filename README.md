@@ -12,7 +12,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 * [How to Modularize an Angular Application](https://dzone.com/articles/howto-modularize-an-angular-application-by-example)
 * [Deployment Setup for Spring Boot Apps With MongoDB and Kubernetes](https://dzone.com/articles/a-developmentdeployment-setup-for-an-angular-sprin)
 * [Using Angular and Reactive Spring With JWT Tokens](https://dzone.com/articles/angular-and-reactive-spring-with-jwt-tokens)
-* [https://dzone.com/articles/angular-and-spring-webflux](https://dzone.com/articles/angular-and-spring-webflux)
+* [Angular and Spring Webflux](https://dzone.com/articles/angular-and-spring-webflux)
 
 ## What is the goal?
 
