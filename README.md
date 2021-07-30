@@ -6,6 +6,14 @@ Author: Sven Loesekann
 
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, MongoDB, Maven, Docker, ArchUnit
 
+## Articles
+* [Deep Links With Angular Routing and i18n in Prod Mode](https://dzone.com/articles/Deep-Links-with-Angular-Routing-and-i18n-in-Prod-Mode)
+* [Developing and Using Angular Libraries](https://dzone.com/articles/developing-and-using-angular-libraries)
+* [How to Modularize an Angular Application](https://dzone.com/articles/howto-modularize-an-angular-application-by-example)
+* [Deployment Setup for Spring Boot Apps With MongoDB and Kubernetes](https://dzone.com/articles/a-developmentdeployment-setup-for-an-angular-sprin)
+* [Using Angular and Reactive Spring With JWT Tokens](https://dzone.com/articles/angular-and-reactive-spring-with-jwt-tokens)
+* [https://dzone.com/articles/angular-and-spring-webflux](https://dzone.com/articles/angular-and-spring-webflux)
+
 ## What is the goal?
 
 The goal is to be reactive from top to bottom. To do that the project uses Angular in the frontend and Spring Boot with Reactive Web as server. Mongodb is the database connected with the reactive MongoDB driver. That enables a reactive chain from the browser to the DB. The project uses an in memory MongoDB to be just cloned build and ready to run. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test.
