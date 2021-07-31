@@ -7,7 +7,7 @@ Author: Sven Loesekann
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, MongoDB, Maven, Docker, ArchUnit
 
 ## Articles
-* [Deep Links With Angular Routing and i18n in Prod Mode](https://dzone.com/articles/Deep-Links-with-Angular-Routing-and-i18n-in-Prod-Mode)
+* [Deep Links With Angular Routing and i18n in Prod Mode](https://angular2guy.wordpress.com/2021/07/31/deep-links-with-angular-routing-and-i18n-in-prod-mode/)
 * [Developing and Using Angular Libraries](https://dzone.com/articles/developing-and-using-angular-libraries)
 * [How to Modularize an Angular Application](https://dzone.com/articles/howto-modularize-an-angular-application-by-example)
 * [Deployment Setup for Spring Boot Apps With MongoDB and Kubernetes](https://dzone.com/articles/a-developmentdeployment-setup-for-an-angular-sprin)
