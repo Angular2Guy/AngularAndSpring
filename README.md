@@ -29,19 +29,17 @@ The application has two scheduled jobs. The first is the ScheduledTask class. It
 
 ## Minikube setup
 
-The application can now be run in a Minikube cluster. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory. Further documentation can be found in the wiki.
+The application can now be run in a Minikube cluster. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. Further documentation can be found in the wiki.
 
 ## Setup
 
 MongoDB 3.4.x or newer.
 
-Eclipse 2021-03 JEE or newer.
-
-Install Eclipse Plugin 'Eclipse Wild Web Developer' of the Eclipse Marketplace.(free)
-
-Install Eclipse Plugin 'Java 16 Support for Eclipse 2021-03' of the Eclipse Marktplace.(free)
+Eclipse IDE for Enterprise Java and Web Developers newest version.
 
 Java 16 or newer
+
+Maven 3.8.1 or newer
 
 Nodejs 14.15.x or newer
 
