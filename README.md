@@ -6,6 +6,14 @@ Author: Sven Loesekann
 
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, MongoDB, Maven, Docker, ArchUnit
 
+## Articles
+* [Deep Links With Angular Routing and i18n in Prod Mode](https://angular2guy.wordpress.com/2021/07/31/deep-links-with-angular-routing-and-i18n-in-prod-mode/)
+* [Developing and Using Angular Libraries](https://angular2guy.wordpress.com/2021/07/31/developing-and-using-angular-libraries/)
+* [How to Modularize an Angular Application](https://dzone.com/articles/howto-modularize-an-angular-application-by-example)
+* [Deployment Setup for Spring Boot Apps With MongoDB and Kubernetes](https://dzone.com/articles/a-developmentdeployment-setup-for-an-angular-sprin)
+* [Using Angular and Reactive Spring With JWT Tokens](https://dzone.com/articles/angular-and-reactive-spring-with-jwt-tokens)
+* [Angular and Spring Webflux](https://dzone.com/articles/angular-and-spring-webflux)
+
 ## What is the goal?
 
 The goal is to be reactive from top to bottom. To do that the project uses Angular in the frontend and Spring Boot with Reactive Web as server. Mongodb is the database connected with the reactive MongoDB driver. That enables a reactive chain from the browser to the DB. The project uses an in memory MongoDB to be just cloned build and ready to run. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test.
@@ -21,19 +29,17 @@ The application has two scheduled jobs. The first is the ScheduledTask class. It
 
 ## Minikube setup
 
-The application can now be run in a Minikube cluster. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory. Further documentation can be found in the wiki.
+The application can now be run in a Minikube cluster. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. Further documentation can be found in the wiki.
 
 ## Setup
 
 MongoDB 3.4.x or newer.
 
-Eclipse 2021-03 JEE or newer.
-
-Install Eclipse Plugin 'Eclipse Wild Web Developer' of the Eclipse Marketplace.(free)
-
-Install Eclipse Plugin 'Java 16 Support for Eclipse 2021-03' of the Eclipse Marktplace.(free)
+Eclipse IDE for Enterprise Java and Web Developers newest version.
 
 Java 16 or newer
+
+Maven 3.8.1 or newer
 
 Nodejs 14.15.x or newer
 
