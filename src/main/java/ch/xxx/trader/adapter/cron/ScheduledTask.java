@@ -36,7 +36,6 @@ import ch.xxx.trader.domain.model.QuoteIb;
 import ch.xxx.trader.domain.model.WrapperCb;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import reactor.core.publisher.Mono;
-import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 @Component
 public class ScheduledTask {
@@ -47,45 +46,32 @@ public class ScheduledTask {
 	private static final String URLCB = "https://api.coinbase.com/v2";
 	private static final String URLIB = "https://api.itbit.com";
 	private static final String URLBF = "https://api.bitfinex.com";
-	private WebClient bsWebClient;
-	private WebClient cbWebClient;
-	private WebClient ibWebClient;
-	private WebClient bfWebClient;
 
 	private final ReactiveMongoOperations operations;
-	private final Builder builder;
+	private final WebClient webClient;
 	
-	public ScheduledTask(ReactiveMongoOperations operations, Builder builder) {
+	public ScheduledTask(ReactiveMongoOperations operations, WebClient webClient) {
 		this.operations = operations;
-		this.builder = builder;
+		this.webClient = webClient;
 	}
 
-	@PostConstruct
-	public void init() {
-		this.bsWebClient = this.buildWebClient(URLBS);
-		this.cbWebClient = this.buildWebClient(URLCB);
-		this.ibWebClient = this.buildWebClient(URLIB);
-		this.bfWebClient = this.buildWebClient(URLBF);
-	}
-
-	private WebClient buildWebClient(String url) {
-		ReactorClientHttpConnector connector = new ReactorClientHttpConnector();
-		return this.builder.clientConnector(connector).baseUrl(url).build();
-	}
+//	@PostConstruct
+//	public void init() {
+//		
+//	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 3000)
 	@SchedulerLock(name = "BitstampQuoteBTC_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteBTC() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bsWebClient;
 		try {
-			operations.insert(wc.get().uri("/v2/ticker/btceur/").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBS + "/v2/ticker/btceur/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("btceur");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitstampQuote Btc " + dateFormat.format(new Date()) + " "
+			log.debug("BitstampQuote Btc " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -97,15 +83,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitstampQuoteETH_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteETH() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bsWebClient;
 		try {
-			operations.insert(wc.get().uri("/v2/ticker/etheur/").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBS + "/v2/ticker/etheur/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("etheur");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitstampQuote Eth " + dateFormat.format(new Date()) + " "
+			log.debug("BitstampQuote Eth " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -117,15 +102,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitstampQuoteLTC_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteLTC() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bsWebClient;
 		try {
-			operations.insert(wc.get().uri("/v2/ticker/ltceur/").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBS + "/v2/ticker/ltceur/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("ltceur");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitstampQuote Ltc " + dateFormat.format(new Date()) + " "
+			log.debug("BitstampQuote Ltc " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -137,15 +121,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitstampQuoteXRP_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteXRP() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bsWebClient;
 		try {
-			operations.insert(wc.get().uri("/v2/ticker/xrpeur/").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBS + "/v2/ticker/xrpeur/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("xrpeur");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitstampQuote Xrp " + dateFormat.format(new Date()) + " "
+			log.debug("BitstampQuote Xrp " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -157,15 +140,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "CoinbaseQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertCoinbaseQuote() {
 		Date start = new Date();
-		WebClient wc = this.cbWebClient;
 		try {
-			operations.insert(wc.get().uri("/exchange-rates?currency=BTC").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(WrapperCb.class))
 					.flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //						log.info(resp2.getRates().toString());
 						return Mono.just(resp2.getRates());
 					})).then().block(Duration.ofSeconds(3));
-			log.info("CoinbaseQuote " + dateFormat.format(new Date()) + " " + (new Date().getTime() - start.getTime())
+			log.debug("CoinbaseQuote " + dateFormat.format(new Date()) + " " + (new Date().getTime() - start.getTime())
 					+ "ms");
 		} catch (Exception e) {
 //			log.error("Coinbase insert error", e);
@@ -177,14 +159,13 @@ public class ScheduledTask {
 	@SchedulerLock(name = "ItbitQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitQuote() {
 		Date start = new Date();
-		WebClient wc = this.ibWebClient;
 		try {
-			operations.insert(wc.get().uri("/v1/markets/XBTEUR/ticker").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLIB + "/v1/markets/XBTEUR/ticker").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteIb.class)).map(res -> {
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("ItbitQuote Btc " + dateFormat.format(new Date()) + " " + (new Date().getTime() - start.getTime())
+			log.debug("ItbitQuote Btc " + dateFormat.format(new Date()) + " " + (new Date().getTime() - start.getTime())
 					+ "ms");
 		} catch (Exception e) {
 //			log.error("Itbit insert error", e);
@@ -196,14 +177,13 @@ public class ScheduledTask {
 	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitUsdQuote() {
 		Date start = new Date();
-		WebClient wc = this.ibWebClient;
 		try {
-			operations.insert(wc.get().uri("/v1/markets/XBTUSD/ticker").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLIB +  "/v1/markets/XBTUSD/ticker").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteIb.class)).map(res -> {
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("ItbitQuote Btc Usd " + dateFormat.format(new Date()) + " "
+			log.debug("ItbitQuote Btc Usd " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Itbit insert error", e);
@@ -215,15 +195,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitstampQuoteBTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteBTCUSD() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bsWebClient;
 		try {
-			operations.insert(wc.get().uri("/v2/ticker/btcusd/").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBS + "/v2/ticker/btcusd/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("btcusd");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitstampQuote Btc Usd " + dateFormat.format(new Date()) + " "
+			log.debug("BitstampQuote Btc Usd " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -235,15 +214,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitstampQuoteETHUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteETHUSD() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bsWebClient;
 		try {
-			operations.insert(wc.get().uri("/v2/ticker/ethusd/").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBS + "/v2/ticker/ethusd/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("ethusd");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitstampQuote Eth Usd " + dateFormat.format(new Date()) + " "
+			log.debug("BitstampQuote Eth Usd " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -255,15 +233,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitstampQuoteLTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteLTCUSD() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bsWebClient;
 		try {
-			operations.insert(wc.get().uri("/v2/ticker/ltcusd/").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBS + "/v2/ticker/ltcusd/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("ltcusd");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitstampQuote Ltc Usd " + dateFormat.format(new Date()) + " "
+			log.debug("BitstampQuote Ltc Usd " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -275,15 +252,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitstampQuoteXRPUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteXRPUSD() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bsWebClient;
 		try {
-			operations.insert(wc.get().uri("/v2/ticker/xrpusd/").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBS + "/v2/ticker/xrpusd/").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBs.class)).map(res -> {
 						res.setPair("xrpusd");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitstampQuote Xrp Usd " + dateFormat.format(new Date()) + " "
+			log.debug("BitstampQuote Xrp Usd " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -295,15 +271,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitfinexQuoteBTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteBTCUSD() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bfWebClient;
 		try {
-			operations.insert(wc.get().uri("/v1/pubticker/btcusd").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBF + "/v1/pubticker/btcusd").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBf.class)).map(res -> {
 						res.setPair("btcusd");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitfinexQuote Btc Usd " + dateFormat.format(new Date()) + " "
+			log.debug("BitfinexQuote Btc Usd " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -315,15 +290,15 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitfinexQuoteETHUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteETHUSD() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bfWebClient;
+//		WebClient wc = this.bfWebClient;
 		try {
-			operations.insert(wc.get().uri("/v1/pubticker/ethusd").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBF + "/v1/pubticker/ethusd").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBf.class)).map(res -> {
 						res.setPair("ethusd");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitfinexQuote Eth Usd " + dateFormat.format(new Date()) + " "
+			log.debug("BitfinexQuote Eth Usd " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -335,15 +310,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitfinexQuoteLTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteLTCUSD() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bfWebClient;
 		try {
-			operations.insert(wc.get().uri("/v1/pubticker/ltcusd").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBF + "/v1/pubticker/ltcusd").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBf.class)).map(res -> {
 						res.setPair("ltcusd");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitfinexQuote Ltc Usd " + dateFormat.format(new Date()) + " "
+			log.debug("BitfinexQuote Ltc Usd " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);
@@ -355,15 +329,14 @@ public class ScheduledTask {
 	@SchedulerLock(name = "BitfinexQuoteXRPUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteXRPUSD() throws InterruptedException {
 		Date start = new Date();
-		WebClient wc = this.bfWebClient;
 		try {
-			operations.insert(wc.get().uri("/v1/pubticker/xrpusd").accept(MediaType.APPLICATION_JSON)
+			operations.insert(this.webClient.get().uri(ScheduledTask.URLBF + "/v1/pubticker/xrpusd").accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(QuoteBf.class)).map(res -> {
 						res.setPair("xrpusd");
 //						log.info(res.toString());
 						return res;
 					})).then().block(Duration.ofSeconds(3));
-			log.info("BitfinexQuote Xrp Usd " + dateFormat.format(new Date()) + " "
+			log.debug("BitfinexQuote Xrp Usd " + dateFormat.format(new Date()) + " "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		} catch (Exception e) {
 //			log.error("Bitstamp insert error", e);

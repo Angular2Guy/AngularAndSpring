@@ -15,24 +15,32 @@
  */
 package ch.xxx.trader.adapter.config;
 
+import java.time.Duration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.Builder;
 
+import io.netty.channel.ChannelOption;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
+import reactor.netty.http.client.HttpClient;
 
 @Configuration
 @EnableScheduling
 @EnableSchedulerLock(defaultLockAtMostFor = "10m")
 public class SchedulingConfig implements SchedulingConfigurer {
-
+	private final WebClient.Builder webClientBuilder;
+	
+	public SchedulingConfig(WebClient.Builder webClientBuilder) {
+		this.webClientBuilder = webClientBuilder;
+	}
+	
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setScheduler(taskExecutor());
@@ -44,7 +52,10 @@ public class SchedulingConfig implements SchedulingConfigurer {
     }
     
     @Bean
-    public Builder webClientBuilder() {
-    	return WebClient.builder();
+    public WebClient createWebClient() {
+    	HttpClient httpClient = HttpClient.create()
+    		      .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3500).responseTimeout(Duration.ofMillis(4000));
+    	ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);    	
+    	return this.webClientBuilder.clientConnector(connector).build();
     }
 }
