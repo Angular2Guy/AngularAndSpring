@@ -23,6 +23,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 
@@ -39,5 +41,10 @@ public class SchedulingConfig implements SchedulingConfigurer {
     @Bean(destroyMethod="shutdown")
     public Executor taskExecutor() {
         return Executors.newScheduledThreadPool(10);
+    }
+    
+    @Bean
+    public Builder webClientBuilder() {
+    	return WebClient.builder();
     }
 }

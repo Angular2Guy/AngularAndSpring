@@ -36,6 +36,7 @@ import ch.xxx.trader.domain.model.QuoteIb;
 import ch.xxx.trader.domain.model.WrapperCb;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 @Component
 public class ScheduledTask {
@@ -52,9 +53,11 @@ public class ScheduledTask {
 	private WebClient bfWebClient;
 
 	private final ReactiveMongoOperations operations;
+	private final Builder builder;
 	
-	public ScheduledTask(ReactiveMongoOperations operations) {
+	public ScheduledTask(ReactiveMongoOperations operations, Builder builder) {
 		this.operations = operations;
+		this.builder = builder;
 	}
 
 	@PostConstruct
@@ -67,7 +70,7 @@ public class ScheduledTask {
 
 	private WebClient buildWebClient(String url) {
 		ReactorClientHttpConnector connector = new ReactorClientHttpConnector();
-		return WebClient.builder().clientConnector(connector).baseUrl(url).build();
+		return this.builder.clientConnector(connector).baseUrl(url).build();
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 3000)
