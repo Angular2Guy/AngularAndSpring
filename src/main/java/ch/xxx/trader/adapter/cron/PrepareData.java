@@ -22,6 +22,7 @@ import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
 import ch.xxx.trader.usecase.services.ItbitService;
+import io.micrometer.core.annotation.Timed;
 
 @Component
 public class PrepareData {
@@ -39,48 +40,56 @@ public class PrepareData {
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 5 0 ? * ?")
+	@Timed(value = "createBsHourlyAvg", longTask = true, percentiles = {0.5,0.9,0.99})
 	public void createBsHourlyAvg() {
 		this.bitstampService.createBsHourlyAvg();;		
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 5 1 ? * ?")
+	@Timed(value = "createBsDailyAvg", longTask = true, percentiles = {0.5,0.9,0.99})
 	public void createBsDailyAvg() {
 		this.bitstampService.createBsDailyAvg();		
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 10 0 ? * ?")
+	@Timed(value = "createBfHourlyAvg", longTask = true, percentiles = {0.5,0.9,0.99})
 	public void createBfHourlyAvg() {		
 		this.bitfinexService.createBfHourlyAvg();
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 10 1 ? * ?")
+	@Timed(value = "createBfDailyAvg", longTask = true, percentiles = {0.5,0.9,0.99})
 	public void createBfDailyAvg() {
 		this.bitfinexService.createBfDailyAvg();
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 15 0 ? * ?")
+	@Timed(value = "createIbHourlyAvg", longTask = true, percentiles = {0.5,0.9,0.99})
 	public void createIbHourlyAvg() {
 		this.itbitService.createIbHourlyAvg();
 	}
 
 	// @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 15 1 ? * ?")
+	@Timed(value = "createIbDailyAvg", longTask = true, percentiles = {0.5,0.9,0.99})
 	public void createIbDailyAvg() {
 		this.itbitService.createIbDailyAvg();		
 	}
 
 //	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 20 0 ? * ?")
+	@Timed(value = "createCbHourlyAvg", longTask = true, percentiles = {0.5,0.9,0.99})
 	public void createCbHourlyAvg() {
 		this.coinbaseService.createCbHourlyAvg();		
 	}
 
 //	@Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 20 1 ? * ?")
+	@Timed(value = "createCbDailyAvg", longTask = true, percentiles = {0.5,0.9,0.99})
 	public void createCbDailyAvg() {
 		this.coinbaseService.createCbDailyAvg();		
 	}
