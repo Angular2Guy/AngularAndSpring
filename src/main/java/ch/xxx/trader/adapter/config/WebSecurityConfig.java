@@ -15,7 +15,6 @@
  */
 package ch.xxx.trader.adapter.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;

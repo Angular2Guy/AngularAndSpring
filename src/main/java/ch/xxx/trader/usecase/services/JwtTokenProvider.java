@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;

@@ -39,7 +39,8 @@ import org.springframework.stereotype.Component;
 public class ForwardServletFilter implements Filter {
 	private static final Logger LOG = LoggerFactory.getLogger(ForwardServletFilter.class);
 	public static final List<Locale> SUPPORTED_LOCALES = List.of(Locale.ENGLISH, Locale.GERMAN);
-	public static final List<String> REST_PATHS = List.of("/bitfinex", "/bitstamp", "/coinbase", "/itbit", "/myuser", "/actuator");
+	public static final List<String> REST_PATHS = List.of("/bitfinex", "/bitstamp", "/coinbase", "/itbit", "/myuser", 
+			"/actuator", "/swagger-ui.html", "/swagger-ui", "/v3");
 	public static final List<String> LANGUAGE_PATHS = SUPPORTED_LOCALES.stream()
 			.map(myLocale -> String.format("/%s/", myLocale.getLanguage())).collect(Collectors.toList());
 

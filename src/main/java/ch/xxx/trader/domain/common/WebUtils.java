@@ -2,7 +2,6 @@ package ch.xxx.trader.domain.common;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,10 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import ch.xxx.trader.usecase.services.JwtTokenProvider;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 
 public class WebUtils {
 
