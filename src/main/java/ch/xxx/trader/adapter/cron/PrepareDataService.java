@@ -39,57 +39,57 @@ public class PrepareDataService {
 		this.coinbaseService = coinbaseService;
 	}
 
-	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-//	@Scheduled(cron = "0 5 0 ? * ?")
+//	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+	@Scheduled(cron = "0 5 0 ? * ?")
 	@Timed(value = "create.bs.hourly.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createBsHourlyAvg() {
 		this.bitstampService.createBsHourlyAvg();
 	}
 
-	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-//	@Scheduled(cron = "0 5 1 ? * ?")
+//	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+	@Scheduled(cron = "0 5 1 ? * ?")
 	@Timed(value = "create.bs.daily.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createBsDailyAvg() {
 		this.bitstampService.createBsDailyAvg();
 	}
 
-	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-//	@Scheduled(cron = "0 10 0 ? * ?")
+//	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+	@Scheduled(cron = "0 10 0 ? * ?")
 	@Timed(value = "create.bf.hourly.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createBfHourlyAvg() {
 		this.bitfinexService.createBfHourlyAvg();
 	}
 
-	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-//	@Scheduled(cron = "0 10 1 ? * ?")
+//	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+	@Scheduled(cron = "0 10 1 ? * ?")
 	@Timed(value = "create.bf.daily.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createBfDailyAvg() {
 		this.bitfinexService.createBfDailyAvg();
 	}
 
-	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-//	@Scheduled(cron = "0 15 0 ? * ?")
+//	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+	@Scheduled(cron = "0 15 0 ? * ?")
 	@Timed(value = "create.ib.hourly.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createIbHourlyAvg() {
 		this.itbitService.createIbHourlyAvg();
 	}
 
-	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-//	@Scheduled(cron = "0 15 1 ? * ?")
+//	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+	@Scheduled(cron = "0 15 1 ? * ?")
 	@Timed(value = "create.ib.daily.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createIbDailyAvg() {
 		this.itbitService.createIbDailyAvg();
 	}
 
-	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
-//	@Scheduled(cron = "0 20 0 ? * ?")
+//	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
+	@Scheduled(cron = "0 20 0 ? * ?")
 	@Timed(value = "create.cb.hourly.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createCbHourlyAvg() {
 		this.coinbaseService.createCbHourlyAvg();
 	}
 
-	@Scheduled(fixedRate = 300000000, initialDelay = 3000)
-//	@Scheduled(cron = "0 20 1 ? * ?")
+//	@Scheduled(fixedRate = 300000000, initialDelay = 3000)
+	@Scheduled(cron = "0 20 1 ? * ?")
 	@Timed(value = "create.cb.daily.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createCbDailyAvg() {
 		this.coinbaseService.createCbDailyAvg();
