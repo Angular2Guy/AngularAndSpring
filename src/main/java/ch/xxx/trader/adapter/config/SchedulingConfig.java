@@ -21,17 +21,21 @@ import java.util.concurrent.Executors;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.ChannelOption;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import reactor.netty.http.client.HttpClient;
 
 @Configuration
+@EnableAspectJAutoProxy
 @EnableScheduling
 @EnableSchedulerLock(defaultLockAtMostFor = "10m")
 public class SchedulingConfig implements SchedulingConfigurer {
@@ -49,6 +53,11 @@ public class SchedulingConfig implements SchedulingConfigurer {
     @Bean(destroyMethod="shutdown")
     public Executor taskExecutor() {
         return Executors.newScheduledThreadPool(10);
+    }
+    
+    @Bean
+    TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
     }
     
     @Bean

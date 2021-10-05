@@ -17,9 +17,13 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
@@ -31,7 +35,7 @@ import ch.xxx.trader.domain.model.Quote;
 @Service
 public class ServiceUtils {
 	private final MyMongoRepository myMongoRepository;
-	
+
 	public ServiceUtils(MyMongoRepository myMongoRepository) {
 		this.myMongoRepository = myMongoRepository;
 	}
@@ -48,28 +52,30 @@ public class ServiceUtils {
 		}
 		return hours;
 	}
-	
+
 	public BigDecimal avgHourValue(BigDecimal v1, BigDecimal v2, long count) {
 		return v1.add(v2 == null ? BigDecimal.ZERO
 				: v2.divide(BigDecimal.valueOf(count == 0 ? 1 : count), 10, RoundingMode.HALF_UP));
 	}
-	
+
 	public Tuple<Calendar, Calendar> createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
 		if (!this.myMongoRepository.collectionExists(colName).block()) {
 			this.myMongoRepository.createCollection(colName).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by("createdAt").ascending());
-		Quote firstQuote = this.myMongoRepository.findOne(query, colType).block();
+		Optional<? extends Quote> firstQuote = Optional.ofNullable(this.myMongoRepository.findOne(query, colType).block());
 		query = new Query();
 		query.with(Sort.by("createdAt").descending());
-		Quote lastHourQuote = this.myMongoRepository.findOne(query, colType, colName).block();
+		Optional<? extends Quote> lastHourQuote = Optional
+				.ofNullable(this.myMongoRepository.findOne(query, colType, colName).block());
 		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote == null) {
-			globalBeginn.setTime(firstQuote.getCreatedAt());
+		if (lastHourQuote.isEmpty()) {
+			globalBeginn.setTime(firstQuote.stream().map(myQuote -> myQuote.getCreatedAt()).findFirst()
+					.orElse(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())));
 		} else {
-			globalBeginn.setTime(lastHourQuote.getCreatedAt());
-			if(hour) {
+			globalBeginn.setTime(lastHourQuote.get().getCreatedAt());
+			if (hour) {
 				globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
 			} else {
 				globalBeginn.add(Calendar.DAY_OF_YEAR, 1);
