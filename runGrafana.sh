@@ -1,6 +1,7 @@
 #!/bin/sh
-MYID=id -u
+#docker pull grafana/grafana
+MYID=`id -u`
 #data will be stored in ~/tmp/data
 #mkdir ~/tmp/data
 MYDATA=echo ~/tmp/data
-docker run --user $MYID --volume "$MYID:$MYDATA" --network "host" grafana/grafana
+docker run --user "$MYID" --volume "$MYID:$MYDATA" --network "host" grafana/grafana

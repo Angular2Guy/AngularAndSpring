@@ -4,7 +4,7 @@
 
 Author: Sven Loesekann
 
-Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, MongoDB, Maven, Docker, ArchUnit
+Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, MongoDB, Maven, Docker, ArchUnit, Spring Actuator with Prometheus interface
 
 ## Articles
 * [Ngx-Simple-Charts multiline and legend support howto](https://angular2guy.wordpress.com/2021/10/02/ngx-simple-charts-multiline-and-legend-support-howto/)
@@ -17,7 +17,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 
 ## What is the goal?
 
-The goal is to be reactive from top to bottom. To do that the project uses Angular in the frontend and Spring Boot with Reactive Web as server. Mongodb is the database connected with the reactive MongoDB driver. That enables a reactive chain from the browser to the DB. The project uses an in memory MongoDB to be just cloned build and ready to run. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test.
+The goal is to be reactive from top to bottom. To do that the project uses Angular in the frontend and Spring Boot with Reactive Web as server. Mongodb is the database connected with the reactive MongoDB driver. That enables a reactive chain from the browser to the DB. The project uses an in memory MongoDB to be just cloned build and ready to run. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test. The health and performance of the application can be monitored with Spring Actuator with Prometheus interface. 
 
 ## What is it?
 
@@ -31,6 +31,13 @@ The application has two scheduled jobs. The first is the ScheduledTask class. It
 ## Minikube setup
 
 The application can now be run in a Minikube cluster. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. Further documentation can be found in the wiki.
+
+## Monitoring
+The Spring Actuator interface with Prometheus interface can be used as it is described in this article: 
+
+[Monitoring Spring Boot with Prometheus and Grafana](https://ordina-jworks.github.io/monitoring/2020/11/16/monitoring-spring-prometheus-grafana.html)
+
+To test the setup the application has to be started and the Docker Images for Prometheus and Grafana have to be started and configured. The scripts 'runGraphana.sh' and 'runPrometheus.sh' can be used as a starting point.
 
 ## Setup
 
