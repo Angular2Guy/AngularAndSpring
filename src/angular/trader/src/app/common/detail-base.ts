@@ -12,7 +12,7 @@
  */
 import { CommonUtils } from './common-utils';
 import { formatDate } from '@angular/common';
-import { ChartPoint,ChartPoints } from 'ngx-simple-charts';
+import { ChartPoint,ChartPoints } from 'ngx-simple-charts/line';
 
 export class Tuple<A,B> {
 	constructor(private myA: A, private myB: B) {}

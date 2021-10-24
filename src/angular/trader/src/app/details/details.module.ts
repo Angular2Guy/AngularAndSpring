@@ -26,6 +26,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgxSimpleChartsModule } from 'ngx-simple-charts';
+import { NgxLineChartsModule } from 'ngx-simple-charts/line';
 //import { NgxSimpleChartsModule } from '../charts/ngx-simple-charts.module';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { NgxSimpleChartsModule } from 'ngx-simple-charts';
     MatButtonModule,
     DetailsRoutingModule,
     NgxSimpleChartsModule,
+	NgxLineChartsModule
   ],
   declarations: [
     IbdetailComponent,

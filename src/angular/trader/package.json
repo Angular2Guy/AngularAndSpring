@@ -36,7 +36,7 @@
     "tslib": "^2.0.0",
     "web-animations-js": "^2.3.2",
     "zone.js": "~0.11.4",
-    "ngx-simple-charts": "^1.0.2"
+    "ngx-simple-charts": "^1.0.6"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.0.1",
