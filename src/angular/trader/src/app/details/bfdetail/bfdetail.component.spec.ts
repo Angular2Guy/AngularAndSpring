@@ -30,6 +30,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 //import { NgxSimpleChartsModule } from 'src/app/charts/ngx-simple-charts.module';
 import { NgxSimpleChartsModule } from 'ngx-simple-charts';
+import { NgxLineChartsModule } from 'ngx-simple-charts/line';
 
 class MockBfService extends BitfinexService {
     constructor(private http1: HttpClient) {
@@ -72,7 +73,8 @@ describe('BfdetailComponent', () => {
                 BrowserAnimationsModule,                
                 MatToolbarModule, 
                 MatRadioModule,
-				NgxSimpleChartsModule
+				NgxSimpleChartsModule,
+				NgxLineChartsModule
               ],
       declarations: [ BfdetailComponent ],
       providers:  [{provide: BitfinexService, useValue: mockService } ]

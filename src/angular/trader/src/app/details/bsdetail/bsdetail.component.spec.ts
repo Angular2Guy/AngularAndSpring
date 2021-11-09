@@ -30,6 +30,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 //import { NgxSimpleChartsModule } from 'src/app/charts/ngx-simple-charts.module';
 import { NgxSimpleChartsModule } from 'ngx-simple-charts';
+import { NgxLineChartsModule } from 'ngx-simple-charts/line';
 
 class MockService extends BitstampService {
     constructor(private http1: HttpClient) {
@@ -74,6 +75,7 @@ describe('BsdetailComponent', () => {
                 BrowserAnimationsModule,                
                 MatToolbarModule, 
                 MatRadioModule,
+                NgxLineChartsModule,
 				NgxSimpleChartsModule],
       declarations: [ BsdetailComponent ],
       providers:  [{provide: BitstampService, useValue: mockService } ]
