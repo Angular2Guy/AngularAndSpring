@@ -26,7 +26,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>16</java.version>
+		<java.version>17</java.version>
 		<docker.image.prefix>angular2guy</docker.image.prefix>
 		<!-- <npm.test.script>test-chromium</npm.test.script> -->
 		<npm.test.script>test</npm.test.script>
