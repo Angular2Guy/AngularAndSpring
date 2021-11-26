@@ -60,26 +60,26 @@ class MockService extends ItbitService {
         };
         return of(result);
     }
-     
+
     getTodayQuotes(currencypair: string): Observable<QuoteIb[]> {
         return of([]);
     }
-} 
+}
 
 describe('IbdetailComponent', () => {
   let component: IbdetailComponent;
   let fixture: ComponentFixture<IbdetailComponent>;
-  let mockService = new MockService(null);
+  const mockService = new MockService(null);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
         imports: [RouterTestingModule,
                   BrowserModule,
                   FormsModule,
-                  ReactiveFormsModule,                  
+                  ReactiveFormsModule,
                   HttpClientModule,
-                  BrowserAnimationsModule,                 
-                  MatToolbarModule, 
+                  BrowserAnimationsModule,
+                  MatToolbarModule,
                   MatRadioModule,
                   NgxLineChartsModule,
 				  NgxSimpleChartsModule],
@@ -98,56 +98,56 @@ describe('IbdetailComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  
+
   it('should have value', () => {
       expect(component.currQuote.ask).toBe(3);
   });
   it('should show lastPrice', () => {
       const de: DebugElement = fixture.debugElement;
-      const el: HTMLElement = de.query(By.css('#lastPrice')).nativeElement;      
-      expect(el.textContent).toEqual('5.00');      
+      const el: HTMLElement = de.query(By.css('#lastPrice')).nativeElement;
+      expect(el.textContent).toEqual('5.00');
   });
   it('should show high24h', () => {
       const de: DebugElement = fixture.debugElement;
-      const el: HTMLElement = de.query(By.css('#high24h')).nativeElement;      
-      expect(el.textContent).toEqual('9.00');      
+      const el: HTMLElement = de.query(By.css('#high24h')).nativeElement;
+      expect(el.textContent).toEqual('9.00');
   });
   it('should show low24h', () => {
       const de: DebugElement = fixture.debugElement;
-      const el: HTMLElement = de.query(By.css('#low24h')).nativeElement;      
-      expect(el.textContent).toEqual('10.00');      
+      const el: HTMLElement = de.query(By.css('#low24h')).nativeElement;
+      expect(el.textContent).toEqual('10.00');
   });
   it('should show bid', () => {
       const de: DebugElement = fixture.debugElement;
-      const el: HTMLElement = de.query(By.css('#bid')).nativeElement;      
-      expect(el.textContent).toEqual('1.00');      
+      const el: HTMLElement = de.query(By.css('#bid')).nativeElement;
+      expect(el.textContent).toEqual('1.00');
   });
   it('should show ask', () => {
       const de: DebugElement = fixture.debugElement;
-      const el: HTMLElement = de.query(By.css('#ask')).nativeElement;      
-      expect(el.textContent).toEqual('3.00');      
+      const el: HTMLElement = de.query(By.css('#ask')).nativeElement;
+      expect(el.textContent).toEqual('3.00');
   });
   it('should show openToday', () => {
       const de: DebugElement = fixture.debugElement;
-      const el: HTMLElement = de.query(By.css('#openToday')).nativeElement;      
-      expect(el.textContent).toEqual('11.00');      
+      const el: HTMLElement = de.query(By.css('#openToday')).nativeElement;
+      expect(el.textContent).toEqual('11.00');
   });
   it('should show vwap24h', () => {
       const de: DebugElement = fixture.debugElement;
-      const el: HTMLElement = de.query(By.css('#vwap24h')).nativeElement;      
-      expect(el.textContent).toEqual('13.00');      
+      const el: HTMLElement = de.query(By.css('#vwap24h')).nativeElement;
+      expect(el.textContent).toEqual('13.00');
   });
   it('should show createdAt', () => {
       const de: DebugElement = fixture.debugElement;
-      const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement; 
+      const el: HTMLElement = de.query(By.css('#createdAt')).nativeElement;
       const myDate = new Date(component.currQuote.createdAt);
-      let dateStr = (myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
+      const dateStr = (myDate.getMinutes().toString().length === 1 ? '0' + myDate.getMinutes() : myDate.getMinutes())
       +':'+(myDate.getSeconds().toString().length === 1 ? '0' + myDate.getSeconds() : myDate.getSeconds());
-      expect(el.textContent.substr(3,el.textContent.length)).toEqual(dateStr);      
+      expect(el.textContent.substr(3,el.textContent.length)).toEqual(dateStr);
   });
   it('should show volume24', () => {
       const de: DebugElement = fixture.debugElement;
-      const el: HTMLElement = de.query(By.css('#volume24')).nativeElement;      
-      expect(el.textContent).toEqual('7.00');      
+      const el: HTMLElement = de.query(By.css('#volume24')).nativeElement;
+      expect(el.textContent).toEqual('7.00');
   });
 });
