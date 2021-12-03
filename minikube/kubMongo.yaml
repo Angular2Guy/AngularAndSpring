@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mongodb
-        image: mongo:3.6.6
+        image: mongo:4.4
         ports:
         - containerPort: 27017              	
         volumeMounts:
