@@ -41,11 +41,11 @@ To test the setup the application has to be started and the Docker Images for Pr
 
 ## Setup
 
-MongoDB 3.4.x or newer.
+MongoDB 4.1.x or newer.
 
 Eclipse IDE for Enterprise Java and Web Developers newest version.
 
-Java 16 or newer
+Java 17 or newer
 
 Maven 3.8.1 or newer
 
@@ -53,4 +53,4 @@ Nodejs 14.15.x or newer
 
 Npm 6.14.x or newer
 
-Angular Cli 12 or newer.
+Angular Cli 13 or newer.
