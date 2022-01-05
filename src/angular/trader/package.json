@@ -32,7 +32,7 @@
     "@angular/router": "^13.0.0",
     "core-js": "^3.19.1",
     "material-design-icons": "3.0.1",
-    "ngx-simple-charts": "^13.1.0",
+    "ngx-simple-charts": "^13.2.1",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.1",
     "zone.js": "~0.11.4"
