@@ -23,6 +23,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -79,7 +80,7 @@ public class MyUser implements UserDetails {
 	}
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		GrantedAuthority auth = () -> "USERS"; 					
+		GrantedAuthority auth = new SimpleGrantedAuthority("USERS"); 					
 		return Arrays.asList(auth);
 	}
 	@Override

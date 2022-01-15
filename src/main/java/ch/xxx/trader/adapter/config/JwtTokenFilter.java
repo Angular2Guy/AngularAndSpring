@@ -48,11 +48,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		String token = jwtTokenProvider.resolveToken(request);
 		if (Optional.ofNullable(token).map(myToken -> jwtTokenProvider.validateToken(myToken)).orElse(false)) {
 			Optional<UsernamePasswordAuthenticationToken> myOpt = Optional.ofNullable(token)
-					.map(myToken -> jwtTokenProvider.getAuthentication(token)).map(myToken -> {
+					.map(myToken -> jwtTokenProvider.getUserAuthenticationToken(token)).map(myToken -> {
 						myToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 						return myToken;
 					});
-			myOpt.ifPresent(myToken -> SecurityContextHolder.getContext().setAuthentication(myToken));
+			myOpt.ifPresent(myToken -> SecurityContextHolder.getContext().setAuthentication(myToken));			
+			//LOG.info(""+SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
 		}
 		filterChain.doFilter(request, response);
 	}

@@ -26,6 +26,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.domain.model.MyUser;
@@ -34,9 +35,11 @@ import ch.xxx.trader.domain.model.MyUser;
 public class MyAuthenticationProvider implements AuthenticationProvider {
 	private static final Logger log = LoggerFactory.getLogger(MyAuthenticationProvider.class);
 	private final MyMongoRepository myMongoRepository;
+	private final PasswordEncoder passwordEncoder;
 	
-	public MyAuthenticationProvider(MyMongoRepository myMongoRepository) {
+	public MyAuthenticationProvider(MyMongoRepository myMongoRepository, PasswordEncoder passwordEncoder) {
 		this.myMongoRepository = myMongoRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 	@Override
@@ -46,17 +49,10 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(name));
 		MyUser user = this.myMongoRepository.findOne(query, MyUser.class).block();
-		String encryptedPw = null;
 		if(user == null) {
 			throw new BadCredentialsException("User not found");
 		}
-//		try {
-			encryptedPw = new BCryptPasswordEncoder().encode(password);
-//			encryptedPw = this.passwordEncryption.getEncryptedPassword(password, user.getSalt());
-//		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-//			log.error("Pw decrytion error: ",e);
-//		}
-		if(encryptedPw == null || !encryptedPw.equals(user.getPassword())) {
+		if(!this.passwordEncoder.matches(password, user.getPassword())) {
 			throw new AuthenticationCredentialsNotFoundException("User: "+name+" not found.");
 		}
 		log.info("User: "+name+" logged in.");
