@@ -25,6 +25,7 @@ import java.util.Optional;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.PasswordEncryption;
@@ -41,11 +42,14 @@ public class MyUserService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncryption passwordEncryption; 
 	private final MyMongoRepository myMongoRepository;
+	private final PasswordEncoder passwordEncoder; 
 	
-	public MyUserService(JwtTokenProvider jwtTokenProvider, PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository) {
+	public MyUserService(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder, 
+			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository) {
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.passwordEncryption = passwordEncryption;
 		this.myMongoRepository = myMongoRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public Mono<AuthCheck> postAuthorize(AuthCheck authcheck, Map<String,String> header) {				
@@ -73,8 +77,7 @@ public class MyUserService {
 		MyUser user = this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser())).block();
 		if (user.getUserId() == null) {
 			String salt = this.passwordEncryption.generateSalt();
-//			String encryptedPassword = this.passwordEncryption.getEncryptedPassword(myUser.getPassword(), salt);
-			String encryptedPassword = new BCryptPasswordEncoder().encode(myUser.getPassword());
+			String encryptedPassword = this.passwordEncoder.encode(myUser.getPassword());
 			myUser.setPassword(encryptedPassword);
 			myUser.setSalt(salt);
 			this.myMongoRepository.save(myUser).block();
@@ -100,14 +103,7 @@ public class MyUserService {
 
 	private MyUser loginHelp(MyUser user, String passwd) {
 		if (user.getUserId() != null) {
-			String encryptedPassword;
-//			try {
-//				encryptedPassword = this.passwordEncryption.getEncryptedPassword(passwd, user.getSalt());
-				encryptedPassword = new BCryptPasswordEncoder().encode(passwd);
-//			} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-//				return new MyUser();
-//			}
-			if (user.getPassword().equals(encryptedPassword)) {				
+			if (this.passwordEncoder.matches(passwd, user.getPassword())) {				
 				String jwtToken = this.jwtTokenProvider.createToken(user.getUserId(), Arrays.asList(Role.USERS));
 				user.setToken(jwtToken);
 				user.setPassword("XXX");

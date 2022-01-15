@@ -79,7 +79,7 @@ public class JwtTokenProvider {
 		return Optional.of(Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token.get()));
 	}
 
-	public Authentication getAuthentication(String token) {
+	public UsernamePasswordAuthenticationToken getAuthentication(String token) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(getUsername(token)));
 		MyUser user = operations.findOne(query, MyUser.class).block();

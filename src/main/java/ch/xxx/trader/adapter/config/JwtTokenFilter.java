@@ -16,22 +16,25 @@
 package ch.xxx.trader.adapter.config;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import ch.xxx.trader.usecase.services.JwtTokenProvider;
 
-public class JwtTokenFilter extends GenericFilterBean {
+@Component
+public class JwtTokenFilter extends OncePerRequestFilter {
 	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenFilter.class);
 	private JwtTokenProvider jwtTokenProvider;
 
@@ -40,17 +43,18 @@ public class JwtTokenFilter extends GenericFilterBean {
 	}
 
 	@Override
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
-			throws IOException, ServletException {
-
-		HttpServletRequest httpReq = (HttpServletRequest) req;
-		String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
-		if (httpReq.getRequestURL().toString().contains("/orderbook") && token != null && jwtTokenProvider.validateToken(token)) {
-			Authentication auth = token != null ? jwtTokenProvider.getAuthentication(token) : null;
-			SecurityContextHolder.getContext().setAuthentication(auth);
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+		String token = jwtTokenProvider.resolveToken(request);
+		if (Optional.ofNullable(token).map(myToken -> jwtTokenProvider.validateToken(myToken)).orElse(false)) {
+			Optional<UsernamePasswordAuthenticationToken> myOpt = Optional.ofNullable(token)
+					.map(myToken -> jwtTokenProvider.getAuthentication(token)).map(myToken -> {
+						myToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+						return myToken;
+					});
+			myOpt.ifPresent(myToken -> SecurityContextHolder.getContext().setAuthentication(myToken));
 		}
-
-		filterChain.doFilter(req, res);
+		filterChain.doFilter(request, response);
 	}
 
 }

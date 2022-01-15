@@ -16,42 +16,52 @@
 package ch.xxx.trader.adapter.config;
 
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import ch.xxx.trader.usecase.services.JwtTokenProvider;
 import ch.xxx.trader.usecase.services.MyAuthenticationProvider;
 
-@Configuration
+//@Configuration
+@EnableWebSecurity
 @Order(SecurityProperties.DEFAULT_FILTER_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final MyAuthenticationProvider authProvider;
-	
 	private final JwtTokenProvider jwtTokenProvider;
+	private final JwtTokenFilter jwtTokenFilter;
+	
 
-	public WebSecurityConfig(MyAuthenticationProvider authProvider, JwtTokenProvider jwtTokenProvider) {
+	public WebSecurityConfig(MyAuthenticationProvider authProvider, JwtTokenProvider jwtTokenProvider, JwtTokenFilter jwtTokenFilter) {
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.authProvider = authProvider;
+		this.jwtTokenFilter = jwtTokenFilter;
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.httpBasic().and()
+		http.cors().and().csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 		.authorizeRequests().antMatchers("/**/orderbook").authenticated().and()
 		.authorizeRequests().anyRequest().anonymous().and()
-		.csrf().disable()
-		.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
+		.addFilterBefore(this.jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authProvider);
 	}
-	
 }
