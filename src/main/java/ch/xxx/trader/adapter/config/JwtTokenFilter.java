@@ -25,37 +25,39 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import ch.xxx.trader.usecase.services.JwtTokenProvider;
 
-@Component
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class JwtTokenFilter extends BasicAuthenticationFilter {
 	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenFilter.class);
 	private JwtTokenProvider jwtTokenProvider;
 
-	public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
+	public JwtTokenFilter(JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager) {
+		super(authenticationManager);
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-		String token = jwtTokenProvider.resolveToken(request);
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = jwtTokenProvider.resolveToken(httpRequest);
+		UsernamePasswordAuthenticationToken authToken;
 		if (Optional.ofNullable(token).map(myToken -> jwtTokenProvider.validateToken(myToken)).orElse(false)) {
-			Optional<UsernamePasswordAuthenticationToken> myOpt = Optional.ofNullable(token)
+			authToken = Optional.ofNullable(token)
 					.map(myToken -> jwtTokenProvider.getUserAuthenticationToken(token)).map(myToken -> {
-						myToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+						myToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
 						return myToken;
-					});
-			myOpt.ifPresent(myToken -> SecurityContextHolder.getContext().setAuthentication(myToken));			
-			//LOG.info(""+SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+					}).orElse(new UsernamePasswordAuthenticationToken(null, null));
+			// LOG.info(""+SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+		} else {
+			authToken = new UsernamePasswordAuthenticationToken(null, null);
 		}
-		filterChain.doFilter(request, response);
+		this.getAuthenticationManager().authenticate(authToken);
+		chain.doFilter(request, response);
 	}
-
 }

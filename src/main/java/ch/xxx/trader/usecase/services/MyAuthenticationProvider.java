@@ -15,6 +15,8 @@
  */
 package ch.xxx.trader.usecase.services;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -25,7 +27,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -45,15 +46,17 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String name = authentication.getName();
-		String password = authentication.getCredentials().toString();		
+		String password = Optional.ofNullable(authentication.getCredentials()).map(pwd -> pwd.toString()).orElse(null);		
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(name));
 		MyUser user = this.myMongoRepository.findOne(query, MyUser.class).block();
 		if(user == null) {
-			throw new BadCredentialsException("User not found");
+			return new UsernamePasswordAuthenticationToken(null, null); 
+			//throw new BadCredentialsException("User not found");
 		}
 		if(!this.passwordEncoder.matches(password, user.getPassword())) {
-			throw new AuthenticationCredentialsNotFoundException("User: "+name+" not found.");
+			return new UsernamePasswordAuthenticationToken(null, null); 
+			//throw new AuthenticationCredentialsNotFoundException("User: "+name+" not found.");
 		}
 		log.info("User: "+name+" logged in.");
 		return new UsernamePasswordAuthenticationToken(
