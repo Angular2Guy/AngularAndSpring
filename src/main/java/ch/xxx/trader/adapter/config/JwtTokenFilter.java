@@ -47,13 +47,13 @@ public class JwtTokenFilter extends BasicAuthenticationFilter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String token = jwtTokenProvider.resolveToken(httpRequest);
 		UsernamePasswordAuthenticationToken authToken;
-		if (Optional.ofNullable(token).map(myToken -> jwtTokenProvider.validateToken(myToken)).orElse(false)) {
+		if ((httpRequest.getRequestURL().toString().contains("/orderbook") || httpRequest.getRequestURL().toString().contains("/authorize"))  && Optional.ofNullable(token).map(myToken -> jwtTokenProvider.validateToken(myToken)).orElse(false)) {
 			authToken = Optional.ofNullable(token)
 					.map(myToken -> jwtTokenProvider.getUserAuthenticationToken(token)).map(myToken -> {
 						myToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
 						return myToken;
 					}).orElse(new UsernamePasswordAuthenticationToken(null, null));
-			// LOG.info(""+SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+			//LOG.info(""+authToken.isAuthenticated());
 		} else {
 			authToken = new UsernamePasswordAuthenticationToken(null, null);
 		}

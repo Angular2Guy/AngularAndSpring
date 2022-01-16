@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		JwtTokenFilter jwtTokenFilter = new JwtTokenFilter(jwtTokenProvider, this.getAuthenticationManagerBean());
 		http.cors().and().csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-		.authorizeRequests().antMatchers("/**/orderbook").authenticated().and()
+		.authorizeRequests().antMatchers("**/orderbook").authenticated().and()
 		.authorizeRequests().anyRequest().anonymous().and()
 		.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 	}
