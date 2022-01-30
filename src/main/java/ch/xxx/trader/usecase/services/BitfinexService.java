@@ -44,12 +44,12 @@ public class BitfinexService {
 	public static final String BF_HOUR_COL = "quoteBfHour";
 	public static final String BF_DAY_COL = "quoteBfDay";
 	private final ReportGenerator reportGenerator;
-	private final OrderBookClient orderBookClient;
+	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 
-	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils, OrderBookClient orderBookClient,
+	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils, MyOrderBookClient orderBookClient,
 			ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;

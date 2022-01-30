@@ -47,12 +47,12 @@ public class ItbitService {
 	public static final String IB_DAY_COL = "quoteIbDay";
 	private final Map<String, String> currpairs = new HashMap<String, String>();
 	private final ReportGenerator reportGenerator;
-	private final OrderBookClient orderBookClient;
+	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 
-	public ItbitService(ReportGenerator reportGenerator, OrderBookClient orderBookClient, ReportMapper reportMapper,
+	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
 			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;

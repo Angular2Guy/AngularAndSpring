@@ -43,13 +43,13 @@ public class BitstampService {
 	private static final Logger log = LoggerFactory.getLogger(BitstampService.class);
 	public static final String BS_HOUR_COL = "quoteBsHour";
 	public static final String BS_DAY_COL = "quoteBsDay";
-	private final OrderBookClient orderBookClient;
+	private final MyOrderBookClient orderBookClient;
 	private final ReportGenerator reportGenerator;
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 
-	public BitstampService(OrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
+	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
 		this.orderBookClient = orderBookClient;
 		this.reportGenerator = reportGenerator;

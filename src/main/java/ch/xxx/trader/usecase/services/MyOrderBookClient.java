@@ -17,7 +17,7 @@ package ch.xxx.trader.usecase.services;
 
 import reactor.core.publisher.Mono;
 
-public interface OrderBookClient {
+public interface MyOrderBookClient {
 	Mono<String> getOrderbookBitfinex(String currpair);
 	Mono<String> getOrderbookBitstamp(String currpair);
 	Mono<String> getOrderbookItbit(String currpair);

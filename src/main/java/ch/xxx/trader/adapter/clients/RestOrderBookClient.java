@@ -21,11 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.domain.common.WebUtils;
-import ch.xxx.trader.usecase.services.OrderBookClient;
+import ch.xxx.trader.usecase.services.MyOrderBookClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class RestOrderBookClient implements OrderBookClient {
+public class RestOrderBookClient implements MyOrderBookClient {
 	private static final String URLBF = "https://api.bitfinex.com";
 	private static final String URLBS = "https://www.bitstamp.net/api";
 	private static final String URLIB = "https://api.itbit.com";
