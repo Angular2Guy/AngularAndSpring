@@ -49,9 +49,8 @@ public class BitstampService {
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 
-	public BitstampService(OrderBookClient orderBookClient,
-			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils, ReportGenerator reportGenerator,
-			ReportMapper reportMapper) {
+	public BitstampService(OrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
+			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
 		this.orderBookClient = orderBookClient;
 		this.reportGenerator = reportGenerator;
 		this.reportMapper = reportMapper;
@@ -176,12 +175,13 @@ public class BitstampService {
 		long count = multimap.get(key).stream().filter(quote -> {
 			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
 		}).count();
-		QuoteBs hourQuote = multimap.get(key).stream().filter(quote -> {
-			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
-		}).reduce(quoteBs, (q1, q2) -> avgBsQuote(q1, q2, count));
-		hourQuote.setPair(key);
-		hourQuotes.add(hourQuote);
-
+		if (count > 2) {
+			QuoteBs hourQuote = multimap.get(key).stream().filter(quote -> {
+				return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
+			}).reduce(quoteBs, (q1, q2) -> avgBsQuote(q1, q2, count));
+			hourQuote.setPair(key);
+			hourQuotes.add(hourQuote);
+		}
 		return hourQuotes;
 	}
 
@@ -198,12 +198,14 @@ public class BitstampService {
 				return quote.getCreatedAt().after(hours.get(x).getTime())
 						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
 			}).count();
-			QuoteBs hourQuote = multimap.get(key).stream().filter(quote -> {
-				return quote.getCreatedAt().after(hours.get(x).getTime())
-						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
-			}).reduce(quoteBs, (q1, q2) -> avgBsQuote(q1, q2, count));
-			hourQuote.setPair(key);
-			hourQuotes.add(hourQuote);
+			if (count > 2) {
+				QuoteBs hourQuote = multimap.get(key).stream().filter(quote -> {
+					return quote.getCreatedAt().after(hours.get(x).getTime())
+							&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
+				}).reduce(quoteBs, (q1, q2) -> avgBsQuote(q1, q2, count));
+				hourQuote.setPair(key);
+				hourQuotes.add(hourQuote);
+			}
 		}
 		return hourQuotes;
 	}

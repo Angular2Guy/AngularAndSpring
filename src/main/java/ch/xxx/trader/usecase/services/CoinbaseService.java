@@ -48,49 +48,49 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class CoinbaseService {
-	private static final Logger log = LoggerFactory.getLogger(CoinbaseService.class);	
+	private static final Logger log = LoggerFactory.getLogger(CoinbaseService.class);
 	private static final Map<Integer, MethodHandle> cbMethodCache = new ConcurrentHashMap<>();
 	public static final String CB_HOUR_COL = "quoteCbHour";
 	public static final String CB_DAY_COL = "quoteCbDay";
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	
+
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
 		this.serviceUtils = serviceUtils;
 	}
-	
+
 	public Flux<QuoteCbSmall> todayQuotesBc() {
 		Query query = MongoUtils.buildTodayQuery(Optional.empty());
-		return this.myMongoRepository.find(query,QuoteCb.class)
-				.filter(q -> filterEvenMinutes(q))
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+		return this.myMongoRepository.find(query, QuoteCb.class).filter(q -> filterEvenMinutes(q))
+				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
+						quote.getLtc()));
 	}
-	
+
 	public Flux<QuoteCbSmall> sevenDaysQuotesBc() {
 		Query query = MongoUtils.build7DayQuery(Optional.empty());
-		return this.myMongoRepository.find(query,QuoteCb.class, CB_HOUR_COL)
-				.filter(q -> filterEvenMinutes(q))
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_HOUR_COL).filter(q -> filterEvenMinutes(q))
+				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
+						quote.getLtc()));
 	}
-	
+
 	public Flux<QuoteCbSmall> thirtyDaysQuotesBc() {
 		Query query = MongoUtils.build30DayQuery(Optional.empty());
-		return this.myMongoRepository.find(query,QuoteCb.class, CB_DAY_COL)
-				.filter(q -> filterEvenMinutes(q))
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(q -> filterEvenMinutes(q))
+				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
+						quote.getLtc()));
 	}
-	
+
 	public Flux<QuoteCbSmall> nintyDaysQuotesBc() {
 		Query query = MongoUtils.build90DayQuery(Optional.empty());
-		return this.myMongoRepository.find(query,QuoteCb.class, CB_DAY_COL)
-				.filter(q -> filterEvenMinutes(q))
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(), quote.getLtc()));
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(q -> filterEvenMinutes(q))
+				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
+						quote.getLtc()));
 	}
-	
+
 	public Mono<QuoteCb> currentQuoteBc() {
 		Query query = MongoUtils.buildCurrentQuery(Optional.empty());
-		return this.myMongoRepository.findOne(query,QuoteCb.class);
+		return this.myMongoRepository.findOne(query, QuoteCb.class);
 	}
 
 	public void createCbHourlyAvg() {
@@ -118,7 +118,7 @@ public class CoinbaseService {
 	}
 
 	public void createCbDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class,false);
+		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -140,7 +140,7 @@ public class CoinbaseService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 	}
-	
+
 	private Collection<QuoteCb> makeCbQuoteDay(List<QuoteCb> quotes, Calendar begin, Calendar end) {
 		List<QuoteCb> hourQuotes = new LinkedList<QuoteCb>();
 		BigDecimal[] params = new BigDecimal[170];
@@ -160,12 +160,12 @@ public class CoinbaseService {
 		long count = quotes.stream().filter(quote -> {
 			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
 		}).count();
-
-		quoteCb = quotes.stream().filter(quote -> {
-			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
-		}).reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
-
-		hourQuotes.add(quoteCb);
+		if (count > 2) {
+			quoteCb = quotes.stream().filter(quote -> {
+				return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
+			}).reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
+			hourQuotes.add(quoteCb);
+		}
 		return hourQuotes;
 	}
 
@@ -192,13 +192,13 @@ public class CoinbaseService {
 				return quote.getCreatedAt().after(hours.get(x).getTime())
 						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
 			}).count();
-
-			quoteCb = quotes.stream().filter(quote -> {
-				return quote.getCreatedAt().after(hours.get(x).getTime())
-						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
-			}).reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
-
-			hourQuotes.add(quoteCb);
+			if (count > 2) {
+				quoteCb = quotes.stream().filter(quote -> {
+					return quote.getCreatedAt().after(hours.get(x).getTime())
+							&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
+				}).reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
+				hourQuotes.add(quoteCb);
+			}
 		}
 		return hourQuotes;
 	}
@@ -245,7 +245,7 @@ public class CoinbaseService {
 		}
 		return result;
 	}
-	
+
 	private boolean filterEvenMinutes(QuoteCb quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}

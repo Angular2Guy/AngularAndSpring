@@ -49,8 +49,8 @@ public class BitfinexService {
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 
-	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils,
-			OrderBookClient orderBookClient, ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
+	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils, OrderBookClient orderBookClient,
+			ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
@@ -92,8 +92,8 @@ public class BitfinexService {
 					.filter(this::filter10Minutes).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
-			return this.reportGenerator.generateReport(this.myMongoRepository
-					.find(query, QuoteBf.class, BF_HOUR_COL).map(this.reportMapper::convert));
+			return this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, QuoteBf.class, BF_HOUR_COL).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
 			return this.reportGenerator.generateReport(
@@ -107,8 +107,7 @@ public class BitfinexService {
 	}
 
 	public void createBfHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame( BF_HOUR_COL, QuoteBf.class,
-				true);
+		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -133,8 +132,7 @@ public class BitfinexService {
 	}
 
 	public void createBfDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class,
-				false);
+		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
 
 		Calendar begin = timeFrame.getX();
 		Calendar end = timeFrame.getY();
@@ -179,12 +177,14 @@ public class BitfinexService {
 				return quote.getCreatedAt().after(hours.get(x).getTime())
 						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
 			}).count();
-			QuoteBf hourQuote = multimap.get(key).stream().filter(quote -> {
-				return quote.getCreatedAt().after(hours.get(x).getTime())
-						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
-			}).reduce(quoteBf, (q1, q2) -> avgBfQuote(q1, q2, count));
-			hourQuote.setPair(key);
-			hourQuotes.add(hourQuote);
+			if (count > 2) {
+				QuoteBf hourQuote = multimap.get(key).stream().filter(quote -> {
+					return quote.getCreatedAt().after(hours.get(x).getTime())
+							&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
+				}).reduce(quoteBf, (q1, q2) -> avgBfQuote(q1, q2, count));
+				hourQuote.setPair(key);
+				hourQuotes.add(hourQuote);
+			}
 		}
 		return hourQuotes;
 	}
@@ -199,12 +199,13 @@ public class BitfinexService {
 		long count = multimap.get(key).stream().filter(quote -> {
 			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
 		}).count();
-		QuoteBf hourQuote = multimap.get(key).stream().filter(quote -> {
-			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
-		}).reduce(quoteBf, (q1, q2) -> avgBfQuote(q1, q2, count));
-		hourQuote.setPair(key);
-		hourQuotes.add(hourQuote);
-
+		if (count > 2) {
+			QuoteBf hourQuote = multimap.get(key).stream().filter(quote -> {
+				return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
+			}).reduce(quoteBf, (q1, q2) -> avgBfQuote(q1, q2, count));
+			hourQuote.setPair(key);
+			hourQuotes.add(hourQuote);
+		}
 		return hourQuotes;
 	}
 
