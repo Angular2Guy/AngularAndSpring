@@ -25,13 +25,13 @@ import ch.xxx.trader.usecase.services.ItbitService;
 import io.micrometer.core.annotation.Timed;
 
 @Service
-public class PrepareDataService {
+public class PrepareDataTask {
 	private final BitstampService bitstampService;
 	private final BitfinexService bitfinexService;
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 
-	public PrepareDataService(BitstampService bitstampService, BitfinexService bitfinexService,
+	public PrepareDataTask(BitstampService bitstampService, BitfinexService bitfinexService,
 			ItbitService itbitService, CoinbaseService coinbaseService) {
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
