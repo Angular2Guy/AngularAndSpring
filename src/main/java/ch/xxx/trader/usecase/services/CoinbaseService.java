@@ -40,9 +40,9 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.common.Tuple;
 import ch.xxx.trader.domain.model.QuoteCb;
 import ch.xxx.trader.domain.model.QuoteCbSmall;
+import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -94,49 +94,43 @@ public class CoinbaseService {
 	}
 
 	public void createCbHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
-
-		Calendar begin = timeFrame.getX();
-		Calendar end = timeFrame.getY();
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
-		while (end.before(now)) {
+		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
+			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Coinbase
 			Collection<QuoteCb> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
-					.map(quotes -> makeCbQuoteHour(quotes, begin, end)).block();
+					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end())).block();
 			this.myMongoRepository.insertAll(Mono.just(collectCb), CB_HOUR_COL).blockLast();
 
-			begin.add(Calendar.DAY_OF_YEAR, 1);
-			end.add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Coinbase Hour Data for: " + sdf.format(begin.getTime()) + " Time: "
+			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
+			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
+			log.info("Prepared Coinbase Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 	}
 
 	public void createCbDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
-
-		Calendar begin = timeFrame.getX();
-		Calendar end = timeFrame.getY();
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
-		while (end.before(now)) {
+		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
+			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Coinbase
 			Collection<QuoteCb> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
-					.map(quotes -> makeCbQuoteDay(quotes, begin, end)).block();
+					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end())).block();
 			this.myMongoRepository.insertAll(Mono.just(collectCb), CB_DAY_COL).blockLast();
 
-			begin.add(Calendar.DAY_OF_YEAR, 1);
-			end.add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Coinbase Day Data for: " + sdf.format(begin.getTime()) + " Time: "
+			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
+			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
+			log.info("Prepared Coinbase Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 	}
@@ -220,9 +214,8 @@ public class CoinbaseService {
 								JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
 										.getParameterAnnotations()[x][0];
 								String fieldName = annotation.value();
-								String firstLetter = fieldName.substring(0, 1);
-								String methodName = "get" + firstLetter.toUpperCase()
-										+ fieldName.substring(1).toLowerCase();
+								String methodName = String.format("get%s%s",fieldName.substring(0, 1).toUpperCase()
+										+ fieldName.substring(1).toLowerCase());
 								if ("getTry".equals(methodName)) {
 									methodName = methodName + "1";
 								}

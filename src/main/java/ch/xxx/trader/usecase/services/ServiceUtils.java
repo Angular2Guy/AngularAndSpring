@@ -29,11 +29,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.domain.common.Tuple;
 import ch.xxx.trader.domain.model.Quote;
 
 @Service
 public class ServiceUtils {
+	public record MyTimeFrame(Calendar begin, Calendar end) {}
 	private final MyMongoRepository myMongoRepository;
 
 	public ServiceUtils(MyMongoRepository myMongoRepository) {
@@ -58,7 +58,7 @@ public class ServiceUtils {
 				: v2.divide(BigDecimal.valueOf(count == 0 ? 1 : count), 10, RoundingMode.HALF_UP));
 	}
 
-	public Tuple<Calendar, Calendar> createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
+	public MyTimeFrame createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
 		if (!this.myMongoRepository.collectionExists(colName).block()) {
 			this.myMongoRepository.createCollection(colName).block();
 		}
@@ -89,6 +89,6 @@ public class ServiceUtils {
 		begin.set(Calendar.SECOND, 0);
 		end.setTime(begin.getTime());
 		end.add(Calendar.DAY_OF_YEAR, 1);
-		return new Tuple<Calendar, Calendar>(begin, end);
+		return new MyTimeFrame(begin, end);
 	}
 }

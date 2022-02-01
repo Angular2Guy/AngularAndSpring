@@ -32,9 +32,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.common.Tuple;
 import ch.xxx.trader.domain.model.QuoteBf;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
+import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -107,52 +107,46 @@ public class BitfinexService {
 	}
 
 	public void createBfHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
-
-		Calendar begin = timeFrame.getX();
-		Calendar end = timeFrame.getY();
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
-		while (end.before(now)) {
+		while (timeFrame.end().before(now)) {
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
+			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
 			List<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeBfQuoteHour(key, multimap, begin, end))
+					.map(multimap -> multimap.keySet().stream().map(key -> makeBfQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
 					.block();
 			collectBf.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), BF_HOUR_COL).blockLast());
 
-			begin.add(Calendar.DAY_OF_YEAR, 1);
-			end.add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitfinex Hour Data for: " + sdf.format(begin.getTime()));
+			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
+			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
+			log.info("Prepared Bitfinex Hour Data for: " + sdf.format(timeFrame.begin().getTime()));
 		}
 	}
 
 	public void createBfDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
-
-		Calendar begin = timeFrame.getX();
-		Calendar end = timeFrame.getY();
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
-		while (end.before(now)) {
+		while (timeFrame.end().before(now)) {
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
+			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
 			List<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeBfQuoteDay(key, multimap, begin, end))
+					.map(multimap -> multimap.keySet().stream().map(key -> makeBfQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
 					.block();
 			collectBf.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), BF_DAY_COL).blockLast());
 
-			begin.add(Calendar.DAY_OF_YEAR, 1);
-			end.add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitfinex Day Data for: " + sdf.format(begin.getTime()));
+			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
+			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
+			log.info("Prepared Bitfinex Day Data for: " + sdf.format(timeFrame.begin().getTime()));
 		}
 	}
 

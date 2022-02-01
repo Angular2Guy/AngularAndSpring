@@ -16,7 +16,7 @@
 package ch.xxx.trader.adapter.cron;
 
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
@@ -24,7 +24,7 @@ import ch.xxx.trader.usecase.services.CoinbaseService;
 import ch.xxx.trader.usecase.services.ItbitService;
 import io.micrometer.core.annotation.Timed;
 
-@Service
+@Component
 public class PrepareDataTask {
 	private final BitstampService bitstampService;
 	private final BitfinexService bitfinexService;

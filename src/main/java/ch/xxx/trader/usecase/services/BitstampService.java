@@ -32,9 +32,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.common.Tuple;
 import ch.xxx.trader.domain.model.QuoteBs;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
+import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -108,52 +108,46 @@ public class BitstampService {
 	}
 
 	public void createBsHourlyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
-
-		Calendar begin = timeFrame.getX();
-		Calendar end = timeFrame.getY();
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
-		while (end.before(now)) {
+		while (timeFrame.end().before(now)) {
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
+			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
 			List<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteHour(key, multimap, begin, end))
+					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
 					.block();
 			collectBs.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), BS_HOUR_COL).blockLast());
 
-			begin.add(Calendar.DAY_OF_YEAR, 1);
-			end.add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitstamp Hour Data for: " + sdf.format(begin.getTime()));
+			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
+			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
+			log.info("Prepared Bitstamp Hour Data for: " + sdf.format(timeFrame.begin().getTime()));
 		}
 	}
 
 	public void createBsDailyAvg() {
-		Tuple<Calendar, Calendar> timeFrame = this.serviceUtils.createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
-
-		Calendar begin = timeFrame.getX();
-		Calendar end = timeFrame.getY();
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
-		while (end.before(now)) {
+		while (timeFrame.end().before(now)) {
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(begin.getTime()).lt(end.getTime()));
+			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
 			List<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteDay(key, multimap, begin, end))
+					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
 					.block();
 			collectBs.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), BS_DAY_COL).blockLast());
 
-			begin.add(Calendar.DAY_OF_YEAR, 1);
-			end.add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitstamp Day Data for: " + sdf.format(begin.getTime()));
+			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
+			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
+			log.info("Prepared Bitstamp Day Data for: " + sdf.format(timeFrame.begin().getTime()));
 		}
 	}
 
