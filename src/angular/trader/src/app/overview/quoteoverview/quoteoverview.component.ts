@@ -59,7 +59,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
       this.interval = setInterval(() => {
           this.refreshData();
       }, 15000);
-      for(let i = 0;i<17;i++) {
+      for(let i = 0;i<16;i++) {
           this.datasource.rows.push(new Myrow('','',0,0, null,-1,-1));
       }
       this.hash = this.serviceMu.salt;
@@ -97,8 +97,6 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
           this.router.navigateByUrl('details/bsdetail/' + row.pair);
       } else if(row.exchange === 'Itbit' && row.pair === 'XBTUSD') {
           this.router.navigateByUrl('details/ibdetail/' + this.serviceIb.BTCUSD);
-      } else if (row.exchange === 'Itbit' && row.pair === 'XBTEUR') {
-          this.router.navigateByUrl('details/ibdetail/' + this.serviceIb.BTCEUR);
       } else if(row.exchange === 'Coinbase') {
           this.router.navigateByUrl('details/cbdetail/' + row.pair);
       } else if(row.exchange === 'Bitfinex') {
@@ -157,29 +155,26 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
         this.serviceBs.getCurrentQuote(this.serviceBs.XRPUSD).pipe(filter(result => (!!result?.last))).subscribe(quote => {
             this.datasource.rows[7] = this.createRowBs(quote, 'Bitstamp', this.utils.getCurrpairName(this.serviceBs.XRPUSD));
             this.datasource.updateRows();});
-        this.serviceIb.getCurrentQuote(this.serviceIb.BTCEUR).pipe(filter(result => (!!result?.lastPrice))).subscribe(quote => {
-            this.datasource.rows[8] = this.createRowIb(quote, 'Itbit', this.utils.getCurrpairName(this.serviceIb.BTCEUR));
-            this.datasource.updateRows();});
         this.serviceIb.getCurrentQuote(this.serviceIb.BTCUSD).pipe(filter(result => (!!result?.lastPrice))).subscribe(quote => {
-            this.datasource.rows[9] = this.createRowIb(quote, 'Itbit', this.utils.getCurrpairName(this.serviceIb.BTCUSD));
+            this.datasource.rows[8] = this.createRowIb(quote, 'Itbit', this.utils.getCurrpairName(this.serviceIb.BTCUSD));
             this.datasource.updateRows();});
         this.serviceCb.getCurrentQuote().pipe(filter(result => (!!result?.btc))).subscribe(quote => {
             const myrows = this.createRowCb(quote);
-            this.datasource.rows[10] = myrows[0];
-            this.datasource.rows[11] = myrows[1];
-            this.datasource.rows[12] = myrows[2];
+            this.datasource.rows[9] = myrows[0];
+            this.datasource.rows[10] = myrows[1];
+            this.datasource.rows[11] = myrows[2];
             this.datasource.updateRows();});
         this.serviceBf.getCurrentQuote(this.serviceBf.BTCUSD).pipe(filter(result => (!!result?.last_price))).subscribe(quote => {
-            this.datasource.rows[13] = this.createRowBf(quote, 'Bitfinex', this.utils.getCurrpairName(this.serviceBf.BTCUSD));
+            this.datasource.rows[12] = this.createRowBf(quote, 'Bitfinex', this.utils.getCurrpairName(this.serviceBf.BTCUSD));
             this.datasource.updateRows();});
         this.serviceBf.getCurrentQuote(this.serviceBf.ETHUSD).pipe(filter(result => (!!result?.last_price))).subscribe(quote => {
-            this.datasource.rows[14] = this.createRowBf(quote, 'Bitfinex', this.utils.getCurrpairName(this.serviceBf.ETHUSD));
+            this.datasource.rows[13] = this.createRowBf(quote, 'Bitfinex', this.utils.getCurrpairName(this.serviceBf.ETHUSD));
             this.datasource.updateRows();});
         this.serviceBf.getCurrentQuote(this.serviceBf.LTCUSD).pipe(filter(result => (!!result?.last_price))).subscribe(quote => {
-            this.datasource.rows[15] = this.createRowBf(quote, 'Bitfinex', this.utils.getCurrpairName(this.serviceBf.LTCUSD));
+            this.datasource.rows[14] = this.createRowBf(quote, 'Bitfinex', this.utils.getCurrpairName(this.serviceBf.LTCUSD));
             this.datasource.updateRows();});
         this.serviceBf.getCurrentQuote(this.serviceBf.XRPUSD).pipe(filter(result => (!!result?.last_price))).subscribe(quote => {
-            this.datasource.rows[16] = this.createRowBf(quote, 'Bitfinex', this.utils.getCurrpairName(this.serviceBf.XRPUSD));
+            this.datasource.rows[15] = this.createRowBf(quote, 'Bitfinex', this.utils.getCurrpairName(this.serviceBf.XRPUSD));
             this.datasource.updateRows();});
     }
 
