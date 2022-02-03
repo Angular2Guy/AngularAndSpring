@@ -152,8 +152,8 @@ public class ScheduledTask {
 		}
 	}
 
-	@Scheduled(fixedRate = 60000, initialDelay = 18000)
-	@SchedulerLock(name = "ItbitQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
+	// @Scheduled(fixedRate = 60000, initialDelay = 18000)
+	// @SchedulerLock(name = "ItbitQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitQuote() {
 		Date start = new Date();
 		try {
