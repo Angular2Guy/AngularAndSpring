@@ -15,11 +15,11 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: manual
   accessModes:
   - ReadWriteOnce
   capacity:
-    storage: 1Gi
+    storage: 5Gi
+  persistentVolumeReclaimPolicy: Retain
   hostPath:
     path: /data/mongo1
     type: DirectoryOrCreate
@@ -30,13 +30,13 @@ metadata:
   name: {{ .Values.volumeClaimName }}
   labels:
     app: mongopv
-spec:  
+spec:
+  storageClassName: ""  
   accessModes:
   - ReadWriteOnce
-  storageClassName: manual
   resources:
     requests:
-      storage: 1Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -59,7 +59,7 @@ spec:
         image: "{{ .Values.dbImageName }}:{{ .Values.dbImageVersion }}"
         resources:
           limits:
-            memory: "2G"
+            memory: "3G"
             cpu: "1.5"
           requests:
             memory: "1G"

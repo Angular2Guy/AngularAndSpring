@@ -5,7 +5,7 @@ webImageVersion: latest
 dbImageName: mongo
 dbImageVersion: 4.4
 volumeClaimName: mongo-pv-claim
-persistentVolumeName: task-pv-volume
+persistentVolumeName: mongo-pv-volume
 
 secret:
   name: app-env-secret
