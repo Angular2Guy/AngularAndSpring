@@ -17,8 +17,10 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -58,6 +60,11 @@ public class ServiceUtils {
 				: v2.divide(BigDecimal.valueOf(count == 0 ? 1 : count), 10, RoundingMode.HALF_UP));
 	}
 
+	public String durationToSecondsAndMillis(Duration myDuration) {
+		return String.format("%d.%d seconds.", myDuration.getSeconds(), (myDuration.getSeconds() < 1 ? 
+				myDuration.get(ChronoUnit.MILLIS) : (myDuration.get(ChronoUnit.MILLIS) / myDuration.getSeconds())));
+	}
+	
 	public MyTimeFrame createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
 		if (!this.myMongoRepository.collectionExists(colName).block()) {
 			this.myMongoRepository.createCollection(colName).block();

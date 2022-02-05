@@ -118,8 +118,7 @@ public class CoinbaseService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Coinbase Hourly Data Time: "	+ 
-				timeAll.getSeconds() + "." + timeAll.get(ChronoUnit.MILLIS) + " seconds.");
+		log.info("Prepared Coinbase Hourly Data Time: "	+ this.serviceUtils.durationToSecondsAndMillis(timeAll));
 	}
 
 	public void createCbDailyAvg() {
@@ -143,8 +142,7 @@ public class CoinbaseService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Coinbase Daily Data Time: "	+ 
-				timeAll.getSeconds() + "." + timeAll.get(ChronoUnit.MILLIS) + " seconds.");
+		log.info("Prepared Coinbase Daily Data Time: " + this.serviceUtils.durationToSecondsAndMillis(timeAll));
 	}
 
 	private Collection<QuoteCb> makeCbQuoteDay(List<QuoteCb> quotes, Calendar begin, Calendar end) {
