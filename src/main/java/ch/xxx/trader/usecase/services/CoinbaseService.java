@@ -214,8 +214,8 @@ public class CoinbaseService {
 								JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
 										.getParameterAnnotations()[x][0];
 								String fieldName = annotation.value();
-								String methodName = String.format("get%s%s",fieldName.substring(0, 1).toUpperCase()
-										+ fieldName.substring(1).toLowerCase());
+								String methodName = String.format("get%s%s",fieldName.substring(0, 1).toUpperCase(),
+										 fieldName.substring(1).toLowerCase());
 								if ("getTry".equals(methodName)) {
 									methodName = methodName + "1";
 								}
