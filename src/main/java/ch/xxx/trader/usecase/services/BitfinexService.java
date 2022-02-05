@@ -17,8 +17,13 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -109,9 +114,11 @@ public class BitfinexService {
 	public void createBfHourlyAvg() {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
 
+		LocalDateTime startAll = LocalDateTime.now();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
+			Date start = new Date();
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
@@ -124,16 +131,22 @@ public class BitfinexService {
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitfinex Hour Data for: " + sdf.format(timeFrame.begin().getTime()));
+			log.info("Prepared Bitfinex Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
+		Duration timeAll = Duration.between(startAll, LocalTime.now());
+		log.info("Prepared Bitfinex Hourly Data Time: "	+ 
+				timeAll.getSeconds() + "." + timeAll.get(ChronoUnit.MILLIS) + " seconds.");
 	}
 
 	public void createBfDailyAvg() {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
 
+		LocalDateTime startAll = LocalDateTime.now(); 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
+			Date start = new Date();
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
@@ -146,8 +159,12 @@ public class BitfinexService {
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitfinex Day Data for: " + sdf.format(timeFrame.begin().getTime()));
+			log.info("Prepared Bitfinex Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
+		Duration timeAll = Duration.between(startAll, LocalTime.now());
+		log.info("Prepared Bitfinex Daily Data Time: "	+ 
+				timeAll.getSeconds() + "." + timeAll.get(ChronoUnit.MILLIS) + " seconds.");
 	}
 
 	private boolean filterEvenMinutes(QuoteBf quote) {

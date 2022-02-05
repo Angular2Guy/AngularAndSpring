@@ -17,8 +17,13 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -110,9 +115,11 @@ public class BitstampService {
 	public void createBsHourlyAvg() {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
 
+		LocalDateTime startAll = LocalDateTime.now(); 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
+			Date start = new Date();
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
@@ -125,16 +132,22 @@ public class BitstampService {
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitstamp Hour Data for: " + sdf.format(timeFrame.begin().getTime()));
+			log.info("Prepared Bitstamp Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
+		Duration timeAll = Duration.between(startAll, LocalTime.now());
+		log.info("Prepared Bitstamp Hourly Data Time: "	+ 
+				timeAll.getSeconds() + "." + timeAll.get(ChronoUnit.MILLIS) + " seconds.");
 	}
 
 	public void createBsDailyAvg() {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
 
+		LocalDateTime startAll = LocalDateTime.now(); 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
+			Date start = new Date();
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
@@ -147,8 +160,12 @@ public class BitstampService {
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitstamp Day Data for: " + sdf.format(timeFrame.begin().getTime()));
+			log.info("Prepared Bitstamp Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
+		Duration timeAll = Duration.between(startAll, LocalTime.now());
+		log.info("Prepared Bitstamp Daily Data Time: "	+ 
+				timeAll.getSeconds() + "." + timeAll.get(ChronoUnit.MILLIS) + " seconds.");
 	}
 
 	private boolean filterEvenMinutes(QuoteBs quote) {

@@ -17,6 +17,11 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -119,9 +124,11 @@ public class ItbitService {
 	public void createIbHourlyAvg() {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_HOUR_COL, QuoteIb.class, true);
 
+		LocalDateTime startAll = LocalDateTime.now(); 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
+			Date start = new Date();
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Itbit
@@ -134,17 +141,22 @@ public class ItbitService {
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Itbit Hour Data for: " + sdf.format(timeFrame.begin().getTime()));
+			log.info("Prepared Itbit Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
+		Duration timeAll = Duration.between(startAll, LocalTime.now());
+		log.info("Prepared Itbit Hourly Data Time: "	+ 
+				timeAll.getSeconds() + "." + timeAll.get(ChronoUnit.MILLIS) + " seconds.");
 	}
 
 	public void createIbDailyAvg() {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_DAY_COL, QuoteIb.class, false);
 
-
+		LocalDateTime startAll = LocalDateTime.now(); 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
+			Date start = new Date();
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Itbit
@@ -157,8 +169,12 @@ public class ItbitService {
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Itbit Day Data for: " + sdf.format(timeFrame.begin().getTime()));
+			log.info("Prepared Itbit Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
+		Duration timeAll = Duration.between(startAll, LocalTime.now());
+		log.info("Prepared Itbit Daily Data Time: "	+ 
+				timeAll.getSeconds() + "." + timeAll.get(ChronoUnit.MILLIS) + " seconds.");
 	}
 
 	private boolean filterEvenMinutes(QuoteIb quote) {
