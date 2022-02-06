@@ -112,9 +112,8 @@ public class BitfinexService {
 	}
 
 	public void createBfHourlyAvg() {
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
-
 		LocalDateTime startAll = LocalDateTime.now();
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
@@ -138,9 +137,8 @@ public class BitfinexService {
 	}
 
 	public void createBfDailyAvg() {
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
-
 		LocalDateTime startAll = LocalDateTime.now(); 
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {

@@ -122,9 +122,8 @@ public class ItbitService {
 	}
 
 	public void createIbHourlyAvg() {
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_HOUR_COL, QuoteIb.class, true);
-
 		LocalDateTime startAll = LocalDateTime.now(); 
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_HOUR_COL, QuoteIb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
@@ -148,9 +147,8 @@ public class ItbitService {
 	}
 
 	public void createIbDailyAvg() {
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_DAY_COL, QuoteIb.class, false);
-
 		LocalDateTime startAll = LocalDateTime.now(); 
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_DAY_COL, QuoteIb.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {

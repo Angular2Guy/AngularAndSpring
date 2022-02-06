@@ -113,9 +113,8 @@ public class BitstampService {
 	}
 
 	public void createBsHourlyAvg() {
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
-
 		LocalDateTime startAll = LocalDateTime.now(); 
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
@@ -139,9 +138,8 @@ public class BitstampService {
 	}
 
 	public void createBsDailyAvg() {
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
-
 		LocalDateTime startAll = LocalDateTime.now(); 
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {

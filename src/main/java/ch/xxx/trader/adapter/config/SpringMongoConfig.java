@@ -39,9 +39,6 @@ public class SpringMongoConfig  {
 	private static final Logger log = LoggerFactory.getLogger(SpringMongoConfig.class);
 	private static final String SCHED_LOCK_DB = "schedLock";
 	
-    @Value("${spring.data.mongodb.host}")
-    private String mongoHost;        	
-
     private final MongoMappingContext mongoMappingContext;
     
     public SpringMongoConfig(MongoMappingContext mongoMappingContext) {
@@ -54,16 +51,6 @@ public class SpringMongoConfig  {
     	log.info("Mongo AutoIndexCreation: {}", this.mongoMappingContext.isAutoIndexCreation());
     }
     
-    @Bean
-    public MongoClient reactiveMongoClient()  {
-    	String myHost = System.getenv("MONGODB_HOST");		
-		log.info("MONGODB_HOST="+myHost);
-        if(myHost==null) {
-        	return MongoClients.create();
-        }
-		return MongoClients.create("mongodb://"+ myHost);
-    }	
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

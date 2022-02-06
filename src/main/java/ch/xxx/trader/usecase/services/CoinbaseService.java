@@ -98,9 +98,8 @@ public class CoinbaseService {
 	}
 
 	public void createCbHourlyAvg() {
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
-
 		LocalDateTime startAll = LocalDateTime.now();
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
@@ -122,9 +121,8 @@ public class CoinbaseService {
 	}
 
 	public void createCbDailyAvg() {
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
-
 		LocalDateTime startAll = LocalDateTime.now();
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
