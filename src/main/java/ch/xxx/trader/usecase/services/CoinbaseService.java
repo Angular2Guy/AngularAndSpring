@@ -108,9 +108,9 @@ public class CoinbaseService {
 			query.addCriteria(
 					Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Coinbase
-			Collection<QuoteCb> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
-					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end())).block();
-			this.myMongoRepository.insertAll(Mono.just(collectCb), CB_HOUR_COL).blockLast();
+			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
+					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
+			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -131,9 +131,9 @@ public class CoinbaseService {
 			query.addCriteria(
 					Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Coinbase
-			Collection<QuoteCb> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
-					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end())).block();
-			this.myMongoRepository.insertAll(Mono.just(collectCb), CB_DAY_COL).blockLast();
+			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
+					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
+			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

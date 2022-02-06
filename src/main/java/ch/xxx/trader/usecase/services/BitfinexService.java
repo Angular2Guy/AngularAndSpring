@@ -121,12 +121,14 @@ public class BitfinexService {
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
-			List<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
+			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeBfQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
+					.map(multimap -> multimap.keySet().stream().map(key -> 
+					makeBfQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.block();
-			collectBf.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), BF_HOUR_COL).blockLast());
+					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
+								      .collect(Collectors.toList())));					
+			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -146,12 +148,13 @@ public class BitfinexService {
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
-			List<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
+			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream().map(key -> makeBfQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.block();
-			collectBf.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), BF_DAY_COL).blockLast());
+					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
+						      .collect(Collectors.toList())));
+			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

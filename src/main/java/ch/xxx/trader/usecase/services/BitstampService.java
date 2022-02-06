@@ -122,12 +122,13 @@ public class BitstampService {
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
-			List<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
+			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.block();
-			collectBs.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), BS_HOUR_COL).blockLast());
+					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
+						      .collect(Collectors.toList())));	
+			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -147,12 +148,13 @@ public class BitstampService {
 			Query query = new Query();
 			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
-			List<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
+			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.block();
-			collectBs.forEach(col -> this.myMongoRepository.insertAll(Mono.just(col), BS_DAY_COL).blockLast());
+					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
+						      .collect(Collectors.toList())));	
+			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
