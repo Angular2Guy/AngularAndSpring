@@ -30,7 +30,7 @@ The application has two scheduled jobs. The first is the ScheduledTask class. It
 
 ## Minikube setup
 
-The application can now be run in a Minikube cluster. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory as a Helm chart. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. Further documentation can be found in the wiki.
+The application can now be run in a Minikube cluster with a Helm chart. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory as a Helm chart. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. Further documentation can be found in the wiki.
 
 ## Monitoring
 The Spring Actuator interface with Prometheus interface can be used as it is described in this article: 
@@ -38,7 +38,7 @@ The Spring Actuator interface with Prometheus interface can be used as it is des
 [Monitoring Spring Boot with Prometheus and Grafana](https://ordina-jworks.github.io/monitoring/2020/11/16/monitoring-spring-prometheus-grafana.html)
 
 To test the setup the application has to be started and the Docker Images for Prometheus and Grafana have to be started and configured. The scripts 'runGraphana.sh' and 'runPrometheus.sh' can be used as a starting point.
-The Spring Actuator configuration shows primarily the http performance and the Gc pauses. More metrics can be enabled.
+The Spring Actuator configuration shows primarily the http performance and the Gc pauses. More metrics can be enabled in the application.properties file.
 
 ## Setup
 
