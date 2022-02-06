@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -60,9 +61,12 @@ public class ServiceUtils {
 				: v2.divide(BigDecimal.valueOf(count == 0 ? 1 : count), 10, RoundingMode.HALF_UP));
 	}
 
-	public String durationToSecondsAndMillis(Duration myDuration) {
-		return String.format("%d.%d seconds.", myDuration.getSeconds(), (myDuration.getSeconds() < 1 ? 
-				myDuration.get(ChronoUnit.MILLIS) : (myDuration.get(ChronoUnit.MILLIS) / myDuration.getSeconds())));
+	public String createAvgLogStatement(LocalDateTime start, String statementStart) {
+		Duration myDuration = Duration.between(start.atZone(ZoneId.systemDefault()).toInstant(),
+				LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+		long millis = (myDuration.getSeconds() < 1 ? 
+				myDuration.get(ChronoUnit.MILLIS) : (myDuration.get(ChronoUnit.MILLIS) - myDuration.getSeconds() * 1000));
+		return String.format("%s %d.%d seconds.", statementStart, myDuration.getSeconds(), millis);
 	}
 	
 	public MyTimeFrame createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {

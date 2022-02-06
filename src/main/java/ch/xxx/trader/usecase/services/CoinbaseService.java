@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -100,13 +100,14 @@ public class CoinbaseService {
 	public void createCbHourlyAvg() {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 
-		LocalDateTime startAll = LocalDateTime.now(); 
+		LocalDateTime startAll = LocalDateTime.now();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(
+					Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Coinbase
 			Collection<QuoteCb> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end())).block();
@@ -117,20 +118,20 @@ public class CoinbaseService {
 			log.info("Prepared Coinbase Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Coinbase Hourly Data Time: "	+ this.serviceUtils.durationToSecondsAndMillis(timeAll));
+		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Hourly Data Time:"));
 	}
 
 	public void createCbDailyAvg() {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
 
-		LocalDateTime startAll = LocalDateTime.now(); 
+		LocalDateTime startAll = LocalDateTime.now();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(
+					Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Coinbase
 			Collection<QuoteCb> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end())).block();
@@ -141,8 +142,7 @@ public class CoinbaseService {
 			log.info("Prepared Coinbase Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Coinbase Daily Data Time: " + this.serviceUtils.durationToSecondsAndMillis(timeAll));
+		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Daily Data Time:"));
 	}
 
 	private Collection<QuoteCb> makeCbQuoteDay(List<QuoteCb> quotes, Calendar begin, Calendar end) {
@@ -224,8 +224,8 @@ public class CoinbaseService {
 								JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
 										.getParameterAnnotations()[x][0];
 								String fieldName = annotation.value();
-								String methodName = String.format("get%s%s",fieldName.substring(0, 1).toUpperCase(),
-										 fieldName.substring(1).toLowerCase());
+								String methodName = String.format("get%s%s", fieldName.substring(0, 1).toUpperCase(),
+										fieldName.substring(1).toLowerCase());
 								if ("getTry".equals(methodName)) {
 									methodName = methodName + "1";
 								}

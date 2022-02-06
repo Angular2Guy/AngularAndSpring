@@ -144,8 +144,7 @@ public class ItbitService {
 			log.info("Prepared Itbit Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Itbit Hourly Data Time: " + this.serviceUtils.durationToSecondsAndMillis(timeAll));
+		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Hourly Data Time:"));
 	}
 
 	public void createIbDailyAvg() {
@@ -171,8 +170,7 @@ public class ItbitService {
 			log.info("Prepared Itbit Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Itbit Daily Data Time: "	+ this.serviceUtils.durationToSecondsAndMillis(timeAll));
+		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Daily Data Time:"));
 	}
 
 	private boolean filterEvenMinutes(QuoteIb quote) {

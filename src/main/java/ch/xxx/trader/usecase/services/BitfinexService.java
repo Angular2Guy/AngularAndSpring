@@ -134,8 +134,7 @@ public class BitfinexService {
 			log.info("Prepared Bitfinex Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Bitfinex Hourly Data Time: "	+ this.serviceUtils.durationToSecondsAndMillis(timeAll));
+		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Hourly Data Time:"));
 	}
 
 	public void createBfDailyAvg() {
@@ -161,8 +160,7 @@ public class BitfinexService {
 			log.info("Prepared Bitfinex Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Bitfinex Daily Data Time: "	+ this.serviceUtils.durationToSecondsAndMillis(timeAll));
+		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Daily Data Time:"));
 	}
 
 	private boolean filterEvenMinutes(QuoteBf quote) {

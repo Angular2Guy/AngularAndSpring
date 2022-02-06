@@ -135,8 +135,7 @@ public class BitstampService {
 			log.info("Prepared Bitstamp Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Bitstamp Hourly Data Time: " + this.serviceUtils.durationToSecondsAndMillis(timeAll));
+		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Hourly Data Time:"));
 	}
 
 	public void createBsDailyAvg() {
@@ -162,8 +161,7 @@ public class BitstampService {
 			log.info("Prepared Bitstamp Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		Duration timeAll = Duration.between(startAll, LocalTime.now());
-		log.info("Prepared Bitstamp Daily Data Time: "	+ this.serviceUtils.durationToSecondsAndMillis(timeAll));
+		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Daily Data Time:"));
 	}
 
 	private boolean filterEvenMinutes(QuoteBs quote) {
