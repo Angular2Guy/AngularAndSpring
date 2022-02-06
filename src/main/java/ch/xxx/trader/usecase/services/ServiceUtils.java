@@ -64,9 +64,9 @@ public class ServiceUtils {
 	public String createAvgLogStatement(LocalDateTime start, String statementStart) {
 		Duration myDuration = Duration.between(start.atZone(ZoneId.systemDefault()).toInstant(),
 				LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-		long millis = (myDuration.getSeconds() < 1 ? 
-				myDuration.get(ChronoUnit.MILLIS) : (myDuration.get(ChronoUnit.MILLIS) - myDuration.getSeconds() * 1000));
-		return String.format("%s %d.%d seconds.", statementStart, myDuration.getSeconds(), millis);
+		long millis = (myDuration.toSeconds() < 1 ? 
+				myDuration.toMillis() : (myDuration.toMillis() - myDuration.toSeconds() * 1000));
+		return String.format("%s %d.%d seconds.", statementStart, myDuration.toSeconds(), millis);
 	}
 	
 	public MyTimeFrame createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
