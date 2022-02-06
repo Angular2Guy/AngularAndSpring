@@ -23,6 +23,7 @@ import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
 import ch.xxx.trader.usecase.services.ItbitService;
 import io.micrometer.core.annotation.Timed;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Component
 public class PrepareDataTask {
@@ -41,6 +42,7 @@ public class PrepareDataTask {
 
 //	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 5 0 ? * ?")
+	@SchedulerLock(name = "hourly_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.bs.hourly.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createBsHourlyAvg() {
 		this.bitstampService.createBsHourlyAvg();
@@ -48,6 +50,7 @@ public class PrepareDataTask {
 
 //	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 5 1 ? * ?")
+	@SchedulerLock(name = "daily_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.bs.daily.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createBsDailyAvg() {
 		this.bitstampService.createBsDailyAvg();
@@ -55,6 +58,7 @@ public class PrepareDataTask {
 
 //	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 10 0 ? * ?")
+	@SchedulerLock(name = "hourly_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.bf.hourly.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createBfHourlyAvg() {
 		this.bitfinexService.createBfHourlyAvg();
@@ -62,6 +66,7 @@ public class PrepareDataTask {
 
 //	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 10 1 ? * ?")
+	@SchedulerLock(name = "daily_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.bf.daily.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createBfDailyAvg() {
 		this.bitfinexService.createBfDailyAvg();
@@ -69,6 +74,7 @@ public class PrepareDataTask {
 
 //	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 15 0 ? * ?")
+	@SchedulerLock(name = "hourly_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.ib.hourly.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createIbHourlyAvg() {
 		this.itbitService.createIbHourlyAvg();
@@ -76,6 +82,7 @@ public class PrepareDataTask {
 
 //	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 15 1 ? * ?")
+	@SchedulerLock(name = "daily_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.ib.daily.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createIbDailyAvg() {
 		this.itbitService.createIbDailyAvg();
@@ -83,6 +90,7 @@ public class PrepareDataTask {
 
 //	 @Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 20 0 ? * ?")
+	@SchedulerLock(name = "hourly_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.cb.hourly.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createCbHourlyAvg() {
 		this.coinbaseService.createCbHourlyAvg();
@@ -90,6 +98,7 @@ public class PrepareDataTask {
 
 //	@Scheduled(fixedRate = 300000000, initialDelay = 3000)
 	@Scheduled(cron = "0 20 1 ? * ?")
+	@SchedulerLock(name = "daily_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.cb.daily.avg", percentiles = {0.5, 0.95, 0.99})
 	public void createCbDailyAvg() {
 		this.coinbaseService.createCbDailyAvg();
