@@ -15,7 +15,7 @@ kubectl edit deployment -n kube-system metrics-server
 kubectl logs --previous <pod-name>
 kubectl exec --stdin --tty <mongodb-pod-name> -- /bin/bash
 kubectl expose pod <mongodb-pod-name> --port=27017 --type="NodePort"
-mongorestore --gzip mongodb://<minikube ip>:<exposed-port>
+mongorestore -v --gzip mongodb://<minikube ip>:<exposed-port>
 
 minikube pause
 minikube unpause
