@@ -60,7 +60,7 @@ spec:
         resources:
           limits:
             memory: "3G"
-            cpu: "1.5"
+            cpu: "1.0"
           requests:
             memory: "1G"
             cpu: "0.5"
@@ -110,7 +110,7 @@ spec:
         resources:
           limits:
             memory: "768M"
-            cpu: "0.5"
+            cpu: "1.0"
           requests:
             memory: "256M"
             cpu: "0.5"
