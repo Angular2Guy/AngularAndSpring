@@ -15,6 +15,10 @@
  */
 package ch.xxx.trader.adapter.cron;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -48,69 +52,84 @@ public class PrepareDataTask {
 	@EventListener(ApplicationReadyEvent.class)
 	public void initAvgs() {
 		log.info("ApplicationReady");
-		//this.bitstampService.createBsHourlyAvg();
-		//this.bitstampService.createBsDailyAvg();
-		//this.bitfinexService.createBfHourlyAvg();
-		//this.bitfinexService.createBfDailyAvg();
-		//this.itbitService.createIbHourlyAvg();
-		//this.itbitService.createIbDailyAvg();
-		//this.coinbaseService.createCbHourlyAvg();
-		//this.coinbaseService.createCbDailyAvg();
+//		CompletableFuture<String> future1  
+//		  = CompletableFuture.supplyAsync(() -> {this.bitstampService.createBsHourlyAvg(); return "createBsHourlyAvg() Done.";});
+//		CompletableFuture<String> future2  
+//		  = CompletableFuture.supplyAsync(() -> {this.bitstampService.createBsDailyAvg(); return "createBsDailyAvg() Done.";});
+//		CompletableFuture<String> future3  
+//		  = CompletableFuture.supplyAsync(() -> {this.bitfinexService.createBfHourlyAvg(); return "createBfHourlyAvg() Done.";});
+//		CompletableFuture<String> future4  
+//		  = CompletableFuture.supplyAsync(() -> {this.bitfinexService.createBfDailyAvg(); return "createBfDailyAvg() Done.";});
+//		CompletableFuture<String> future5 
+//		  = CompletableFuture.supplyAsync(() -> {this.itbitService.createIbHourlyAvg(); return "createIbHourlyAvg() Done.";});
+//		CompletableFuture<String> future6 
+//		  = CompletableFuture.supplyAsync(() -> {this.itbitService.createIbDailyAvg(); return "createIbDailyAvg() Done.";});
+//		CompletableFuture<String> future7 
+//		  = CompletableFuture.supplyAsync(() -> {this.coinbaseService.createCbHourlyAvg(); return "createCbHourlyAvg() Done.";});
+//		CompletableFuture<String> future8 
+//		  = CompletableFuture.supplyAsync(() -> {this.coinbaseService.createCbDailyAvg(); return "createCbDailyAvg() Done.";});
+//		String combined = Stream.of(future1, future2, future3, future4, future5, future6, future7, future8)
+//				  .map(CompletableFuture::join)
+//				  .collect(Collectors.joining(" "));
+//		String combined = Stream.of(future7)
+//				  .map(CompletableFuture::join)
+//				  .collect(Collectors.joining(" "));
+//		log.info(combined);
 	}
 
 	@Scheduled(cron = "0 5 0 ? * ?")
-	@SchedulerLock(name = "bitstamp_hourly_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
-	@Timed(value = "create.bs.hourly.avg", percentiles = { 0.5, 0.95, 0.99 })
-	public void createBsHourlyAvg() {
-		this.bitstampService.createBsHourlyAvg();
+	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
+	@Timed(value = "create.bs.avg", percentiles = { 0.5, 0.95, 0.99 })
+	public void createBsAvg() {
+		CompletableFuture<String> future1  
+		  = CompletableFuture.supplyAsync(() -> {this.bitstampService.createBsHourlyAvg(); return "createBsHourlyAvg() Done.";});
+		CompletableFuture<String> future2  
+		  = CompletableFuture.supplyAsync(() -> {this.bitstampService.createBsDailyAvg(); return "createBsDailyAvg() Done.";});
+		String combined = Stream.of(future1, future2)
+		  .map(CompletableFuture::join)
+		  .collect(Collectors.joining(" "));
+		log.info(combined);
+	}	
+
+	@Scheduled(cron = "0 45 0 ? * ?")
+	@SchedulerLock(name = "bitfinex_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
+	@Timed(value = "create.bf.avg", percentiles = { 0.5, 0.95, 0.99 })
+	public void createBfAvg() {
+		CompletableFuture<String> future3  
+		  = CompletableFuture.supplyAsync(() -> {this.bitfinexService.createBfHourlyAvg(); return "createBfHourlyAvg() Done.";});
+		CompletableFuture<String> future4  
+		  = CompletableFuture.supplyAsync(() -> {this.bitfinexService.createBfDailyAvg(); return "createBfDailyAvg() Done.";});
+		String combined = Stream.of(future3, future4)
+				  .map(CompletableFuture::join)
+				  .collect(Collectors.joining(" "));
+		log.info(combined);
 	}
 
-	@Scheduled(cron = "0 10 1 ? * ?")
-	@SchedulerLock(name = "bitstamp_daily_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
-	@Timed(value = "create.bs.daily.avg", percentiles = { 0.5, 0.95, 0.99 })
-	public void createBsDailyAvg() {
-		this.bitstampService.createBsDailyAvg();
-	}
-
-	@Scheduled(cron = "0 25 0 ? * ?")
-	@SchedulerLock(name = "bitfinex_hourly_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
-	@Timed(value = "create.bf.hourly.avg", percentiles = { 0.5, 0.95, 0.99 })
-	public void createBfHourlyAvg() {
-		this.bitfinexService.createBfHourlyAvg();
-	}
-
-	@Scheduled(cron = "0 30 1 ? * ?")
-	@SchedulerLock(name = "bitfinex_daily_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
-	@Timed(value = "create.bf.daily.avg", percentiles = { 0.5, 0.95, 0.99 })
-	public void createBfDailyAvg() {
-		this.bitfinexService.createBfDailyAvg();
-	}
-
-	@Scheduled(cron = "0 50 0 ? * ?")
-	@SchedulerLock(name = "itbit_hourly_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
-	@Timed(value = "create.ib.hourly.avg", percentiles = { 0.5, 0.95, 0.99 })
+	@Scheduled(cron = "0 25 1 ? * ?")
+	@SchedulerLock(name = "itbit_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
+	@Timed(value = "create.ib.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createIbHourlyAvg() {
-		this.itbitService.createIbHourlyAvg();
-	}
-
-	@Scheduled(cron = "0 50 1 ? * ?")
-	@SchedulerLock(name = "itbit_daily_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
-	@Timed(value = "create.ib.daily.avg", percentiles = { 0.5, 0.95, 0.99 })
-	public void createIbDailyAvg() {
-		this.itbitService.createIbDailyAvg();
+		CompletableFuture<String> future5 
+		  = CompletableFuture.supplyAsync(() -> {this.itbitService.createIbHourlyAvg(); return "createIbHourlyAvg() Done.";});
+		CompletableFuture<String> future6 
+		  = CompletableFuture.supplyAsync(() -> {this.itbitService.createIbDailyAvg(); return "createIbDailyAvg() Done.";});
+		String combined = Stream.of(future5, future6)
+				  .map(CompletableFuture::join)
+				  .collect(Collectors.joining(" "));
+		log.info(combined);
 	}
 
 	@Scheduled(cron = "0 10 2 ? * ?")
-	@SchedulerLock(name = "coinbase_hourly_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
-	@Timed(value = "create.cb.hourly.avg", percentiles = { 0.5, 0.95, 0.99 })
+	@SchedulerLock(name = "coinbase_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
+	@Timed(value = "create.cb.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createCbHourlyAvg() {
-		this.coinbaseService.createCbHourlyAvg();
-	}
-
-	@Scheduled(cron = "0 10 3 ? * ?")
-	@SchedulerLock(name = "coinbase_daily_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
-	@Timed(value = "create.cb.daily.avg", percentiles = { 0.5, 0.95, 0.99 })
-	public void createCbDailyAvg() {
-		this.coinbaseService.createCbDailyAvg();
+		CompletableFuture<String> future7 
+		  = CompletableFuture.supplyAsync(() -> {this.coinbaseService.createCbHourlyAvg(); return "createCbHourlyAvg() Done.";});
+		CompletableFuture<String> future8 
+		  = CompletableFuture.supplyAsync(() -> {this.coinbaseService.createCbDailyAvg(); return "createCbDailyAvg() Done.";});
+		String combined = Stream.of(future7, future8)
+				  .map(CompletableFuture::join)
+				  .collect(Collectors.joining(" "));
+		log.info(combined);
 	}
 }
