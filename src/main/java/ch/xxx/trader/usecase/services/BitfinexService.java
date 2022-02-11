@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -115,9 +116,11 @@ public class BitfinexService {
 
 	public void createBfAvg() {
 		CompletableFuture<String> future3  
-		  = CompletableFuture.supplyAsync(() -> {this.createBfHourlyAvg(); return "createBfHourlyAvg() Done.";});
+		  = CompletableFuture.supplyAsync(() -> {this.createBfHourlyAvg(); return "createBfHourlyAvg() Done.";}, 
+				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		CompletableFuture<String> future4  
-		  = CompletableFuture.supplyAsync(() -> {this.createBfDailyAvg(); return "createBfDailyAvg() Done.";});
+		  = CompletableFuture.supplyAsync(() -> {this.createBfDailyAvg(); return "createBfDailyAvg() Done.";},
+				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future3, future4)
 				  .map(CompletableFuture::join)
 				  .collect(Collectors.joining(" "));

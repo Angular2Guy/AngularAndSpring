@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -116,9 +117,11 @@ public class BitstampService {
 
 	public void createBcAvg() {
 		CompletableFuture<String> future1  
-		  = CompletableFuture. supplyAsync(() -> {this.createBsHourlyAvg(); return "createBsHourlyAvg() Done.";});
+		  = CompletableFuture.supplyAsync(() -> {this.createBsHourlyAvg(); return "createBsHourlyAvg() Done.";}, 
+				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		CompletableFuture<String> future2  
-		  = CompletableFuture.supplyAsync(() -> {this.createBsDailyAvg(); return "createBsDailyAvg() Done.";});
+		  = CompletableFuture.supplyAsync(() -> {this.createBsDailyAvg(); return "createBsDailyAvg() Done.";},
+				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future1, future2)
 		  .map(CompletableFuture::join)
 		  .collect(Collectors.joining(" "));

@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -102,9 +103,11 @@ public class CoinbaseService {
 	
 	public void createCbAvg() {
 		CompletableFuture<String> future7 
-		  = CompletableFuture.supplyAsync(() -> {this.createCbHourlyAvg(); return "createCbHourlyAvg() Done.";});
+		  = CompletableFuture.supplyAsync(() -> {this.createCbHourlyAvg(); return "createCbHourlyAvg() Done.";}, 
+				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		CompletableFuture<String> future8 
-		  = CompletableFuture.supplyAsync(() -> {this.createCbDailyAvg(); return "createCbDailyAvg() Done.";});
+		  = CompletableFuture.supplyAsync(() -> {this.createCbDailyAvg(); return "createCbDailyAvg() Done.";},
+				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future7, future8)
 				  .map(CompletableFuture::join)
 				  .collect(Collectors.joining(" "));
