@@ -19,16 +19,13 @@ import java.time.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.xxx.trader.adapter.cron.PrepareDataTask;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.ChannelOption;
@@ -41,21 +38,10 @@ import reactor.netty.http.client.HttpClient;
 @EnableSchedulerLock(defaultLockAtMostFor = "10m")
 public class SchedulingConfig {
 	private static final Logger log = LoggerFactory.getLogger(SchedulingConfig.class);
-	private final WebClient.Builder webClientBuilder;
-	private final PrepareDataTask prepareDataTask;
+	private final WebClient.Builder webClientBuilder;	
 	
-	@EventListener(ApplicationReadyEvent.class)
-	public void initAvgs() {
-		log.info("ApplicationReady");
-		this.prepareDataTask.createBsAvg();
-		this.prepareDataTask.createBfAvg();
-		this.prepareDataTask.createIbAvg();
-		this.prepareDataTask.createCbHAvg();
-	}
-	
-	public SchedulingConfig(WebClient.Builder webClientBuilder, PrepareDataTask prepareDataTask) {
-		this.webClientBuilder = webClientBuilder;
-		this.prepareDataTask = prepareDataTask;
+	public SchedulingConfig(WebClient.Builder webClientBuilder) {
+		this.webClientBuilder = webClientBuilder;		
 	}    
     		
     @Bean
