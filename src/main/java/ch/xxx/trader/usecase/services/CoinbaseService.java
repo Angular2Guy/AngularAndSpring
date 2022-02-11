@@ -103,23 +103,22 @@ public class CoinbaseService {
 	}
 	
 	public void createCbAvg() {
+		LocalDateTime start = LocalDateTime.now();
+		/** This can only be used on machines without cpu constraints.
 		CompletableFuture<String> future7 
 		  = CompletableFuture.supplyAsync(() -> {this.createCbHourlyAvg(); return "createCbHourlyAvg() Done.";}, 
 				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		CompletableFuture<String> future8 
 		  = CompletableFuture.supplyAsync(() -> {this.createCbDailyAvg(); return "createCbDailyAvg() Done.";},
 				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		String combined = "";
-		try {
-			combined = future7.get() + " " + future8.get();
-		} catch (InterruptedException | ExecutionException e) {
-			log.warn("createCbAvg failed.", e);
-		}
-		// This can only be used on machines without cpu constraints.
-//		String combined = Stream.of(future7, future8)
-//				  .map(CompletableFuture::join)
-//				  .collect(Collectors.joining(" "));
+		String combined = Stream.of(future7, future8)
+				  .map(CompletableFuture::join)
+				  .collect(Collectors.joining(" "));
 		log.info(combined);
+		*/
+		this.createCbHourlyAvg();
+		this.createCbDailyAvg();
+		log.info(this.serviceUtils.createAvgLogStatement(start, "Prepared Coinbase Data Time:"));
 	}
 
 	private void createCbHourlyAvg() {
