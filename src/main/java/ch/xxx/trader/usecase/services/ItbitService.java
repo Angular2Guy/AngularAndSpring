@@ -30,7 +30,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +123,7 @@ public class ItbitService {
 		return Mono.empty();
 	}
 
-	public void createIbHourlyAvg() {
+	private void createIbHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now(); 
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_HOUR_COL, QuoteIb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -147,7 +149,7 @@ public class ItbitService {
 		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Hourly Data Time:"));
 	}
 
-	public void createIbDailyAvg() {
+	private void createIbDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now(); 
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_DAY_COL, QuoteIb.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -173,6 +175,17 @@ public class ItbitService {
 		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Daily Data Time:"));
 	}
 
+	public void createIbAvg() {
+		CompletableFuture<String> future5 
+		  = CompletableFuture.supplyAsync(() -> {this.createIbHourlyAvg(); return "createIbHourlyAvg() Done.";});
+		CompletableFuture<String> future6 
+		  = CompletableFuture.supplyAsync(() -> {this.createIbDailyAvg(); return "createIbDailyAvg() Done.";});
+		String combined = Stream.of(future5, future6)
+				  .map(CompletableFuture::join)
+				  .collect(Collectors.joining(" "));
+		log.info(combined);
+	}
+	
 	private boolean filterEvenMinutes(QuoteIb quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}

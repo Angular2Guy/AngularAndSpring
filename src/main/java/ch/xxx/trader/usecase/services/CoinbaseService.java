@@ -32,8 +32,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,8 +99,19 @@ public class CoinbaseService {
 		Query query = MongoUtils.buildCurrentQuery(Optional.empty());
 		return this.myMongoRepository.findOne(query, QuoteCb.class);
 	}
+	
+	public void createCbAvg() {
+		CompletableFuture<String> future7 
+		  = CompletableFuture.supplyAsync(() -> {this.createCbHourlyAvg(); return "createCbHourlyAvg() Done.";});
+		CompletableFuture<String> future8 
+		  = CompletableFuture.supplyAsync(() -> {this.createCbDailyAvg(); return "createCbDailyAvg() Done.";});
+		String combined = Stream.of(future7, future8)
+				  .map(CompletableFuture::join)
+				  .collect(Collectors.joining(" "));
+		log.info(combined);
+	}
 
-	public void createCbHourlyAvg() {
+	private void createCbHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -120,7 +134,7 @@ public class CoinbaseService {
 		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Hourly Data Time:"));
 	}
 
-	public void createCbDailyAvg() {
+	private void createCbDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");

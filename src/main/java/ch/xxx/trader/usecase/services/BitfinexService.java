@@ -28,7 +28,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +113,18 @@ public class BitfinexService {
 		return Mono.empty();
 	}
 
-	public void createBfHourlyAvg() {
+	public void createBfAvg() {
+		CompletableFuture<String> future3  
+		  = CompletableFuture.supplyAsync(() -> {this.createBfHourlyAvg(); return "createBfHourlyAvg() Done.";});
+		CompletableFuture<String> future4  
+		  = CompletableFuture.supplyAsync(() -> {this.createBfDailyAvg(); return "createBfDailyAvg() Done.";});
+		String combined = Stream.of(future3, future4)
+				  .map(CompletableFuture::join)
+				  .collect(Collectors.joining(" "));
+		log.info(combined);
+	}
+	
+	private void createBfHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -138,7 +151,7 @@ public class BitfinexService {
 		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Hourly Data Time:"));
 	}
 
-	public void createBfDailyAvg() {
+	private void createBfDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now(); 
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");

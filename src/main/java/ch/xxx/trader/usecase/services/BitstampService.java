@@ -28,7 +28,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +114,18 @@ public class BitstampService {
 		return Mono.empty();
 	}
 
-	public void createBsHourlyAvg() {
+	public void createBcAvg() {
+		CompletableFuture<String> future1  
+		  = CompletableFuture. supplyAsync(() -> {this.createBsHourlyAvg(); return "createBsHourlyAvg() Done.";});
+		CompletableFuture<String> future2  
+		  = CompletableFuture.supplyAsync(() -> {this.createBsDailyAvg(); return "createBsDailyAvg() Done.";});
+		String combined = Stream.of(future1, future2)
+		  .map(CompletableFuture::join)
+		  .collect(Collectors.joining(" "));
+		log.info(combined);
+	}
+	
+	private void createBsHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now(); 
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -138,7 +151,7 @@ public class BitstampService {
 		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Hourly Data Time:"));
 	}
 
-	public void createBsDailyAvg() {
+	private void createBsDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now(); 
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
