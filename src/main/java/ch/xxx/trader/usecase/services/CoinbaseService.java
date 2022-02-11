@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -108,9 +109,16 @@ public class CoinbaseService {
 		CompletableFuture<String> future8 
 		  = CompletableFuture.supplyAsync(() -> {this.createCbDailyAvg(); return "createCbDailyAvg() Done.";},
 				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		String combined = Stream.of(future7, future8)
-				  .map(CompletableFuture::join)
-				  .collect(Collectors.joining(" "));
+		String combined = "";
+		try {
+			combined = future7.get() + " " + future8.get();
+		} catch (InterruptedException | ExecutionException e) {
+			log.warn("createCbAvg failed.", e);
+		}
+		// This can only be used on machines without cpu constraints.
+//		String combined = Stream.of(future7, future8)
+//				  .map(CompletableFuture::join)
+//				  .collect(Collectors.joining(" "));
 		log.info(combined);
 	}
 
