@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -35,6 +36,7 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 @EnableAspectJAutoProxy
 @EnableScheduling
+@EnableAsync
 @EnableSchedulerLock(defaultLockAtMostFor = "10m")
 public class SchedulingConfig {
 	private static final Logger log = LoggerFactory.getLogger(SchedulingConfig.class);
