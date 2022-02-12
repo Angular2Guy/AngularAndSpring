@@ -21,10 +21,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -34,7 +31,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -42,6 +38,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -63,6 +60,8 @@ public class CoinbaseService {
 	public static final String CB_DAY_COL = "quoteCbDay";
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
+	@Value("${kubernetes.pod.cpu.constraint}")
+	private boolean cpuConstraint;
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
@@ -104,21 +103,24 @@ public class CoinbaseService {
 	
 	public void createCbAvg() {
 		LocalDateTime start = LocalDateTime.now();
-		/** This can only be used on machines without cpu constraints.
-		CompletableFuture<String> future7 
-		  = CompletableFuture.supplyAsync(() -> {this.createCbHourlyAvg(); return "createCbHourlyAvg() Done.";}, 
-				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		CompletableFuture<String> future8 
-		  = CompletableFuture.supplyAsync(() -> {this.createCbDailyAvg(); return "createCbDailyAvg() Done.";},
-				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		String combined = Stream.of(future7, future8)
-				  .map(CompletableFuture::join)
-				  .collect(Collectors.joining(" "));
-		log.info(combined);
-		*/
-		this.createCbHourlyAvg();
-		this.createCbDailyAvg();
-		log.info(this.serviceUtils.createAvgLogStatement(start, "Prepared Coinbase Data Time:"));
+		log.info("CpuConstraint property: " + this.cpuConstraint);
+		if(this.cpuConstraint) {
+			this.createCbHourlyAvg();
+			this.createCbDailyAvg();
+			log.info(this.serviceUtils.createAvgLogStatement(start, "Prepared Coinbase Data Time:"));
+		} else {
+			// This can only be used on machines without cpu constraints.
+			CompletableFuture<String> future7 
+			  = CompletableFuture.supplyAsync(() -> {this.createCbHourlyAvg(); return "createCbHourlyAvg() Done.";}, 
+					  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+			CompletableFuture<String> future8 
+			  = CompletableFuture.supplyAsync(() -> {this.createCbDailyAvg(); return "createCbDailyAvg() Done.";},
+					  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+			String combined = Stream.of(future7, future8)
+					  .map(CompletableFuture::join)
+					  .collect(Collectors.joining(" "));
+			log.info(combined);	
+		}
 	}
 
 	private void createCbHourlyAvg() {
