@@ -115,7 +115,7 @@ public class BitstampService {
 		return Mono.empty();
 	}
 
-	public void createBcAvg() {
+	public void createBsAvg() {
 		CompletableFuture<String> future1  
 		  = CompletableFuture.supplyAsync(() -> {this.createBsHourlyAvg(); return "createBsHourlyAvg() Done.";}, 
 				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));

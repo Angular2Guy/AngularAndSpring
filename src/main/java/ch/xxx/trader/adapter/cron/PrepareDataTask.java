@@ -47,7 +47,7 @@ public class PrepareDataTask {
 	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.bs.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createBsAvg() {
-		this.bitstampService.createBcAvg();		
+		this.bitstampService.createBsAvg();		
 	}	
 
 	@Scheduled(cron = "0 45 0 ? * ?")
