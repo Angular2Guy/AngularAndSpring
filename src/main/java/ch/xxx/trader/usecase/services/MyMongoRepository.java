@@ -37,6 +37,8 @@ public interface MyMongoRepository {
 	
 	<T> Flux<T> insertAll(Mono<? extends Collection<? extends T>> batchToSave, String collectionName);
 	
+	<T> Mono<T> insert(Mono<T> quote);
+	
 	Mono<Boolean> collectionExists(String collectionName);
 	
 	Mono<MongoCollection<Document>> createCollection(String collectionName);

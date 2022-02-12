@@ -17,10 +17,7 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -66,6 +63,10 @@ public class BitstampService {
 		this.serviceUtils = serviceUtils;
 	}
 
+	public Mono<QuoteBs> insertQuote(Mono<QuoteBs> quote) {
+		return this.myMongoRepository.insert(quote);
+	}
+	
 	public Mono<String> getOrderbook(String currpair) {
 		return this.orderBookClient.getOrderbookBitstamp(currpair);
 	}

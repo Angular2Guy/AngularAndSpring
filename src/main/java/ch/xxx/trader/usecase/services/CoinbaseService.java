@@ -68,6 +68,10 @@ public class CoinbaseService {
 		this.serviceUtils = serviceUtils;
 	}
 
+	public Mono<QuoteCb> insertQuote(Mono<QuoteCb> quote) {
+		return this.myMongoRepository.insert(quote);
+	}
+	
 	public Flux<QuoteCbSmall> todayQuotesBc() {
 		Query query = MongoUtils.buildTodayQuery(Optional.empty());
 		return this.myMongoRepository.find(query, QuoteCb.class).filter(q -> filterEvenMinutes(q))

@@ -17,10 +17,7 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -70,6 +67,10 @@ public class BitfinexService {
 		return this.orderBookClient.getOrderbookBitfinex(currpair);
 	}
 
+	public Mono<QuoteBf> insertQuote(Mono<QuoteBf> quote) {
+		return this.myMongoRepository.insert(quote);
+	}
+	
 	public Mono<QuoteBf> currentQuote(String pair) {
 		Query query = MongoUtils.buildCurrentQuery(Optional.of(pair));
 		return this.myMongoRepository.findOne(query, QuoteBf.class);
