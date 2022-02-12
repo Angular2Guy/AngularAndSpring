@@ -13,5 +13,6 @@ secret:
 envApp:
   normal: 
     MONGODB_HOST: mongodb
+    CPU_CONSTRAINT: true
   secret:
     JWTTOKEN_SECRET: secret-key1234567890abcdefghijklmnopqrstuvwxyz
