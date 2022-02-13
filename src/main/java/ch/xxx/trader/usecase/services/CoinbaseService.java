@@ -248,29 +248,10 @@ public class CoinbaseService {
 		QuoteCb result = null;
 		try {
 			BigDecimal[] bds = new BigDecimal[170];
-			IntStream.range(0, QuoteCb.class.getConstructor(types).getParameterAnnotations().length)// .parallel()
+			IntStream.range(0, QuoteCb.class.getConstructor(types).getParameterAnnotations().length)
 					.forEach(x -> {
 						try {
-							MethodHandle mh = cbMethodCache.get(Integer.valueOf(x));
-							if (mh == null) {
-								synchronized (this) {
-									mh = cbMethodCache.get(Integer.valueOf(x));
-									if (mh == null) {
-										JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
-												.getParameterAnnotations()[x][0];
-										String fieldName = annotation.value();
-										String methodName = String.format("get%s%s",
-												fieldName.substring(0, 1).toUpperCase(),
-												fieldName.substring(1).toLowerCase());
-										if ("getTry".equals(methodName)) {
-											methodName = methodName + "1";
-										}
-										MethodType desc = MethodType.methodType(BigDecimal.class);
-										mh = MethodHandles.lookup().findVirtual(QuoteCb.class, methodName, desc);
-										cbMethodCache.put(Integer.valueOf(x), mh);
-									}
-								}
-							}
+							MethodHandle mh = createGetMethodHandle(types, x);
 							BigDecimal num1 = (BigDecimal) mh.invokeExact(q1);
 							BigDecimal num2 = (BigDecimal) mh.invokeExact(q2);
 							bds[x] = this.serviceUtils.avgHourValue(num1, num2, count);
@@ -285,6 +266,31 @@ public class CoinbaseService {
 			throw new RuntimeException(e);
 		}
 		return result;
+	}
+
+	private MethodHandle createGetMethodHandle(Class[] types, int x)
+			throws NoSuchMethodException, IllegalAccessException {
+		MethodHandle mh = cbMethodCache.get(Integer.valueOf(x));
+		if (mh == null) {
+			synchronized (this) {
+				mh = cbMethodCache.get(Integer.valueOf(x));
+				if (mh == null) {
+					JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
+							.getParameterAnnotations()[x][0];
+					String fieldName = annotation.value();
+					String methodName = String.format("get%s%s",
+							fieldName.substring(0, 1).toUpperCase(),
+							fieldName.substring(1).toLowerCase());
+					if ("getTry".equals(methodName)) {
+						methodName = methodName + "1";
+					}
+					MethodType desc = MethodType.methodType(BigDecimal.class);
+					mh = MethodHandles.lookup().findVirtual(QuoteCb.class, methodName, desc);
+					cbMethodCache.put(Integer.valueOf(x), mh);
+				}
+			}
+		}
+		return mh;
 	}
 
 	private boolean filterEvenMinutes(QuoteCb quote) {
