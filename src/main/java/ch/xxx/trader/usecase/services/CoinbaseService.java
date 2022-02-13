@@ -21,7 +21,9 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -71,7 +73,7 @@ public class CoinbaseService {
 	public Mono<QuoteCb> insertQuote(Mono<QuoteCb> quote) {
 		return this.myMongoRepository.insert(quote);
 	}
-	
+
 	public Flux<QuoteCbSmall> todayQuotesBc() {
 		Query query = MongoUtils.buildTodayQuery(Optional.empty());
 		return this.myMongoRepository.find(query, QuoteCb.class).filter(q -> filterEvenMinutes(q))
@@ -104,26 +106,26 @@ public class CoinbaseService {
 		Query query = MongoUtils.buildCurrentQuery(Optional.empty());
 		return this.myMongoRepository.findOne(query, QuoteCb.class);
 	}
-	
+
 	public void createCbAvg() {
 		LocalDateTime start = LocalDateTime.now();
 		log.info("CpuConstraint property: " + this.cpuConstraint);
-		if(this.cpuConstraint) {
+		if (this.cpuConstraint) {
 			this.createCbHourlyAvg();
 			this.createCbDailyAvg();
 			log.info(this.serviceUtils.createAvgLogStatement(start, "Prepared Coinbase Data Time:"));
 		} else {
 			// This can only be used on machines without cpu constraints.
-			CompletableFuture<String> future7 
-			  = CompletableFuture.supplyAsync(() -> {this.createCbHourlyAvg(); return "createCbHourlyAvg() Done.";}, 
-					  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-			CompletableFuture<String> future8 
-			  = CompletableFuture.supplyAsync(() -> {this.createCbDailyAvg(); return "createCbDailyAvg() Done.";},
-					  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-			String combined = Stream.of(future7, future8)
-					  .map(CompletableFuture::join)
-					  .collect(Collectors.joining(" "));
-			log.info(combined);	
+			CompletableFuture<String> future7 = CompletableFuture.supplyAsync(() -> {
+				this.createCbHourlyAvg();
+				return "createCbHourlyAvg() Done.";
+			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+			CompletableFuture<String> future8 = CompletableFuture.supplyAsync(() -> {
+				this.createCbDailyAvg();
+				return "createCbDailyAvg() Done.";
+			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+			String combined = Stream.of(future7, future8).map(CompletableFuture::join).collect(Collectors.joining(" "));
+			log.info(combined);
 		}
 	}
 
@@ -132,6 +134,7 @@ public class CoinbaseService {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
+		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
@@ -155,6 +158,7 @@ public class CoinbaseService {
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
+		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
@@ -249,17 +253,23 @@ public class CoinbaseService {
 						try {
 							MethodHandle mh = cbMethodCache.get(Integer.valueOf(x));
 							if (mh == null) {
-								JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
-										.getParameterAnnotations()[x][0];
-								String fieldName = annotation.value();
-								String methodName = String.format("get%s%s", fieldName.substring(0, 1).toUpperCase(),
-										fieldName.substring(1).toLowerCase());
-								if ("getTry".equals(methodName)) {
-									methodName = methodName + "1";
+								synchronized (this) {
+									mh = cbMethodCache.get(Integer.valueOf(x));
+									if (mh == null) {
+										JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
+												.getParameterAnnotations()[x][0];
+										String fieldName = annotation.value();
+										String methodName = String.format("get%s%s",
+												fieldName.substring(0, 1).toUpperCase(),
+												fieldName.substring(1).toLowerCase());
+										if ("getTry".equals(methodName)) {
+											methodName = methodName + "1";
+										}
+										MethodType desc = MethodType.methodType(BigDecimal.class);
+										mh = MethodHandles.lookup().findVirtual(QuoteCb.class, methodName, desc);
+										cbMethodCache.put(Integer.valueOf(x), mh);
+									}
 								}
-								MethodType desc = MethodType.methodType(BigDecimal.class);
-								mh = MethodHandles.lookup().findVirtual(QuoteCb.class, methodName, desc);
-								cbMethodCache.put(Integer.valueOf(x), mh);
 							}
 							BigDecimal num1 = (BigDecimal) mh.invokeExact(q1);
 							BigDecimal num2 = (BigDecimal) mh.invokeExact(q2);
