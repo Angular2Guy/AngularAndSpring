@@ -1,12 +1,13 @@
 # This is an example application to show howto use Spring Boot, Angular and Mongodb with the Webflux features of Spring.
 
-<!-- ![Build Status](https://travis-ci.org/Angular2Guy/AngularAndSpring.svg?branch=master) -->
+[![CodeQL](https://github.com/Angular2Guy/AngularAndSpring/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Angular2Guy/AngularAndSpring/actions/workflows/codeql-analysis.yml)
 
 Author: Sven Loesekann
 
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, MongoDB, Maven, Docker, ArchUnit, Spring Actuator with Prometheus interface
 
 ## Articles
+* [Spring Boot/MongoDb Performance Analysis and Improvements](https://angular2guy.wordpress.com/2022/02/15/spring-boot-mongodb-performance-analysis-and-improvements/)
 * [Ngx-Simple-Charts multiline and legend support howto](https://angular2guy.wordpress.com/2021/10/02/ngx-simple-charts-multiline-and-legend-support-howto/)
 * [Deep Links With Angular Routing and i18n in Prod Mode](https://angular2guy.wordpress.com/2021/07/31/deep-links-with-angular-routing-and-i18n-in-prod-mode/)
 * [Developing and Using Angular Libraries](https://angular2guy.wordpress.com/2021/07/31/developing-and-using-angular-libraries/)
