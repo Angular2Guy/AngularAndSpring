@@ -21,14 +21,16 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.xxx.trader.domain.model.AuthCheck;
-import ch.xxx.trader.domain.model.MyUser;
+import ch.xxx.trader.domain.model.dto.AuthCheck;
+import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.usecase.services.MyUserService;
 import reactor.core.publisher.Mono;
 
@@ -62,4 +64,9 @@ public class MyUserController {
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		return this.myUserService.postUserLogin(myUser);		
 	}
+	
+//	@GetMapping("/refreshToken")
+//	public RefreshToken getRefreshToken(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
+//		return this.appUserService.refreshToken(bearerStr);
+//	}
 }

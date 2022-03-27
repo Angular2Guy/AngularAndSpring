@@ -48,8 +48,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.model.QuoteCb;
-import ch.xxx.trader.domain.model.QuoteCbSmall;
+import ch.xxx.trader.domain.model.entity.QuoteCb;
+import ch.xxx.trader.domain.model.entity.QuoteCbSmall;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

@@ -1,4 +1,4 @@
-package ch.xxx.trader.domain.model;
+package ch.xxx.trader.domain.model.entity;
 
 import java.util.Date;
 

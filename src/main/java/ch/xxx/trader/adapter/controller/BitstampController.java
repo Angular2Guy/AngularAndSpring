@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.xxx.trader.domain.model.QuoteBs;
+import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.usecase.services.BitstampService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

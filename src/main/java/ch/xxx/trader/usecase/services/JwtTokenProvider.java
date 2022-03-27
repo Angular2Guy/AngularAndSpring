@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.domain.common.Role;
 import ch.xxx.trader.domain.exceptions.JwtTokenValidationException;
-import ch.xxx.trader.domain.model.MyUser;
+import ch.xxx.trader.domain.model.entity.MyUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

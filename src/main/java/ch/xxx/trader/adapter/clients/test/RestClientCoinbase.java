@@ -28,8 +28,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.xxx.trader.domain.model.QuoteCb;
-import ch.xxx.trader.domain.model.WrapperCb;
+import ch.xxx.trader.domain.model.dto.WrapperCb;
+import ch.xxx.trader.domain.model.entity.QuoteCb;
 import reactor.core.publisher.Mono;
 
 public class RestClientCoinbase {

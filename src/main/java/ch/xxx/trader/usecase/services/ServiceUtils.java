@@ -31,7 +31,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.domain.model.Quote;
+import ch.xxx.trader.domain.model.entity.Quote;
 
 @Service
 public class ServiceUtils {

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.xxx.trader.domain.model.QuoteBf;
+import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.usecase.services.BitfinexService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

@@ -26,11 +26,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.xxx.trader.domain.model.QuoteBf;
-import ch.xxx.trader.domain.model.QuoteBs;
-import ch.xxx.trader.domain.model.QuoteCb;
-import ch.xxx.trader.domain.model.QuoteIb;
-import ch.xxx.trader.domain.model.WrapperCb;
+import ch.xxx.trader.domain.model.dto.WrapperCb;
+import ch.xxx.trader.domain.model.entity.QuoteBf;
+import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.domain.model.entity.QuoteCb;
+import ch.xxx.trader.domain.model.entity.QuoteIb;
 import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;

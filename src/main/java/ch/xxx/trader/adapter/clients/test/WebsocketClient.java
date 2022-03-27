@@ -25,7 +25,7 @@ import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
-import ch.xxx.trader.domain.model.QuoteBf;
+import ch.xxx.trader.domain.model.entity.QuoteBf;
 import reactor.core.publisher.Mono;
 
 public class WebsocketClient {

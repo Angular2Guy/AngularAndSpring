@@ -17,10 +17,10 @@ package ch.xxx.trader.usecase.mappers;
 
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.domain.model.QuoteBf;
-import ch.xxx.trader.domain.model.QuoteBs;
-import ch.xxx.trader.domain.model.QuoteIb;
-import ch.xxx.trader.domain.model.QuotePdf;
+import ch.xxx.trader.domain.model.dto.QuotePdf;
+import ch.xxx.trader.domain.model.entity.QuoteBf;
+import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.domain.model.entity.QuoteIb;
 
 @Service
 public class ReportMapper {
