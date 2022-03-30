@@ -16,7 +16,6 @@
 package ch.xxx.trader.adapter.cron;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -38,6 +37,7 @@ import ch.xxx.trader.usecase.services.CoinbaseService;
 import ch.xxx.trader.usecase.services.ItbitService;
 import ch.xxx.trader.usecase.services.MyUserService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -56,6 +56,10 @@ public class ScheduledTask {
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 	private final MyUserService myUserService;
+	private Disposable bitstampDisposable = Mono.empty().subscribe();
+	private Disposable coinbaseDisposable = Mono.empty().subscribe();
+	private Disposable itbitDisposable = Mono.empty().subscribe();
+	private Disposable bitfinexDisposable = Mono.empty().subscribe();
 
 	public ScheduledTask(WebClient webClient, BitstampService bitstampService, MyUserService myUserService,
 			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService) {
@@ -77,9 +81,8 @@ public class ScheduledTask {
 	public void updateLoggedOutUsers() {
 		log.info("Update logged out users.");
 		this.myUserService.updateLoggedOutUsers();
-	}	
-	
-	
+	}
+
 	@Scheduled(fixedRate = 60000, initialDelay = 3000)
 	@SchedulerLock(name = "BitstampQuoteBTC_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteBTC() throws InterruptedException {
@@ -88,25 +91,22 @@ public class ScheduledTask {
 	}
 
 	private void insertBsQuote(String currPair) {
+		this.bitstampDisposable.dispose();
 		Date start = new Date();
-		try {
-			Mono<QuoteBs> request = this.webClient.get()
-					.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
-					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
-					.map(res -> {
-						res.setPair(currPair);
+		Mono<QuoteBs> request = this.webClient.get()
+				.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
+				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
+				.map(res -> {
+					res.setPair(currPair);
 //				log.info(res.toString());
-						return res;
-					});
-			this.bitstampService.insertQuote(request).then().block(Duration.ofSeconds(3));
+					return res;
+				});
+		this.bitstampDisposable = this.bitstampService.insertQuote(request).then().subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitstampQuote " + currPair + " " + dateFormat.format(new Date()) + " "
 						+ (new Date().getTime() - start.getTime()) + "ms");
 			}
-		} catch (Exception e) {
-//			log.error("Bitstamp insert error", e);
-			log.error("Bitstamp " + currPair + " insert error " + dateFormat.format(new Date()));
-		}
+		}, error -> log.error("Bitstamp " + currPair + " insert error " + dateFormat.format(new Date())));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 6000)
@@ -133,47 +133,41 @@ public class ScheduledTask {
 	@Scheduled(fixedRate = 60000, initialDelay = 15000)
 	@SchedulerLock(name = "CoinbaseQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertCoinbaseQuote() {
+		this.coinbaseDisposable.dispose();
 		Date start = new Date();
-		try {
-			Mono<QuoteCb> request = this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
-					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(WrapperCb.class))
-					.flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
+		Mono<QuoteCb> request = this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
+				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(WrapperCb.class))
+				.flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
-						return Mono.just(resp2.getRates());
-					});
-			this.coinbaseService.insertQuote(request).then().block(Duration.ofSeconds(3));
+					return Mono.just(resp2.getRates());
+				});
+		this.coinbaseDisposable = this.coinbaseService.insertQuote(request).then().subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("CoinbaseQuote " + dateFormat.format(new Date()) + " "
 						+ (new Date().getTime() - start.getTime()) + "ms");
 			}
-		} catch (Exception e) {
-//			log.error("Coinbase insert error", e);
-			log.error("Coinbase insert error " + dateFormat.format(new Date()));
-		}
+		}, error -> log.error("Coinbase insert error " + dateFormat.format(new Date())));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 21000)
 	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitUsdQuote() {
+		this.itbitDisposable.dispose();
 		String currPair = "XBTUSD";
 		Date start = new Date();
-		try {
-			Mono<QuoteIb> request = this.webClient.get()
-					.uri(String.format("%s/v1/markets/%s/ticker", ScheduledTask.URLIB, currPair))
-					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteIb.class))
-					.map(res -> {
+		Mono<QuoteIb> request = this.webClient.get()
+				.uri(String.format("%s/v1/markets/%s/ticker", ScheduledTask.URLIB, currPair))
+				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteIb.class))
+				.map(res -> {
 //				log.info(res.toString());
-						return res;
-					});
-			this.itbitService.insertQuote(request).then().block(Duration.ofSeconds(3));
+					return res;
+				});
+		this.itbitDisposable = this.itbitService.insertQuote(request).then().subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("ItbitQuote " + currPair + " " + dateFormat.format(new Date()) + " "
 						+ (new Date().getTime() - start.getTime()) + "ms");
 			}
-		} catch (Exception e) {
-//			log.error("Itbit insert error", e);
-			log.error("Itbit " + currPair + " insert error " + dateFormat.format(new Date()));
-		}
+		}, error -> log.error("Itbit " + currPair + " insert error " + dateFormat.format(new Date())));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 24000)
@@ -212,25 +206,22 @@ public class ScheduledTask {
 	}
 
 	private void insertBfQuote(String currPair) {
+		this.bitfinexDisposable.dispose();
 		Date start = new Date();
-		try {
-			Mono<QuoteBf> request = this.webClient.get()
-					.uri(String.format("%s/v1/pubticker/%s", ScheduledTask.URLBF, currPair))
-					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBf.class))
-					.map(res -> {
-						res.setPair(currPair);
+		Mono<QuoteBf> request = this.webClient.get()
+				.uri(String.format("%s/v1/pubticker/%s", ScheduledTask.URLBF, currPair))
+				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBf.class))
+				.map(res -> {
+					res.setPair(currPair);
 //				log.info(res.toString());
-						return res;
-					});
-			this.bitfinexService.insertQuote(request).then().block(Duration.ofSeconds(3));
+					return res;
+				});
+		this.bitfinexDisposable = this.bitfinexService.insertQuote(request).then().subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitfinexQuote " + currPair + " " + dateFormat.format(new Date()) + " "
 						+ (new Date().getTime() - start.getTime()) + "ms");
 			}
-		} catch (Exception e) {
-//			log.error("Bitstamp insert error", e);
-			log.error("Bitfinex " + currPair + " insert error " + dateFormat.format(new Date()));
-		}
+		}, error -> log.error("Bitfinex " + currPair + " insert error " + dateFormat.format(new Date())));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 39000)
