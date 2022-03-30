@@ -60,17 +60,17 @@ public class MyUserService {
 
 	public void updateLoggedOutUsers() {
 		this.updateLoggedOutUsersDisposable.dispose();
-		this.updateLoggedOutUsersDisposable = this.myMongoRepository.find(new Query(), RevokedToken.class).collectList().flatMapIterable(revokedTokens -> {
-			this.jwtTokenProvider
-					.updateLoggedOutUsers(revokedTokens.stream()
+		this.updateLoggedOutUsersDisposable = this.myMongoRepository.find(new Query(), RevokedToken.class).collectList()
+				.flatMapIterable(revokedTokens -> {
+					this.jwtTokenProvider.updateLoggedOutUsers(revokedTokens.stream()
 							.filter(myRevokedToken -> myRevokedToken.getLastLogout() == null || !myRevokedToken
 									.getLastLogout().isBefore(LocalDateTime.now().minusSeconds(LOGOUT_TIMEOUT)))
 							.toList());
-			return revokedTokens;
-		}).filter(myRevokedToken -> myRevokedToken.getLastLogout() != null
-				&& myRevokedToken.getLastLogout().isBefore(LocalDateTime.now().minusSeconds(LOGOUT_TIMEOUT)))
-				.flatMap(revokeToken -> this.myMongoRepository.remove(Mono.just(revokeToken)))
-				.subscribe();
+					return revokedTokens;
+				})
+				.filter(myRevokedToken -> myRevokedToken.getLastLogout() != null
+						&& myRevokedToken.getLastLogout().isBefore(LocalDateTime.now().minusSeconds(LOGOUT_TIMEOUT)))
+				.flatMap(revokeToken -> this.myMongoRepository.remove(Mono.just(revokeToken))).subscribe();
 	}
 
 	public Mono<AuthCheck> postAuthorize(AuthCheck authcheck, Map<String, String> header) {
