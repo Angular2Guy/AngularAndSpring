@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,7 @@ import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
 import ch.xxx.trader.usecase.services.ItbitService;
+import ch.xxx.trader.usecase.services.MyUserService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import reactor.core.publisher.Mono;
 
@@ -53,14 +55,16 @@ public class ScheduledTask {
 	private final BitfinexService bitfinexService;
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
+	private final MyUserService myUserService;
 
-	public ScheduledTask(WebClient webClient, BitstampService bitstampService,
+	public ScheduledTask(WebClient webClient, BitstampService bitstampService, MyUserService myUserService,
 			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService) {
 		this.webClient = webClient;
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
 		this.itbitService = itbitService;
 		this.coinbaseService = coinbaseService;
+		this.myUserService = myUserService;
 	}
 
 //	@PostConstruct
@@ -68,6 +72,14 @@ public class ScheduledTask {
 //		
 //	}
 
+	@Scheduled(fixedRate = 90000)
+	@Order(1)
+	public void updateLoggedOutUsers() {
+		log.info("Update logged out users.");
+		this.myUserService.updateLoggedOutUsers();
+	}	
+	
+	
 	@Scheduled(fixedRate = 60000, initialDelay = 3000)
 	@SchedulerLock(name = "BitstampQuoteBTC_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteBTC() throws InterruptedException {

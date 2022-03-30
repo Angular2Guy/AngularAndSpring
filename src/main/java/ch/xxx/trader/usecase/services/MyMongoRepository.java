@@ -20,6 +20,7 @@ import java.util.Collection;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.query.Query;
 
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.reactivestreams.client.MongoCollection;
 
 import reactor.core.publisher.Flux;
@@ -44,4 +45,6 @@ public interface MyMongoRepository {
 	Mono<MongoCollection<Document>> createCollection(String collectionName);
 	
 	<T> Mono<T> save(T objectToSave);
+	
+	<T> Mono<DeleteResult> remove(Mono<T> quote);
 }

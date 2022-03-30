@@ -22,8 +22,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,9 +54,9 @@ public class MyUserController {
 		return this.myUserService.postUserSignin(myUser);
 	}
 
-	@PostMapping("/logout")
-	public Mono<MyUser> postLogout(@RequestBody String hash) {
-		return this.myUserService.postLogout(hash);
+	@PutMapping("/logout")
+	public Mono<Boolean> postLogout(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
+		return this.myUserService.postLogout(bearerStr);
 	}
 
 	@PostMapping("/login")

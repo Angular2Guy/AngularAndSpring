@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
@@ -32,9 +33,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import ch.xxx.trader.domain.common.JwtUtils;
 import ch.xxx.trader.domain.common.Role;
 import ch.xxx.trader.domain.exceptions.JwtTokenValidationException;
 import ch.xxx.trader.domain.model.entity.MyUser;
+import ch.xxx.trader.domain.model.entity.RevokedToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -53,10 +56,20 @@ public class JwtTokenProvider {
 
 	private final ReactiveMongoOperations operations;
 	
+	private final List<UserNameUuid> loggedOutUsers = new CopyOnWriteArrayList<>();
+	
+	public record UserNameUuid(String userName, String uuid) {}
+	
 	public JwtTokenProvider(ReactiveMongoOperations operations) {
 		this.operations = operations;
 	}
 
+	public void updateLoggedOutUsers(List<RevokedToken> users) {
+		this.loggedOutUsers.clear();
+		this.loggedOutUsers
+				.addAll(users.stream().map(myUser -> new UserNameUuid(myUser.getName(), myUser.getUuid())).toList());
+	}
+	
 	public String createToken(String username, List<Role> roles) {
 		Claims claims = Jwts.claims().setSubject(username);
 		claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority()))
@@ -91,6 +104,13 @@ public class JwtTokenProvider {
 		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
 	}
 
+	public String getUuid(String token) {
+		this.validateToken(token);
+		SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get(JwtUtils.UUID, String.class);
+	}
+	
+	
 	public String resolveToken(HttpServletRequest req) {
 		String bearerToken = req.getHeader("Authorization");
 		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {

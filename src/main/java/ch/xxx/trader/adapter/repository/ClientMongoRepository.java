@@ -22,6 +22,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.reactivestreams.client.MongoCollection;
 
 import ch.xxx.trader.usecase.services.MyMongoRepository;
@@ -79,5 +80,10 @@ public class ClientMongoRepository implements MyMongoRepository {
 	@Override
 	public <T> Mono<T> insert(Mono<T> quote) {
 		return this.operations.insert(quote);
+	}
+	
+	@Override
+	public <T> Mono<DeleteResult> remove(Mono<T> quote) {
+		return this.operations.remove(quote);
 	}
 }
