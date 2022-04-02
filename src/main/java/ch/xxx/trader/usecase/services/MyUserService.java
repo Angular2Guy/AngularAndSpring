@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,6 +46,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class MyUserService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserService.class);
 	private static final long LOGOUT_TIMEOUT = 185L;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncryption passwordEncryption;
@@ -153,7 +156,7 @@ public class MyUserService {
 			throw new AuthenticationException("Invalid token");
 		}
 		String newToken = this.jwtTokenProvider.refreshToken(tokenOpt.get());
-		// LOGGER.info("Jwt Token refreshed.");
+		LOGGER.info("Jwt Token refreshed.");
 		return new RefreshTokenDto(newToken);
 	}
 }
