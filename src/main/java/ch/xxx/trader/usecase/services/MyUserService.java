@@ -99,7 +99,7 @@ public class MyUserService {
 	}
 
 	private Mono<MyUser> signinHelp(MyUser myUser1) {
-		if (myUser1.getUserId() == null) {
+		if (myUser1.get_id() == null) {
 			String salt;
 			try {
 				salt = this.passwordEncryption.generateSalt();
@@ -114,8 +114,7 @@ public class MyUserService {
 				return Mono.just(myUser2);
 			});
 		}
-		myUser1.setPassword("XXX");
-		return Mono.just(myUser1);
+		return Mono.just(new MyUser());
 	}
 
 	public Mono<Boolean> postLogout(String bearerStr) {
@@ -144,5 +143,10 @@ public class MyUserService {
 			}
 		}
 		return new MyUser();
+	}
+
+	public RevokedToken refreshToken(String bearerStr) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -80,7 +80,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        this.loggedIn = typeof result === 'undefined' || result === null ? null : result;
+        this.loggedIn = result?.loggedIn;
       });
     }
 

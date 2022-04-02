@@ -19,6 +19,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { MyuserService } from '../../services/myuser.service';
 import { MyUser } from '../../common/my-user';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { TokenService } from 'src/app/services/token.service';
 
 
 @Component({
@@ -34,7 +35,7 @@ export class LoginComponent implements OnInit {
   pwMatching = true;
   private user = new MyUser();
 
-  constructor(public dialogRef: MatDialogRef<QuoteoverviewComponent>,
+  constructor(public dialogRef: MatDialogRef<QuoteoverviewComponent>, private tokenService: TokenService,
           @Inject(MAT_DIALOG_DATA) public data: any, private myuserService: MyuserService, fb: FormBuilder) {
       this.signinForm = fb.group({
           username: ['', Validators.required],
@@ -102,6 +103,8 @@ export class LoginComponent implements OnInit {
       this.data.loggedIn = !!us?.token;
       if(this.user.userId !== null) {
           this.loginFailed = false;
+          this.tokenService.token = us.token;
+          this.tokenService.userId = us.userId;
           this.dialogRef.close(this.data.loggedIn);
       } else {
           this.loginFailed = true;
