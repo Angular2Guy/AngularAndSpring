@@ -15,6 +15,7 @@
  */
 package ch.xxx.trader.usecase.services;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Component;
 
 import ch.xxx.trader.domain.common.JwtUtils;
 import ch.xxx.trader.domain.common.Role;
+import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.exceptions.JwtTokenValidationException;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
@@ -110,6 +112,20 @@ public class JwtTokenProvider {
 		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get(JwtUtils.UUID, String.class);
 	}
 	
+	public String refreshToken(String token) {
+		validateToken(token);
+		Optional<Jws<Claims>> claimsOpt = this.getClaims(Optional.of(token));
+		if (claimsOpt.isEmpty()) {
+			throw new AuthenticationException("Invalid token claims");
+		}
+		Claims claims = claimsOpt.get().getBody();
+		claims.setIssuedAt(new Date());
+		claims.setExpiration(new Date(Instant.now().toEpochMilli() + validityInMilliseconds));
+		SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+		String newToken = Jwts.builder().setClaims(claims).signWith(key, SignatureAlgorithm.HS256)
+				.compact();
+		return newToken;
+	}
 	
 	public String resolveToken(HttpServletRequest req) {
 		String bearerToken = req.getHeader("Authorization");
@@ -119,6 +135,13 @@ public class JwtTokenProvider {
 		return null;
 	}
 
+	public Optional<String> resolveToken(String bearerToken) {
+		if (bearerToken != null && bearerToken.startsWith(JwtUtils.BEARER)) {
+			return Optional.of(bearerToken.substring(7, bearerToken.length()));
+		}
+		return Optional.empty();
+	}
+	
 	public boolean validateToken(String token) {
 		SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
 		try {

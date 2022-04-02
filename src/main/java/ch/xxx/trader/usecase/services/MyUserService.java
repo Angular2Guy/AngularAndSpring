@@ -34,6 +34,7 @@ import ch.xxx.trader.domain.common.Role;
 import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.model.dto.AuthCheck;
+import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import io.jsonwebtoken.Claims;
@@ -111,6 +112,7 @@ public class MyUserService {
 			myUser1.setSalt(salt);
 			return this.myMongoRepository.save(myUser1).flatMap(myUser2 -> {
 				myUser2.setPassword("XXX");
+				myUser2.setSalt("YYY");
 				return Mono.just(myUser2);
 			});
 		}
@@ -145,8 +147,13 @@ public class MyUserService {
 		return new MyUser();
 	}
 
-	public RevokedToken refreshToken(String bearerStr) {
-		// TODO Auto-generated method stub
-		return null;
+	public RefreshTokenDto refreshToken(String bearerStr) {
+		Optional<String> tokenOpt = this.jwtTokenProvider.resolveToken(bearerStr);
+		if (tokenOpt.isEmpty()) {
+			throw new AuthenticationException("Invalid token");
+		}
+		String newToken = this.jwtTokenProvider.refreshToken(tokenOpt.get());
+		// LOGGER.info("Jwt Token refreshed.");
+		return new RefreshTokenDto(newToken);
 	}
 }

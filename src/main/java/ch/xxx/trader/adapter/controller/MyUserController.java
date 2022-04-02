@@ -31,8 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.xxx.trader.domain.model.dto.AuthCheck;
+import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
-import ch.xxx.trader.domain.model.entity.RevokedToken;
 import ch.xxx.trader.usecase.services.MyUserService;
 import reactor.core.publisher.Mono;
 
@@ -68,7 +68,7 @@ public class MyUserController {
 	}
 	
 	@GetMapping("/refreshToken")
-	public RevokedToken getRefreshToken(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
+	public RefreshTokenDto getRefreshToken(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
 		return this.myUserService.refreshToken(bearerStr);
 	}
 }
