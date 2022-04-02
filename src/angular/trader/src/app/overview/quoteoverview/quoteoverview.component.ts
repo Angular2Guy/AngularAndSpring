@@ -37,11 +37,10 @@ import { TokenService } from 'src/app/services/token.service';
   styleUrls: ['./quoteoverview.component.scss']
 })
 export class QuoteoverviewComponent implements OnInit,OnDestroy {
-
-    datasource = new Myds();
+    public datasource = new Myds();
+    public loggedIn = false;
     private interval: any;
     private utils = new CommonUtils();
-    private loggedIn = false;
 
     constructor(private router: Router,
             private serviceBs: BitstampService,
@@ -86,7 +85,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
     }
 
     logout(): void {
-        this.serviceMu.postLogout().subscribe(result => this.loggedIn != result);
+        this.serviceMu.postLogout().subscribe(result => this.loggedIn = !result);
     }
 
     orderbooks(): void {
