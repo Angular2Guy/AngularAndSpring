@@ -94,7 +94,7 @@ public class MyUserService {
 	public Mono<MyUser> postUserSignin(MyUser myUser) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(myUser.getUserId()));
-		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
+		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(myUser))
 				.flatMap(myUser1 -> signinHelp(myUser1));
 	}
 
