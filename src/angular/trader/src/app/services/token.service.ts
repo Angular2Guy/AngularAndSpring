@@ -24,59 +24,27 @@ export interface RefreshTokenResponse {
   providedIn: 'root'
 })
 export class TokenService {
-  private myTokenCache: Observable<RefreshTokenResponse>; 	
+  public secUntilNextLogin = 0;
+  private myTokenCache: Observable<RefreshTokenResponse>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private readonly CACHE_SIZE = 1;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private readonly REFRESH_INTERVAL = 45000; //45 sec
   private myToken: string;
   private myUserId: string;
   private myTokenSubscription: Subscription;
   private stopTimer: Subject<boolean>;
-  public secUntilNextLogin = 0;
 
   constructor(private http: HttpClient, private router: Router) { }
-
-  private refreshToken(): Observable<RefreshTokenResponse> {	
-	return this.http.get<RefreshTokenResponse>('/myuser/refreshToken', {
-		headers: this.createTokenHeader()
-	});
-  }
-
-	public createTokenHeader(): HttpHeaders {
-	    let reqOptions = new HttpHeaders().set( 'Content-Type', 'application/json' )
-	    if(this.token) {
-	        reqOptions = new HttpHeaders().set( 'Content-Type', 'application/json' ).set('Authorization', `Bearer ${this.token}`);
-	    }
-	    return reqOptions;
-	}
-	
-  public logout(): void {
-	this.http.put<boolean>('/myuser/logout',{
-		headers: this.createTokenHeader()
-	}).pipe(tap(() => this.clear())).subscribe();
-  } 	
-	
-  private clear() {		
-	if(this.myTokenSubscription) {
-		this.myTokenSubscription.unsubscribe();		
-	}
-	if(this.stopTimer) {		
-		this.stopTimer.next(true);
-		this.stopTimer = null;
-	}
-	this.myTokenCache = null;
-	this.myToken = null;
-	this.myUserId = null;
-	this.router.navigate(['/login']);
-  }
 
   public get tokenStream(): Observable<string> {
 	return this.myTokenCache.pipe(map(response => response.refreshToken));
   }
 
-  public get token(): string {	
+  public get token(): string {
 	return this.myToken;
   }
- 
+
   public set token(token: string) {
 	this.myToken = token;
 	if(token && !this.myTokenCache) {
@@ -91,11 +59,46 @@ export class TokenService {
 	}
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   public get userId(): string {
 	return this.myUserId;
   }
 
   public set userId(userId: string) {
 	this.myUserId = userId;
+  }
+
+	public createTokenHeader(): HttpHeaders {
+	    let reqOptions = new HttpHeaders().set( 'Content-Type', 'application/json' );
+	    if(this.token) {
+	        reqOptions = new HttpHeaders().set( 'Content-Type', 'application/json' ).set('Authorization', `Bearer ${this.token}`);
+	    }
+	    return reqOptions;
+	}
+
+  public logout(): void {
+	this.http.put<boolean>('/myuser/logout',{
+		headers: this.createTokenHeader()
+	}).pipe(tap(() => this.clear())).subscribe();
+  }
+
+  private clear() {
+	if(this.myTokenSubscription) {
+		this.myTokenSubscription.unsubscribe();
+	}
+	if(this.stopTimer) {
+		this.stopTimer.next(true);
+		this.stopTimer = null;
+	}
+	this.myTokenCache = null;
+	this.myToken = null;
+	this.myUserId = null;
+	this.router.navigate(['/login']);
+  }
+
+  private refreshToken(): Observable<RefreshTokenResponse> {
+	return this.http.get<RefreshTokenResponse>('/myuser/refreshToken', {
+		headers: this.createTokenHeader()
+	});
   }
 }

@@ -30,7 +30,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
   private handleError(event: HttpEvent<any>): HttpEvent<any> {
 	if(event instanceof HttpErrorResponse) {
-		const error = <HttpErrorResponse> event;
+		const error =  event as HttpErrorResponse;
 		console.log(`failed: ${error.message}`);
 	}
 	return event;
