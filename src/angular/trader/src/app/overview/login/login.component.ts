@@ -88,10 +88,10 @@ export class LoginComponent implements OnInit {
 
   signin(us: MyUser): void {
       this.user = us;
-      this.data.hash = null;
+      this.data.loggedIn = !!us?.token;
       if(this.user.userId !== null) {
           this.signinFailed = false;
-          this.dialogRef.close();
+          this.dialogRef.close(this.data.loggedIn);
       } else {
           this.signinFailed = true;
       }
@@ -99,10 +99,10 @@ export class LoginComponent implements OnInit {
 
   login(us: MyUser): void {
       this.user = us;
+      this.data.loggedIn = !!us?.token;
       if(this.user.userId !== null) {
           this.loginFailed = false;
-          this.data.hash = us.salt;
-          this.dialogRef.close(this.data.hash);
+          this.dialogRef.close(this.data.loggedIn);
       } else {
           this.loginFailed = true;
       }

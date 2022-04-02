@@ -29,6 +29,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { MyuserService } from '../../services/myuser.service';
 import { filter } from 'rxjs/operators';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-quoteoverview',
@@ -38,9 +39,9 @@ import { filter } from 'rxjs/operators';
 export class QuoteoverviewComponent implements OnInit,OnDestroy {
 
     datasource = new Myds();
-    hash: string = null;
     private interval: any;
     private utils = new CommonUtils();
+    private loggedIn = false;
 
     constructor(private router: Router,
             private serviceBs: BitstampService,
@@ -48,6 +49,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
             private serviceIb: ItbitService,
             private serviceBf: BitfinexService,
             private serviceMu: MyuserService,
+            private tokenService: TokenService,
             public dialog: MatDialog) {
     }
 
@@ -62,7 +64,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
       for(let i = 0;i<16;i++) {
           this.datasource.rows.push(new Myrow('','',0,0, null,-1,-1));
       }
-      this.hash = this.serviceMu.salt;
+      this.loggedIn = !!this.tokenService.token;
       //console.log(this.hash);
     }
 
@@ -75,16 +77,16 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
     openLoginDialog(): void {
       const dialogRef = this.dialog.open(LoginComponent, {
         width: '500px',
-        data: { hash: this.hash}
+        data: { loggedIn: this.loggedIn}
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        this.hash = typeof result === 'undefined' || result === null ? null : result;
+        this.loggedIn = typeof result === 'undefined' || result === null ? null : result;
       });
     }
 
     logout(): void {
-        this.serviceMu.postLogout(this.hash).subscribe(myUser => this.hash = myUser.salt);
+        this.serviceMu.postLogout().subscribe(result => this.loggedIn != result);
     }
 
     orderbooks(): void {

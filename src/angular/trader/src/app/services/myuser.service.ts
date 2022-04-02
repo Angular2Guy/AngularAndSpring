@@ -20,6 +20,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { MyUser } from '../common/my-user';
 import { Utils } from './utils';
 import { AuthCheck } from '../common/authcheck';
+import { TokenService } from './token.service';
 
 @Injectable({providedIn: 'root'})
 export class MyuserService {
@@ -27,13 +28,13 @@ export class MyuserService {
   private utils = new Utils();
   private myUserUrl = '/myuser';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private tokenService: TokenService) {}
 
   postLogin(user: MyUser): Observable<MyUser> {
       return this.http.post<MyUser>(this.myUserUrl+'/login', user, this.reqOptionsArgs).pipe(map(res => {
           const retval = res as MyUser;
-          localStorage.setItem('salt', retval.salt);
-          localStorage.setItem('token', retval.token);
+          this.tokenService.token = res.token;
+          this.tokenService.userId = res.userId;
           return retval;
       }),catchError(this.utils.handleError<MyUser>('postLogin')));
   }
@@ -49,20 +50,14 @@ export class MyuserService {
 
   postCheckAuthorisation(path: string): Observable<AuthCheck> {
       const authcheck = new AuthCheck();
-      authcheck.hash = this.salt;
       authcheck.path = path;
       const reqOptions = {headers: this.utils.createTokenHeader()};
       return this.http.post<AuthCheck>(this.myUserUrl+'/authorize', authcheck, reqOptions)
 		.pipe(catchError(this.utils.handleError<AuthCheck>('postCheckAuthorisation')));
   }
 
-  postLogout(hash: string): Observable<MyUser> {
-      localStorage.clear();
-      return this.http.post<MyUser>(this.myUserUrl+'/logout', hash, this.reqOptionsArgs)
-		.pipe(catchError(this.utils.handleError<MyUser>('postLogout')));
-  }
-
-  get salt(): string {
-      return !localStorage.getItem('salt') ? null : localStorage.getItem('salt');
+  postLogout(): Observable<boolean> {
+      return this.http.put<boolean>(this.myUserUrl+'/logout', this.reqOptionsArgs)
+		.pipe(catchError(this.utils.handleError<boolean>('postLogout')));
   }
 }
