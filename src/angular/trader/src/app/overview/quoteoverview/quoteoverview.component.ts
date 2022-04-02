@@ -80,7 +80,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        this.loggedIn = result?.loggedIn;
+        this.loggedIn = result;
       });
     }
 
@@ -89,7 +89,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
     }
 
     orderbooks(): void {
-      this.router.navigateByUrl('orderbooks');
+      this.router.navigateByUrl('/orderbooks');
     }
 
     selectedRow(row: Myrow): void {

@@ -18,13 +18,14 @@ import { CanActivate,ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { MyuserService } from './myuser.service';
+import { TokenService } from './token.service';
 
 @Injectable({providedIn: 'root'})
 export class AuthGuardService implements CanActivate {
 
-  constructor(private myuserService: MyuserService) { }
+  constructor(private tokenService: TokenService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
-        return this.myuserService.postCheckAuthorisation(state.url).pipe(map(res => res.authorized));
+        return !!this.tokenService.token && !!this.tokenService.userId;
     }
 }
