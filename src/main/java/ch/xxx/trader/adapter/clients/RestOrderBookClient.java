@@ -44,7 +44,7 @@ public class RestOrderBookClient implements MyOrderBookClient {
 
 	public Mono<String> getOrderbookItbit(String currpair) {
 		WebClient wc = WebUtils.buildWebClient(URLIB);
-		return wc.get().uri("/v1/markets/" + currpair + "/order_book/").accept(MediaType.APPLICATION_JSON)
+		return wc.get().uri("/v1/markets/" + currpair + "/order_book").accept(MediaType.APPLICATION_JSON)
 				.exchangeToMono(res -> res.bodyToMono(String.class));
 	}
 
