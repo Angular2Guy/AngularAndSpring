@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.domain.common.JwtUtils;
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.common.Role;
+import ch.xxx.trader.domain.common.StreamHelpers;
 import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.model.dto.AuthCheck;
@@ -67,6 +68,7 @@ public class MyUserService {
 		this.updateLoggedOutUsersDisposable = this.myMongoRepository.find(new Query(), RevokedToken.class).collectList()
 				.flatMapIterable(revokedTokens -> {
 					this.jwtTokenProvider.updateLoggedOutUsers(revokedTokens.stream()
+//							.filter(StreamHelpers.distinctByKey(value -> value.getUuid()))
 							.filter(myRevokedToken -> myRevokedToken.getLastLogout() == null || !myRevokedToken
 									.getLastLogout().isBefore(LocalDateTime.now().minusSeconds(LOGOUT_TIMEOUT)))
 							.toList());
@@ -96,8 +98,7 @@ public class MyUserService {
 	}
 
 	public Mono<MyUser> postUserSignin(MyUser myUser) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("userId").is(myUser.getUserId()));
+		Query query = new Query(Criteria.where("userId").is(myUser.getUserId()));
 		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(myUser))
 				.flatMap(myUser1 -> signinHelp(myUser1));
 	}
@@ -127,8 +128,11 @@ public class MyUserService {
 				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
 		String uuid = this.jwtTokenProvider.getUuid(JwtUtils.resolveToken(bearerStr)
 				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
-		return this.myMongoRepository.insert(Mono.just(new RevokedToken(null, username, uuid, LocalDateTime.now())))
-				.then(Mono.just(Boolean.TRUE));
+		Query query = new Query(Criteria.where("uuid").is(uuid));
+		return this.myMongoRepository.find(query, RevokedToken.class)
+			.filter(myRevokedToken -> myRevokedToken.getUuid().equals(uuid)).collectList()
+			.flatMap(myRevokedTokens -> !myRevokedTokens.isEmpty() ? Mono.just(Boolean.TRUE) 
+					: this.myMongoRepository.insert(Mono.just(new RevokedToken(null, username, uuid, LocalDateTime.now()))).then(Mono.just(Boolean.TRUE)));
 	}
 
 	public Mono<MyUser> postUserLogin(MyUser myUser) throws NoSuchAlgorithmException, InvalidKeySpecException {

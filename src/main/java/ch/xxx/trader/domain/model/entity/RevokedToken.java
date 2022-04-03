@@ -16,6 +16,7 @@
 package ch.xxx.trader.domain.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -68,4 +69,22 @@ public class RevokedToken {
 	public void setLastLogout(LocalDateTime lastLogout) {
 		this.lastLogout = lastLogout;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(_id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RevokedToken other = (RevokedToken) obj;
+		return Objects.equals(_id, other._id);
+	}
+	
 }
