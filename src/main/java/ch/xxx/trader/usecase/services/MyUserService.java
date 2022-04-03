@@ -17,6 +17,7 @@ package ch.xxx.trader.usecase.services;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
@@ -146,6 +147,7 @@ public class MyUserService {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(myUser.getUserId()));
 		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(new MyUser()))
+				.delayElement(Duration.ofSeconds(3L))
 				.map(user1 -> loginHelp(user1, myUser.getPassword()));
 	}
 
