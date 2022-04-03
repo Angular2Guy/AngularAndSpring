@@ -85,10 +85,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
     }
 
     logout(): void {
-        this.serviceMu.postLogout().subscribe(result => {
-			this.tokenService.logout();
-			this.loggedIn = !result;
-		});
+	    this.loggedIn = !this.serviceMu.postLogout();
     }
 
     orderbooks(): void {

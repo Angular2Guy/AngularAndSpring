@@ -15,7 +15,7 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { MyUser } from '../common/my-user';
 import { Utils } from './utils';
@@ -56,8 +56,8 @@ export class MyuserService {
 		.pipe(catchError(this.utils.handleError<AuthCheck>('postCheckAuthorisation')));
   }
 
-  postLogout(): Observable<boolean> {
-      return this.http.put<boolean>(this.myUserUrl+'/logout', this.reqOptionsArgs)
-		.pipe(catchError(this.utils.handleError<boolean>('postLogout')));
+  postLogout(): boolean {
+	this.tokenService.logout();
+	return true;
   }
 }
