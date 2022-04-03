@@ -79,7 +79,6 @@ public class ScheduledTask {
 	@Scheduled(fixedRate = 90000)
 	@Order(1)
 	public void updateLoggedOutUsers() {
-		log.info("Update logged out users.");
 		this.myUserService.updateLoggedOutUsers();
 	}
 

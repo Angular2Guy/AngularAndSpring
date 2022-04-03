@@ -16,6 +16,7 @@
 package ch.xxx.trader.adapter.config;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;
@@ -30,10 +31,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.usecase.services.JwtTokenProvider;
 
 public class JwtTokenFilter extends BasicAuthenticationFilter {
 	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenFilter.class);
+	private static final List<String> AUTH_PATHS = List.of("/orderbook", "/authorize", "/refreshToken"); 
 	private JwtTokenProvider jwtTokenProvider;
 
 	public JwtTokenFilter(JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager) {
@@ -45,14 +48,20 @@ public class JwtTokenFilter extends BasicAuthenticationFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		String token = jwtTokenProvider.resolveToken(httpRequest);
+		String token = this.jwtTokenProvider.resolveToken(httpRequest);		
 		UsernamePasswordAuthenticationToken authToken;
-		if ((httpRequest.getRequestURL().toString().contains("/orderbook") || httpRequest.getRequestURL().toString().contains("/authorize"))  && Optional.ofNullable(token).map(myToken -> jwtTokenProvider.validateToken(myToken)).orElse(false)) {
+		if (AUTH_PATHS.stream().anyMatch(authPath -> httpRequest.getRequestURL().toString().contains(authPath))) { 
+		  if(Optional.ofNullable(token).map(myToken -> jwtTokenProvider.validateToken(myToken)).orElse(false)) {
 			authToken = Optional.ofNullable(token)
-					.map(myToken -> jwtTokenProvider.getUserAuthenticationToken(token)).map(myToken -> {
-						myToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-						return myToken;
+					.map(myToken -> this.jwtTokenProvider.getUsername(token))
+					.map(myToken -> {
+						UsernamePasswordAuthenticationToken authenticationToken = this.jwtTokenProvider.getUserAuthenticationToken(token);
+						authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));						
+						return authenticationToken;
 					}).orElse(new UsernamePasswordAuthenticationToken(null, null));
+		  } else {
+			  throw new AuthenticationException("Invalid Token!");
+		  }
 			//LOG.info(""+authToken.isAuthenticated());
 		} else {
 			authToken = new UsernamePasswordAuthenticationToken(null, null);

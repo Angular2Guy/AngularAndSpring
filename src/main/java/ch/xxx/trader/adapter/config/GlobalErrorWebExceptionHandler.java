@@ -28,7 +28,9 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ServerWebExchange;
 
+import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.exceptions.JwtTokenValidationException;
 import reactor.core.publisher.Mono;
 
@@ -47,11 +49,11 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 	protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
 		return RouterFunctions.route(RequestPredicates.all(), this::renderErrorResponse);
 	}
-
+	
 	private Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
 
 		Throwable exception = this.getError(request);
-		if (exception instanceof JwtTokenValidationException) {
+		if (exception instanceof JwtTokenValidationException || exception instanceof AuthenticationException) {
 			return ServerResponse.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
