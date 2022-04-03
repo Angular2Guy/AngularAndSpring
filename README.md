@@ -4,7 +4,7 @@
 
 Author: Sven Loesekann
 
-Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, MongoDB, Maven, Docker, ArchUnit, Spring Actuator with Prometheus interface
+Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, Spring Security,  MongoDB, Maven, Docker, ArchUnit, Spring Actuator with Prometheus interface
 
 ## Articles
 * [Spring Boot/MongoDb Performance Analysis and Improvements](https://angular2guy.wordpress.com/2022/02/15/spring-boot-mongodb-performance-analysis-and-improvements/)
@@ -18,12 +18,12 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 
 ## What is the goal?
 
-The goal is to be reactive from top to bottom. To do that the project uses Angular in the frontend and Spring Boot with Reactive Web as server. Mongodb is the database connected with the reactive MongoDB driver. That enables a reactive chain from the browser to the DB. The project uses an in memory MongoDB to be just cloned build and ready to run. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test. The health and performance of the application can be monitored with Spring Actuator with Prometheus interface. 
+The goal is to be reactive from top to bottom. To do that the project uses Angular in the frontend and Spring Boot with Reactive Web as server. Mongodb is the database connected with the reactive MongoDB driver. That enables a reactive chain from the browser to the DB. The security is done with Jwt Tokens and the logged out tokens are invalidated. The project uses an in memory MongoDB to be just cloned build and ready to run. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test. The health and performance of the application can be monitored with Spring Actuator with Prometheus interface. 
 
 ## What is it?
 
 The application runs a scheduled task reads the exchange rates of cryptocurrencies and stores them in the Mongodb. The UI uses the rest service to read the rates and displays them on a table. The table updates itself regularly. A detail page shows the data of the currency and a chart of the rates of the current day, 7 days, 30 days, 90 days. 
-If the user logs in the user can see the relevant part of the orderbooks for an order. The orderbooks route is implemented as a lazy loading feature module.
+If the user logs in the user can see the relevant part of the orderbooks for an order. The orderbooks route is implemented as a lazy loading feature module. The route guard checks for the Jwt token and the logout invalidates the Jwt token. 
 
 ## Data Import and Preparation
 
