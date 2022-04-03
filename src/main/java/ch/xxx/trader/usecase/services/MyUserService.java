@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -130,9 +131,15 @@ public class MyUserService {
 				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
 		Query query = new Query(Criteria.where("uuid").is(uuid));
 		return this.myMongoRepository.find(query, RevokedToken.class)
-			.filter(myRevokedToken -> myRevokedToken.getUuid().equals(uuid)).collectList()
-			.flatMap(myRevokedTokens -> !myRevokedTokens.isEmpty() ? Mono.just(Boolean.TRUE) 
-					: this.myMongoRepository.insert(Mono.just(new RevokedToken(null, username, uuid, LocalDateTime.now()))).then(Mono.just(Boolean.TRUE)));
+				.filter(myRevokedToken -> myRevokedToken.getUuid().equals(uuid)).collectList()
+				.doOnEach(myRevokedTokens -> {
+					if (myRevokedTokens.hasValue() && !myRevokedTokens.get().isEmpty())
+						LOGGER.warn("Duplicate logout for user {}", username);
+				})
+				.flatMap(myRevokedTokens -> !myRevokedTokens.isEmpty() ? Mono.just(Boolean.TRUE)
+						: this.myMongoRepository
+								.insert(Mono.just(new RevokedToken(null, username, uuid, LocalDateTime.now())))
+								.then(Mono.just(Boolean.TRUE)));
 	}
 
 	public Mono<MyUser> postUserLogin(MyUser myUser) throws NoSuchAlgorithmException, InvalidKeySpecException {
