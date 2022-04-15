@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+org.eclipse.m2e.wtp.ear.applicationXmlInBuilDir=false
+org.eclipse.m2e.wtp.enableM2eWtp=true
+org.eclipse.m2e.wtp.enabledProjectSpecificPrefs=true
+org.eclipse.m2e.wtp.war.archiverFilesInBuilDir=false
