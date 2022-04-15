@@ -15,7 +15,7 @@
     "postinstall": "ngcc",
     "postbuild": "npm run deploy",
     "predeploy": "rimraf ../../main/resources/static/*",
-    "deploy": "cpx 'base/*' dist/testproject/ && cpx 'dist/testproject/**' ../../main/resources/static/"
+    "deploy": "cpx 'base/*' dist/testproject/ && cpx 'dist/testproject/**' ../../../backend/src/main/resources/static/"
   },
   "private": true,
   "dependencies": {
