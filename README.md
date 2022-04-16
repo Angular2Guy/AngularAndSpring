@@ -11,7 +11,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 * [Ngx-Simple-Charts multiline and legend support howto](https://angular2guy.wordpress.com/2021/10/02/ngx-simple-charts-multiline-and-legend-support-howto/)
 * [Deep Links With Angular Routing and i18n in Prod Mode](https://angular2guy.wordpress.com/2021/07/31/deep-links-with-angular-routing-and-i18n-in-prod-mode/)
 * [Developing and Using Angular Libraries](https://angular2guy.wordpress.com/2021/07/31/developing-and-using-angular-libraries/)
-* [How to Modularize an Angular Application](https://dzone.com/articles/howto-modularize-an-angular-application-by-example)
+* [How to Modularize an Angular Application](https://angular2guy.wordpress.com/2022/04/16/how-to-modularize-an-angular-application/)
 * [Deployment Setup for Spring Boot Apps With MongoDB and Kubernetes](https://dzone.com/articles/a-developmentdeployment-setup-for-an-angular-sprin)
 * [Using Angular and Reactive Spring With JWT Tokens](https://dzone.com/articles/angular-and-reactive-spring-with-jwt-tokens)
 * [Angular and Spring Webflux](https://dzone.com/articles/angular-and-spring-webflux)
