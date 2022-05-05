@@ -86,5 +86,10 @@ public class RevokedToken {
 		RevokedToken other = (RevokedToken) obj;
 		return Objects.equals(_id, other._id);
 	}
+
+	@Override
+	public String toString() {
+		return "RevokedToken [_id=" + _id + ", name=" + name + ", uuid=" + uuid + ", lastLogout=" + lastLogout + "]";
+	}
 	
 }

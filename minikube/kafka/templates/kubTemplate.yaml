@@ -1,0 +1,152 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.secret.nameApp }}
+type: Opaque
+data:
+  {{- range $key, $val := .Values.envApp.secret }}
+  {{ $key }}: {{ $val | b64enc }}
+  {{- end}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.secret.nameDb }}
+type: Opaque
+data:
+  {{- range $key, $val := .Values.envDb.secret }}
+  {{ $key }}: {{ $val | b64enc }}
+  {{- end}}
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistentVolumeName }}
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  hostPath:
+    path: /data/kafka1
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.volumeClaimName }}
+  labels:
+    app: postgrespv
+spec:  
+  accessModes:
+    - ReadWriteOnce
+  # storageClassName: local-storage
+  storageClassName: manual  
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.dbName }}
+  labels:
+    app: {{ .Values.dbName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.dbName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.dbName }}
+    spec:
+      containers:
+      - name: {{ .Values.dbName }}
+        image: "{{ .Values.dbImageName }}:{{ .Values.dbImageVersion }}"
+        resources:
+          limits:
+            memory: "768M"
+            cpu: "0.5"
+          requests:
+            memory: "512M"
+            cpu: "0.5"
+        env:
+          {{- include "helpers.list-envDb-variables" . | indent 10 }}
+        ports:
+        - containerPort: 2181
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.dbServiceName }}
+  labels:
+    app: {{ .Values.dbServiceName }}
+spec:
+  ports:
+  - port: 2181
+    protocol: TCP
+  selector:
+    app: {{ .Values.dbName }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.webAppName }}
+  labels:
+    app: {{ .Values.webAppName }}    
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.webAppName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.webAppName }}
+    spec:
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+      - name: {{ .Values.webAppName }}
+        image: "{{ .Values.webImageName }}:{{ .Values.webImageVersion }}" 
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "1G"
+            cpu: "1.5"
+          requests:
+            memory: "768M"
+            cpu: "1.0"
+        env:
+          {{- include "helpers.list-envApp-variables" . | indent 10 }}
+        ports:
+        - containerPort: 9092
+#        volumeMounts:
+#        - name: hostvol
+#          mountPath: /bitnami/kafka
+#      volumes:
+#      - name: hostvol
+#        persistentVolumeClaim:
+#          claimName: {{ .Values.volumeClaimName }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.webServiceName }} 
+  labels:
+    run: {{ .Values.webServiceName }} 
+spec:
+  type: NodePort
+  ports:
+  - port: 9092
+    nodePort: 9092
+    protocol: TCP
+  selector:
+    app: {{ .Values.webAppName }}

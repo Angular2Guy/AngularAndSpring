@@ -1,0 +1,33 @@
+webAppName: kafkaapp
+dbName: zookeeperserver
+webImageName: bitnami/kafka
+webImageVersion: latest
+dbImageName: bitnami/zookeeper
+dbImageVersion: latest
+volumeClaimName: postgres-pv-claim
+persistentVolumeName: task-pv-volume
+webServiceName: kafkaservice
+dbServiceName: zookeeperservice
+#for production use replace the jwtTokenSecrect value with a random alphanumeric string of the same length or longer
+jwtTokenSecrect: secret-key1234567890abcdefghijklmnopqrstuvpxyz
+
+secret:
+  nameApp: app-env-secret
+  nameDb: db-env-secret
+
+envDb:
+  normal: 
+    ALLOW_ANONYMOUS_LOGIN: yes
+  secret:
+   ZOOKEEPER_TICK_TIME: "2000"
+    
+envApp:
+  normal: 
+    KAFKA_BROKER_ID: "1"
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+    KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://:9092
+    KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: false
+    ALLOW_PLAINTEXT_LISTENER: yes
+  secret:
+    KAFKA_ZOOKEEPER_CONNECT: "zookeeperservice:2181"  
