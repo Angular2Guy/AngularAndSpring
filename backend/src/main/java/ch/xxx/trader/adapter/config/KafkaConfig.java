@@ -25,8 +25,9 @@ public class KafkaConfig {
 	private static final String ZSTD = "zstd";
 	public static final String NEW_USER_TOPIC = "new-user-topic";
 	public static final String NEW_USER_DLT_TOPIC = "new-user-topic-retry";
-	public static final String USER_LOGOUT_TOPIC = "user-logout-topic";
-	public static final String USER_LOGOUT_DLT_TOPIC = "user-logout-topic-retry";
+	public static final String USER_LOGOUT_SOURCE_TOPIC = "user-logout-source-topic";
+	public static final String USER_LOGOUT_SINK_TOPIC = "user-logout-sink-topic";
+	public static final String USER_LOGOUT_SINK_DLT_TOPIC = "user-logout-sink-topic-retry";
 
 	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServers;
@@ -52,8 +53,26 @@ public class KafkaConfig {
 	}
 
 	@Bean
-	public NewTopic userLogoutTopic() {
-		return TopicBuilder.name(KafkaConfig.USER_LOGOUT_TOPIC)
+	public NewTopic newUserDltTopic() {
+		return TopicBuilder.name(KafkaConfig.NEW_USER_TOPIC)
+				.config(TopicConfig.COMPRESSION_TYPE_CONFIG, this.compressionType).compact().build();
+	}
+	
+	@Bean
+	public NewTopic userLogoutSourceTopic() {
+		return TopicBuilder.name(KafkaConfig.USER_LOGOUT_SOURCE_TOPIC)
+				.config(TopicConfig.COMPRESSION_TYPE_CONFIG, this.compressionType).compact().build();
+	}
+	
+	@Bean
+	public NewTopic userLogoutSinkTopic() {
+		return TopicBuilder.name(KafkaConfig.USER_LOGOUT_SINK_TOPIC)
+				.config(TopicConfig.COMPRESSION_TYPE_CONFIG, this.compressionType).compact().build();
+	}
+	
+	@Bean
+	public NewTopic userLogoutSinkDltTopic() {
+		return TopicBuilder.name(KafkaConfig.USER_LOGOUT_SINK_DLT_TOPIC)
 				.config(TopicConfig.COMPRESSION_TYPE_CONFIG, this.compressionType).compact().build();
 	}
 }
