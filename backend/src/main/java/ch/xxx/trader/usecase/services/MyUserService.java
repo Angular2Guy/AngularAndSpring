@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,7 +34,6 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.domain.common.JwtUtils;
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.common.Role;
-import ch.xxx.trader.domain.common.StreamHelpers;
 import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.model.dto.AuthCheck;
