@@ -17,5 +17,7 @@ kubectl exec --stdin --tty <mongodb-pod-name> -- /bin/bash
 kubectl expose pod <mongodb-pod-name> --port=27017 --type="NodePort"
 mongorestore -v --gzip mongodb://<minikube ip>:<exposed-port>
 
+minikube start --extra-config=apiserver.service-node-port-range=1024-65535
+
 minikube pause
 minikube unpause
