@@ -38,6 +38,7 @@ import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.model.dto.AuthCheck;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
+import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import io.jsonwebtoken.Claims;
@@ -97,7 +98,11 @@ public class MyUserService {
 		return new AuthCheck(authcheck.getHash(), authcheck.getPath(), false);
 	}
 
-	public Mono<MyUser> postUserSignin(MyUser myUser) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public Mono<MyUser> postUserSigninNew(MyUser myUser) {
+		return Mono.empty();
+	}
+	
+	public Mono<MyUser> postUserSignin(MyUser myUser) {
 		Query query = new Query(Criteria.where("userId").is(myUser.getUserId()));
 		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(myUser))
 				.flatMap(myUser1 -> signinHelp(myUser1));
@@ -123,6 +128,10 @@ public class MyUserService {
 		return Mono.just(new MyUser());
 	}
 
+	public Mono<Boolean> postLogoutNew(RevokedTokensDto revokedTokensDto) {
+		return Mono.empty();
+	}
+	
 	public Mono<Boolean> postLogout(String bearerStr) {
 		String username = this.jwtTokenProvider.getUsername(JwtUtils.resolveToken(bearerStr)
 				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));

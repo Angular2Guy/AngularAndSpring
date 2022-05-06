@@ -25,7 +25,6 @@ import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import reactor.core.publisher.Mono;
-import reactor.kafka.sender.KafkaOutbound;
 import reactor.kafka.sender.KafkaSender;
 
 @Profile("kafka | prod-kafka")
@@ -40,25 +39,31 @@ public class MessageProducer {
 		this.objectMapper = objectMapper;
 	}
 
-	public KafkaOutbound<String, String> sendNewUser(MyUser dto) {
-		String dtoJson;
-		try {
-			dtoJson = this.objectMapper.writeValueAsString(dto);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
-		return this.kafkaSender.createOutbound()
-				.send(Mono.just(new ProducerRecord<>(KafkaConfig.NEW_USER_TOPIC, dto.getSalt(), dtoJson)));
+	public void sendNewUser(MyUser dto) {
+		String dtoJson = mapDtoToString(dto);
+		this.kafkaSender.createOutbound()
+				.send(Mono.just(new ProducerRecord<>(KafkaConfig.NEW_USER_TOPIC, dto.getSalt(), dtoJson))).then()
+				.doOnError(e -> LOGGER.error(
+						String.format("Failed to send topic: %s value: %s", KafkaConfig.NEW_USER_TOPIC, dtoJson), e))
+				.subscribe();
 	}
 
-	public KafkaOutbound<String, String> sendUserLogout(RevokedToken dto) {
+	private String mapDtoToString(Object dto) {
 		String dtoJson;
 		try {
 			dtoJson = this.objectMapper.writeValueAsString(dto);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
-		return this.kafkaSender.createOutbound()
-				.send(Mono.just(new ProducerRecord<>(KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dto.getUuid(), dtoJson)));
+		return dtoJson;
+	}
+
+	public void sendUserLogout(RevokedToken dto) {
+		String dtoJson = this.mapDtoToString(dto);
+		this.kafkaSender.createOutbound()
+				.send(Mono.just(new ProducerRecord<>(KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dto.getUuid(), dtoJson)))
+				.then().doOnError(e -> LOGGER.error(String.format("Failed to send topic: %s value: %s",
+						KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dtoJson), e))
+				.subscribe();
 	}
 }

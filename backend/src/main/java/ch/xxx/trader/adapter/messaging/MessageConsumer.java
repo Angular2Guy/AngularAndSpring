@@ -18,10 +18,18 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ch.xxx.trader.adapter.config.KafkaConfig;
+import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
+import ch.xxx.trader.domain.model.entity.MyUser;
+import ch.xxx.trader.usecase.services.MyUserService;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 
@@ -29,26 +37,44 @@ import reactor.kafka.receiver.ReceiverOptions;
 @Component
 public class MessageConsumer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MessageConsumer.class);
-	private final ReceiverOptions<String,String> receiverOptions;
-	private final KafkaReceiver<String,String> userLogoutReceiver;
-	private final KafkaReceiver<String,String> newUserReceiver;
+	private final ReceiverOptions<String, String> receiverOptions;
+	private final KafkaReceiver<String, String> userLogoutReceiver;
+	private final KafkaReceiver<String, String> newUserReceiver;
+	private final MyUserService myUserService;
+	private final ObjectMapper objectMapper;
 	@Value("${spring.kafka.consumer.group-id}")
 	private String consumerGroupId;
-	
-	public MessageConsumer(ReceiverOptions<String,String> receiverOptions) {
+
+	public MessageConsumer(MyUserService myUserService, ReceiverOptions<String, String> receiverOptions,
+			ObjectMapper objectMapper) {
 		this.receiverOptions = receiverOptions;
-		this.userLogoutReceiver = KafkaReceiver.create(this.receiverOptions(List.of(KafkaConfig.USER_LOGOUT_SINK_TOPIC)));
+		this.userLogoutReceiver = KafkaReceiver
+				.create(this.receiverOptions(List.of(KafkaConfig.USER_LOGOUT_SINK_TOPIC)));
 		this.newUserReceiver = KafkaReceiver.create(this.receiverOptions(List.of(KafkaConfig.NEW_USER_TOPIC)));
+		this.objectMapper = objectMapper;
+		this.myUserService = myUserService;
 	}
-	
-    private ReceiverOptions<String, String> receiverOptions(Collection<String> topics) {
-        return this.receiverOptions
-                .addAssignListener(p -> LOGGER.info("Group {} partitions assigned {}", this.consumerGroupId, p))
-                .addRevokeListener(p -> LOGGER.info("Group {} partitions revoked {}", this.consumerGroupId, p))
-                .subscription(topics);
-    }
-	
-	public void sendNewUser() {
-		
+
+	private ReceiverOptions<String, String> receiverOptions(Collection<String> topics) {
+		return this.receiverOptions
+				.addAssignListener(p -> LOGGER.info("Group {} partitions assigned {}", this.consumerGroupId, p))
+				.addRevokeListener(p -> LOGGER.info("Group {} partitions revoked {}", this.consumerGroupId, p))
+				.subscription(topics);
+	}
+
+	@EventListener(ApplicationReadyEvent.class)
+	public void doOnStartup() {
+		this.newUserReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserService
+				.postUserSigninNew(this.mapJsonToObject(myRecord.value(), MyUser.class))).subscribe();
+		this.userLogoutReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserService
+				.postLogoutNew(this.mapJsonToObject(myRecord.value(), RevokedTokensDto.class))).subscribe();
+	}
+
+	private <T> T mapJsonToObject(String jsonString, Class<T> myClass) {
+		try {
+			return this.objectMapper.readValue(jsonString, myClass);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
