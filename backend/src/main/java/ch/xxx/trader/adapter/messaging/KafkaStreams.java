@@ -23,6 +23,7 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.SlidingWindows;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,6 +33,7 @@ import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 
+@Profile("kafka | prod-kafka")
 @Component
 public class KafkaStreams {
 	private static final long LOGOUT_TIMEOUT = 90L;
