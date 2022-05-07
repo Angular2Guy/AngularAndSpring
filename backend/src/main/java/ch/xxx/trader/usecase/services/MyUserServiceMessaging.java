@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
+import ch.xxx.trader.usecase.mappers.MessageMapper;
 import reactor.core.publisher.Mono;
 
 @Profile("kafka | prod-kafka")
@@ -30,23 +31,20 @@ import reactor.core.publisher.Mono;
 public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserService {
 	private Logger LOGGER = LoggerFactory.getLogger(MyUserServiceMessaging.class);
 	private final MyMessageProducer myMessageProducer;
+	private final MessageMapper messageMapper;
 	
 	public MyUserServiceMessaging(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
-			MyMessageProducer myMessageProducer) {
+			MyMessageProducer myMessageProducer, MessageMapper messageMapper) {
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
 		this.myMessageProducer = myMessageProducer;
+		this.messageMapper = messageMapper;
 	}
 
 	@Override
-	public Mono<Boolean> postLogout(String token) {
+	public Mono<Boolean> postLogout(String jsonStr) {
+		RevokedTokensDto revokedTokensDto = this.messageMapper.mapJsonToObject(jsonStr, RevokedTokensDto.class);
 		throw new RuntimeException("Method not implemented: postLogout(String token)");
 	}
-	
-	@Override
-	public Mono<Boolean> postLogout(RevokedTokensDto RevokedTokensDto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+		
 }
