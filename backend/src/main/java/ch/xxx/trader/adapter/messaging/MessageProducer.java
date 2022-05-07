@@ -16,7 +16,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,12 +24,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
+import ch.xxx.trader.usecase.services.MyMessageProducer;
 import reactor.core.publisher.Mono;
 import reactor.kafka.sender.KafkaSender;
 
 @Profile("kafka | prod-kafka")
-@Component
-public class MessageProducer {
+@Service
+public class MessageProducer implements MyMessageProducer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MessageProducer.class);
 	private final KafkaSender<String, String> kafkaSender;
 	private final ObjectMapper objectMapper;

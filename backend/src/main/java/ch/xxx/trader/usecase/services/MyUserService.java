@@ -54,14 +54,16 @@ public class MyUserService {
 	private final PasswordEncryption passwordEncryption;
 	private final MyMongoRepository myMongoRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final MyMessageProducer myMessageProducer; 
 	private Disposable updateLoggedOutUsersDisposable = Mono.empty().subscribe();
 
 	public MyUserService(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
-			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository) {
+			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository, MyMessageProducer myMessageProducer) {
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.passwordEncryption = passwordEncryption;
 		this.myMongoRepository = myMongoRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.myMessageProducer = myMessageProducer;
 	}
 
 	public void updateLoggedOutUsers() {
