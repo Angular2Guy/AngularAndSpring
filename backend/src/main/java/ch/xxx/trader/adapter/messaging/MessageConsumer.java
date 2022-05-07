@@ -24,6 +24,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.adapter.config.KafkaConfig;
+import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.usecase.mappers.MessageMapper;
 import ch.xxx.trader.usecase.services.MyUserServiceMessaging;
@@ -61,8 +62,8 @@ public class MessageConsumer {
 	@EventListener(ApplicationReadyEvent.class)
 	public void doOnStartup() {
 		this.newUserReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceMessaging
-				.postUserSignin(this.messageMapper.mapJsonToObject(myRecord.value(), MyUser.class))).subscribe();
+				.userSigninMsg(this.messageMapper.mapJsonToObject(myRecord.value(), MyUser.class))).subscribe();
 		this.userLogoutReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceMessaging
-				.postLogout(myRecord.value())).subscribe();
+				.logoutMsg(this.messageMapper.mapJsonToObject(myRecord.value(), RevokedTokensDto.class))).subscribe();
 	}	
 }

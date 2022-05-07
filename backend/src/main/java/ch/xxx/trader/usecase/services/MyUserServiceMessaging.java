@@ -23,13 +23,15 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
+import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.usecase.mappers.MessageMapper;
 import reactor.core.publisher.Mono;
 
 @Profile("kafka | prod-kafka")
 @Service
 public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserService {
-	private Logger LOGGER = LoggerFactory.getLogger(MyUserServiceMessaging.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceMessaging.class);
+	private static final long LOGOUT_TIMEOUT = 95L;
 	private final MyMessageProducer myMessageProducer;
 	private final MessageMapper messageMapper;
 	
@@ -39,12 +41,24 @@ public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserS
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
 		this.myMessageProducer = myMessageProducer;
 		this.messageMapper = messageMapper;
-	}
-
+	}	
+	
 	@Override
-	public Mono<Boolean> postLogout(String jsonStr) {
-		RevokedTokensDto revokedTokensDto = this.messageMapper.mapJsonToObject(jsonStr, RevokedTokensDto.class);
-		throw new RuntimeException("Method not implemented: postLogout(String token)");
+	public Mono<MyUser> postUserSignin(MyUser myUser) {
+		return Mono.empty();
 	}
-		
+	
+	public Mono<Boolean> userSigninMsg(MyUser myUser) {
+		return Mono.empty();
+	}
+	
+	@Override
+	public Mono<Boolean> postLogout(String token) {
+		//RevokedTokensDto revokedTokensDto = this.messageMapper.mapJsonToObject(jsonStr, RevokedTokensDto.class);
+		return Mono.empty();
+	}
+	
+	public Mono<Boolean> logoutMsg(RevokedTokensDto revokedTokensDto) {
+		return Mono.empty();
+	}			
 }

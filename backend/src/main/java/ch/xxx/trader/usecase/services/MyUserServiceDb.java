@@ -26,7 +26,7 @@ import ch.xxx.trader.domain.common.PasswordEncryption;
 @Profile("!kafka & !prod-kafka")
 @Service
 public class MyUserServiceDb extends MyUserServiceBean implements MyUserService {
-	private Logger LOGGER = LoggerFactory.getLogger(MyUserServiceDb.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceDb.class);
 	
 	public MyUserServiceDb(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
