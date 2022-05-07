@@ -33,15 +33,15 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.xxx.trader.domain.model.dto.AuthCheck;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
-import ch.xxx.trader.usecase.services.MyUserServiceBean;
+import ch.xxx.trader.usecase.services.MyUserService;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/myuser")
 public class MyUserController {
-	private final MyUserServiceBean myUserService;
+	private final MyUserService myUserService;
 
-	public MyUserController(MyUserServiceBean myUserService) {
+	public MyUserController(MyUserService myUserService) {
 		this.myUserService = myUserService;
 	}
 	
