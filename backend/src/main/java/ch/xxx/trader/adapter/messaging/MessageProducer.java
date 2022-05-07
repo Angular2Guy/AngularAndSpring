@@ -18,12 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
+import ch.xxx.trader.usecase.mappers.MessageMapper;
 import ch.xxx.trader.usecase.services.MyMessageProducer;
 import reactor.core.publisher.Mono;
 import reactor.kafka.sender.KafkaSender;
@@ -33,15 +31,15 @@ import reactor.kafka.sender.KafkaSender;
 public class MessageProducer implements MyMessageProducer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MessageProducer.class);
 	private final KafkaSender<String, String> kafkaSender;
-	private final ObjectMapper objectMapper;
+	private final MessageMapper messageMapper;
 
-	public MessageProducer(KafkaSender<String, String> kafkaSender, ObjectMapper objectMapper) {
+	public MessageProducer(KafkaSender<String, String> kafkaSender, MessageMapper messageMapper) {
 		this.kafkaSender = kafkaSender;
-		this.objectMapper = objectMapper;
+		this.messageMapper = messageMapper;
 	}
 
 	public void sendNewUser(MyUser dto) {
-		String dtoJson = mapDtoToString(dto);
+		String dtoJson = this.messageMapper.mapDtoToString(dto);
 		this.kafkaSender.createOutbound()
 				.send(Mono.just(new ProducerRecord<>(KafkaConfig.NEW_USER_TOPIC, dto.getSalt(), dtoJson))).then()
 				.doOnError(e -> LOGGER.error(
@@ -49,18 +47,8 @@ public class MessageProducer implements MyMessageProducer {
 				.subscribe();
 	}
 
-	private String mapDtoToString(Object dto) {
-		String dtoJson;
-		try {
-			dtoJson = this.objectMapper.writeValueAsString(dto);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
-		return dtoJson;
-	}
-
 	public void sendUserLogout(RevokedToken dto) {
-		String dtoJson = this.mapDtoToString(dto);
+		String dtoJson = this.messageMapper.mapDtoToString(dto);
 		this.kafkaSender.createOutbound()
 				.send(Mono.just(new ProducerRecord<>(KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dto.getUuid(), dtoJson)))
 				.then().doOnError(e -> LOGGER.error(String.format("Failed to send topic: %s value: %s",
