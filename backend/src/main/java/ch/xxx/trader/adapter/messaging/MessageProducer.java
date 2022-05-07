@@ -38,21 +38,21 @@ public class MessageProducer implements MyMessageProducer {
 		this.messageMapper = messageMapper;
 	}
 
-	public void sendNewUser(MyUser dto) {
+	public Mono<MyUser> sendNewUser(MyUser dto) {
 		String dtoJson = this.messageMapper.mapDtoToString(dto);
-		this.kafkaSender.createOutbound()
+		return this.kafkaSender.createOutbound()
 				.send(Mono.just(new ProducerRecord<>(KafkaConfig.NEW_USER_TOPIC, dto.getSalt(), dtoJson))).then()
 				.doOnError(e -> LOGGER.error(
 						String.format("Failed to send topic: %s value: %s", KafkaConfig.NEW_USER_TOPIC, dtoJson), e))
-				.subscribe();
+				.flatMap(value -> Mono.just(dto));
 	}
 
-	public void sendUserLogout(RevokedToken dto) {
+	public Mono<RevokedToken> sendUserLogout(RevokedToken dto) {
 		String dtoJson = this.messageMapper.mapDtoToString(dto);
-		this.kafkaSender.createOutbound()
+		return this.kafkaSender.createOutbound()
 				.send(Mono.just(new ProducerRecord<>(KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dto.getUuid(), dtoJson)))
 				.then().doOnError(e -> LOGGER.error(String.format("Failed to send topic: %s value: %s",
 						KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dtoJson), e))
-				.subscribe();
+				.flatMap(value -> Mono.just(dto));
 	}
 }

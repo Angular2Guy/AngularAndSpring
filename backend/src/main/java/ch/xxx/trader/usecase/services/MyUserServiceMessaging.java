@@ -45,11 +45,11 @@ public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserS
 	
 	@Override
 	public Mono<MyUser> postUserSignin(MyUser myUser) {
-		return Mono.empty();
+		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myMessageProducer.sendNewUser(dto));
 	}
 	
 	public Mono<Boolean> userSigninMsg(MyUser myUser) {
-		return Mono.empty();
+		return super.postUserSignin(myUser, true, false).flatMap(dto -> Mono.just(dto.get_id() != null));
 	}
 	
 	@Override

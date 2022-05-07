@@ -2,8 +2,9 @@ package ch.xxx.trader.usecase.services;
 
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
+import reactor.core.publisher.Mono;
 
 public interface MyMessageProducer {
-	void sendNewUser(MyUser dto);
-	void sendUserLogout(RevokedToken dto);
+	Mono<MyUser> sendNewUser(MyUser dto);
+	Mono<RevokedToken> sendUserLogout(RevokedToken dto);
 }

@@ -96,13 +96,13 @@ public class MyUserServiceBean {
 		return new AuthCheck(authcheck.getHash(), authcheck.getPath(), false);
 	}
 
-	public Mono<MyUser> postUserSignin(MyUser myUser) {
+	public Mono<MyUser> postUserSignin(MyUser myUser, boolean persist, boolean check) {
 		Query query = new Query(Criteria.where("userId").is(myUser.getUserId()));
-		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(myUser))
-				.flatMap(myUser1 -> signinHelp(myUser1));
+		return check ? this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(myUser))
+				.flatMap(myUser1 -> signinHelp(myUser1, persist)) : this.saveSignin(myUser);
 	}
 
-	private Mono<MyUser> signinHelp(MyUser myUser1) {
+	private Mono<MyUser> signinHelp(MyUser myUser1, boolean persist) {
 		if (myUser1.get_id() == null) {
 			String salt;
 			try {
@@ -113,13 +113,17 @@ public class MyUserServiceBean {
 			String encryptedPassword = this.passwordEncoder.encode(myUser1.getPassword());
 			myUser1.setPassword(encryptedPassword);
 			myUser1.setSalt(salt);
-			return this.myMongoRepository.save(myUser1).flatMap(myUser2 -> {
-				myUser2.setPassword("XXX");
-				myUser2.setSalt("YYY");
-				return Mono.just(myUser2);
-			});
+			return persist ? saveSignin(myUser1) : Mono.just(myUser1);
 		}
 		return Mono.just(new MyUser());
+	}
+
+	private Mono<MyUser> saveSignin(MyUser myUser1) {
+		return this.myMongoRepository.save(myUser1).flatMap(myUser2 -> {
+			myUser2.setPassword("XXX");
+			myUser2.setSalt("YYY");
+			return Mono.just(myUser2);
+		});
 	}
 
 	public Mono<Boolean> postLogout(String bearerStr) {

@@ -22,6 +22,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.PasswordEncryption;
+import ch.xxx.trader.domain.model.entity.MyUser;
+import reactor.core.publisher.Mono;
 
 @Profile("!kafka & !prod-kafka")
 @Service
@@ -32,5 +34,10 @@ public class MyUserServiceDb extends MyUserServiceBean implements MyUserService 
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
 			MyMessageProducer myMessageProducer) {
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
+	}
+
+	@Override
+	public Mono<MyUser> postUserSignin(MyUser myUser) {
+		return super.postUserSignin(myUser, true, true);
 	}
 }
