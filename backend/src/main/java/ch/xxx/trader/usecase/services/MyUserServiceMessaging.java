@@ -15,6 +15,9 @@
  */
 package ch.xxx.trader.usecase.services;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -24,6 +27,7 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
+import ch.xxx.trader.domain.model.entity.RevokedToken;
 import ch.xxx.trader.usecase.mappers.MessageMapper;
 import reactor.core.publisher.Mono;
 
@@ -34,31 +38,43 @@ public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserS
 	private static final long LOGOUT_TIMEOUT = 95L;
 	private final MyMessageProducer myMessageProducer;
 	private final MessageMapper messageMapper;
-	
+
 	public MyUserServiceMessaging(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
 			MyMessageProducer myMessageProducer, MessageMapper messageMapper) {
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
 		this.myMessageProducer = myMessageProducer;
 		this.messageMapper = messageMapper;
-	}	
-	
+	}
+
+	@Override
+	public void updateLoggedOutUsers() {
+		// do nothing
+	}
+
+	public Boolean updateLoggedOutUsers(List<RevokedToken> revokedTokens) {
+		this.jwtTokenProvider.updateLoggedOutUsers(revokedTokens);
+		return Boolean.TRUE;
+	}
+
 	@Override
 	public Mono<MyUser> postUserSignin(MyUser myUser) {
 		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myMessageProducer.sendNewUser(dto));
 	}
-	
+
 	public Mono<Boolean> userSigninMsg(MyUser myUser) {
 		return super.postUserSignin(myUser, true, false).flatMap(dto -> Mono.just(dto.get_id() != null));
 	}
-	
+
 	@Override
 	public Mono<Boolean> postLogout(String token) {
-		//RevokedTokensDto revokedTokensDto = this.messageMapper.mapJsonToObject(jsonStr, RevokedTokensDto.class);
-		return Mono.empty();
+		String username = this.getTokenUsername(token);
+		String uuid = this.getTokenUuid(token);
+		return this.myMessageProducer.sendUserLogout(new RevokedToken(null, username, uuid, LocalDateTime.now()))
+				.flatMap(value -> Mono.just(value != null));
 	}
-	
+
 	public Mono<Boolean> logoutMsg(RevokedTokensDto revokedTokensDto) {
-		return Mono.empty();
-	}			
+		return Mono.just(this.updateLoggedOutUsers(revokedTokensDto.getRevokedTokens()));
+	}
 }

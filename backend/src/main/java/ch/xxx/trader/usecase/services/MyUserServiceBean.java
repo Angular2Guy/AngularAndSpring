@@ -127,10 +127,8 @@ public class MyUserServiceBean {
 	}
 
 	public Mono<Boolean> postLogout(String bearerStr) {
-		String username = this.jwtTokenProvider.getUsername(JwtUtils.resolveToken(bearerStr)
-				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
-		String uuid = this.jwtTokenProvider.getUuid(JwtUtils.resolveToken(bearerStr)
-				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
+		String username = getTokenUsername(bearerStr);
+		String uuid = getTokenUuid(bearerStr);
 		Query query = new Query(Criteria.where("uuid").is(uuid));
 		return this.myMongoRepository.find(query, RevokedToken.class)
 				.filter(myRevokedToken -> myRevokedToken.getUuid().equals(uuid)).collectList()
@@ -142,6 +140,16 @@ public class MyUserServiceBean {
 						: this.myMongoRepository
 								.insert(Mono.just(new RevokedToken(null, username, uuid, LocalDateTime.now())))
 								.then(Mono.just(Boolean.TRUE)));
+	}
+
+	protected String getTokenUuid(String bearerStr) {
+		return this.jwtTokenProvider.getUuid(JwtUtils.resolveToken(bearerStr)
+				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
+	}
+
+	protected String getTokenUsername(String bearerStr) {
+		return this.jwtTokenProvider.getUsername(JwtUtils.resolveToken(bearerStr)
+				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
 	}
 
 	
