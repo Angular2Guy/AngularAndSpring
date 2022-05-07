@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.usecase.mappers.MessageMapper;
-import ch.xxx.trader.usecase.services.MyUserService;
+import ch.xxx.trader.usecase.services.MyUserServiceMessaging;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 
@@ -37,17 +37,17 @@ public class MessageConsumer {
 	private final ReceiverOptions<String, String> receiverOptions;
 	private final KafkaReceiver<String, String> userLogoutReceiver;
 	private final KafkaReceiver<String, String> newUserReceiver;
-	private final MyUserService myUserService;
+	private final MyUserServiceMessaging myUserServiceMessaging;
 	private final MessageMapper messageMapper;
 	@Value("${spring.kafka.consumer.group-id}")
 	private String consumerGroupId;
 
-	public MessageConsumer(MyUserService myUserService, ReceiverOptions<String, String> receiverOptions, MessageMapper messageMapper) {
+	public MessageConsumer(MyUserServiceMessaging myUserServiceMessaging, ReceiverOptions<String, String> receiverOptions, MessageMapper messageMapper) {
 		this.receiverOptions = receiverOptions;
 		this.userLogoutReceiver = KafkaReceiver
 				.create(this.receiverOptions(List.of(KafkaConfig.USER_LOGOUT_SINK_TOPIC)));
 		this.newUserReceiver = KafkaReceiver.create(this.receiverOptions(List.of(KafkaConfig.NEW_USER_TOPIC)));
-		this.myUserService = myUserService;
+		this.myUserServiceMessaging = myUserServiceMessaging;
 		this.messageMapper = messageMapper;
 	}
 
@@ -60,9 +60,9 @@ public class MessageConsumer {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void doOnStartup() {
-		this.newUserReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserService
+		this.newUserReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceMessaging
 				.postUserSignin(this.messageMapper.mapJsonToObject(myRecord.value(), MyUser.class))).subscribe();
-		this.userLogoutReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserService
+		this.userLogoutReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceMessaging
 				.postLogout(myRecord.value())).subscribe();
 	}	
 }

@@ -37,7 +37,6 @@ import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.model.dto.AuthCheck;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
-import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import io.jsonwebtoken.Claims;
@@ -97,10 +96,6 @@ public class MyUserServiceBean {
 		return new AuthCheck(authcheck.getHash(), authcheck.getPath(), false);
 	}
 
-	public Mono<MyUser> postUserSigninNew(MyUser myUser) {
-		return Mono.empty();
-	}
-	
 	public Mono<MyUser> postUserSignin(MyUser myUser) {
 		Query query = new Query(Criteria.where("userId").is(myUser.getUserId()));
 		return this.myMongoRepository.findOne(query, MyUser.class).switchIfEmpty(Mono.just(myUser))
@@ -127,10 +122,25 @@ public class MyUserServiceBean {
 		return Mono.just(new MyUser());
 	}
 
-	public Mono<Boolean> postLogoutNew(RevokedTokensDto revokedTokensDto) {
-		return Mono.empty();
+	public Mono<Boolean> postLogout(String bearerStr) {
+		String username = this.jwtTokenProvider.getUsername(JwtUtils.resolveToken(bearerStr)
+				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
+		String uuid = this.jwtTokenProvider.getUuid(JwtUtils.resolveToken(bearerStr)
+				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
+		Query query = new Query(Criteria.where("uuid").is(uuid));
+		return this.myMongoRepository.find(query, RevokedToken.class)
+				.filter(myRevokedToken -> myRevokedToken.getUuid().equals(uuid)).collectList()
+				.doOnEach(myRevokedTokens -> {
+					if (myRevokedTokens.hasValue() && !myRevokedTokens.get().isEmpty())
+						LOGGER.warn("Duplicate logout for user {}", username);
+				})
+				.flatMap(myRevokedTokens -> !myRevokedTokens.isEmpty() ? Mono.just(Boolean.TRUE)
+						: this.myMongoRepository
+								.insert(Mono.just(new RevokedToken(null, username, uuid, LocalDateTime.now())))
+								.then(Mono.just(Boolean.TRUE)));
 	}
 
+	
 	public Mono<MyUser> postUserLogin(MyUser myUser) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(myUser.getUserId()));

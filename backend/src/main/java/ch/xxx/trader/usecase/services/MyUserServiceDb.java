@@ -15,21 +15,13 @@
  */
 package ch.xxx.trader.usecase.services;
 
-import java.time.LocalDateTime;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.domain.common.JwtUtils;
 import ch.xxx.trader.domain.common.PasswordEncryption;
-import ch.xxx.trader.domain.exceptions.AuthenticationException;
-import ch.xxx.trader.domain.model.entity.RevokedToken;
-import reactor.core.publisher.Mono;
 
 @Profile("!kafka & !prod-kafka")
 @Service
@@ -41,24 +33,4 @@ public class MyUserServiceDb extends MyUserServiceBean implements MyUserService 
 			MyMessageProducer myMessageProducer) {
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
 	}
-
-	@Override
-	public Mono<Boolean> postLogout(String bearerStr) {
-		String username = this.jwtTokenProvider.getUsername(JwtUtils.resolveToken(bearerStr)
-				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
-		String uuid = this.jwtTokenProvider.getUuid(JwtUtils.resolveToken(bearerStr)
-				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
-		Query query = new Query(Criteria.where("uuid").is(uuid));
-		return this.myMongoRepository.find(query, RevokedToken.class)
-				.filter(myRevokedToken -> myRevokedToken.getUuid().equals(uuid)).collectList()
-				.doOnEach(myRevokedTokens -> {
-					if (myRevokedTokens.hasValue() && !myRevokedTokens.get().isEmpty())
-						LOGGER.warn("Duplicate logout for user {}", username);
-				})
-				.flatMap(myRevokedTokens -> !myRevokedTokens.isEmpty() ? Mono.just(Boolean.TRUE)
-						: this.myMongoRepository
-								.insert(Mono.just(new RevokedToken(null, username, uuid, LocalDateTime.now())))
-								.then(Mono.just(Boolean.TRUE)));
-	}
-
 }
