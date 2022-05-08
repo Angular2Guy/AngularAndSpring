@@ -15,8 +15,10 @@
  */
 package ch.xxx.trader.adapter.cron;
 
+import java.net.http.HttpHeaders;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,7 @@ import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.domain.model.entity.QuoteIb;
+import ch.xxx.trader.usecase.mappers.MessageMapper;
 import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
@@ -56,19 +59,22 @@ public class ScheduledTask {
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 	private final MyUserService myUserService;
+	private final MessageMapper messageMapper;
 	private Disposable bitstampDisposable = Mono.empty().subscribe();
 	private Disposable coinbaseDisposable = Mono.empty().subscribe();
 	private Disposable itbitDisposable = Mono.empty().subscribe();
 	private Disposable bitfinexDisposable = Mono.empty().subscribe();
 
 	public ScheduledTask(WebClient webClient, BitstampService bitstampService, MyUserService myUserService,
-			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService) {
+			MessageMapper messageMapper, BitfinexService bitfinexService, ItbitService itbitService,
+			CoinbaseService coinbaseService) {
 		this.webClient = webClient;
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
 		this.itbitService = itbitService;
 		this.coinbaseService = coinbaseService;
 		this.myUserService = myUserService;
+		this.messageMapper = messageMapper;
 	}
 
 //	@PostConstruct
@@ -135,8 +141,13 @@ public class ScheduledTask {
 		this.coinbaseDisposable.dispose();
 		Date start = new Date();
 		Mono<QuoteCb> request = this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
-				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(WrapperCb.class))
-				.flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
+				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> {
+					return response.bodyToMono(WrapperCb.class);
+//					return response.bodyToMono(String.class);
+//				}).flatMap(value -> {
+//					// log.info(value);
+//					return Mono.just(this.messageMapper.mapJsonToObject(value, WrapperCb.class));
+				}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
 					return Mono.just(resp2.getRates());
 				});
