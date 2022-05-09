@@ -18,7 +18,7 @@ package ch.xxx.trader.usecase.services;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -35,7 +35,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -44,8 +43,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.model.entity.QuoteCb;
@@ -57,17 +54,25 @@ import reactor.core.publisher.Mono;
 @Service
 public class CoinbaseService {
 	private static final Logger log = LoggerFactory.getLogger(CoinbaseService.class);
-	private static final Map<Integer, MethodHandle> cbMethodCache = new ConcurrentHashMap<>();
+	private static final Map<String, GetSetMethodHandles> cbMethodCache = new ConcurrentHashMap<>();
+
+	private record GetSetMethodHandles(MethodHandle getter, MethodHandle setter, String fieldName) {
+	}
+
 	public static final String CB_HOUR_COL = "quoteCbHour";
 	public static final String CB_DAY_COL = "quoteCbDay";
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	@Value("${kubernetes.pod.cpu.constraint}")
 	private boolean cpuConstraint;
+	private final List<Field> valueFields;
+	private final List<String> nonValueFieldNames = List.of("_id", "createdAt");
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
 		this.serviceUtils = serviceUtils;
+		valueFields = List.of(QuoteCb.class.getDeclaredFields()).stream()
+				.filter(myField -> !this.nonValueFieldNames.contains(myField.getName())).toList();
 	}
 
 	public Mono<QuoteCb> insertQuote(Mono<QuoteCb> quote) {
@@ -179,19 +184,7 @@ public class CoinbaseService {
 
 	private Collection<QuoteCb> makeCbQuoteDay(List<QuoteCb> quotes, Calendar begin, Calendar end) {
 		List<QuoteCb> hourQuotes = new LinkedList<QuoteCb>();
-		BigDecimal[] params = new BigDecimal[170];
-		Class[] types = new Class[170];
-		for (int x = 0; x < 170; x++) {
-			params[x] = BigDecimal.ZERO;
-			types[x] = BigDecimal.class;
-		}
-		QuoteCb quoteCb = null;
-		try {
-			quoteCb = QuoteCb.class.getConstructor(types).newInstance((Object[]) params);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			throw new RuntimeException(e);
-		}
+		QuoteCb quoteCb = new QuoteCb();
 		quoteCb.setCreatedAt(begin.getTime());
 		long count = quotes.stream().filter(quote -> {
 			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
@@ -209,19 +202,7 @@ public class CoinbaseService {
 		List<Calendar> hours = this.serviceUtils.createDayHours(begin);
 		List<QuoteCb> hourQuotes = new LinkedList<QuoteCb>();
 		for (int i = 0; i < 24; i++) {
-			BigDecimal[] params = new BigDecimal[170];
-			Class[] types = new Class[170];
-			for (int x = 0; x < 170; x++) {
-				params[x] = BigDecimal.ZERO;
-				types[x] = BigDecimal.class;
-			}
-			QuoteCb quoteCb = null;
-			try {
-				quoteCb = QuoteCb.class.getConstructor(types).newInstance((Object[]) params);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				throw new RuntimeException(e);
-			}
+			QuoteCb quoteCb = new QuoteCb();
 			quoteCb.setCreatedAt(hours.get(i).getTime());
 			final int x = i;
 			long count = quotes.stream().filter(quote -> {
@@ -240,57 +221,54 @@ public class CoinbaseService {
 	}
 
 	private QuoteCb avgCbQuotePeriod(QuoteCb q1, QuoteCb q2, long count) {
-		Class[] types = new Class[170];
-		for (int i = 0; i < 170; i++) {
-			types[i] = BigDecimal.class;
-
-		}
-		QuoteCb result = null;
-		try {
-			BigDecimal[] bds = new BigDecimal[170];
-			IntStream.range(0, QuoteCb.class.getConstructor(types).getParameterAnnotations().length)
-					.forEach(x -> {
-						try {
-							MethodHandle mh = createGetMethodHandle(types, x);
-							BigDecimal num1 = (BigDecimal) mh.invokeExact(q1);
-							BigDecimal num2 = (BigDecimal) mh.invokeExact(q2);
-							bds[x] = this.serviceUtils.avgHourValue(num1, num2, count);
-						} catch (Throwable e) {
-							throw new RuntimeException(e);
-						}
-					});
-			result = QuoteCb.class.getConstructor(types).newInstance((Object[]) bds);
-			result.setCreatedAt(q1.getCreatedAt());
-		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
+		QuoteCb result = new QuoteCb();
+		this.valueFields.forEach(myField -> {
+			try {
+				GetSetMethodHandles gsmh = this.createGetMethodHandle(myField);
+				BigDecimal num1 = (BigDecimal) gsmh.getter.invokeExact(q1);
+				BigDecimal num2 = (BigDecimal) gsmh.getter.invokeExact(q2);
+				BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
+				gsmh.setter.invokeExact(result, resultValue);
+				result.setCreatedAt(q1.getCreatedAt());
+			} catch (Throwable e) {
+				throw new RuntimeException(e);
+			}
+		});
 		return result;
 	}
 
-	private MethodHandle createGetMethodHandle(Class[] types, int x)
+	private GetSetMethodHandles createGetMethodHandle(Field field)
 			throws NoSuchMethodException, IllegalAccessException {
-		MethodHandle mh = cbMethodCache.get(Integer.valueOf(x));
-		if (mh == null) {
+		GetSetMethodHandles gsmh = cbMethodCache.get(field.getName());
+		if (gsmh == null) {
 			synchronized (this) {
-				mh = cbMethodCache.get(Integer.valueOf(x));
-				if (mh == null) {
-					JsonProperty annotation = (JsonProperty) QuoteCb.class.getConstructor(types)
-							.getParameterAnnotations()[x][0];
-					String fieldName = annotation.value();
-					String methodName = String.format("get%s%s",
-							fieldName.substring(0, 1).toUpperCase(),
-							fieldName.substring(1).toLowerCase());
-					if ("getTry".equals(methodName)) {
-						methodName = methodName + "1";
+				gsmh = cbMethodCache.get(field.getName());
+				if (gsmh == null) {
+					String getterName = String.format("get%s%s", field.getName().substring(0, 1).toUpperCase(),
+							field.getName().substring(1).toLowerCase());
+					String setterName = String.format("s%s", getterName.substring(1),
+							field.getName().substring(1).toLowerCase());
+					if ("getTry".equals(getterName)) {
+						getterName = getterName + "1";
+						setterName = setterName + "1";
+					} else if("getSuper1".equals(getterName)) {
+						getterName = getterName.substring(0, (getterName.length() -1));
+						setterName = setterName.substring(0, (setterName.length() -1));
+					} else if("getInch1".equals(getterName)) {
+						final String methodNameEnd = "set1Inch".substring(1);
+						getterName = String.format("g%s", methodNameEnd);
+						setterName = String.format("s%s", methodNameEnd);
 					}
 					MethodType desc = MethodType.methodType(BigDecimal.class);
-					mh = MethodHandles.lookup().findVirtual(QuoteCb.class, methodName, desc);
-					cbMethodCache.put(Integer.valueOf(x), mh);
+					MethodHandle getterHandle = MethodHandles.lookup().findVirtual(QuoteCb.class, getterName, desc);
+					MethodType descSet = MethodType.methodType(Void.class, BigDecimal.class);
+					MethodHandle setterHandle = MethodHandles.lookup().findVirtual(QuoteCb.class, setterName, descSet);
+					cbMethodCache.put(field.getName(),
+							new GetSetMethodHandles(getterHandle, setterHandle, field.getName()));
 				}
 			}
 		}
-		return mh;
+		return gsmh;
 	}
 
 	private boolean filterEvenMinutes(QuoteCb quote) {

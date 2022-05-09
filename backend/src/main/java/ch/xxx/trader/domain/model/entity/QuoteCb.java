@@ -34,703 +34,703 @@ public class QuoteCb implements Quote {
 	@JsonProperty
 	private Date createdAt = new Date();
 	@JsonProperty("AED")
-	private  BigDecimal aed;
+	private  BigDecimal aed = BigDecimal.ZERO;
 	@JsonProperty("AFN")
-	private  BigDecimal afn;
+	private  BigDecimal afn = BigDecimal.ZERO;
 	@JsonProperty("ALL")
-	private  BigDecimal all;
+	private  BigDecimal all = BigDecimal.ZERO;
 	@JsonProperty("AMD")
-	private  BigDecimal amd;
+	private  BigDecimal amd = BigDecimal.ZERO;
 	@JsonProperty("ANG")
-	private  BigDecimal ang;
+	private  BigDecimal ang = BigDecimal.ZERO;
 	@JsonProperty("AOA")
-	private  BigDecimal aoa;
+	private  BigDecimal aoa = BigDecimal.ZERO;
 	@JsonProperty("ARS")
-	private  BigDecimal ars;
+	private  BigDecimal ars = BigDecimal.ZERO;
 	@JsonProperty("AUD")
-	private  BigDecimal aud;
+	private  BigDecimal aud = BigDecimal.ZERO;
 	@JsonProperty("AWG")
-	private  BigDecimal awg;
+	private  BigDecimal awg = BigDecimal.ZERO;
 	@JsonProperty("AZN")
-	private  BigDecimal azn;
+	private  BigDecimal azn = BigDecimal.ZERO;
 	@JsonProperty("BAM")
-	private  BigDecimal bam;
+	private  BigDecimal bam = BigDecimal.ZERO;
 	@JsonProperty("BBD")
-	private  BigDecimal bbd;
+	private  BigDecimal bbd = BigDecimal.ZERO;
 	@JsonProperty("BDT")
-	private  BigDecimal bdt;
+	private  BigDecimal bdt = BigDecimal.ZERO;
 	@JsonProperty("BGN")
-	private  BigDecimal bgn;
+	private  BigDecimal bgn = BigDecimal.ZERO;
 	@JsonProperty("BHD")
-	private  BigDecimal bhd;
+	private  BigDecimal bhd = BigDecimal.ZERO;
 	@JsonProperty("BIF")
-	private  BigDecimal bif;
+	private  BigDecimal bif = BigDecimal.ZERO;
 	@JsonProperty("BMD")
-	private  BigDecimal bmd;
+	private  BigDecimal bmd = BigDecimal.ZERO;
 	@JsonProperty("BND")
-	private  BigDecimal bnd;
+	private  BigDecimal bnd = BigDecimal.ZERO;
 	@JsonProperty("BOB")
-	private  BigDecimal bob;
+	private  BigDecimal bob = BigDecimal.ZERO;
 	@JsonProperty("BRL")
-	private  BigDecimal brl;
+	private  BigDecimal brl = BigDecimal.ZERO;
 	@JsonProperty("BSD")
-	private  BigDecimal bsd;
+	private  BigDecimal bsd = BigDecimal.ZERO;
 	@JsonProperty("BTC")
-	private  BigDecimal btc;
+	private  BigDecimal btc = BigDecimal.ZERO;
 	@JsonProperty("BTN")
-	private  BigDecimal btn;
+	private  BigDecimal btn = BigDecimal.ZERO;
 	@JsonProperty("BWP")
-	private  BigDecimal bwp;
+	private  BigDecimal bwp = BigDecimal.ZERO;
 	@JsonProperty("BYN")
-	private  BigDecimal byn;
+	private  BigDecimal byn = BigDecimal.ZERO;
 	@JsonProperty("BYR")
-	private  BigDecimal byr;
+	private  BigDecimal byr = BigDecimal.ZERO;
 	@JsonProperty("BZD")
-	private  BigDecimal bzd;
+	private  BigDecimal bzd = BigDecimal.ZERO;
 	@JsonProperty("CAD")
-	private  BigDecimal cad;
+	private  BigDecimal cad = BigDecimal.ZERO;
 	@JsonProperty("CDF")
-	private  BigDecimal cdf;
+	private  BigDecimal cdf = BigDecimal.ZERO;
 	@JsonProperty("CHF")
-	private  BigDecimal chf;
+	private  BigDecimal chf = BigDecimal.ZERO;
 	@JsonProperty("CLF")
-	private  BigDecimal clf;
+	private  BigDecimal clf = BigDecimal.ZERO;
 	@JsonProperty("CLP")
-	private  BigDecimal clp;
+	private  BigDecimal clp = BigDecimal.ZERO;
 	@JsonProperty("CNY")
-	private  BigDecimal cny;
+	private  BigDecimal cny = BigDecimal.ZERO;
 	@JsonProperty("COP")
-	private  BigDecimal cop;
+	private  BigDecimal cop = BigDecimal.ZERO;
 	@JsonProperty("CRC")
-	private  BigDecimal crc;
+	private  BigDecimal crc = BigDecimal.ZERO;
 	@JsonProperty("CUC")
-	private  BigDecimal cuc;
+	private  BigDecimal cuc = BigDecimal.ZERO;
 	@JsonProperty("CVE")
-	private  BigDecimal cve;
+	private  BigDecimal cve = BigDecimal.ZERO;
 	@JsonProperty("CZK")
-	private  BigDecimal czk;
+	private  BigDecimal czk = BigDecimal.ZERO;
 	@JsonProperty("DJF")
-	private  BigDecimal djf;
+	private  BigDecimal djf = BigDecimal.ZERO;
 	@JsonProperty("DKK")
-	private  BigDecimal dkk;
+	private  BigDecimal dkk = BigDecimal.ZERO;
 	@JsonProperty("DOP")
-	private  BigDecimal dop;
+	private  BigDecimal dop = BigDecimal.ZERO;
 	@JsonProperty("DZD")
-	private  BigDecimal dzd;
+	private  BigDecimal dzd = BigDecimal.ZERO;
 	@JsonProperty("EEK")
-	private  BigDecimal eek;
+	private  BigDecimal eek = BigDecimal.ZERO;
 	@JsonProperty("EGP")
-	private  BigDecimal egp;
+	private  BigDecimal egp = BigDecimal.ZERO;
 	@JsonProperty("ERN")
-	private  BigDecimal ern;
+	private  BigDecimal ern = BigDecimal.ZERO;
 	@JsonProperty("ETB")
-	private  BigDecimal etb;
+	private  BigDecimal etb = BigDecimal.ZERO;
 	@JsonProperty("ETH")
-	private  BigDecimal eth;
+	private  BigDecimal eth = BigDecimal.ZERO;
 	@JsonProperty("EUR")
-	private  BigDecimal eur;
+	private  BigDecimal eur = BigDecimal.ZERO;
 	@JsonProperty("FJD")
-	private  BigDecimal fjd;
+	private  BigDecimal fjd = BigDecimal.ZERO;
 	@JsonProperty("FKP")
-	private  BigDecimal fkp;
+	private  BigDecimal fkp = BigDecimal.ZERO;
 	@JsonProperty("GBP")
-	private  BigDecimal gbp;
+	private  BigDecimal gbp = BigDecimal.ZERO;
 	@JsonProperty("GEL")
-	private  BigDecimal gel;
+	private  BigDecimal gel = BigDecimal.ZERO;
 	@JsonProperty("GGP")
-	private  BigDecimal ggp;
+	private  BigDecimal ggp = BigDecimal.ZERO;
 	@JsonProperty("GHS")
-	private  BigDecimal ghs;
+	private  BigDecimal ghs = BigDecimal.ZERO;
 	@JsonProperty("GIP")
-	private  BigDecimal gip;
+	private  BigDecimal gip = BigDecimal.ZERO;
 	@JsonProperty("GMD")
-	private  BigDecimal gmd;
+	private  BigDecimal gmd = BigDecimal.ZERO;
 	@JsonProperty("GNF")
-	private  BigDecimal gnf;
+	private  BigDecimal gnf = BigDecimal.ZERO;
 	@JsonProperty("GTQ")
-	private  BigDecimal gtq;
+	private  BigDecimal gtq = BigDecimal.ZERO;
 	@JsonProperty("GYD")
-	private  BigDecimal gyd;
+	private  BigDecimal gyd = BigDecimal.ZERO;
 	@JsonProperty("HKD")
-	private  BigDecimal hkd;
+	private  BigDecimal hkd = BigDecimal.ZERO;
 	@JsonProperty("HNL")
-	private  BigDecimal hnl;
+	private  BigDecimal hnl = BigDecimal.ZERO;
 	@JsonProperty("HRK")
-	private  BigDecimal hrk;
+	private  BigDecimal hrk = BigDecimal.ZERO;
 	@JsonProperty("HTG")
-	private  BigDecimal htg;
+	private  BigDecimal htg = BigDecimal.ZERO;
 	@JsonProperty("HUF")
-	private  BigDecimal huf;
+	private  BigDecimal huf = BigDecimal.ZERO;
 	@JsonProperty("IDR")
-	private  BigDecimal idr;
+	private  BigDecimal idr = BigDecimal.ZERO;
 	@JsonProperty("ILS")
-	private  BigDecimal ils;
+	private  BigDecimal ils = BigDecimal.ZERO;
 	@JsonProperty("IMP")
-	private  BigDecimal imp;
+	private  BigDecimal imp = BigDecimal.ZERO;
 	@JsonProperty("INR")
-	private  BigDecimal inr;
+	private  BigDecimal inr = BigDecimal.ZERO;
 	@JsonProperty("IQD")
-	private  BigDecimal iqd;
+	private  BigDecimal iqd = BigDecimal.ZERO;
 	@JsonProperty("ISK")
-	private  BigDecimal isk;
+	private  BigDecimal isk = BigDecimal.ZERO;
 	@JsonProperty("JEP")
-	private  BigDecimal jep;
+	private  BigDecimal jep = BigDecimal.ZERO;
 	@JsonProperty("JMD")
-	private  BigDecimal jmd;
+	private  BigDecimal jmd = BigDecimal.ZERO;
 	@JsonProperty("JOD")
-	private  BigDecimal jod;
+	private  BigDecimal jod = BigDecimal.ZERO;
 	@JsonProperty("JPY")
-	private  BigDecimal jpy;
+	private  BigDecimal jpy = BigDecimal.ZERO;
 	@JsonProperty("KES")
-	private  BigDecimal kes;
+	private  BigDecimal kes = BigDecimal.ZERO;
 	@JsonProperty("KGS")
-	private  BigDecimal kgs;
+	private  BigDecimal kgs = BigDecimal.ZERO;
 	@JsonProperty("KHR")
-	private  BigDecimal khr;
+	private  BigDecimal khr = BigDecimal.ZERO;
 	@JsonProperty("KMF")
-	private  BigDecimal kmf;
+	private  BigDecimal kmf = BigDecimal.ZERO;
 	@JsonProperty("KRW")
-	private  BigDecimal krw;
+	private  BigDecimal krw = BigDecimal.ZERO;
 	@JsonProperty("KWD")
-	private  BigDecimal kwd;
+	private  BigDecimal kwd = BigDecimal.ZERO;
 	@JsonProperty("KYD")
-	private  BigDecimal kyd;
+	private  BigDecimal kyd = BigDecimal.ZERO;
 	@JsonProperty("KZT")
-	private  BigDecimal kzt;
+	private  BigDecimal kzt = BigDecimal.ZERO;
 	@JsonProperty("LAK")
-	private  BigDecimal lak;
+	private  BigDecimal lak = BigDecimal.ZERO;
 	@JsonProperty("LBP")
-	private  BigDecimal lbp;
+	private  BigDecimal lbp = BigDecimal.ZERO;
 	@JsonProperty("LKR")
-	private  BigDecimal lkr;
+	private  BigDecimal lkr = BigDecimal.ZERO;
 	@JsonProperty("LRD")
-	private  BigDecimal lrd;
+	private  BigDecimal lrd = BigDecimal.ZERO;
 	@JsonProperty("LSL")
-	private  BigDecimal lsl;
+	private  BigDecimal lsl = BigDecimal.ZERO;
 	@JsonProperty("LTC")
-	private  BigDecimal ltc;
+	private  BigDecimal ltc = BigDecimal.ZERO;
 	@JsonProperty("LTL")
-	private  BigDecimal ltl;
+	private  BigDecimal ltl = BigDecimal.ZERO;
 	@JsonProperty("LVL")
-	private  BigDecimal lvl;
+	private  BigDecimal lvl = BigDecimal.ZERO;
 	@JsonProperty("LYD")
-	private  BigDecimal lyd;
+	private  BigDecimal lyd = BigDecimal.ZERO;
 	@JsonProperty("MAD")
-	private  BigDecimal mad;
+	private  BigDecimal mad = BigDecimal.ZERO;
 	@JsonProperty("MDL")
-	private  BigDecimal mdl;
+	private  BigDecimal mdl = BigDecimal.ZERO;
 	@JsonProperty("MGA")
-	private  BigDecimal mga;
+	private  BigDecimal mga = BigDecimal.ZERO;
 	@JsonProperty("MKD")
-	private  BigDecimal mkd;
+	private  BigDecimal mkd = BigDecimal.ZERO;
 	@JsonProperty("MMK")
-	private  BigDecimal mmk;
+	private  BigDecimal mmk = BigDecimal.ZERO;
 	@JsonProperty("MNT")
-	private  BigDecimal mnt;
+	private  BigDecimal mnt = BigDecimal.ZERO;
 	@JsonProperty("MOP")
-	private  BigDecimal mop;
+	private  BigDecimal mop = BigDecimal.ZERO;
 	@JsonProperty("MRO")
-	private  BigDecimal mro;
+	private  BigDecimal mro = BigDecimal.ZERO;
 	@JsonProperty("MTL")
-	private  BigDecimal mtl;
+	private  BigDecimal mtl = BigDecimal.ZERO;
 	@JsonProperty("MUR")
-	private  BigDecimal mur;
+	private  BigDecimal mur = BigDecimal.ZERO;
 	@JsonProperty("MVR")
-	private  BigDecimal mvr;
+	private  BigDecimal mvr = BigDecimal.ZERO;
 	@JsonProperty("MWK")
-	private  BigDecimal mwk;
+	private  BigDecimal mwk = BigDecimal.ZERO;
 	@JsonProperty("MXN")
-	private  BigDecimal mxn;
+	private  BigDecimal mxn = BigDecimal.ZERO;
 	@JsonProperty("MYR")
-	private  BigDecimal myr;
+	private  BigDecimal myr = BigDecimal.ZERO;
 	@JsonProperty("MZN")
-	private  BigDecimal mzn;
+	private  BigDecimal mzn = BigDecimal.ZERO;
 	@JsonProperty("NAD")
-	private  BigDecimal nad;
+	private  BigDecimal nad = BigDecimal.ZERO;
 	@JsonProperty("NGN")
-	private  BigDecimal ngn;
+	private  BigDecimal ngn = BigDecimal.ZERO;
 	@JsonProperty("NIO")
-	private  BigDecimal nio;
+	private  BigDecimal nio = BigDecimal.ZERO;
 	@JsonProperty("NOK")
-	private  BigDecimal nok;
+	private  BigDecimal nok = BigDecimal.ZERO;
 	@JsonProperty("NPR")
-	private  BigDecimal npr;
+	private  BigDecimal npr = BigDecimal.ZERO;
 	@JsonProperty("NZD")
-	private  BigDecimal nzd;
+	private  BigDecimal nzd = BigDecimal.ZERO;
 	@JsonProperty("OMR")
-	private  BigDecimal omr;
+	private  BigDecimal omr = BigDecimal.ZERO;
 	@JsonProperty("PAB")
-	private  BigDecimal pab;
+	private  BigDecimal pab = BigDecimal.ZERO;
 	@JsonProperty("PEN")
-	private  BigDecimal pen;
+	private  BigDecimal pen = BigDecimal.ZERO;
 	@JsonProperty("PGK")
-	private  BigDecimal pgk;
+	private  BigDecimal pgk = BigDecimal.ZERO;
 	@JsonProperty("PHP")
-	private  BigDecimal php;
+	private  BigDecimal php = BigDecimal.ZERO;
 	@JsonProperty("PKR")
-	private  BigDecimal pkr;
+	private  BigDecimal pkr = BigDecimal.ZERO;
 	@JsonProperty("PLN")
-	private  BigDecimal pln;
+	private  BigDecimal pln = BigDecimal.ZERO;
 	@JsonProperty("PYG")
-	private  BigDecimal pyg;
+	private  BigDecimal pyg = BigDecimal.ZERO;
 	@JsonProperty("QAR")
-	private  BigDecimal qar;
+	private  BigDecimal qar = BigDecimal.ZERO;
 	@JsonProperty("RON")
-	private  BigDecimal ron;
+	private  BigDecimal ron = BigDecimal.ZERO;
 	@JsonProperty("RSD")
-	private  BigDecimal rsd;
+	private  BigDecimal rsd = BigDecimal.ZERO;
 	@JsonProperty("RUB")
-	private  BigDecimal rub;
+	private  BigDecimal rub = BigDecimal.ZERO;
 	@JsonProperty("RWF")
-	private  BigDecimal rwf;
+	private  BigDecimal rwf = BigDecimal.ZERO;
 	@JsonProperty("SAR")
-	private  BigDecimal sar;
+	private  BigDecimal sar = BigDecimal.ZERO;
 	@JsonProperty("SBD")
-	private  BigDecimal sbd;
+	private  BigDecimal sbd = BigDecimal.ZERO;
 	@JsonProperty("SCR")
-	private  BigDecimal scr;
+	private  BigDecimal scr = BigDecimal.ZERO;
 	@JsonProperty("SEK")
-	private  BigDecimal sek;
+	private  BigDecimal sek = BigDecimal.ZERO;
 	@JsonProperty("SGD")
-	private  BigDecimal sgd;
+	private  BigDecimal sgd = BigDecimal.ZERO;
 	@JsonProperty("SHP")
-	private  BigDecimal shp;
+	private  BigDecimal shp = BigDecimal.ZERO;
 	@JsonProperty("SLL")
-	private  BigDecimal sll;
+	private  BigDecimal sll = BigDecimal.ZERO;
 	@JsonProperty("SOS")
-	private  BigDecimal sos;
+	private  BigDecimal sos = BigDecimal.ZERO;
 	@JsonProperty("SRD")
-	private  BigDecimal srd;
+	private  BigDecimal srd = BigDecimal.ZERO;
 	@JsonProperty("SSP")
-	private  BigDecimal ssp;
+	private  BigDecimal ssp = BigDecimal.ZERO;
 	@JsonProperty("STD")
-	private  BigDecimal std;
+	private  BigDecimal std = BigDecimal.ZERO;
 	@JsonProperty("SVC")
-	private  BigDecimal svc;
+	private  BigDecimal svc = BigDecimal.ZERO;
 	@JsonProperty("SZL")
-	private  BigDecimal szl;
+	private  BigDecimal szl = BigDecimal.ZERO;
 	@JsonProperty("THB")
-	private  BigDecimal thb;
+	private  BigDecimal thb = BigDecimal.ZERO;
 	@JsonProperty("TJS")
-	private  BigDecimal tjs;
+	private  BigDecimal tjs = BigDecimal.ZERO;
 	@JsonProperty("TMT")
-	private  BigDecimal tmt;
+	private  BigDecimal tmt = BigDecimal.ZERO;
 	@JsonProperty("TND")
-	private  BigDecimal tnd;
+	private  BigDecimal tnd = BigDecimal.ZERO;
 	@JsonProperty("TOP")
-	private  BigDecimal top;	
-	private  BigDecimal try1;
+	private  BigDecimal top = BigDecimal.ZERO;	
+	private  BigDecimal try1 = BigDecimal.ZERO;
 	@JsonProperty("TTD")
-	private  BigDecimal ttd;
+	private  BigDecimal ttd = BigDecimal.ZERO;
 	@JsonProperty("TWD")
-	private  BigDecimal twd;
+	private  BigDecimal twd = BigDecimal.ZERO;
 	@JsonProperty("TZS")
-	private  BigDecimal tzs;
+	private  BigDecimal tzs = BigDecimal.ZERO;
 	@JsonProperty("UAH")
-	private  BigDecimal uah;
+	private  BigDecimal uah = BigDecimal.ZERO;
 	@JsonProperty("UGX")
-	private  BigDecimal ugx;
+	private  BigDecimal ugx = BigDecimal.ZERO;
 	@JsonProperty("USD")
-	private  BigDecimal usd;
+	private  BigDecimal usd = BigDecimal.ZERO;
 	@JsonProperty("UYU")
-	private  BigDecimal uyu;
+	private  BigDecimal uyu = BigDecimal.ZERO;
 	@JsonProperty("UZS")
-	private  BigDecimal uzs;
+	private  BigDecimal uzs = BigDecimal.ZERO;
 	@JsonProperty("VEF")
-	private  BigDecimal vef;
+	private  BigDecimal vef = BigDecimal.ZERO;
 	@JsonProperty("VND")
-	private  BigDecimal vnd;
+	private  BigDecimal vnd = BigDecimal.ZERO;
 	@JsonProperty("VUV")
-	private  BigDecimal vuv;
+	private  BigDecimal vuv = BigDecimal.ZERO;
 	@JsonProperty("WST")
-	private  BigDecimal wst;
+	private  BigDecimal wst = BigDecimal.ZERO;
 	@JsonProperty("XAF")
-	private  BigDecimal xaf;
+	private  BigDecimal xaf = BigDecimal.ZERO;
 	@JsonProperty("XAG")
-	private  BigDecimal xag;
+	private  BigDecimal xag = BigDecimal.ZERO;
 	@JsonProperty("XAU")
-	private  BigDecimal xau;
+	private  BigDecimal xau = BigDecimal.ZERO;
 	@JsonProperty("XCD")
-	private  BigDecimal xcd;
+	private  BigDecimal xcd = BigDecimal.ZERO;
 	@JsonProperty("XDR")
-	private  BigDecimal xdr;
+	private  BigDecimal xdr = BigDecimal.ZERO;
 	@JsonProperty("XOF")
-	private  BigDecimal xof;
+	private  BigDecimal xof = BigDecimal.ZERO;
 	@JsonProperty("XPD")
-	private  BigDecimal xpd;
+	private  BigDecimal xpd = BigDecimal.ZERO;
 	@JsonProperty("XPF")
-	private  BigDecimal xpf;
+	private  BigDecimal xpf = BigDecimal.ZERO;
 	@JsonProperty("XPT")
-	private  BigDecimal xpt;
+	private  BigDecimal xpt = BigDecimal.ZERO;
 	@JsonProperty("YER")
-	private  BigDecimal yer;
+	private  BigDecimal yer = BigDecimal.ZERO;
 	@JsonProperty("ZAR")
-	private  BigDecimal zar;
+	private  BigDecimal zar = BigDecimal.ZERO;
 	@JsonProperty("ZMK")
-	private  BigDecimal zmk;
+	private  BigDecimal zmk = BigDecimal.ZERO;
 	@JsonProperty("ZMW")
-	private  BigDecimal zmw;
+	private  BigDecimal zmw = BigDecimal.ZERO;
 	@JsonProperty("ZWL")
-	private  BigDecimal zwl;
+	private  BigDecimal zwl = BigDecimal.ZERO;
 	@JsonProperty("VES")
-	private  BigDecimal ves;
+	private  BigDecimal ves = BigDecimal.ZERO;
 	@JsonProperty("XBA")
-	private  BigDecimal xba;
+	private  BigDecimal xba = BigDecimal.ZERO;
 	@JsonProperty("XTS")
-	private  BigDecimal xts;
+	private  BigDecimal xts = BigDecimal.ZERO;
 	@JsonProperty("GBX")
-	private  BigDecimal gbx;
+	private  BigDecimal gbx = BigDecimal.ZERO;
 	@JsonProperty("CNH")
-	private  BigDecimal cnh;
+	private  BigDecimal cnh = BigDecimal.ZERO;
 	@JsonProperty("ZWD")
-	private  BigDecimal zwd;
+	private  BigDecimal zwd = BigDecimal.ZERO;
 	@JsonProperty("BCH")
-	private  BigDecimal bch;
+	private  BigDecimal bch = BigDecimal.ZERO;
 	@JsonProperty("BSV")
-	private  BigDecimal bsv;
+	private  BigDecimal bsv = BigDecimal.ZERO;
 	@JsonProperty("ETH2")
-	private  BigDecimal eth2;
+	private  BigDecimal eth2 = BigDecimal.ZERO;
 	@JsonProperty("ETC")
-	private  BigDecimal etc;
+	private  BigDecimal etc = BigDecimal.ZERO;
 	@JsonProperty("ZRX")
-	private  BigDecimal zrx;
+	private  BigDecimal zrx = BigDecimal.ZERO;
 	@JsonProperty("USDC")
-	private  BigDecimal usdc;
+	private  BigDecimal usdc = BigDecimal.ZERO;
 	@JsonProperty("BAT")
-	private  BigDecimal bat;
+	private  BigDecimal bat = BigDecimal.ZERO;
 	@JsonProperty("LOOM")
-	private  BigDecimal loom;
+	private  BigDecimal loom = BigDecimal.ZERO;
 	@JsonProperty("MANA")
-	private  BigDecimal mana;
+	private  BigDecimal mana = BigDecimal.ZERO;
 	@JsonProperty("KNC")
-	private  BigDecimal knc;
+	private  BigDecimal knc = BigDecimal.ZERO;
 	@JsonProperty("LINK")
-	private  BigDecimal link;
+	private  BigDecimal link = BigDecimal.ZERO;
 	@JsonProperty("MKR")
-	private  BigDecimal mkr;
+	private  BigDecimal mkr = BigDecimal.ZERO;
 	@JsonProperty("CVC")
-	private  BigDecimal cvc;
+	private  BigDecimal cvc = BigDecimal.ZERO;
 	@JsonProperty("OMG")
-	private  BigDecimal omg;
+	private  BigDecimal omg = BigDecimal.ZERO;
 	@JsonProperty("GNT")
-	private  BigDecimal gnt;
+	private  BigDecimal gnt = BigDecimal.ZERO;
 	@JsonProperty("DAI")
-	private  BigDecimal dai;
+	private  BigDecimal dai = BigDecimal.ZERO;
 	@JsonProperty("SNT")
-	private  BigDecimal snt;
+	private  BigDecimal snt = BigDecimal.ZERO;
 	@JsonProperty("ZEC")
-	private  BigDecimal zec;
+	private  BigDecimal zec = BigDecimal.ZERO;
 	@JsonProperty("XRP")
-	private  BigDecimal xrp;
+	private  BigDecimal xrp = BigDecimal.ZERO;
 	@JsonProperty("REP")
-	private  BigDecimal rep;
+	private  BigDecimal rep = BigDecimal.ZERO;
 	@JsonProperty("XLM")
-	private  BigDecimal xlm;
+	private  BigDecimal xlm = BigDecimal.ZERO;
 	@JsonProperty("EOS")
-	private  BigDecimal eos;
+	private  BigDecimal eos = BigDecimal.ZERO;
 	@JsonProperty("XTZ")
-	private  BigDecimal xtz;
+	private  BigDecimal xtz = BigDecimal.ZERO;
 	@JsonProperty("ALGO")
-	private  BigDecimal algo;
+	private  BigDecimal algo = BigDecimal.ZERO;
 	@JsonProperty("DASH")
-	private  BigDecimal dash;
+	private  BigDecimal dash = BigDecimal.ZERO;
 	@JsonProperty("ATOM")
-	private  BigDecimal atom;
+	private  BigDecimal atom = BigDecimal.ZERO;
 	@JsonProperty("OXT")
-	private  BigDecimal oxt;
+	private  BigDecimal oxt = BigDecimal.ZERO;
 	@JsonProperty("COMP")
-	private  BigDecimal comp;
+	private  BigDecimal comp = BigDecimal.ZERO;
 	@JsonProperty("ENJ")
-	private  BigDecimal enj;
+	private  BigDecimal enj = BigDecimal.ZERO;
 	@JsonProperty("REPV2")
-	private  BigDecimal repv2;
+	private  BigDecimal repv2 = BigDecimal.ZERO;
 	@JsonProperty("BAND")
-	private  BigDecimal band;
+	private  BigDecimal band = BigDecimal.ZERO;
 	@JsonProperty("NMR")
-	private  BigDecimal nmr;
+	private  BigDecimal nmr = BigDecimal.ZERO;
 	@JsonProperty("CGLD")
-	private  BigDecimal cgld;
+	private  BigDecimal cgld = BigDecimal.ZERO;
 	@JsonProperty("UMA")
-	private  BigDecimal uma;
+	private  BigDecimal uma = BigDecimal.ZERO;
 	@JsonProperty("LRC")
-	private  BigDecimal lrc;
+	private  BigDecimal lrc = BigDecimal.ZERO;
 	@JsonProperty("YFI")
-	private  BigDecimal yfi;
+	private  BigDecimal yfi = BigDecimal.ZERO;
 	@JsonProperty("UNI")
-	private  BigDecimal uni;
+	private  BigDecimal uni = BigDecimal.ZERO;
 	@JsonProperty("BAL")
-	private  BigDecimal bal;
+	private  BigDecimal bal = BigDecimal.ZERO;
 	@JsonProperty("REN")
-	private  BigDecimal ren;
+	private  BigDecimal ren = BigDecimal.ZERO;
 	@JsonProperty("WBTC")
-	private  BigDecimal wbtc;
+	private  BigDecimal wbtc = BigDecimal.ZERO;
 	@JsonProperty("NU")
-	private  BigDecimal nu;
+	private  BigDecimal nu = BigDecimal.ZERO;
 	@JsonProperty("YFII")
-	private  BigDecimal yfii;
+	private  BigDecimal yfii = BigDecimal.ZERO;
 	@JsonProperty("FIL")
-	private  BigDecimal fil;
+	private  BigDecimal fil = BigDecimal.ZERO;
 	@JsonProperty("AAVE")
-	private  BigDecimal aave;
+	private  BigDecimal aave = BigDecimal.ZERO;
 	@JsonProperty("BNT")
-	private  BigDecimal bnt;
+	private  BigDecimal bnt = BigDecimal.ZERO;
 	@JsonProperty("GRT")
-	private  BigDecimal grt;
+	private  BigDecimal grt = BigDecimal.ZERO;
 	@JsonProperty("SNX")
-	private  BigDecimal snx;
+	private  BigDecimal snx = BigDecimal.ZERO;
 	@JsonProperty("STORJ")
-	private  BigDecimal storj;
+	private  BigDecimal storj = BigDecimal.ZERO;
 	@JsonProperty("SUSHI")
-	private  BigDecimal sushi;
+	private  BigDecimal sushi = BigDecimal.ZERO;
 	@JsonProperty("MATIC")
-	private  BigDecimal matic;
+	private  BigDecimal matic = BigDecimal.ZERO;
 	@JsonProperty("SKL")
-	private  BigDecimal skl;
+	private  BigDecimal skl = BigDecimal.ZERO;
 	@JsonProperty("ADA")
-	private  BigDecimal ada;
+	private  BigDecimal ada = BigDecimal.ZERO;
 	@JsonProperty("ANKR")
-	private  BigDecimal ankr;
+	private  BigDecimal ankr = BigDecimal.ZERO;
 	@JsonProperty("CRV")
-	private  BigDecimal crv;
+	private  BigDecimal crv = BigDecimal.ZERO;
 	@JsonProperty("ICP")
-	private  BigDecimal icp;
+	private  BigDecimal icp = BigDecimal.ZERO;
 	@JsonProperty("NKN")
-	private  BigDecimal nkn;
+	private  BigDecimal nkn = BigDecimal.ZERO;
 	@JsonProperty("OGN")
-	private  BigDecimal ogn;
-	private  BigDecimal inch1;
+	private  BigDecimal ogn = BigDecimal.ZERO;
+	private  BigDecimal inch1 = BigDecimal.ZERO;
 	@JsonProperty("USDT")
-	private  BigDecimal usdt;
+	private  BigDecimal usdt = BigDecimal.ZERO;
 	@JsonProperty("FORTH")
-	private  BigDecimal forth;
+	private  BigDecimal forth = BigDecimal.ZERO;
 	@JsonProperty("CTSI")
-	private  BigDecimal ctsi;
+	private  BigDecimal ctsi = BigDecimal.ZERO;
 	@JsonProperty("TRB")
-	private  BigDecimal trb;
+	private  BigDecimal trb = BigDecimal.ZERO;
 	@JsonProperty("POLY")
-	private  BigDecimal poly;
+	private  BigDecimal poly = BigDecimal.ZERO;
 	@JsonProperty("MIR")
-	private  BigDecimal mir;
+	private  BigDecimal mir = BigDecimal.ZERO;
 	@JsonProperty("RLC")
-	private  BigDecimal rlc;
+	private  BigDecimal rlc = BigDecimal.ZERO;
 	@JsonProperty("DOT")
-	private  BigDecimal dot;
+	private  BigDecimal dot = BigDecimal.ZERO;
 	@JsonProperty("SOL")
-	private  BigDecimal sol;
+	private  BigDecimal sol = BigDecimal.ZERO;
 	@JsonProperty("DOGE")
-	private  BigDecimal doge;
+	private  BigDecimal doge = BigDecimal.ZERO;
 	@JsonProperty("MLN")
-	private  BigDecimal mln;
+	private  BigDecimal mln = BigDecimal.ZERO;
 	@JsonProperty("GTC")
-	private  BigDecimal gtc;
+	private  BigDecimal gtc = BigDecimal.ZERO;
 	@JsonProperty("AMP")
-	private  BigDecimal amp;
+	private  BigDecimal amp = BigDecimal.ZERO;
 	@JsonProperty("SHIB")
-	private  BigDecimal shib;
+	private  BigDecimal shib = BigDecimal.ZERO;
 	@JsonProperty("CHZ")
-	private  BigDecimal chz;
+	private  BigDecimal chz = BigDecimal.ZERO;
 	@JsonProperty("KEEP")
-	private  BigDecimal keep;
+	private  BigDecimal keep = BigDecimal.ZERO;
 	@JsonProperty("LPT")
-	private  BigDecimal lpt;
+	private  BigDecimal lpt = BigDecimal.ZERO;
 	@JsonProperty("QNT")
-	private  BigDecimal qnt;
+	private  BigDecimal qnt = BigDecimal.ZERO;
 	@JsonProperty("BOND")
-	private  BigDecimal bond;
+	private  BigDecimal bond = BigDecimal.ZERO;
 	@JsonProperty("RLY")
-	private  BigDecimal rly;
+	private  BigDecimal rly = BigDecimal.ZERO;
 	@JsonProperty("CLV")
-	private  BigDecimal clv;
+	private  BigDecimal clv = BigDecimal.ZERO;
 	@JsonProperty("FARM")
-	private  BigDecimal farm;
+	private  BigDecimal farm = BigDecimal.ZERO;
 	@JsonProperty("MASK")
-	private  BigDecimal mask;
+	private  BigDecimal mask = BigDecimal.ZERO;
 	@JsonProperty("FET")
-	private  BigDecimal fet;
+	private  BigDecimal fet = BigDecimal.ZERO;
 	@JsonProperty("PAX")
-	private  BigDecimal pax;
+	private  BigDecimal pax = BigDecimal.ZERO;
 	@JsonProperty("ACH")
-	private  BigDecimal ach;
+	private  BigDecimal ach = BigDecimal.ZERO;
 	@JsonProperty("ASM")
-	private  BigDecimal asm;
+	private  BigDecimal asm = BigDecimal.ZERO;
 	@JsonProperty("PLA")
-	private  BigDecimal pla;
+	private  BigDecimal pla = BigDecimal.ZERO;
 	@JsonProperty("RAI")
-	private  BigDecimal rai;
+	private  BigDecimal rai = BigDecimal.ZERO;
 	@JsonProperty("TRIBE")
-	private  BigDecimal tribe;
+	private  BigDecimal tribe = BigDecimal.ZERO;
 	@JsonProperty("ORN")
-	private  BigDecimal orn;
+	private  BigDecimal orn = BigDecimal.ZERO;
 	@JsonProperty("IOTX")
-	private  BigDecimal iotx;
+	private  BigDecimal iotx = BigDecimal.ZERO;
 	@JsonProperty("UST")
-	private  BigDecimal ust;
+	private  BigDecimal ust = BigDecimal.ZERO;
 	@JsonProperty("QUICK")
-	private  BigDecimal quick;
+	private  BigDecimal quick = BigDecimal.ZERO;
 	@JsonProperty("AXS")
-	private  BigDecimal axs;
+	private  BigDecimal axs = BigDecimal.ZERO;
 	@JsonProperty("REQ")
-	private  BigDecimal req;
+	private  BigDecimal req = BigDecimal.ZERO;
 	@JsonProperty("WLUNA")
-	private  BigDecimal wluna;
+	private  BigDecimal wluna = BigDecimal.ZERO;
 	@JsonProperty("TRU")
-	private  BigDecimal tru;
+	private  BigDecimal tru = BigDecimal.ZERO;
 	@JsonProperty("RAD")
-	private  BigDecimal rad;
+	private  BigDecimal rad = BigDecimal.ZERO;
 	@JsonProperty("COTI")
-	private  BigDecimal coti;
+	private  BigDecimal coti = BigDecimal.ZERO;
 	@JsonProperty("DDX")
-	private  BigDecimal ddx;
+	private  BigDecimal ddx = BigDecimal.ZERO;
 	@JsonProperty("SUKU")
-	private  BigDecimal suku;
+	private  BigDecimal suku = BigDecimal.ZERO;
 	@JsonProperty("RGT")
-	private  BigDecimal rgt;
+	private  BigDecimal rgt = BigDecimal.ZERO;
 	@JsonProperty("XYO")
-	private  BigDecimal xyo;
+	private  BigDecimal xyo = BigDecimal.ZERO;
 	@JsonProperty("ZEN")
-	private  BigDecimal zen;
+	private  BigDecimal zen = BigDecimal.ZERO;
 	@JsonProperty("AUCTION")
-	private  BigDecimal auction;
+	private  BigDecimal auction = BigDecimal.ZERO;
 	@JsonProperty("BUSD")
-	private  BigDecimal busd;
+	private  BigDecimal busd = BigDecimal.ZERO;
 	@JsonProperty("JASMY")
-	private  BigDecimal jasmy;
+	private  BigDecimal jasmy = BigDecimal.ZERO;
 	@JsonProperty("WCFG")
-	private  BigDecimal wcfg;
+	private  BigDecimal wcfg = BigDecimal.ZERO;
 	@JsonProperty("BTRST")
-	private  BigDecimal btrst;
+	private  BigDecimal btrst = BigDecimal.ZERO;
 	@JsonProperty("AGLD")
-	private  BigDecimal agld;
+	private  BigDecimal agld = BigDecimal.ZERO;
 	@JsonProperty("AVAX")
-	private  BigDecimal avax;
+	private  BigDecimal avax = BigDecimal.ZERO;
 	@JsonProperty("FX")
-	private  BigDecimal fx;
+	private  BigDecimal fx = BigDecimal.ZERO;
 	@JsonProperty("TRAC")
-	private  BigDecimal trac;
+	private  BigDecimal trac = BigDecimal.ZERO;
 	@JsonProperty("LCX")
-	private  BigDecimal lcx;
+	private  BigDecimal lcx = BigDecimal.ZERO;
 	@JsonProperty("ARPA")
-	private  BigDecimal arpa;
+	private  BigDecimal arpa = BigDecimal.ZERO;
 	@JsonProperty("BADGER")
-	private  BigDecimal badger;
+	private  BigDecimal badger = BigDecimal.ZERO;
 	@JsonProperty("KRL")
-	private  BigDecimal krl;
+	private  BigDecimal krl = BigDecimal.ZERO;
 	@JsonProperty("PERP")
-	private  BigDecimal perp;
+	private  BigDecimal perp = BigDecimal.ZERO;
 	@JsonProperty("RARI")
-	private  BigDecimal rari;
+	private  BigDecimal rari = BigDecimal.ZERO;
 	@JsonProperty("DESO")
-	private  BigDecimal deso;
+	private  BigDecimal deso = BigDecimal.ZERO;
 	@JsonProperty("API3")
-	private  BigDecimal api3;
+	private  BigDecimal api3 = BigDecimal.ZERO;
 	@JsonProperty("NCT")
-	private  BigDecimal nct;
+	private  BigDecimal nct = BigDecimal.ZERO;
 	@JsonProperty("SHPING")
-	private  BigDecimal shping;
+	private  BigDecimal shping = BigDecimal.ZERO;
 	@JsonProperty("UPI")
-	private  BigDecimal upi;
+	private  BigDecimal upi = BigDecimal.ZERO;
 	@JsonProperty("CRO")
-	private  BigDecimal cro;
+	private  BigDecimal cro = BigDecimal.ZERO;
 	@JsonProperty("AVT")
-	private  BigDecimal avt;
+	private  BigDecimal avt = BigDecimal.ZERO;
 	@JsonProperty("MDT")
-	private  BigDecimal mdt;
+	private  BigDecimal mdt = BigDecimal.ZERO;
 	@JsonProperty("VGX")
-	private  BigDecimal vgx;
+	private  BigDecimal vgx = BigDecimal.ZERO;
 	@JsonProperty("ALCX")
-	private  BigDecimal alcx;
+	private  BigDecimal alcx = BigDecimal.ZERO;
 	@JsonProperty("COVAL")
-	private  BigDecimal coval;
+	private  BigDecimal coval = BigDecimal.ZERO;
 	@JsonProperty("FOX")
-	private  BigDecimal fox;
+	private  BigDecimal fox = BigDecimal.ZERO;
 	@JsonProperty("MUSD")
-	private  BigDecimal musd;
+	private  BigDecimal musd = BigDecimal.ZERO;
 	@JsonProperty("GALA")
-	private  BigDecimal gala;
+	private  BigDecimal gala = BigDecimal.ZERO;
 	@JsonProperty("POWR")
-	private  BigDecimal powr;
+	private  BigDecimal powr = BigDecimal.ZERO;
 	@JsonProperty("GYEN")
-	private  BigDecimal gyen;
+	private  BigDecimal gyen = BigDecimal.ZERO;
 	@JsonProperty("ALICE")
-	private  BigDecimal alice;
+	private  BigDecimal alice = BigDecimal.ZERO;
 	@JsonProperty("INV")
-	private  BigDecimal inv;
+	private  BigDecimal inv = BigDecimal.ZERO;
 	@JsonProperty("LQTY")
-	private  BigDecimal lqty;
+	private  BigDecimal lqty = BigDecimal.ZERO;
 	@JsonProperty("PRO")
-	private  BigDecimal pro;
+	private  BigDecimal pro = BigDecimal.ZERO;
 	@JsonProperty("SPELL")
-	private  BigDecimal spell;
+	private  BigDecimal spell = BigDecimal.ZERO;
 	@JsonProperty("ENS")
-	private  BigDecimal ens;
+	private  BigDecimal ens = BigDecimal.ZERO;
 	@JsonProperty("DIA")
-	private  BigDecimal dia;
+	private  BigDecimal dia = BigDecimal.ZERO;
 	@JsonProperty("BLZ")
-	private  BigDecimal blz;
+	private  BigDecimal blz = BigDecimal.ZERO;
 	@JsonProperty("CTX")
-	private  BigDecimal ctx;
+	private  BigDecimal ctx = BigDecimal.ZERO;
 	@JsonProperty("IDEX")
-	private  BigDecimal idex;
+	private  BigDecimal idex = BigDecimal.ZERO;
 	@JsonProperty("MCO2")
-	private  BigDecimal mco2;
+	private  BigDecimal mco2 = BigDecimal.ZERO;
 	@JsonProperty("POLS")
-	private  BigDecimal pols;
-	private  BigDecimal super1;
+	private  BigDecimal pols = BigDecimal.ZERO;
+	private  BigDecimal super1 = BigDecimal.ZERO;
 	@JsonProperty("UNFI")
-	private  BigDecimal unfi;
+	private  BigDecimal unfi = BigDecimal.ZERO;
 	@JsonProperty("STX")
-	private  BigDecimal stx;
+	private  BigDecimal stx = BigDecimal.ZERO;
 	@JsonProperty("GODS")
-	private  BigDecimal gods;
+	private  BigDecimal gods = BigDecimal.ZERO;
 	@JsonProperty("IMX")
-	private  BigDecimal imx;
+	private  BigDecimal imx = BigDecimal.ZERO;
 	@JsonProperty("RBN")
-	private  BigDecimal rbn;
+	private  BigDecimal rbn = BigDecimal.ZERO;
 	@JsonProperty("BICO")
-	private  BigDecimal bico;
+	private  BigDecimal bico = BigDecimal.ZERO;
 	@JsonProperty("GFI")
-	private  BigDecimal gfi;
+	private  BigDecimal gfi = BigDecimal.ZERO;
 	@JsonProperty("GLM")
-	private  BigDecimal glm;
+	private  BigDecimal glm = BigDecimal.ZERO;
 	@JsonProperty("MPL")
-	private  BigDecimal mpl;
+	private  BigDecimal mpl = BigDecimal.ZERO;
 	@JsonProperty("PLU")
-	private  BigDecimal plu;
+	private  BigDecimal plu = BigDecimal.ZERO;
 	@JsonProperty("FIDA")
-	private  BigDecimal fida;
+	private  BigDecimal fida = BigDecimal.ZERO;
 	@JsonProperty("ORCA")
-	private  BigDecimal orca;
+	private  BigDecimal orca = BigDecimal.ZERO;
 	@JsonProperty("CRPT")
-	private  BigDecimal crpt;
+	private  BigDecimal crpt = BigDecimal.ZERO;
 	@JsonProperty("QSP")
-	private  BigDecimal qsp;
+	private  BigDecimal qsp = BigDecimal.ZERO;
 	@JsonProperty("RNDR")
-	private  BigDecimal rndr;
+	private  BigDecimal rndr = BigDecimal.ZERO;
 	@JsonProperty("SYN")
-	private  BigDecimal syn;
+	private  BigDecimal syn = BigDecimal.ZERO;
 	@JsonProperty("AIOZ")
-	private  BigDecimal aioz;
+	private  BigDecimal aioz = BigDecimal.ZERO;
 	@JsonProperty("AERGO")
-	private  BigDecimal aergo;
+	private  BigDecimal aergo = BigDecimal.ZERO;
 	@JsonProperty("HIGH")
-	private  BigDecimal high;
+	private  BigDecimal high = BigDecimal.ZERO;
 	@JsonProperty("ROSE")
-	private  BigDecimal rose;
+	private  BigDecimal rose = BigDecimal.ZERO;
 	@JsonProperty("APE")
-	private  BigDecimal ape;
+	private  BigDecimal ape = BigDecimal.ZERO;
 	@JsonProperty("MINA")
-	private  BigDecimal mina;
+	private  BigDecimal mina = BigDecimal.ZERO;
 	@JsonProperty("GMT")
-	private  BigDecimal gmt;
+	private  BigDecimal gmt = BigDecimal.ZERO;
 	@JsonProperty("GST")
-	private  BigDecimal gst;
+	private  BigDecimal gst = BigDecimal.ZERO;
 	@JsonProperty("GAL")
-	private  BigDecimal gal;
+	private  BigDecimal gal = BigDecimal.ZERO;
 	@JsonProperty("DNT")
-	private  BigDecimal dnt;
+	private  BigDecimal dnt = BigDecimal.ZERO;
 	
 	@JsonProperty("SUPER")
-	public void getSuper(BigDecimal super1) {
+	public void setSuper(BigDecimal super1) {
 		this.super1 = super1;
 	}
 	
