@@ -15,6 +15,10 @@
  */
 package ch.xxx.trader.usecase.services;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -34,6 +38,8 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,6 +53,7 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.domain.model.entity.QuoteCbSmall;
+import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -55,8 +62,13 @@ import reactor.core.publisher.Mono;
 public class CoinbaseService {
 	private static final Logger log = LoggerFactory.getLogger(CoinbaseService.class);
 	private static final Map<String, GetSetMethodHandles> cbMethodCache = new ConcurrentHashMap<>();
+	private static final Map<String, GetSetMethodFunctions> cbFunctionCache = new ConcurrentHashMap<>();
 
 	private record GetSetMethodHandles(MethodHandle getter, MethodHandle setter, String fieldName) {
+	}
+
+	private record GetSetMethodFunctions(Function<QuoteCb, BigDecimal> getter, BiConsumer<QuoteCb, BigDecimal> setter,
+			String propertyName, PropertyDescriptor propertyDescriptor) {
 	}
 
 	public static final String CB_HOUR_COL = "quoteCbHour";
@@ -67,10 +79,19 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<Field> valueFields;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt");
+	private final List<PropertyDescriptor> propertyDescriptors;
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
 		this.serviceUtils = serviceUtils;
+//		try {
+//			BeanInfo beanInfo = Introspector.getBeanInfo(QuoteCb.class);
+//			this.propertyDescriptors = Stream.of(beanInfo.getPropertyDescriptors())
+//					.filter(myDescriptor -> !this.nonValueFieldNames.contains(myDescriptor.getName())).toList();
+//		} catch (IntrospectionException e) {
+//			throw new RuntimeException(e);
+//		}
+		this.propertyDescriptors = List.of();
 		valueFields = List.of(QuoteCb.class.getDeclaredFields()).stream()
 				.filter(myField -> !this.nonValueFieldNames.contains(myField.getName())).toList();
 	}
@@ -234,6 +255,19 @@ public class CoinbaseService {
 				throw new RuntimeException(e);
 			}
 		});
+//		this.propertyDescriptors.forEach(myPropertyDescriptor -> {
+//			GetSetMethodFunctions gsmf;
+//			try {
+//				gsmf = this.createGetMethodFunction(myPropertyDescriptor);
+//
+//				BigDecimal num1 = gsmf.getter.apply(q1);
+//				BigDecimal num2 = gsmf.getter.apply(q2);
+//				BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
+//				gsmf.setter.accept(result, resultValue);
+//			} catch (Exception e) {
+//				throw new RuntimeException(e);
+//			}
+//		});
 		return result;
 	}
 
@@ -251,24 +285,56 @@ public class CoinbaseService {
 					if ("getTry".equals(getterName)) {
 						getterName = getterName + "1";
 						setterName = setterName + "1";
-					} else if("getSuper1".equals(getterName)) {
-						getterName = getterName.substring(0, (getterName.length() -1));
-						setterName = setterName.substring(0, (setterName.length() -1));
-					} else if("getInch1".equals(getterName)) {
+					} else if ("getSuper1".equals(getterName)) {
+						getterName = getterName.substring(0, (getterName.length() - 1));
+						setterName = setterName.substring(0, (setterName.length() - 1));
+					} else if ("getInch1".equals(getterName)) {
 						final String methodNameEnd = "set1Inch".substring(1);
 						getterName = String.format("g%s", methodNameEnd);
 						setterName = String.format("s%s", methodNameEnd);
 					}
 					MethodType desc = MethodType.methodType(BigDecimal.class);
 					MethodHandle getterHandle = MethodHandles.lookup().findVirtual(QuoteCb.class, getterName, desc);
-					MethodType descSet = MethodType.methodType(Void.class, BigDecimal.class);
+					MethodType descSet = MethodType.methodType(void.class, BigDecimal.class);
 					MethodHandle setterHandle = MethodHandles.lookup().findVirtual(QuoteCb.class, setterName, descSet);
 					cbMethodCache.put(field.getName(),
 							new GetSetMethodHandles(getterHandle, setterHandle, field.getName()));
+					gsmh = cbMethodCache.get(field.getName());
 				}
 			}
 		}
 		return gsmh;
+	}
+
+	private GetSetMethodFunctions createGetMethodFunction(PropertyDescriptor propertyDescriptor) throws Exception {
+		GetSetMethodFunctions gsmf = cbFunctionCache.get(propertyDescriptor.getName());
+		if (gsmf == null) {
+			synchronized (this) {
+				gsmf = cbFunctionCache.get(propertyDescriptor.getName());
+				if (gsmf == null) {
+					final MethodHandles.Lookup lookupGetter = MethodHandles.lookup();
+					final MethodHandles.Lookup lookupSetter = MethodHandles.lookup();
+					@SuppressWarnings("unused")
+					MethodHandle getterHandle = lookupGetter.unreflect(
+							DtoUtils.createPropertDescriptorApplier(propertyDescriptor.getName(), propertyDescriptors)
+									.getReadMethod());
+					@SuppressWarnings("unchecked")
+					Function<QuoteCb, BigDecimal> getterFunction = (Function<QuoteCb, BigDecimal>) DtoUtils.createGetter(lookupGetter,
+							lookupGetter.unreflect(propertyDescriptor.getReadMethod()));
+					@SuppressWarnings("unused")
+					MethodHandle setterHandle = lookupSetter.unreflect(
+							DtoUtils.createPropertDescriptorApplier(propertyDescriptor.getName(), propertyDescriptors)
+									.getWriteMethod());
+					@SuppressWarnings("unchecked")
+					BiConsumer<QuoteCb, BigDecimal> setterFunction = DtoUtils.createSetter(lookupSetter,
+							lookupSetter.unreflect(propertyDescriptor.getWriteMethod()));
+					cbFunctionCache.put(propertyDescriptor.getName(), new GetSetMethodFunctions(getterFunction,
+							setterFunction, propertyDescriptor.getName(), propertyDescriptor));
+					gsmf = cbFunctionCache.get(propertyDescriptor.getName());
+				}
+			}
+		}
+		return gsmf;
 	}
 
 	private boolean filterEvenMinutes(QuoteCb quote) {
