@@ -45,6 +45,8 @@ public class QuoteIb implements Quote {
 	private final BigDecimal high24h;
 	private final BigDecimal low24h;
 	private final BigDecimal openToday;
+	private final BigDecimal highToday;
+	private final BigDecimal lowToday;
 	private final BigDecimal vwapToday;
 	private final BigDecimal vwap24h;
 	private final Date serverTimeUTC;
@@ -52,8 +54,8 @@ public class QuoteIb implements Quote {
 	
 	
 	public QuoteIb(@JsonProperty("pair") String pair,@JsonProperty("bid")  BigDecimal bid, @JsonProperty("bidAmt") BigDecimal bidAmt,@JsonProperty("ask")  BigDecimal ask,@JsonProperty("askAmt")  BigDecimal askAmt,
-			@JsonProperty("lastPrice") BigDecimal lastPrice,@JsonProperty("stAmt") BigDecimal stAmt, @JsonProperty("volume24h") BigDecimal volume24h,@JsonProperty("volumeToday") BigDecimal volumeToday,@JsonProperty("high24h") BigDecimal high24h,
-			@JsonProperty("low24h") BigDecimal low24h,@JsonProperty("openToday") BigDecimal openToday,@JsonProperty("vwapToday") BigDecimal vwapToday,@JsonProperty("vwap24h") BigDecimal vwap24h,@JsonProperty("serverTimeUTC") Date serverTimeUTC) {
+			@JsonProperty("lastPrice") BigDecimal lastPrice,@JsonProperty("lastAmt") BigDecimal stAmt, @JsonProperty("volume24h") BigDecimal volume24h,@JsonProperty("volumeToday") BigDecimal volumeToday,@JsonProperty("high24h") BigDecimal high24h,
+			@JsonProperty("low24h") BigDecimal low24h, @JsonProperty("openToday") BigDecimal openToday, @JsonProperty("highToday") BigDecimal highToday, @JsonProperty("lowToday") BigDecimal lowToday, @JsonProperty("vwapToday") BigDecimal vwapToday,@JsonProperty("vwap24h") BigDecimal vwap24h,@JsonProperty("serverTimeUTC") Date serverTimeUTC) {
 		super();
 		this.pair = pair;
 		this.bid = bid;
@@ -67,9 +69,17 @@ public class QuoteIb implements Quote {
 		this.high24h = high24h;
 		this.low24h = low24h;
 		this.openToday = openToday;
+		this.highToday = highToday;
+		this.lowToday = lowToday;
 		this.vwapToday = vwapToday;
 		this.vwap24h = vwap24h;
 		this.serverTimeUTC = serverTimeUTC;
+	}
+	public BigDecimal getHighToday() {
+		return highToday;
+	}
+	public BigDecimal getLowToday() {
+		return lowToday;
 	}
 	public String getPair() {
 		return pair;

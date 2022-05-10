@@ -208,7 +208,7 @@ public class ItbitService {
 		for (int i = 0; i < 24; i++) {
 			QuoteIb quoteIb = new QuoteIb(key, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
 					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, new Date());
+					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, new Date());
 			quoteIb.setCreatedAt(hours.get(i).getTime());
 			final int x = i;
 			long count = multimap.get(key).stream().filter(quote -> {
@@ -232,7 +232,7 @@ public class ItbitService {
 		List<QuoteIb> hourQuotes = new LinkedList<QuoteIb>();
 		QuoteIb quoteIb = new QuoteIb(key, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
 				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, new Date());
+				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, new Date());
 		quoteIb.setCreatedAt(begin.getTime());
 		long count = multimap.get(key).stream().filter(quote -> {
 			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
@@ -259,6 +259,8 @@ public class ItbitService {
 				this.serviceUtils.avgHourValue(q1.getHigh24h(), q2.getHigh24h(), count),
 				this.serviceUtils.avgHourValue(q1.getLow24h(), q2.getLow24h(), count),
 				this.serviceUtils.avgHourValue(q1.getOpenToday(), q2.getOpenToday(), count),
+				this.serviceUtils.avgHourValue(q1.getHighToday(), q2.getHighToday(), count),
+				this.serviceUtils.avgHourValue(q1.getLowToday(), q2.getLowToday(), count),
 				this.serviceUtils.avgHourValue(q1.getVwapToday(), q2.getVwapToday(), count),
 				this.serviceUtils.avgHourValue(q1.getVwap24h(), q2.getVwap24h(), count), q1.getServerTimeUTC());
 		myQuote.setCreatedAt(q1.getCreatedAt());
