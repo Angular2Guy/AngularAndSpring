@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
+import ch.xxx.trader.usecase.common.LastlogoutTimestampExtractor;
 
 @Profile("kafka | prod-kafka")
 @Component

@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 public class DtoUtils {
 	
 	public static PropertyDescriptor createPropertDescriptorApplier(String propertyName, List<PropertyDescriptor> propertyDescriptors) {		
@@ -34,6 +38,13 @@ public class DtoUtils {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Not found: " + name));
         return property.apply(propertyName);
+	}
+	
+	public static ObjectMapper produceObjectMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		return objectMapper;
 	}
 	
 	public static Function createGetter(final MethodHandles.Lookup lookup, final MethodHandle getter) throws Exception {

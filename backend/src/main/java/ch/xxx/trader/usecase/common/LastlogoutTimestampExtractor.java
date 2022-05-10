@@ -10,22 +10,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.adapter.messaging;
+package ch.xxx.trader.usecase.common;
 
 import java.sql.Timestamp;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.streams.processor.TimestampExtractor;
 
-import ch.xxx.trader.adapter.config.ApplicationConfig;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 
 public class LastlogoutTimestampExtractor implements TimestampExtractor {
-	private final ApplicationConfig helper = new ApplicationConfig();
 	
 	@Override
 	public long extract(ConsumerRecord<Object, Object> record, long partitionTime) {
-		RevokedToken revokedToken = this.helper.createObjectMapper().convertValue(record.value(), RevokedToken.class);
+		RevokedToken revokedToken = DtoUtils.produceObjectMapper().convertValue(record.value(), RevokedToken.class);
 		return Timestamp.valueOf(revokedToken.getLastLogout()).getTime();
 	}
 
