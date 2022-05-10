@@ -739,6 +739,10 @@ public class QuoteCb implements Quote {
 		this.inch1 = inch1;
 	}
 	
+	public void setTry1(BigDecimal try1) {
+		this.try1 = try1;
+	}
+	
 	public void setAed(BigDecimal aed) {
 		this.aed = aed;
 	}

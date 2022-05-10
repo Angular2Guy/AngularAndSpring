@@ -23,6 +23,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -78,20 +79,20 @@ public class CoinbaseService {
 	@Value("${kubernetes.pod.cpu.constraint}")
 	private boolean cpuConstraint;
 	private final List<Field> valueFields;
-	private final List<String> nonValueFieldNames = List.of("_id", "createdAt");
+	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
 		this.serviceUtils = serviceUtils;
-//		try {
-//			BeanInfo beanInfo = Introspector.getBeanInfo(QuoteCb.class);
-//			this.propertyDescriptors = Stream.of(beanInfo.getPropertyDescriptors())
-//					.filter(myDescriptor -> !this.nonValueFieldNames.contains(myDescriptor.getName())).toList();
-//		} catch (IntrospectionException e) {
-//			throw new RuntimeException(e);
-//		}
-		this.propertyDescriptors = List.of();
+		try {
+			BeanInfo beanInfo = Introspector.getBeanInfo(QuoteCb.class);
+			this.propertyDescriptors = Stream.of(beanInfo.getPropertyDescriptors())
+					.filter(myDescriptor -> !this.nonValueFieldNames.contains(myDescriptor.getName())).toList();
+		} catch (IntrospectionException e) {
+			throw new RuntimeException(e);
+		}
+//		this.propertyDescriptors = List.of();
 		valueFields = List.of(QuoteCb.class.getDeclaredFields()).stream()
 				.filter(myField -> !this.nonValueFieldNames.contains(myField.getName())).toList();
 	}
@@ -242,6 +243,30 @@ public class CoinbaseService {
 	}
 
 	private QuoteCb avgCbQuotePeriod(QuoteCb q1, QuoteCb q2, long count) {
+		// QuoteCb result = avgCbQuotePeriodMH(q1, q2, count);
+		QuoteCb result = avgCbQuotePeriodMF(q1, q2, count);
+		return result;
+	}
+
+	private QuoteCb avgCbQuotePeriodMF(QuoteCb q1, QuoteCb q2, long count) {
+		QuoteCb result = new QuoteCb();
+		this.propertyDescriptors.forEach(myPropertyDescriptor -> {
+			GetSetMethodFunctions gsmf;
+			try {
+				gsmf = this.createGetMethodFunction(myPropertyDescriptor);
+
+				BigDecimal num1 = gsmf.getter.apply(q1);
+				BigDecimal num2 = gsmf.getter.apply(q2);
+				BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
+				gsmf.setter.accept(result, resultValue);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+	}
+
+	private QuoteCb avgCbQuotePeriodMH(QuoteCb q1, QuoteCb q2, long count) {
 		QuoteCb result = new QuoteCb();
 		this.valueFields.forEach(myField -> {
 			try {
@@ -255,19 +280,6 @@ public class CoinbaseService {
 				throw new RuntimeException(e);
 			}
 		});
-//		this.propertyDescriptors.forEach(myPropertyDescriptor -> {
-//			GetSetMethodFunctions gsmf;
-//			try {
-//				gsmf = this.createGetMethodFunction(myPropertyDescriptor);
-//
-//				BigDecimal num1 = gsmf.getter.apply(q1);
-//				BigDecimal num2 = gsmf.getter.apply(q2);
-//				BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
-//				gsmf.setter.accept(result, resultValue);
-//			} catch (Exception e) {
-//				throw new RuntimeException(e);
-//			}
-//		});
 		return result;
 	}
 
@@ -308,26 +320,34 @@ public class CoinbaseService {
 
 	private GetSetMethodFunctions createGetMethodFunction(PropertyDescriptor propertyDescriptor) throws Exception {
 		GetSetMethodFunctions gsmf = cbFunctionCache.get(propertyDescriptor.getName());
+		//log.info(propertyDescriptor.getName());
 		if (gsmf == null) {
 			synchronized (this) {
 				gsmf = cbFunctionCache.get(propertyDescriptor.getName());
 				if (gsmf == null) {
 					final MethodHandles.Lookup lookupGetter = MethodHandles.lookup();
 					final MethodHandles.Lookup lookupSetter = MethodHandles.lookup();
-					@SuppressWarnings("unused")
-					MethodHandle getterHandle = lookupGetter.unreflect(
-							DtoUtils.createPropertDescriptorApplier(propertyDescriptor.getName(), propertyDescriptors)
-									.getReadMethod());
+					Method getterMethod = null;
+					Method setterMethod = null;
+					if("1Inch".equalsIgnoreCase(propertyDescriptor.getName())) {
+						getterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("get1Inch")).findFirst().orElseThrow();
+						setterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("set1Inch")).findFirst().orElseThrow();						
+					} else if("super".equalsIgnoreCase(propertyDescriptor.getName())) {
+						getterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("getSuper")).findFirst().orElseThrow();
+						setterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("setSuper")).findFirst().orElseThrow();
+					} else if("try".equalsIgnoreCase(propertyDescriptor.getName())) {
+						getterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("getTry1")).findFirst().orElseThrow();
+						setterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("setTry1")).findFirst().orElseThrow();
+					} else {
+						getterMethod = propertyDescriptor.getReadMethod();
+						setterMethod = propertyDescriptor.getWriteMethod();
+					}
 					@SuppressWarnings("unchecked")
 					Function<QuoteCb, BigDecimal> getterFunction = (Function<QuoteCb, BigDecimal>) DtoUtils.createGetter(lookupGetter,
-							lookupGetter.unreflect(propertyDescriptor.getReadMethod()));
-					@SuppressWarnings("unused")
-					MethodHandle setterHandle = lookupSetter.unreflect(
-							DtoUtils.createPropertDescriptorApplier(propertyDescriptor.getName(), propertyDescriptors)
-									.getWriteMethod());
+							lookupGetter.unreflect(getterMethod));
 					@SuppressWarnings("unchecked")
 					BiConsumer<QuoteCb, BigDecimal> setterFunction = DtoUtils.createSetter(lookupSetter,
-							lookupSetter.unreflect(propertyDescriptor.getWriteMethod()));
+							lookupSetter.unreflect(setterMethod));
 					cbFunctionCache.put(propertyDescriptor.getName(), new GetSetMethodFunctions(getterFunction,
 							setterFunction, propertyDescriptor.getName(), propertyDescriptor));
 					gsmf = cbFunctionCache.get(propertyDescriptor.getName());
