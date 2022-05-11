@@ -122,7 +122,7 @@ public class BitstampService {
 	public void createBsAvg() {
 		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
-				.doAfterTerminate(() -> this.createHourDayAvg());
+				.doAfterTerminate(() -> this.createHourDayAvg()).subscribe();
 	}
 
 	private void createHourDayAvg() {

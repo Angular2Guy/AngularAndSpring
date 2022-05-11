@@ -121,7 +121,7 @@ public class BitfinexService {
 	public void createBfAvg() {
 		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
 		.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
-		.doAfterTerminate(() -> this.createHourDayAvg());
+		.doAfterTerminate(() -> this.createHourDayAvg()).subscribe();
 	}
 
 	private void createHourDayAvg() {

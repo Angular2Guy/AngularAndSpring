@@ -184,8 +184,7 @@ public class ItbitService {
 	public void createIbAvg() {
 		this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
 		.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
-		.doAfterTerminate(() -> this.createHourDayAvg());
-		createHourDayAvg();
+		.doAfterTerminate(() -> this.createHourDayAvg()).subscribe();
 	}
 
 	private void createHourDayAvg() {
