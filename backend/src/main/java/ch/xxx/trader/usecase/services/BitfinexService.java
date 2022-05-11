@@ -146,7 +146,7 @@ public class BitfinexService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
 			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
@@ -174,7 +174,7 @@ public class BitfinexService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
 			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)

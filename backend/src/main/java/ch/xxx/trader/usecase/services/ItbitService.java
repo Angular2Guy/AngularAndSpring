@@ -136,7 +136,7 @@ public class ItbitService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Itbit
 			Mono<Collection<QuoteIb>> collectIb = this.myMongoRepository.find(query, QuoteIb.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
@@ -163,7 +163,7 @@ public class ItbitService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Itbit
 			Mono<Collection<QuoteIb>> collectIb = this.myMongoRepository.find(query, QuoteIb.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)

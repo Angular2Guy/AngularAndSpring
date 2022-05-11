@@ -32,6 +32,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.model.entity.Quote;
+import ch.xxx.trader.usecase.common.DtoUtils;
 
 @Service
 public class ServiceUtils {
@@ -73,10 +74,10 @@ public class ServiceUtils {
 			this.myMongoRepository.createCollection(colName).block();
 		}
 		Query query = new Query();
-		query.with(Sort.by("createdAt").ascending());
+		query.with(Sort.by(DtoUtils.CREATEDAT).ascending());
 		Optional<? extends Quote> firstQuote = Optional.ofNullable(this.myMongoRepository.findOne(query, colType).block());
 		query = new Query();
-		query.with(Sort.by("createdAt").descending());
+		query.with(Sort.by(DtoUtils.CREATEDAT).descending());
 		Optional<? extends Quote> lastHourQuote = Optional
 				.ofNullable(this.myMongoRepository.findOne(query, colType, colName).block());
 		Calendar globalBeginn = Calendar.getInstance();

@@ -148,7 +148,7 @@ public class BitstampService {
 			Date start = new Date();
 			Query query = new Query();
 			query.addCriteria(
-					Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
 			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
@@ -177,7 +177,7 @@ public class BitstampService {
 			Date start = new Date();
 			Query query = new Query();
 			query.addCriteria(
-					Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
 			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
