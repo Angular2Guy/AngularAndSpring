@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.reactivestreams.client.MongoCollection;
 
+import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.usecase.services.MyMongoRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,51 +35,53 @@ import reactor.core.publisher.Mono;
 @Service
 public class ClientMongoRepository implements MyMongoRepository {
 	private final ReactiveMongoOperations operations;
-	
+
 	public ClientMongoRepository(ReactiveMongoOperations operations) {
 		this.operations = operations;
 	}
-	
+
 	@Override
 	public <T> Mono<T> save(T objectToSave) {
 		return this.operations.save(objectToSave);
 	}
-	
+
 	@Override
 	public <T> Mono<T> findOne(Query query, Class<T> entityClass) {
 		return this.operations.findOne(query, entityClass);
 	}
-	
+
 	@Override
 	public <T> Mono<T> findOne(Query query, Class<T> entityClass, String name) {
 		return this.operations.findOne(query, entityClass, name);
 	}
-	
+
 	@Override
 	public <T> Flux<T> find(Query query, Class<T> entityClass) {
 		return this.operations.find(query, entityClass);
 	}
-	
+
 	@Override
 	public <T> Flux<T> find(Query query, Class<T> entityClass, String collectionName) {
 		return this.operations.find(query, entityClass, collectionName);
 	}
-	
+
 	@Override
-	public <T> Flux<T> insertAll(Mono<? extends Collection<? extends T>> batchToSave, String collectionName) {		
-		return this.operations.insertAll(batchToSave,collectionName);
+	public <T> Flux<T> insertAll(Mono<? extends Collection<? extends T>> batchToSave, String collectionName) {
+		return this.operations.insertAll(batchToSave, collectionName);
 	}
-	
+
 	@Override
 	public Mono<String> ensureIndex(String collectionName, String propertyName) {
-		 return this.operations.indexOps(collectionName).ensureIndex(new Index(propertyName, Direction.DESC));
+		Index myIndex = new Index(propertyName, Direction.DESC);
+		myIndex.named(collectionName + "-" + propertyName);			
+		return this.operations.indexOps(collectionName).ensureIndex(myIndex);
 	}
-	
+
 	@Override
 	public Mono<Boolean> collectionExists(String collectionName) {
 		return this.operations.collectionExists(collectionName);
 	}
-	
+
 	@Override
 	public Mono<MongoCollection<Document>> createCollection(String collectionName) {
 		return this.operations.createCollection(collectionName);
@@ -88,7 +91,7 @@ public class ClientMongoRepository implements MyMongoRepository {
 	public <T> Mono<T> insert(Mono<T> quote) {
 		return this.operations.insert(quote);
 	}
-	
+
 	@Override
 	public <T> Mono<DeleteResult> remove(Mono<T> quote) {
 		return this.operations.remove(quote);

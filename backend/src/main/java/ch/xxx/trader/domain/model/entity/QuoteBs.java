@@ -31,10 +31,10 @@ public class QuoteBs implements Quote {
 	
 	@Id
 	private ObjectId _id;
-	@Indexed(direction = IndexDirection.DESCENDING)
+	@Indexed
 	@JsonProperty
 	private String pair;
-	@Indexed
+	@Indexed(name = "QuoteBs-createdAt")
 	@JsonProperty
 	private Date createdAt = new Date();
 	private final BigDecimal high;

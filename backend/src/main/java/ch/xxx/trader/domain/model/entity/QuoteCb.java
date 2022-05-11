@@ -32,7 +32,7 @@ public class QuoteCb implements Quote {
 
 	@Id
 	private ObjectId _id;
-	@Indexed(direction = IndexDirection.DESCENDING)
+	@Indexed(name = "QuoteCb-createdAt")
 	@JsonProperty
 	private Date createdAt = new Date();
 	@JsonProperty("AED")
