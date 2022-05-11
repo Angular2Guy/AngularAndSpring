@@ -15,21 +15,16 @@
  */
 package ch.xxx.trader.adapter.config;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mongodb.reactivestreams.client.MongoClient;
-import com.mongodb.reactivestreams.client.MongoClients;
 
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMongoLockProvider;
@@ -39,18 +34,6 @@ public class SpringMongoConfig  {
 	private static final Logger log = LoggerFactory.getLogger(SpringMongoConfig.class);
 	private static final String SCHED_LOCK_DB = "schedLock";
 	
-    private final MongoMappingContext mongoMappingContext;
-    
-    public SpringMongoConfig(MongoMappingContext mongoMappingContext) {
-    	this.mongoMappingContext = mongoMappingContext;
-    }
-
-    @PostConstruct
-    public void init() {
-    	this.mongoMappingContext.setAutoIndexCreation(true);
-    	log.info("Mongo AutoIndexCreation: {}", this.mongoMappingContext.isAutoIndexCreation());
-    }
-    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
