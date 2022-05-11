@@ -265,6 +265,7 @@ public class CoinbaseService {
 				BigDecimal num2 = gsmf.getter.apply(q2);
 				BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
 				gsmf.setter.accept(result, resultValue);
+				result.setCreatedAt(q1.getCreatedAt());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
