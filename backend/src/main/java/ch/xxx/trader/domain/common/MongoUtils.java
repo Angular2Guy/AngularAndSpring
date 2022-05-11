@@ -45,6 +45,8 @@ public class MongoUtils {
 		Calendar cal = GregorianCalendar.getInstance();
 		cal.add(Calendar.DAY_OF_YEAR, -1);
 		Query query = new Query();
+		query.allowDiskUse(true);		
+		query.limit(1000);
 		if (pair.isPresent()) {
 			query.addCriteria(Criteria.where("pair").is(pair.get()));
 		}
