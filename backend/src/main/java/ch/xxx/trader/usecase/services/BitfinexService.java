@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
+import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
@@ -118,6 +119,12 @@ public class BitfinexService {
 	}
 
 	public void createBfAvg() {
+		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
+		.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
+		.doAfterTerminate(() -> this.createHourDayAvg());
+	}
+
+	private void createHourDayAvg() {
 		CompletableFuture<String> future3  
 		  = CompletableFuture.supplyAsync(() -> {this.createBfHourlyAvg(); return "createBfHourlyAvg() Done.";}, 
 				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));

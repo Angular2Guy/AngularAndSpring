@@ -18,7 +18,9 @@ package ch.xxx.trader.adapter.repository;
 import java.util.Collection;
 
 import org.bson.Document;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -63,8 +65,13 @@ public class ClientMongoRepository implements MyMongoRepository {
 	}
 	
 	@Override
-	public <T> Flux<T> insertAll(Mono<? extends Collection<? extends T>> batchToSave, String collectionName) {
+	public <T> Flux<T> insertAll(Mono<? extends Collection<? extends T>> batchToSave, String collectionName) {		
 		return this.operations.insertAll(batchToSave,collectionName);
+	}
+	
+	@Override
+	public Mono<String> ensureIndex(String collectionName, String propertyName) {
+		 return this.operations.indexOps(collectionName).ensureIndex(new Index(propertyName, Direction.DESC));
 	}
 	
 	@Override

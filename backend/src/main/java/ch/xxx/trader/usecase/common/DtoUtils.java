@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class DtoUtils {
+	public static final String CREATEDAT = "createdAt";
 	
 	public static PropertyDescriptor createPropertDescriptorApplier(String propertyName, List<PropertyDescriptor> propertyDescriptors) {		
         Function<String, PropertyDescriptor> property = name -> propertyDescriptors.stream()

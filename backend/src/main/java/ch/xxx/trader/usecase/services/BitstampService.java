@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
@@ -68,7 +69,7 @@ public class BitstampService {
 	public Mono<QuoteBs> insertQuote(Mono<QuoteBs> quote) {
 		return this.myMongoRepository.insert(quote);
 	}
-	
+
 	public Mono<String> getOrderbook(String currpair) {
 		return this.orderBookClient.getOrderbookBitstamp(currpair);
 	}
@@ -119,20 +120,26 @@ public class BitstampService {
 	}
 
 	public void createBsAvg() {
-		CompletableFuture<String> future1  
-		  = CompletableFuture.supplyAsync(() -> {this.createBsHourlyAvg(); return "createBsHourlyAvg() Done.";}, 
-				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		CompletableFuture<String> future2  
-		  = CompletableFuture.supplyAsync(() -> {this.createBsDailyAvg(); return "createBsDailyAvg() Done.";},
-				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		String combined = Stream.of(future1, future2)
-		  .map(CompletableFuture::join)
-		  .collect(Collectors.joining(" "));
+		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
+				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
+				.doAfterTerminate(() -> this.createHourDayAvg());
+	}
+
+	private void createHourDayAvg() {
+		CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
+			this.createBsHourlyAvg();
+			return "createBsHourlyAvg() Done.";
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> {
+			this.createBsDailyAvg();
+			return "createBsDailyAvg() Done.";
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		String combined = Stream.of(future1, future2).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		log.info(combined);
 	}
-	
+
 	private void createBsHourlyAvg() {
-		LocalDateTime startAll = LocalDateTime.now(); 
+		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
@@ -140,14 +147,16 @@ public class BitstampService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(
+					Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
 			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
+					.map(multimap -> multimap.keySet().stream()
+							.map(key -> makeBsQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
-						      .collect(Collectors.toList())));	
+					.flatMap(myList -> Mono
+							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -159,7 +168,7 @@ public class BitstampService {
 	}
 
 	private void createBsDailyAvg() {
-		LocalDateTime startAll = LocalDateTime.now(); 
+		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
@@ -167,14 +176,16 @@ public class BitstampService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(
+					Criteria.where("createdAt").gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
 			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeBsQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
+					.map(multimap -> multimap.keySet().stream()
+							.map(key -> makeBsQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
-						      .collect(Collectors.toList())));	
+					.flatMap(myList -> Mono
+							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);

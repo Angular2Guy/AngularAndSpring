@@ -135,6 +135,12 @@ public class CoinbaseService {
 	}
 
 	public void createCbAvg() {
+		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
+		.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
+		.doAfterTerminate(() -> this.createHourDayAvg());		
+	}
+
+	private void createHourDayAvg() {
 		LocalDateTime start = LocalDateTime.now();
 		log.info("CpuConstraint property: " + this.cpuConstraint);
 		if (this.cpuConstraint) {

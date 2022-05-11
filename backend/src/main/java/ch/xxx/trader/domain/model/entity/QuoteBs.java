@@ -20,6 +20,7 @@ import java.util.Date;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -30,7 +31,7 @@ public class QuoteBs implements Quote {
 	
 	@Id
 	private ObjectId _id;
-	@Indexed
+	@Indexed(direction = IndexDirection.DESCENDING)
 	@JsonProperty
 	private String pair;
 	@Indexed

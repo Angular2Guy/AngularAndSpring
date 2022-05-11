@@ -47,4 +47,6 @@ public interface MyMongoRepository {
 	<T> Mono<T> save(T objectToSave);
 	
 	<T> Mono<DeleteResult> remove(Mono<T> quote);
+	
+	Mono<String> ensureIndex(String collectionName, String propertyName);
 }
