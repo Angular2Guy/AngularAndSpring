@@ -15,13 +15,11 @@
  */
 package ch.xxx.trader.usecase.common;
 
-import java.beans.PropertyDescriptor;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
