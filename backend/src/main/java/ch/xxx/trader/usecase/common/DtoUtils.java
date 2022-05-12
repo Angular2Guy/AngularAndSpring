@@ -32,14 +32,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class DtoUtils {
 	public static final String CREATEDAT = "createdAt";
 	
-	public static PropertyDescriptor createPropertDescriptorApplier(String propertyName, List<PropertyDescriptor> propertyDescriptors) {		
-        Function<String, PropertyDescriptor> property = name -> propertyDescriptors.stream()
-                .filter(p -> name.equals(p.getName()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Not found: " + name));
-        return property.apply(propertyName);
-	}
-	
 	public static ObjectMapper produceObjectMapper() {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());

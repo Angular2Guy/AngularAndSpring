@@ -248,7 +248,6 @@ public class CoinbaseService {
 			GetSetMethodFunctions gsmf;
 			try {
 				gsmf = this.createGetMethodFunction(myPropertyDescriptor);
-
 				BigDecimal num1 = gsmf.getter.apply(q1);
 				BigDecimal num2 = gsmf.getter.apply(q2);
 				BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
