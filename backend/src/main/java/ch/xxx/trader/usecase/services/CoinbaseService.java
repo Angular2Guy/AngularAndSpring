@@ -19,10 +19,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -62,11 +59,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class CoinbaseService {
 	private static final Logger log = LoggerFactory.getLogger(CoinbaseService.class);
-	private static final Map<String, GetSetMethodHandles> cbMethodCache = new ConcurrentHashMap<>();
 	private static final Map<String, GetSetMethodFunctions> cbFunctionCache = new ConcurrentHashMap<>();
-
-	private record GetSetMethodHandles(MethodHandle getter, MethodHandle setter, String fieldName) {
-	}
 
 	private record GetSetMethodFunctions(Function<QuoteCb, BigDecimal> getter, BiConsumer<QuoteCb, BigDecimal> setter,
 			String propertyName, PropertyDescriptor propertyDescriptor) {
@@ -78,7 +71,6 @@ public class CoinbaseService {
 	private final ServiceUtils serviceUtils;
 	@Value("${kubernetes.pod.cpu.constraint}")
 	private boolean cpuConstraint;
-	private final List<Field> valueFields;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
 
@@ -92,9 +84,6 @@ public class CoinbaseService {
 		} catch (IntrospectionException e) {
 			throw new RuntimeException(e);
 		}
-//		this.propertyDescriptors = List.of();
-		valueFields = List.of(QuoteCb.class.getDeclaredFields()).stream()
-				.filter(myField -> !this.nonValueFieldNames.contains(myField.getName())).toList();
 	}
 
 	public Mono<QuoteCb> insertQuote(Mono<QuoteCb> quote) {
@@ -249,7 +238,6 @@ public class CoinbaseService {
 	}
 
 	private QuoteCb avgCbQuotePeriod(QuoteCb q1, QuoteCb q2, long count) {
-		// QuoteCb result = avgCbQuotePeriodMH(q1, q2, count);
 		QuoteCb result = avgCbQuotePeriodMF(q1, q2, count);
 		return result;
 	}
@@ -271,58 +259,6 @@ public class CoinbaseService {
 			}
 		});
 		return result;
-	}
-
-	private QuoteCb avgCbQuotePeriodMH(QuoteCb q1, QuoteCb q2, long count) {
-		QuoteCb result = new QuoteCb();
-		this.valueFields.forEach(myField -> {
-			try {
-				GetSetMethodHandles gsmh = this.createGetMethodHandle(myField);
-				BigDecimal num1 = (BigDecimal) gsmh.getter.invokeExact(q1);
-				BigDecimal num2 = (BigDecimal) gsmh.getter.invokeExact(q2);
-				BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
-				gsmh.setter.invokeExact(result, resultValue);
-				result.setCreatedAt(q1.getCreatedAt());
-			} catch (Throwable e) {
-				throw new RuntimeException(e);
-			}
-		});
-		return result;
-	}
-
-	private GetSetMethodHandles createGetMethodHandle(Field field)
-			throws NoSuchMethodException, IllegalAccessException {
-		GetSetMethodHandles gsmh = cbMethodCache.get(field.getName());
-		if (gsmh == null) {
-			synchronized (this) {
-				gsmh = cbMethodCache.get(field.getName());
-				if (gsmh == null) {
-					String getterName = String.format("get%s%s", field.getName().substring(0, 1).toUpperCase(),
-							field.getName().substring(1).toLowerCase());
-					String setterName = String.format("s%s", getterName.substring(1),
-							field.getName().substring(1).toLowerCase());
-					if ("getTry".equals(getterName)) {
-						getterName = getterName + "1";
-						setterName = setterName + "1";
-					} else if ("getSuper1".equals(getterName)) {
-						getterName = getterName.substring(0, (getterName.length() - 1));
-						setterName = setterName.substring(0, (setterName.length() - 1));
-					} else if ("getInch1".equals(getterName)) {
-						final String methodNameEnd = "set1Inch".substring(1);
-						getterName = String.format("g%s", methodNameEnd);
-						setterName = String.format("s%s", methodNameEnd);
-					}
-					MethodType desc = MethodType.methodType(BigDecimal.class);
-					MethodHandle getterHandle = MethodHandles.lookup().findVirtual(QuoteCb.class, getterName, desc);
-					MethodType descSet = MethodType.methodType(void.class, BigDecimal.class);
-					MethodHandle setterHandle = MethodHandles.lookup().findVirtual(QuoteCb.class, setterName, descSet);
-					cbMethodCache.put(field.getName(),
-							new GetSetMethodHandles(getterHandle, setterHandle, field.getName()));
-					gsmh = cbMethodCache.get(field.getName());
-				}
-			}
-		}
-		return gsmh;
 	}
 
 	private GetSetMethodFunctions createGetMethodFunction(PropertyDescriptor propertyDescriptor) throws Exception {
