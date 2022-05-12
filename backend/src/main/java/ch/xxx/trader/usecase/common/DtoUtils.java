@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-// source: https://dzone.com/articles/setters-method-handles-and-java-11
 package ch.xxx.trader.usecase.common;
 
 import java.beans.PropertyDescriptor;
@@ -47,7 +46,8 @@ public class DtoUtils {
 		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		return objectMapper;
 	}
-	
+
+	// source: https://dzone.com/articles/setters-method-handles-and-java-11
 	@SuppressWarnings("rawtypes")
 	public static Function createGetter(final MethodHandles.Lookup lookup, final MethodHandle getter) throws Exception {
 		final CallSite site = LambdaMetafactory.metafactory(lookup, "apply", MethodType.methodType(Function.class),
@@ -63,6 +63,7 @@ public class DtoUtils {
 		}
 	}
 
+	// source: https://dzone.com/articles/setters-method-handles-and-java-11
 	@SuppressWarnings("rawtypes")
 	public static BiConsumer createSetter(final MethodHandles.Lookup lookup, final MethodHandle setter)
 			throws Exception {
