@@ -48,6 +48,7 @@ public class DtoUtils {
 		return objectMapper;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static Function createGetter(final MethodHandles.Lookup lookup, final MethodHandle getter) throws Exception {
 		final CallSite site = LambdaMetafactory.metafactory(lookup, "apply", MethodType.methodType(Function.class),
 				MethodType.methodType(Object.class, Object.class), // signature of method Function.apply after type
@@ -62,6 +63,7 @@ public class DtoUtils {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static BiConsumer createSetter(final MethodHandles.Lookup lookup, final MethodHandle setter)
 			throws Exception {
 		final CallSite site = LambdaMetafactory.metafactory(lookup, "accept", MethodType.methodType(BiConsumer.class),
