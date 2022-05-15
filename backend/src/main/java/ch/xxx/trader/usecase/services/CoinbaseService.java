@@ -53,6 +53,7 @@ import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.domain.model.entity.QuoteCbSmall;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -73,6 +74,7 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
+	private Disposable averageCalculation = Mono.empty().subscribe();
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
@@ -124,7 +126,8 @@ public class CoinbaseService {
 	}
 
 	public void createCbAvg() {
-		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
+		this.averageCalculation.dispose();
+		this.averageCalculation = this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 		.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
 		.doAfterTerminate(() -> this.createHourDayAvg()).subscribe();		
 	}

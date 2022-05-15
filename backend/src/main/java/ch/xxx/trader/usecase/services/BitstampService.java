@@ -43,6 +43,7 @@ import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -56,6 +57,7 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
+	private Disposable averageCalculation = Mono.empty().subscribe();
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
@@ -120,7 +122,8 @@ public class BitstampService {
 	}
 
 	public void createBsAvg() {
-		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
+		this.averageCalculation.dispose();		
+		this.averageCalculation = this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
 				.doAfterTerminate(() -> this.createHourDayAvg()).subscribe();
 	}
