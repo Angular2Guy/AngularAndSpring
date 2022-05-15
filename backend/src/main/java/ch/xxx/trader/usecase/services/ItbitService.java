@@ -44,7 +44,6 @@ import ch.xxx.trader.domain.model.entity.QuoteIb;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -59,8 +58,6 @@ public class ItbitService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private Disposable averageCalculation = Mono.empty().subscribe();
-	private volatile boolean averageCalculationActive = false;
 
 	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
 			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
@@ -188,20 +185,10 @@ public class ItbitService {
 		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Daily Data Time:"));
 	}
 
-	public void freeMemory() {
-		if (!this.averageCalculationActive) {
-			this.averageCalculation.dispose();
-		}
-	}
-
 	public void createIbAvg() {
-		if (!this.averageCalculationActive) {
-			this.averageCalculationActive = true;
-			this.averageCalculation.dispose();
-			this.averageCalculation = this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
-					.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
-					.map(value -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
-		}
+		this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
+				.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
+				.map(value -> this.createHourDayAvg()).block();
 	}
 
 	private String createHourDayAvg() {

@@ -43,7 +43,6 @@ import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -57,8 +56,6 @@ public class BitfinexService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private Disposable averageCalculation = Mono.empty().subscribe();
-	private volatile boolean averageCalculationActive = false;
 
 	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils,
 			MyOrderBookClient orderBookClient, ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
@@ -121,20 +118,10 @@ public class BitfinexService {
 		return Mono.empty();
 	}
 
-	public void freeMemory() {
-		if (!this.averageCalculationActive) {
-			this.averageCalculation.dispose();
-		}
-	}
-
 	public void createBfAvg() {
-		if (!this.averageCalculationActive) {
-			this.averageCalculationActive = true;
-			this.averageCalculation.dispose();
-			this.averageCalculation = this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
-					.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
-					.map(value -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
-		}
+		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
+				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
+				.map(value -> this.createHourDayAvg()).block();
 	}
 
 	private String createHourDayAvg() {
