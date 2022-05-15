@@ -127,22 +127,22 @@ public class CoinbaseService {
 	}
 
 	public void freeMemory() {
-		if(!this.averageCalculationActive) {
+		if (!this.averageCalculationActive) {
 			this.averageCalculation.dispose();
 		}
 	}
-	
+
 	public void createCbAvg() {
-		if(!this.averageCalculationActive) {
-		this.averageCalculationActive = true;			
-		this.averageCalculation.dispose();
-		this.averageCalculation = this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
-		.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
-		.doAfterTerminate(() -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
+		if (!this.averageCalculationActive) {
+			this.averageCalculationActive = true;
+			this.averageCalculation.dispose();
+			this.averageCalculation = this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
+					.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
+					.map(value -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
 		}
 	}
 
-	private void createHourDayAvg() {
+	private String createHourDayAvg() {
 		LocalDateTime start = LocalDateTime.now();
 		log.info("CpuConstraint property: " + this.cpuConstraint);
 		if (this.cpuConstraint) {
@@ -162,6 +162,7 @@ public class CoinbaseService {
 			String combined = Stream.of(future7, future8).map(CompletableFuture::join).collect(Collectors.joining(" "));
 			log.info(combined);
 		}
+		return "done.";
 	}
 
 	private void createCbHourlyAvg() {
@@ -275,7 +276,7 @@ public class CoinbaseService {
 
 	private GetSetMethodFunctions createGetMethodFunction(PropertyDescriptor propertyDescriptor) throws Exception {
 		GetSetMethodFunctions gsmf = cbFunctionCache.get(propertyDescriptor.getName());
-		//log.info(propertyDescriptor.getName());
+		// log.info(propertyDescriptor.getName());
 		if (gsmf == null) {
 			synchronized (this) {
 				gsmf = cbFunctionCache.get(propertyDescriptor.getName());
@@ -284,22 +285,34 @@ public class CoinbaseService {
 					final MethodHandles.Lookup lookupSetter = MethodHandles.lookup();
 					Method getterMethod = null;
 					Method setterMethod = null;
-					if("1Inch".equalsIgnoreCase(propertyDescriptor.getName())) {
-						getterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("get1Inch")).findFirst().orElseThrow();
-						setterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("set1Inch")).findFirst().orElseThrow();						
-					} else if("super".equalsIgnoreCase(propertyDescriptor.getName())) {
-						getterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("getSuper")).findFirst().orElseThrow();
-						setterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("setSuper")).findFirst().orElseThrow();
-					} else if("try".equalsIgnoreCase(propertyDescriptor.getName())) {
-						getterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("getTry1")).findFirst().orElseThrow();
-						setterMethod = Stream.of(QuoteCb.class.getMethods()).filter(myMethod -> myMethod.getName().equalsIgnoreCase("setTry1")).findFirst().orElseThrow();
+					if ("1Inch".equalsIgnoreCase(propertyDescriptor.getName())) {
+						getterMethod = Stream.of(QuoteCb.class.getMethods())
+								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("get1Inch")).findFirst()
+								.orElseThrow();
+						setterMethod = Stream.of(QuoteCb.class.getMethods())
+								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("set1Inch")).findFirst()
+								.orElseThrow();
+					} else if ("super".equalsIgnoreCase(propertyDescriptor.getName())) {
+						getterMethod = Stream.of(QuoteCb.class.getMethods())
+								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getSuper")).findFirst()
+								.orElseThrow();
+						setterMethod = Stream.of(QuoteCb.class.getMethods())
+								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setSuper")).findFirst()
+								.orElseThrow();
+					} else if ("try".equalsIgnoreCase(propertyDescriptor.getName())) {
+						getterMethod = Stream.of(QuoteCb.class.getMethods())
+								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getTry1")).findFirst()
+								.orElseThrow();
+						setterMethod = Stream.of(QuoteCb.class.getMethods())
+								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setTry1")).findFirst()
+								.orElseThrow();
 					} else {
 						getterMethod = propertyDescriptor.getReadMethod();
 						setterMethod = propertyDescriptor.getWriteMethod();
 					}
 					@SuppressWarnings("unchecked")
-					Function<QuoteCb, BigDecimal> getterFunction = (Function<QuoteCb, BigDecimal>) DtoUtils.createGetter(lookupGetter,
-							lookupGetter.unreflect(getterMethod));
+					Function<QuoteCb, BigDecimal> getterFunction = (Function<QuoteCb, BigDecimal>) DtoUtils
+							.createGetter(lookupGetter, lookupGetter.unreflect(getterMethod));
 					@SuppressWarnings("unchecked")
 					BiConsumer<QuoteCb, BigDecimal> setterFunction = DtoUtils.createSetter(lookupSetter,
 							lookupSetter.unreflect(setterMethod));

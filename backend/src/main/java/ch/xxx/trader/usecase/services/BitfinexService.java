@@ -122,23 +122,22 @@ public class BitfinexService {
 	}
 
 	public void freeMemory() {
-		if(!this.averageCalculationActive) {
+		if (!this.averageCalculationActive) {
 			this.averageCalculation.dispose();
 		}
 	}
-	
+
 	public void createBfAvg() {
 		if (!this.averageCalculationActive) {
 			this.averageCalculationActive = true;
 			this.averageCalculation.dispose();
 			this.averageCalculation = this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
 					.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
-					.doAfterTerminate(() -> this.createHourDayAvg())
-					.subscribe(value -> this.averageCalculationActive = false);
+					.map(value -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
 		}
 	}
 
-	private void createHourDayAvg() {
+	private String createHourDayAvg() {
 		CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> {
 			this.createBfHourlyAvg();
 			return "createBfHourlyAvg() Done.";
@@ -149,6 +148,7 @@ public class BitfinexService {
 		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future3, future4).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		log.info(combined);
+		return "done";
 	}
 
 	private void createBfHourlyAvg() {

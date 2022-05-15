@@ -200,12 +200,11 @@ public class ItbitService {
 			this.averageCalculation.dispose();
 			this.averageCalculation = this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
 					.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
-					.doAfterTerminate(() -> this.createHourDayAvg())
-					.subscribe(value -> this.averageCalculationActive = false);
+					.map(value -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
 		}
 	}
 
-	private void createHourDayAvg() {
+	private String createHourDayAvg() {
 		CompletableFuture<String> future5 = CompletableFuture.supplyAsync(() -> {
 			this.createIbHourlyAvg();
 			return "createIbHourlyAvg() Done.";
@@ -216,6 +215,7 @@ public class ItbitService {
 		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future5, future6).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		log.info(combined);
+		return "done";
 	}
 
 	private boolean filterEvenMinutes(QuoteIb quote) {

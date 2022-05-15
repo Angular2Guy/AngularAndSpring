@@ -123,7 +123,7 @@ public class BitstampService {
 	}
 
 	public void freeMemory() {
-		if(!this.averageCalculationActive) {
+		if (!this.averageCalculationActive) {
 			this.averageCalculation.dispose();
 		}
 	}
@@ -133,12 +133,12 @@ public class BitstampService {
 			this.averageCalculationActive = true;
 			this.averageCalculation.dispose();
 			this.averageCalculation = this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
-					.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
-					.doAfterTerminate(() -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
+					.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT)).map
+					(value -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
 		}
 	}
 
-	private void createHourDayAvg() {
+	private String createHourDayAvg() {
 		CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
 			this.createBsHourlyAvg();
 			return "createBsHourlyAvg() Done.";
@@ -149,6 +149,7 @@ public class BitstampService {
 		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future1, future2).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		log.info(combined);
+		return "done";
 	}
 
 	private void createBsHourlyAvg() {
