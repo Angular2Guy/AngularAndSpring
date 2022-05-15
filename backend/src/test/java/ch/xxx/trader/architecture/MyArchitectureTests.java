@@ -40,19 +40,21 @@ import com.tngtech.archunit.library.Architectures;
 import com.tngtech.archunit.library.GeneralCodingRules;
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition;
 
+import ch.xxx.trader.adapter.cron.ScheduledTask;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @AnalyzeClasses(packages = "ch.xxx.trader", importOptions = { DoNotIncludeTests.class })
 public class MyArchitectureTests {
 	private static final ArchRule NO_CLASSES_SHOULD_USE_FIELD_INJECTION = createNoFieldInjectionRule();
-	
+
 	private JavaClasses importedClasses = new ClassFileImporter().importPackages("ch.xxx.trader");
 
 	@ArchTest
 	static final ArchRule clean_architecture_respected = Architectures.onionArchitecture().domainModels("..domain..")
 			.applicationServices("..usecase..").adapter("rest", "..adapter.controller..")
-			.adapter("cron", "..adapter.cron..").adapter("repo", "..adapter.repository..").adapter("messaging", "..adapter.messaging..")
-			.adapter("config", "..adapter.config..").adapter("clients", "..adapter.clients..").withOptionalLayers(true);
+			.adapter("cron", "..adapter.cron..").adapter("repo", "..adapter.repository..")
+			.adapter("messaging", "..adapter.messaging..").adapter("config", "..adapter.config..")
+			.adapter("clients", "..adapter.clients..").withOptionalLayers(true);
 
 	@ArchTest
 	static final ArchRule cyclesDomain = SlicesRuleDefinition.slices().matching("..domain.(*)..").should()
@@ -84,8 +86,8 @@ public class MyArchitectureTests {
 	@Test
 	public void ruleCronJobMethodsAnnotations() {
 		ArchRule exceptionType = ArchRuleDefinition.methods().that().arePublic().and().areDeclaredInClassesThat()
-				.resideInAPackage("..adapter.cron.ScheduledTask").should().beAnnotatedWith(PostConstruct.class)
-				.orShould().beAnnotatedWith(Scheduled.class).andShould().beAnnotatedWith(SchedulerLock.class);
+				.areAssignableTo(ScheduledTask.class).should().beAnnotatedWith(PostConstruct.class).orShould()
+				.beAnnotatedWith(Scheduled.class).andShould().beAnnotatedWith(SchedulerLock.class);
 		exceptionType.check(this.importedClasses);
 	}
 

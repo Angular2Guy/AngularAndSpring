@@ -81,6 +81,7 @@ public class ScheduledTask {
 //	}
 
 	@Scheduled(fixedRate = 90000)
+	@SchedulerLock(name = "UpdateLoggedOutUsers_scheduledTask", lockAtLeastFor = "PT80S", lockAtMostFor = "PT85S")
 	@Order(1)
 	public void updateLoggedOutUsers() {
 		this.myUserService.updateLoggedOutUsers();
