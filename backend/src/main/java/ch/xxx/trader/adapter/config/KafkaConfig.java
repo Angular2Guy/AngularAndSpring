@@ -79,6 +79,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, Class.forName(this.producerKeySerializer));
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, Class.forName(this.producerValueSerializer));
         this.senderOptions = SenderOptions.create(props);
+        this.senderOptions.maxInFlight(10);
         props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         //props.put(ProducerConfig.CLIENT_ID_CONFIG, "sample-producer");
