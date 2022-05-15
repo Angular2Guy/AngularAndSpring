@@ -213,7 +213,7 @@
 				<property>
 					<name>docker</name>
 					<value>!true</value>
-				</property>
+				</property>				
 			</activation>
 			<dependencies>
 				<dependency>
@@ -225,6 +225,15 @@
 		</profile>
 		<profile>
 			<id>docker</id>
+			<activation>
+				<property>
+					<name>docker</name>
+					<value>true</value>
+				</property>
+			</activation>
+		</profile>
+		<profile>
+			<id>kafka</id>
 			<activation>
 				<property>
 					<name>docker</name>
