@@ -40,7 +40,9 @@ import com.tngtech.archunit.library.Architectures;
 import com.tngtech.archunit.library.GeneralCodingRules;
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition;
 
+import ch.xxx.trader.adapter.cron.PrepareDataTask;
 import ch.xxx.trader.adapter.cron.ScheduledTask;
+import ch.xxx.trader.adapter.cron.TaskStarter;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @AnalyzeClasses(packages = "ch.xxx.trader", importOptions = { DoNotIncludeTests.class })
@@ -86,7 +88,7 @@ public class MyArchitectureTests {
 	@Test
 	public void ruleCronJobMethodsAnnotations() {
 		ArchRule exceptionType = ArchRuleDefinition.methods().that().arePublic().and().areDeclaredInClassesThat()
-				.areAssignableTo(ScheduledTask.class).should().beAnnotatedWith(PostConstruct.class).orShould()
+				.resideInAPackage("..adapter.cron..").and().areNotDeclaredIn(TaskStarter.class).should().beAnnotatedWith(PostConstruct.class).orShould()
 				.beAnnotatedWith(Scheduled.class).andShould().beAnnotatedWith(SchedulerLock.class);
 		exceptionType.check(this.importedClasses);
 	}
