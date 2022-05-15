@@ -234,12 +234,6 @@
 		</profile>
 		<profile>
 			<id>kafka</id>
-			<activation>
-				<property>
-					<name>docker</name>
-					<value>true</value>
-				</property>
-			</activation>
 		</profile>
 	</profiles>
 </project>
