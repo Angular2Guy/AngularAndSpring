@@ -60,6 +60,7 @@ public class ItbitService {
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	private Disposable averageCalculation = Mono.empty().subscribe();
+	private volatile boolean averageCalculationActive = false;
 
 	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
 			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
@@ -76,7 +77,7 @@ public class ItbitService {
 		final String newCurrpair = currpair.equals("btcusd") ? "XBTUSD" : currpair;
 		return this.orderBookClient.getOrderbookItbit(newCurrpair);
 	}
-	
+
 	public Mono<QuoteIb> insertQuote(Mono<QuoteIb> quote) {
 		return this.myMongoRepository.insert(quote);
 	}
@@ -130,7 +131,7 @@ public class ItbitService {
 	}
 
 	private void createIbHourlyAvg() {
-		LocalDateTime startAll = LocalDateTime.now(); 
+		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_HOUR_COL, QuoteIb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
@@ -138,14 +139,16 @@ public class ItbitService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(
+					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Itbit
 			Mono<Collection<QuoteIb>> collectIb = this.myMongoRepository.find(query, QuoteIb.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeIbQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
+					.map(multimap -> multimap.keySet().stream()
+							.map(key -> makeIbQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
-						      .collect(Collectors.toList())));	
+					.flatMap(myList -> Mono
+							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			this.myMongoRepository.insertAll(collectIb, IB_HOUR_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -157,7 +160,7 @@ public class ItbitService {
 	}
 
 	private void createIbDailyAvg() {
-		LocalDateTime startAll = LocalDateTime.now(); 
+		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_DAY_COL, QuoteIb.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
@@ -165,14 +168,16 @@ public class ItbitService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(
+					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Itbit
 			Mono<Collection<QuoteIb>> collectIb = this.myMongoRepository.find(query, QuoteIb.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeIbQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
+					.map(multimap -> multimap.keySet().stream()
+							.map(key -> makeIbQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
-						      .collect(Collectors.toList())));	
+					.flatMap(myList -> Mono
+							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			this.myMongoRepository.insertAll(collectIb, IB_DAY_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -183,26 +188,36 @@ public class ItbitService {
 		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Daily Data Time:"));
 	}
 
+	public void freeMemory() {
+		if (!this.averageCalculationActive) {
+			this.averageCalculation.dispose();
+		}
+	}
+
 	public void createIbAvg() {
-		this.averageCalculation.dispose();
-		this.averageCalculation = this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
-		.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
-		.doAfterTerminate(() -> this.createHourDayAvg()).subscribe();
+		if (!this.averageCalculationActive) {
+			this.averageCalculationActive = true;
+			this.averageCalculation.dispose();
+			this.averageCalculation = this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
+					.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
+					.doAfterTerminate(() -> this.createHourDayAvg())
+					.subscribe(value -> this.averageCalculationActive = false);
+		}
 	}
 
 	private void createHourDayAvg() {
-		CompletableFuture<String> future5 
-		  = CompletableFuture.supplyAsync(() -> {this.createIbHourlyAvg(); return "createIbHourlyAvg() Done.";}, 
-				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		CompletableFuture<String> future6 
-		  = CompletableFuture.supplyAsync(() -> {this.createIbDailyAvg(); return "createIbDailyAvg() Done.";},
-				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		String combined = Stream.of(future5, future6)
-				  .map(CompletableFuture::join)
-				  .collect(Collectors.joining(" "));
+		CompletableFuture<String> future5 = CompletableFuture.supplyAsync(() -> {
+			this.createIbHourlyAvg();
+			return "createIbHourlyAvg() Done.";
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		CompletableFuture<String> future6 = CompletableFuture.supplyAsync(() -> {
+			this.createIbDailyAvg();
+			return "createIbDailyAvg() Done.";
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		String combined = Stream.of(future5, future6).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		log.info(combined);
 	}
-	
+
 	private boolean filterEvenMinutes(QuoteIb quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}
@@ -218,7 +233,8 @@ public class ItbitService {
 		for (int i = 0; i < 24; i++) {
 			QuoteIb quoteIb = new QuoteIb(key, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
 					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, new Date());
+					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+					BigDecimal.ZERO, new Date());
 			quoteIb.setCreatedAt(hours.get(i).getTime());
 			final int x = i;
 			long count = multimap.get(key).stream().filter(quote -> {

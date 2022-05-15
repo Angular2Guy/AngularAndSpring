@@ -43,6 +43,16 @@ public class PrepareDataTask {
 		this.coinbaseService = coinbaseService;
 	}
 
+	@Scheduled(initialDelay = 600000, fixedRate = 300000)
+	@SchedulerLock(name = "free_mem_scheduledTask", lockAtLeastFor = "PT280S", lockAtMostFor = "PT290S")
+	public void freeMemory() {
+		this.bitfinexService.freeMemory();
+		this.bitstampService.freeMemory();
+		this.coinbaseService.freeMemory();
+		this.itbitService.freeMemory();
+		log.info("FreeMemory is run.");
+	}
+	
 	@Scheduled(cron = "0 5 0 ? * ?")
 	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
 	@Timed(value = "create.bs.avg", percentiles = { 0.5, 0.95, 0.99 })

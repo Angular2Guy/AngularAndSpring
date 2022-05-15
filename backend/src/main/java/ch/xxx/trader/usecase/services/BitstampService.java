@@ -58,6 +58,7 @@ public class BitstampService {
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	private Disposable averageCalculation = Mono.empty().subscribe();
+	private volatile boolean averageCalculationActive = false;
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
@@ -121,11 +122,20 @@ public class BitstampService {
 		return Mono.empty();
 	}
 
+	public void freeMemory() {
+		if(!this.averageCalculationActive) {
+			this.averageCalculation.dispose();
+		}
+	}
+
 	public void createBsAvg() {
-		this.averageCalculation.dispose();		
-		this.averageCalculation = this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
-				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
-				.doAfterTerminate(() -> this.createHourDayAvg()).subscribe();
+		if (!this.averageCalculationActive) {
+			this.averageCalculationActive = true;
+			this.averageCalculation.dispose();
+			this.averageCalculation = this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
+					.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
+					.doAfterTerminate(() -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
+		}
 	}
 
 	private void createHourDayAvg() {

@@ -58,9 +58,10 @@ public class BitfinexService {
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	private Disposable averageCalculation = Mono.empty().subscribe();
+	private volatile boolean averageCalculationActive = false;
 
-	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils, MyOrderBookClient orderBookClient,
-			ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
+	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils,
+			MyOrderBookClient orderBookClient, ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
@@ -75,7 +76,7 @@ public class BitfinexService {
 	public Mono<QuoteBf> insertQuote(Mono<QuoteBf> quote) {
 		return this.myMongoRepository.insert(quote);
 	}
-	
+
 	public Mono<QuoteBf> currentQuote(String pair) {
 		Query query = MongoUtils.buildCurrentQuery(Optional.of(pair));
 		return this.myMongoRepository.findOne(query, QuoteBf.class);
@@ -120,26 +121,36 @@ public class BitfinexService {
 		return Mono.empty();
 	}
 
+	public void freeMemory() {
+		if(!this.averageCalculationActive) {
+			this.averageCalculation.dispose();
+		}
+	}
+	
 	public void createBfAvg() {
-		this.averageCalculation.dispose();
-		this.averageCalculation = this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
-		.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
-		.doAfterTerminate(() -> this.createHourDayAvg()).subscribe();
+		if (!this.averageCalculationActive) {
+			this.averageCalculationActive = true;
+			this.averageCalculation.dispose();
+			this.averageCalculation = this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
+					.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
+					.doAfterTerminate(() -> this.createHourDayAvg())
+					.subscribe(value -> this.averageCalculationActive = false);
+		}
 	}
 
 	private void createHourDayAvg() {
-		CompletableFuture<String> future3  
-		  = CompletableFuture.supplyAsync(() -> {this.createBfHourlyAvg(); return "createBfHourlyAvg() Done.";}, 
-				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		CompletableFuture<String> future4  
-		  = CompletableFuture.supplyAsync(() -> {this.createBfDailyAvg(); return "createBfDailyAvg() Done.";},
-				  CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		String combined = Stream.of(future3, future4)
-				  .map(CompletableFuture::join)
-				  .collect(Collectors.joining(" "));
+		CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> {
+			this.createBfHourlyAvg();
+			return "createBfHourlyAvg() Done.";
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		CompletableFuture<String> future4 = CompletableFuture.supplyAsync(() -> {
+			this.createBfDailyAvg();
+			return "createBfDailyAvg() Done.";
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		String combined = Stream.of(future3, future4).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		log.info(combined);
 	}
-	
+
 	private void createBfHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
@@ -149,15 +160,16 @@ public class BitfinexService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(
+					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
 			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> 
-					makeBfQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
+					.map(multimap -> multimap.keySet().stream()
+							.map(key -> makeBfQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
-								      .collect(Collectors.toList())));					
+					.flatMap(myList -> Mono
+							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -169,7 +181,7 @@ public class BitfinexService {
 	}
 
 	private void createBfDailyAvg() {
-		LocalDateTime startAll = LocalDateTime.now(); 
+		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
@@ -177,14 +189,16 @@ public class BitfinexService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			Query query = new Query();
-			query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
+			query.addCriteria(
+					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
 			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream().map(key -> makeBfQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
+					.map(multimap -> multimap.keySet().stream()
+							.map(key -> makeBfQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
-					.flatMap(myList -> Mono.just(myList.stream().flatMap(Collection::stream)
-						      .collect(Collectors.toList())));
+					.flatMap(myList -> Mono
+							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);

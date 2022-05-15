@@ -75,6 +75,7 @@ public class CoinbaseService {
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
 	private Disposable averageCalculation = Mono.empty().subscribe();
+	private volatile boolean averageCalculationActive = false;
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
@@ -125,11 +126,20 @@ public class CoinbaseService {
 		return this.myMongoRepository.findOne(query, QuoteCb.class);
 	}
 
+	public void freeMemory() {
+		if(!this.averageCalculationActive) {
+			this.averageCalculation.dispose();
+		}
+	}
+	
 	public void createCbAvg() {
+		if(!this.averageCalculationActive) {
+		this.averageCalculationActive = true;			
 		this.averageCalculation.dispose();
 		this.averageCalculation = this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 		.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
-		.doAfterTerminate(() -> this.createHourDayAvg()).subscribe();		
+		.doAfterTerminate(() -> this.createHourDayAvg()).subscribe(value -> this.averageCalculationActive = false);
+		}
 	}
 
 	private void createHourDayAvg() {
