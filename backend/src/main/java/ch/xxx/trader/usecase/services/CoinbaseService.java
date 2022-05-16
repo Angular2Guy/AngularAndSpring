@@ -69,7 +69,7 @@ public class CoinbaseService {
 	public static final String CB_DAY_COL = "quoteCbDay";
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	@Value("${kubernetes.pod.cpu.constraint}")
+	@Value("${kubernetes.pod.cpu.constraint:false}")
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
