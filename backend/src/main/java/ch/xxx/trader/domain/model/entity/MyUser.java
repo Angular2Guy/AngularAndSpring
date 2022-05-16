@@ -48,6 +48,14 @@ public class MyUser implements UserDetails {
 	private String email;	
 	@JsonProperty
 	private String token;
+	@JsonProperty
+	private boolean accountNonExpired = true;
+	@JsonProperty
+	private boolean accountNonLocked = true;
+	@JsonProperty
+	private boolean credentialsNonExpired = true;
+	@JsonProperty
+	private boolean enabled = true;
 	
 	public ObjectId get_id() {
 		return _id;
@@ -85,25 +93,26 @@ public class MyUser implements UserDetails {
 		GrantedAuthority auth = new SimpleGrantedAuthority("USERS"); 					
 		return Arrays.asList(auth);
 	}
+	@JsonIgnore
 	@Override
 	public String getUsername() {
 		return this.userId;
 	}
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return this.accountNonExpired;
 	}
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return this.accountNonLocked;
 	}
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return this.credentialsNonExpired;
 	}
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return this.enabled;
 	}
 	public Date getCreatedAt() {
 		return createdAt;
@@ -116,5 +125,17 @@ public class MyUser implements UserDetails {
 	}
 	public void setToken(String token) {
 		this.token = token;
+	}
+	public void setAccountNonExpired(boolean accountNonExpired) {
+		this.accountNonExpired = accountNonExpired;
+	}
+	public void setAccountNonLocked(boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
+	}
+	public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+		this.credentialsNonExpired = credentialsNonExpired;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }

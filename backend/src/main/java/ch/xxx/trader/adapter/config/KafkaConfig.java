@@ -1,6 +1,5 @@
 package ch.xxx.trader.adapter.config;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
