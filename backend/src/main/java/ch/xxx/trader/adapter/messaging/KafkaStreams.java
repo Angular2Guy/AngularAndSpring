@@ -12,8 +12,11 @@
  */
 package ch.xxx.trader.adapter.messaging;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.kafka.common.serialization.Serdes;
@@ -21,6 +24,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.SlidingWindows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -30,8 +34,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.xxx.trader.adapter.config.KafkaConfig;
-import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
-import ch.xxx.trader.domain.model.entity.RevokedToken;
 import ch.xxx.trader.usecase.common.LastlogoutTimestampExtractor;
 
 @Profile("kafka | prod-kafka")
@@ -54,28 +56,39 @@ public class KafkaStreams {
 				.aggregate(LinkedList<String>::new, (key, value, myList) -> {
 					myList.add(value);
 					return myList;
-				}).toStream().mapValues(value -> {
-					String result = "";
-					RevokedTokensDto revokedTokensDto = new RevokedTokensDto(
-							value.stream().map(strValue -> parseRevokedToken(strValue)).toList());
-					try {
-						result = this.objectMapper.writeValueAsString(revokedTokensDto);
-					} catch (JsonProcessingException e) {
-						throw new RuntimeException(e);
-					}
-					return result;
-				}).to(KafkaConfig.USER_LOGOUT_SINK_TOPIC);
+				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String())))
+				.toStream((key, value) -> parseStringList(value))
+//				.mapValues(value -> {
+//					String result = "";
+//					RevokedTokensDto revokedTokensDto = new RevokedTokensDto(
+//							value.stream().map(strValue -> parseRevokedToken(strValue)).toList());
+//					try {
+//						result = this.objectMapper.writeValueAsString(revokedTokensDto);
+//					} catch (JsonProcessingException e) {
+//						throw new RuntimeException(e);
+//					}
+//					return result;
+//				})
+				.to(KafkaConfig.USER_LOGOUT_SINK_TOPIC);
 		Properties streamsConfiguration = new Properties();
 		streamsConfiguration.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
 				LastlogoutTimestampExtractor.class);
 		return builder.build(streamsConfiguration);
 	}
 
-	private RevokedToken parseRevokedToken(String strValue) {
+	private String parseStringList(List<String> value) {
 		try {
-			return this.objectMapper.readValue(strValue, RevokedToken.class);
+			return this.objectMapper.writeValueAsString(value);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
 	}
+
+//	private RevokedToken parseRevokedToken(String strValue) {
+//		try {
+//			return this.objectMapper.readValue(strValue, RevokedToken.class);
+//		} catch (JsonProcessingException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 }
