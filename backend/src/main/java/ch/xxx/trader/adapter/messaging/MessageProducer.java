@@ -41,18 +41,21 @@ public class MessageProducer implements MyMessageProducer {
 	public Mono<MyUser> sendNewUser(MyUser dto) {
 		String dtoJson = this.messageMapper.mapDtoToString(dto);
 		return this.kafkaSender.createOutbound()
-				.send(Mono.just(new ProducerRecord<>(KafkaConfig.NEW_USER_TOPIC, dto.getSalt(), dtoJson))).then()
+				.send(Mono.just(new ProducerRecord<>(KafkaConfig.NEW_USER_TOPIC, dto.getSalt(), dtoJson)))
+				.then()
 				.doOnError(e -> LOGGER.error(
 						String.format("Failed to send topic: %s value: %s", KafkaConfig.NEW_USER_TOPIC, dtoJson), e))
-				.flatMap(value -> Mono.just(dto));
+				.thenReturn(dto);
+				
 	}
 
 	public Mono<RevokedToken> sendUserLogout(RevokedToken dto) {
 		String dtoJson = this.messageMapper.mapDtoToString(dto);
 		return this.kafkaSender.createOutbound()
 				.send(Mono.just(new ProducerRecord<>(KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dto.getUuid(), dtoJson)))
-				.then().doOnError(e -> LOGGER.error(String.format("Failed to send topic: %s value: %s",
+				.then()
+				.doOnError(e -> LOGGER.error(String.format("Failed to send topic: %s value: %s",
 						KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dtoJson), e))
-				.flatMap(value -> Mono.just(dto));
+				.thenReturn(dto);
 	}
 }

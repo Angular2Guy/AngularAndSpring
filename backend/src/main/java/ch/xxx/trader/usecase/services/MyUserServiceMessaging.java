@@ -63,7 +63,11 @@ public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserS
 		Mono<MyUser> MyUserResult = this.myUserFlux.autoConnect()
 				.filter(myUser1 -> myUser.getUserId().equalsIgnoreCase(myUser1.getUserId())).shareNext();
 		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myMessageProducer.sendNewUser(dto))
-				.zipWith(MyUserResult, (myUser1, msgMyUser1) -> msgMyUser1);
+				.zipWith(MyUserResult, (myUser1, msgMyUser1) -> msgMyUser1)
+				.flatMap(myUser1 -> {
+					//LOGGER.info("MyUser signin result: {}",myUser1);
+					return Mono.just(myUser1);
+					});
 	}
 
 	public Mono<MyUser> userSigninMsg(MyUser myUser) {
