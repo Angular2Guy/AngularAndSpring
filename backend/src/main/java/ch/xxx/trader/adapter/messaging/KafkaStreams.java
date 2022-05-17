@@ -57,17 +57,6 @@ public class KafkaStreams {
 				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String())))
 				.toStream()
 				.mapValues(value -> parseStringList(value))
-//				.mapValues(value -> {
-//					String result = "";
-//					RevokedTokensDto revokedTokensDto = new RevokedTokensDto(
-//							value.stream().map(strValue -> parseRevokedToken(strValue)).toList());
-//					try {
-//						result = this.objectMapper.writeValueAsString(revokedTokensDto);
-//					} catch (JsonProcessingException e) {
-//						throw new RuntimeException(e);
-//					}
-//					return result;
-//				})
 				.to(KafkaConfig.USER_LOGOUT_SINK_TOPIC);
 		Properties streamsConfiguration = new Properties();
 		streamsConfiguration.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
