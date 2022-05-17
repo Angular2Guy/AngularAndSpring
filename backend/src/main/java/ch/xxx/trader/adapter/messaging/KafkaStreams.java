@@ -12,9 +12,7 @@
  */
 package ch.xxx.trader.adapter.messaging;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -57,7 +55,8 @@ public class KafkaStreams {
 					myList.add(value);
 					return myList;
 				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String())))
-				.toStream((key, value) -> parseStringList(value))
+				.toStream()
+				.mapValues(value -> parseStringList(value))
 //				.mapValues(value -> {
 //					String result = "";
 //					RevokedTokensDto revokedTokensDto = new RevokedTokensDto(
