@@ -28,7 +28,6 @@ import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
-import ch.xxx.trader.usecase.mappers.MessageMapper;
 import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
@@ -37,19 +36,16 @@ import reactor.core.publisher.Sinks;
 @Service
 public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceMessaging.class);
-	private static final long LOGOUT_TIMEOUT = 95L;
+//	private static final long LOGOUT_TIMEOUT = 95L;
 	private final MyMessageProducer myMessageProducer;
-	private final MessageMapper messageMapper;
 	private final Sinks.Many<MyUser> myUserSink = Sinks.many().multicast().onBackpressureBuffer();
 	private final ConnectableFlux<MyUser> myUserFlux = this.myUserSink.asFlux().publish();
-	
 
 	public MyUserServiceMessaging(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
-			MyMessageProducer myMessageProducer, MessageMapper messageMapper) {
+			MyMessageProducer myMessageProducer) {
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
 		this.myMessageProducer = myMessageProducer;
-		this.messageMapper = messageMapper;
 	}
 
 	@Override
@@ -64,16 +60,18 @@ public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserS
 
 	@Override
 	public Mono<MyUser> postUserSignin(MyUser myUser) {
-		Mono<MyUser> MyUserResult = this.myUserFlux.autoConnect().filter(myUser1 -> myUser.getUserId().equalsIgnoreCase(myUser1.getUserId())).shareNext();
-		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myMessageProducer.sendNewUser(dto)).zipWith(MyUserResult, (myUser1, msgMyUser1) -> msgMyUser1);
+		Mono<MyUser> MyUserResult = this.myUserFlux.autoConnect()
+				.filter(myUser1 -> myUser.getUserId().equalsIgnoreCase(myUser1.getUserId())).shareNext();
+		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myMessageProducer.sendNewUser(dto))
+				.zipWith(MyUserResult, (myUser1, msgMyUser1) -> msgMyUser1);
 	}
 
 	public Mono<MyUser> userSigninMsg(MyUser myUser) {
 		return super.postUserSignin(myUser, true, false).flatMap(myUser1 -> {
-			if(this.myUserSink.tryEmitNext(myUser1).isFailure()) {
+			if (this.myUserSink.tryEmitNext(myUser1).isFailure()) {
 				LOGGER.info("Emit to myUserSink failed. {}", myUser1);
 			}
-			return Mono.just(myUser1);	
+			return Mono.just(myUser1);
 		});
 	}
 
