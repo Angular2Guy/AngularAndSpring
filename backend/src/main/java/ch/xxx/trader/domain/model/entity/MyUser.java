@@ -138,4 +138,12 @@ public class MyUser implements UserDetails {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
+	
+	@Override
+	public String toString() {
+		return "MyUser [_id=" + _id + ", createdAt=" + createdAt + ", userId=" + userId + ", password=" + password
+				+ ", salt=" + salt + ", email=" + email + ", token=" + token + ", accountNonExpired="
+				+ accountNonExpired + ", accountNonLocked=" + accountNonLocked + ", credentialsNonExpired="
+				+ credentialsNonExpired + ", enabled=" + enabled + "]";
+	}
 }
