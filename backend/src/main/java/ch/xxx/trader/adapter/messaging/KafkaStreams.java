@@ -56,7 +56,7 @@ public class KafkaStreams {
 					return myList;
 				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String())))
 				.toStream()
-				.mapValues(value -> parseStringList(value))
+				.mapValues(value -> parseStringList((List<String>) value))
 				.to(KafkaConfig.USER_LOGOUT_SINK_TOPIC);
 		Properties streamsConfiguration = new Properties();
 		streamsConfiguration.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
