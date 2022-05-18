@@ -57,7 +57,7 @@ public class KafkaStreams {
 				.windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(KafkaStreams.LOGOUT_TIMEOUT),
 						Duration.ofSeconds(KafkaStreams.GRACE_TIMEOUT)))
 				.aggregate(LinkedList<String>::new, (key, value, myList) -> {
-					LOGGER.info("Logout Stream: {}", value);
+//					LOGGER.info("Logout Stream: {}", value);
 					myList.add(value);
 					return myList;
 				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String())))
