@@ -1,0 +1,35 @@
+webAppName: angularandspring
+dbName: mongodb
+webImageName: angular2guy/angularandspring
+webImageVersion: latest
+dbImageName: mongo
+dbImageVersion: 4.4
+volumeClaimName: mongo-pv-claim
+persistentVolumeName: mongo-pv-volume
+
+secret:
+  name: app-env-secret
+
+envApp:
+  normal: 
+    MONGODB_HOST: mongodb
+    CPU_CONSTRAINT: true
+  secret:
+    JWTTOKEN_SECRET: secret-key1234567890abcdefghijklmnopqrstuvwxyz
+    
+envZookeeper:
+  normal: 
+    ALLOW_ANONYMOUS_LOGIN: yes
+  secret:
+   ZOOKEEPER_TICK_TIME: "2000"
+   
+envKafka:
+  normal: 
+    KAFKA_BROKER_ID: "1"
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+    KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://:9092
+    KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: false
+    ALLOW_PLAINTEXT_LISTENER: yes
+  secret:
+    KAFKA_ZOOKEEPER_CONNECT: "zookeeperservice:2181"  
