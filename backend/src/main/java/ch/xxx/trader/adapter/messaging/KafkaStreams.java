@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -57,8 +58,10 @@ public class KafkaStreams {
 				.windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(KafkaStreams.LOGOUT_TIMEOUT),
 						Duration.ofSeconds(KafkaStreams.GRACE_TIMEOUT)))
 				.aggregate(LinkedList<String>::new, (key, value, myList) -> {
-//					LOGGER.info("Logout Stream: {}", value);
+//					LOGGER.info("Logout Stream value: {}", value);
+//					LOGGER.info("Logout Stream key: {}", key);
 					myList.add(value);
+//					LOGGER.info("Logout Stream myList: {}", myList.stream().collect(Collectors.joining(",")));
 					return myList;
 				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String())))
 				.toStream()
@@ -66,7 +69,7 @@ public class KafkaStreams {
 				.to(KafkaConfig.USER_LOGOUT_SINK_TOPIC);
 		Properties streamsConfiguration = new Properties();
 		streamsConfiguration.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
-				LastlogoutTimestampExtractor.class);
+				LastlogoutTimestampExtractor.class.getName());
 		return builder.build(streamsConfiguration);
 	}
 

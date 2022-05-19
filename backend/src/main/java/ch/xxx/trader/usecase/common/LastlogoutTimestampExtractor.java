@@ -16,14 +16,18 @@ import java.sql.Timestamp;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.streams.processor.TimestampExtractor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 
 public class LastlogoutTimestampExtractor implements TimestampExtractor {
+	private static final Logger LOGGER = LoggerFactory.getLogger(LastlogoutTimestampExtractor.class);
 	
 	@Override
 	public long extract(ConsumerRecord<Object, Object> record, long partitionTime) {
 		RevokedToken revokedToken = DtoUtils.produceObjectMapper().convertValue(record.value(), RevokedToken.class);
+//		LOGGER.info(revokedToken.toString());
 		return Timestamp.valueOf(revokedToken.getLastLogout()).getTime();
 	}
 
