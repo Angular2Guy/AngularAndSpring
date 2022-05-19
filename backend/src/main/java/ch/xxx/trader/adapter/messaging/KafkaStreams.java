@@ -63,13 +63,15 @@ public class KafkaStreams {
 					myList.add(value);
 //					LOGGER.info("Logout Stream myList: {}", myList.stream().collect(Collectors.joining(",")));
 					return myList;
-				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String())))
+				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String())))				
 				.toStream()
 				.mapValues(value -> convertToRevokedTokens((List<String>) value))
 				.to(KafkaConfig.USER_LOGOUT_SINK_TOPIC);
 		Properties streamsConfiguration = new Properties();
 		streamsConfiguration.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
 				LastlogoutTimestampExtractor.class.getName());
+		streamsConfiguration.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, -1L);
+		streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000L);
 		return builder.build(streamsConfiguration);
 	}
 
