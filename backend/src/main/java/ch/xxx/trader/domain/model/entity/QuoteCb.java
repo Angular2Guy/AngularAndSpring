@@ -728,6 +728,8 @@ public class QuoteCb implements Quote {
 	private  BigDecimal gal = BigDecimal.ZERO;
 	@JsonProperty("DNT")
 	private  BigDecimal dnt = BigDecimal.ZERO;
+	@JsonProperty("FLOW")
+	private  BigDecimal flow = BigDecimal.ZERO;
 	
 	@JsonProperty("SUPER")
 	public void setSuper(BigDecimal super1) {
@@ -4209,6 +4211,22 @@ public class QuoteCb implements Quote {
 
 	public BigDecimal getZwl() {
 		return zwl;
+	}
+
+	public BigDecimal getFlow() {
+		return flow;
+	}
+
+	public void setFlow(BigDecimal flow) {
+		this.flow = flow;
+	}
+
+	public BigDecimal getDnt() {
+		return dnt;
+	}
+
+	public void setDnt(BigDecimal dnt) {
+		this.dnt = dnt;
 	}
 
 	@Override
