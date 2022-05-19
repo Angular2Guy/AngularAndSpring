@@ -52,7 +52,7 @@ public class MessageProducer implements MyMessageProducer {
 	public Mono<RevokedToken> sendUserLogout(RevokedToken dto) {
 		String dtoJson = this.messageMapper.mapDtoToString(dto);
 		return this.kafkaSender.createOutbound()
-				.send(Mono.just(new ProducerRecord<>(KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dto.getUuid(), dtoJson)))
+				.send(Mono.just(new ProducerRecord<>(KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dto.getLastLogout().toString(), dtoJson)))
 				.then()
 				.doOnError(e -> LOGGER.error(String.format("Failed to send topic: %s value: %s",
 						KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dtoJson), e))
