@@ -7,6 +7,15 @@ dbImageVersion: 4.4
 volumeClaimName: mongo-pv-claim
 persistentVolumeName: mongo-pv-volume
 
+kafkaName: kafkaapp
+zookeeperName: zookeeperserver
+kafkaImageName: bitnami/kafka
+kafkaImageVersion: latest
+zookeeperImageName: bitnami/zookeeper
+zookeeperImageVersion: latest
+kafkaServiceName: kafkaservice
+zookeeperServiceName: zookeeperservice
+
 secret:
   name: app-env-secret
 
@@ -14,6 +23,8 @@ envApp:
   normal: 
     MONGODB_HOST: mongodb
     CPU_CONSTRAINT: true
+    SPRING_PROFILES_ACTIVE: prod
+    KAFKA_SERVICE_NAME: kafkaService
   secret:
     JWTTOKEN_SECRET: secret-key1234567890abcdefghijklmnopqrstuvwxyz
     
