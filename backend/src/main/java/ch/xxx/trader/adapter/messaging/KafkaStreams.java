@@ -43,7 +43,7 @@ import ch.xxx.trader.usecase.common.LastlogoutTimestampExtractor;
 @Component
 public class KafkaStreams {
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaStreams.class);
-	private static final long LOGOUT_TIMEOUT = 90L;
+	private static final long LOGOUT_TIMEOUT = 120L;
 	private static final long GRACE_TIMEOUT = 5L;
 	private ObjectMapper objectMapper;
 
