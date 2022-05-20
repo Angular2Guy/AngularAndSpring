@@ -85,18 +85,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.kafkaAppName }}
+  name: {{ .Values.kafkaName }}
   labels:
-    app: {{ .Values.kafkaAppName }}    
+    app: {{ .Values.kafkaName }}    
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.kafkaAppName }}
+      app: {{ .Values.kafkaName }}
   template:
     metadata:
       labels:
-        app: {{ .Values.kafkaAppName }}
+        app: {{ .Values.kafkaName }}
     spec:
       securityContext:
         runAsUser: 0
