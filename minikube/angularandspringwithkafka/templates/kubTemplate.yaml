@@ -152,7 +152,7 @@ metadata:
   labels:
     run: {{ .Values.kafkaServiceName }} 
 spec:
-  type: NodePort
+#  type: NodePort
   ports:
   - port: 9092
 #    nodePort: 9092
@@ -263,6 +263,7 @@ spec:
   type: NodePort
   ports:
   - port: 8080
+    nodePort: 8080
     protocol: TCP
   selector:
     app: {{ .Values.webAppName }}                 
