@@ -16,7 +16,6 @@ import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -63,8 +62,7 @@ public class KafkaStreams {
 					myList.add(value);
 //					LOGGER.info("Logout Stream myList: {}", myList.stream().collect(Collectors.joining(",")));
 					return myList;
-				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String())))				
-				.toStream()
+				}, Materialized.with(Serdes.String(), Serdes.ListSerde(LinkedList.class, Serdes.String()))).toStream()
 				.mapValues(value -> convertToRevokedTokens((List<String>) value))
 				.to(KafkaConfig.USER_LOGOUT_SINK_TOPIC);
 		Properties streamsConfiguration = new Properties();

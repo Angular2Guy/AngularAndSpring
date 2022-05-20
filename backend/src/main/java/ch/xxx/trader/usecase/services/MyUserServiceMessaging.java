@@ -16,6 +16,7 @@
 package ch.xxx.trader.usecase.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -63,11 +64,10 @@ public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserS
 		Mono<MyUser> MyUserResult = this.myUserFlux.autoConnect()
 				.filter(myUser1 -> myUser.getUserId().equalsIgnoreCase(myUser1.getUserId())).shareNext();
 		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myMessageProducer.sendNewUser(dto))
-				.zipWith(MyUserResult, (myUser1, msgMyUser1) -> msgMyUser1)
-				.flatMap(myUser1 -> {
-					//LOGGER.info("MyUser signin result: {}",myUser1);
+				.zipWith(MyUserResult, (myUser1, msgMyUser1) -> msgMyUser1).flatMap(myUser1 -> {
+					// LOGGER.info("MyUser signin result: {}",myUser1);
 					return Mono.just(myUser1);
-					});
+				});
 	}
 
 	public Mono<MyUser> userSigninMsg(MyUser myUser) {
@@ -83,8 +83,13 @@ public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserS
 	public Mono<Boolean> postLogout(String token) {
 		String username = this.getTokenUsername(token);
 		String uuid = this.getTokenUuid(token);
-		return this.myMessageProducer.sendUserLogout(new RevokedToken(null, username, uuid, LocalDateTime.now()))
-				.flatMap(value -> Mono.just(value != null));
+		List<RevokedToken> revokedTokens = new ArrayList<>();
+		revokedTokens.add(new RevokedToken(null, username, uuid, LocalDateTime.now()));
+		return revokedTokens.stream()
+				.map(myRevokedToken -> this.myMessageProducer.sendUserLogout(myRevokedToken)
+						.flatMap(value -> Mono.just(value != null)))
+				.reduce((result1, result2) -> Mono.just(result1.block() == true && result2.block() == true))
+				.orElse(Mono.just(Boolean.FALSE));
 	}
 
 	public Mono<Boolean> logoutMsg(RevokedTokensDto revokedTokensDto) {
