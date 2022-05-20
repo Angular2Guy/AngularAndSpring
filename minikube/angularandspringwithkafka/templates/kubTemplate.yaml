@@ -9,6 +9,26 @@ data:
   {{- end}}
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.secret.nameZookeeper }}
+type: Opaque
+data:
+  {{- range $key, $val := .Values.envZookeeper.secret }}
+  {{ $key }}: {{ $val | b64enc }}
+  {{- end}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.secret.nameKafka }}
+type: Opaque
+data:
+  {{- range $key, $val := .Values.envKafka.secret }}
+  {{ $key }}: {{ $val | b64enc }}
+  {{- end}}
+---
+apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: {{ .Values.persistentVolumeName }}

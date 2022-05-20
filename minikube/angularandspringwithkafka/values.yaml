@@ -18,6 +18,8 @@ zookeeperServiceName: zookeeperservice
 
 secret:
   name: app-env-secret
+  nameKafka: kafka-env-secret
+  nameZookeeper: zookeeper-env-secret
 
 envApp:
   normal: 
