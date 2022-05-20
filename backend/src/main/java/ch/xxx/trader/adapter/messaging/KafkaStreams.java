@@ -70,7 +70,6 @@ public class KafkaStreams {
 		Properties streamsConfiguration = new Properties();
 		streamsConfiguration.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
 				LastlogoutTimestampExtractor.class.getName());
-		streamsConfiguration.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, -1L);
 		streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000L);
 		return builder.build(streamsConfiguration);
 	}
