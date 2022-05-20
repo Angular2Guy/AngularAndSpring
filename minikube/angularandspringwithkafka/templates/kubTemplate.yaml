@@ -65,7 +65,7 @@ spec:
             memory: "512M"
             cpu: "0.5"
         env:
-          {{- include "helpers.list-envZookeeper-variables" . | indent 10 }}
+          {{- include "helpers.list-envZookeeperApp-variables" . | indent 10 }}
         ports:
         - containerPort: 2181
 ---
@@ -114,7 +114,7 @@ spec:
             memory: "768M"
             cpu: "1.0"
         env:
-          {{- include "helpers.list-kafkaApp-variables" . | indent 10 }}
+          {{- include "helpers.list-envKafkaApp-variables" . | indent 10 }}
         ports:
         - containerPort: 9092
 #        volumeMounts:
