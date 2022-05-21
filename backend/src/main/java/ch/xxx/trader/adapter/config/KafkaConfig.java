@@ -25,7 +25,7 @@ import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderOptions;
 
 @Configuration
-@Profile("kafka | prod-kafka")
+@Profile("kafka | prod")
 @EnableKafka
 @EnableKafkaStreams
 public class KafkaConfig {
