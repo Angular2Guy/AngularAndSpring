@@ -26,7 +26,7 @@ import ch.xxx.trader.usecase.services.MyMessageProducer;
 import reactor.core.publisher.Mono;
 import reactor.kafka.sender.KafkaSender;
 
-@Profile("kafka | prod-kafka")
+@Profile("kafka | prod")
 @Service
 public class MessageProducer implements MyMessageProducer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MessageProducer.class);

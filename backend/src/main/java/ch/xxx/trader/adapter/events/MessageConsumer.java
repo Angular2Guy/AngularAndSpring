@@ -31,7 +31,7 @@ import ch.xxx.trader.usecase.services.MyUserServiceMessaging;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 
-@Profile("kafka | prod-kafka")
+@Profile("kafka | prod")
 @Service
 public class MessageConsumer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MessageConsumer.class);

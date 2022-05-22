@@ -38,7 +38,7 @@ import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import ch.xxx.trader.usecase.common.LastlogoutTimestampExtractor;
 
-@Profile("kafka | prod-kafka")
+@Profile("kafka | prod")
 @Component
 public class KafkaStreams {
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaStreams.class);

@@ -40,8 +40,6 @@ import com.tngtech.archunit.library.Architectures;
 import com.tngtech.archunit.library.GeneralCodingRules;
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition;
 
-import ch.xxx.trader.adapter.cron.PrepareDataTask;
-import ch.xxx.trader.adapter.cron.ScheduledTask;
 import ch.xxx.trader.adapter.cron.TaskStarter;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 

@@ -33,7 +33,7 @@ import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
-@Profile("kafka | prod-kafka")
+@Profile("kafka | prod")
 @Service
 public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceMessaging.class);

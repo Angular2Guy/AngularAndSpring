@@ -25,7 +25,7 @@ import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import reactor.core.publisher.Mono;
 
-@Profile("!kafka & !prod-kafka")
+@Profile("!kafka & !prod")
 @Service
 public class MyUserServiceDb extends MyUserServiceBean implements MyUserService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceDb.class);
