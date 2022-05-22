@@ -35,16 +35,16 @@ import reactor.core.publisher.Sinks;
 
 @Profile("kafka | prod")
 @Service
-public class MyUserServiceMessaging extends MyUserServiceBean implements MyUserService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceMessaging.class);
+public class MyUserServiceEvents extends MyUserServiceBean implements MyUserService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceEvents.class);
 //	private static final long LOGOUT_TIMEOUT = 95L;
-	private final MyMessageProducer myMessageProducer;
+	private final MyEventProducer myMessageProducer;
 	private final Sinks.Many<MyUser> myUserSink = Sinks.many().multicast().onBackpressureBuffer();
 	private final ConnectableFlux<MyUser> myUserFlux = this.myUserSink.asFlux().publish();
 
-	public MyUserServiceMessaging(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
+	public MyUserServiceEvents(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
-			MyMessageProducer myMessageProducer) {
+			MyEventProducer myMessageProducer) {
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
 		this.myMessageProducer = myMessageProducer;
 	}

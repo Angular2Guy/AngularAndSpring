@@ -21,19 +21,19 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
-import ch.xxx.trader.usecase.mappers.MessageMapper;
-import ch.xxx.trader.usecase.services.MyMessageProducer;
+import ch.xxx.trader.usecase.mappers.EventMapper;
+import ch.xxx.trader.usecase.services.MyEventProducer;
 import reactor.core.publisher.Mono;
 import reactor.kafka.sender.KafkaSender;
 
 @Profile("kafka | prod")
 @Service
-public class MessageProducer implements MyMessageProducer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MessageProducer.class);
+public class EventProducer implements MyEventProducer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EventProducer.class);
 	private final KafkaSender<String, String> kafkaSender;
-	private final MessageMapper messageMapper;
+	private final EventMapper messageMapper;
 
-	public MessageProducer(KafkaSender<String, String> kafkaSender, MessageMapper messageMapper) {
+	public EventProducer(KafkaSender<String, String> kafkaSender, EventMapper messageMapper) {
 		this.kafkaSender = kafkaSender;
 		this.messageMapper = messageMapper;
 	}

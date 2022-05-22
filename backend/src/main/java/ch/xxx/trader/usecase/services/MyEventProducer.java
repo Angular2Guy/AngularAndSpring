@@ -4,7 +4,7 @@ import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import reactor.core.publisher.Mono;
 
-public interface MyMessageProducer {
+public interface MyEventProducer {
 	Mono<MyUser> sendNewUser(MyUser dto);
 	Mono<RevokedToken> sendUserLogout(RevokedToken dto);
 }

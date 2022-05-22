@@ -31,7 +31,7 @@ import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.domain.model.entity.QuoteIb;
-import ch.xxx.trader.usecase.mappers.MessageMapper;
+import ch.xxx.trader.usecase.mappers.EventMapper;
 import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
@@ -57,14 +57,14 @@ public class ScheduledTask {
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 	private final MyUserService myUserService;
-	private final MessageMapper messageMapper;
+	private final EventMapper messageMapper;
 	private Disposable bitstampDisposable = Mono.empty().subscribe();
 	private Disposable coinbaseDisposable = Mono.empty().subscribe();
 	private Disposable itbitDisposable = Mono.empty().subscribe();
 	private Disposable bitfinexDisposable = Mono.empty().subscribe();
 
 	public ScheduledTask(WebClient webClient, BitstampService bitstampService, MyUserService myUserService,
-			MessageMapper messageMapper, BitfinexService bitfinexService, ItbitService itbitService,
+			EventMapper messageMapper, BitfinexService bitfinexService, ItbitService itbitService,
 			CoinbaseService coinbaseService) {
 		this.webClient = webClient;
 		this.bitstampService = bitstampService;

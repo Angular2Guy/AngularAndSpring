@@ -26,24 +26,24 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
-import ch.xxx.trader.usecase.mappers.MessageMapper;
-import ch.xxx.trader.usecase.services.MyUserServiceMessaging;
+import ch.xxx.trader.usecase.mappers.EventMapper;
+import ch.xxx.trader.usecase.services.MyUserServiceEvents;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 
 @Profile("kafka | prod")
 @Service
-public class MessageConsumer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MessageConsumer.class);
+public class EventConsumer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EventConsumer.class);
 	private final ReceiverOptions<String, String> receiverOptions;
 	private final KafkaReceiver<String, String> userLogoutReceiver;
 	private final KafkaReceiver<String, String> newUserReceiver;
-	private final MyUserServiceMessaging myUserServiceMessaging;
-	private final MessageMapper messageMapper;
+	private final MyUserServiceEvents myUserServiceMessaging;
+	private final EventMapper messageMapper;
 	@Value("${spring.kafka.consumer.group-id}")
 	private String consumerGroupId;
 
-	public MessageConsumer(MyUserServiceMessaging myUserServiceMessaging, ReceiverOptions<String, String> receiverOptions, MessageMapper messageMapper) {
+	public EventConsumer(MyUserServiceEvents myUserServiceMessaging, ReceiverOptions<String, String> receiverOptions, EventMapper messageMapper) {
 		this.receiverOptions = receiverOptions;
 		this.userLogoutReceiver = KafkaReceiver
 				.create(this.receiverOptions(List.of(KafkaConfig.USER_LOGOUT_SINK_TOPIC)));

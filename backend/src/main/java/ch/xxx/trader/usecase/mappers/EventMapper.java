@@ -21,10 +21,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class MessageMapper {
+public class EventMapper {
 	private final ObjectMapper objectMapper;
 	
-	public MessageMapper(ObjectMapper objectMapper) {
+	public EventMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 	
