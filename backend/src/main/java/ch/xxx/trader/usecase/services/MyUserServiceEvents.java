@@ -38,15 +38,15 @@ import reactor.core.publisher.Sinks;
 public class MyUserServiceEvents extends MyUserServiceBean implements MyUserService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceEvents.class);
 //	private static final long LOGOUT_TIMEOUT = 95L;
-	private final MyEventProducer myMessageProducer;
+	private final MyEventProducer myEventProducer;
 	private final Sinks.Many<MyUser> myUserSink = Sinks.many().multicast().onBackpressureBuffer();
 	private final ConnectableFlux<MyUser> myUserFlux = this.myUserSink.asFlux().publish();
 
 	public MyUserServiceEvents(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
-			MyEventProducer myMessageProducer) {
+			MyEventProducer myEventProducer) {
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
-		this.myMessageProducer = myMessageProducer;
+		this.myEventProducer = myEventProducer;
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 	public Mono<MyUser> postUserSignin(MyUser myUser) {
 		Mono<MyUser> MyUserResult = this.myUserFlux.autoConnect()
 				.filter(myUser1 -> myUser.getUserId().equalsIgnoreCase(myUser1.getUserId())).shareNext();
-		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myMessageProducer.sendNewUser(dto))
+		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myEventProducer.sendNewUser(dto))
 				.zipWith(MyUserResult, (myUser1, msgMyUser1) -> msgMyUser1).flatMap(myUser1 -> {
 					// LOGGER.info("MyUser signin result: {}",myUser1);
 					return Mono.just(myUser1);
@@ -86,7 +86,7 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 		List<RevokedToken> revokedTokens = new ArrayList<>();
 		revokedTokens.add(new RevokedToken(null, username, uuid, LocalDateTime.now()));
 		return revokedTokens.stream()
-				.map(myRevokedToken -> this.myMessageProducer.sendUserLogout(myRevokedToken)
+				.map(myRevokedToken -> this.myEventProducer.sendUserLogout(myRevokedToken)
 						.flatMap(value -> Mono.just(value != null)))
 				.reduce((result1, result2) -> Mono.just(result1.block() == true && result2.block() == true))
 				.orElse(Mono.just(Boolean.FALSE));

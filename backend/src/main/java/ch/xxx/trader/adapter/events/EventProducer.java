@@ -31,15 +31,15 @@ import reactor.kafka.sender.KafkaSender;
 public class EventProducer implements MyEventProducer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EventProducer.class);
 	private final KafkaSender<String, String> kafkaSender;
-	private final EventMapper messageMapper;
+	private final EventMapper eventMapper;
 
 	public EventProducer(KafkaSender<String, String> kafkaSender, EventMapper messageMapper) {
 		this.kafkaSender = kafkaSender;
-		this.messageMapper = messageMapper;
+		this.eventMapper = messageMapper;
 	}
 
 	public Mono<MyUser> sendNewUser(MyUser dto) {
-		String dtoJson = this.messageMapper.mapDtoToString(dto);
+		String dtoJson = this.eventMapper.mapDtoToString(dto);
 		return this.kafkaSender.createOutbound()
 				.send(Mono.just(new ProducerRecord<>(KafkaConfig.NEW_USER_TOPIC, dto.getSalt(), dtoJson)))
 				.then()
@@ -50,7 +50,7 @@ public class EventProducer implements MyEventProducer {
 	}
 
 	public Mono<RevokedToken> sendUserLogout(RevokedToken dto) {
-		String dtoJson = this.messageMapper.mapDtoToString(dto);
+		String dtoJson = this.eventMapper.mapDtoToString(dto);
 		return this.kafkaSender.createOutbound()
 				.send(Mono.just(new ProducerRecord<>(KafkaConfig.USER_LOGOUT_SOURCE_TOPIC, dto.getName(), dtoJson)))
 				.then()

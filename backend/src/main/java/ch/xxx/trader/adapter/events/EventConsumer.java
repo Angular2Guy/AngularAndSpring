@@ -39,7 +39,7 @@ public class EventConsumer {
 	private final KafkaReceiver<String, String> userLogoutReceiver;
 	private final KafkaReceiver<String, String> newUserReceiver;
 	private final MyUserServiceEvents myUserServiceMessaging;
-	private final EventMapper messageMapper;
+	private final EventMapper eventMapper;
 	@Value("${spring.kafka.consumer.group-id}")
 	private String consumerGroupId;
 
@@ -49,7 +49,7 @@ public class EventConsumer {
 				.create(this.receiverOptions(List.of(KafkaConfig.USER_LOGOUT_SINK_TOPIC)));
 		this.newUserReceiver = KafkaReceiver.create(this.receiverOptions(List.of(KafkaConfig.NEW_USER_TOPIC)));
 		this.myUserServiceMessaging = myUserServiceMessaging;
-		this.messageMapper = messageMapper;
+		this.eventMapper = messageMapper;
 	}
 
 	private ReceiverOptions<String, String> receiverOptions(Collection<String> topics) {
@@ -62,8 +62,8 @@ public class EventConsumer {
 	@EventListener(ApplicationReadyEvent.class)
 	public void doOnStartup() {
 		this.newUserReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceMessaging
-				.userSigninMsg(this.messageMapper.mapJsonToObject(myRecord.value(), MyUser.class))).subscribe();
+				.userSigninMsg(this.eventMapper.mapJsonToObject(myRecord.value(), MyUser.class))).subscribe();
 		this.userLogoutReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceMessaging
-				.logoutMsg(this.messageMapper.mapJsonToObject(myRecord.value(), RevokedTokensDto.class))).subscribe();
+				.logoutMsg(this.eventMapper.mapJsonToObject(myRecord.value(), RevokedTokensDto.class))).subscribe();
 	}	
 }
