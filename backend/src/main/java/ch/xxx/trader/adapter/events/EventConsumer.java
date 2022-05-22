@@ -62,8 +62,8 @@ public class EventConsumer {
 	@EventListener(ApplicationReadyEvent.class)
 	public void doOnStartup() {
 		this.newUserReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceEvents
-				.userSigninMsg(this.eventMapper.mapJsonToObject(myRecord.value(), MyUser.class))).subscribe();
+				.userSigninEvent(this.eventMapper.mapJsonToObject(myRecord.value(), MyUser.class))).subscribe();
 		this.userLogoutReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceEvents
-				.logoutMsg(this.eventMapper.mapJsonToObject(myRecord.value(), RevokedTokensDto.class))).subscribe();
+				.logoutEvent(this.eventMapper.mapJsonToObject(myRecord.value(), RevokedTokensDto.class))).subscribe();
 	}	
 }

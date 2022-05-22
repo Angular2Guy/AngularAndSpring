@@ -70,7 +70,7 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 				});
 	}
 
-	public Mono<MyUser> userSigninMsg(MyUser myUser) {
+	public Mono<MyUser> userSigninEvent(MyUser myUser) {
 		return super.postUserSignin(myUser, true, false).flatMap(myUser1 -> {
 			if (this.myUserSink.tryEmitNext(myUser1).isFailure()) {
 				LOGGER.info("Emit to myUserSink failed. {}", myUser1);
@@ -92,7 +92,7 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 				.orElse(Mono.just(Boolean.FALSE));
 	}
 
-	public Mono<Boolean> logoutMsg(RevokedTokensDto revokedTokensDto) {
+	public Mono<Boolean> logoutEvent(RevokedTokensDto revokedTokensDto) {
 		return Mono.just(this.updateLoggedOutUsers(revokedTokensDto.getRevokedTokens()));
 	}
 }
