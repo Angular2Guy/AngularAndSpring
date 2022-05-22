@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.trader.adapter.messaging;
+package ch.xxx.trader.adapter.events;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
