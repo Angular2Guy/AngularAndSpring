@@ -33,9 +33,9 @@ public class EventProducer implements MyEventProducer {
 	private final KafkaSender<String, String> kafkaSender;
 	private final EventMapper eventMapper;
 
-	public EventProducer(KafkaSender<String, String> kafkaSender, EventMapper messageMapper) {
+	public EventProducer(KafkaSender<String, String> kafkaSender, EventMapper eventMapper) {
 		this.kafkaSender = kafkaSender;
-		this.eventMapper = messageMapper;
+		this.eventMapper = eventMapper;
 	}
 
 	public Mono<MyUser> sendNewUser(MyUser dto) {
