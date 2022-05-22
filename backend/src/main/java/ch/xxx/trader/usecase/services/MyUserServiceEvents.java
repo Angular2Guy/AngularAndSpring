@@ -61,10 +61,10 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 
 	@Override
 	public Mono<MyUser> postUserSignin(MyUser myUser) {
-		Mono<MyUser> MyUserResult = this.myUserFlux.autoConnect()
+		Mono<MyUser> myUserResult = this.myUserFlux.autoConnect()
 				.filter(myUser1 -> myUser.getUserId().equalsIgnoreCase(myUser1.getUserId())).shareNext();
 		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myEventProducer.sendNewUser(dto))
-				.zipWith(MyUserResult, (myUser1, msgMyUser1) -> msgMyUser1).flatMap(myUser1 -> {
+				.zipWith(myUserResult, (myUser1, msgMyUser1) -> msgMyUser1).flatMap(myUser1 -> {
 					// LOGGER.info("MyUser signin result: {}",myUser1);
 					return Mono.just(myUser1);
 				});
