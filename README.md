@@ -4,7 +4,7 @@
 
 Author: Sven Loesekann
 
-Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, Spring Security,  MongoDB, Maven, Docker, ArchUnit, Spring Actuator with Prometheus interface
+Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, Spring Security,  MongoDB, Maven, Docker, ArchUnit, Kafka, Kafka-Streams, Spring Actuator with Prometheus interface
 
 ## Articles
 * [Reactive Kafka with Streaming in Spring Boot Part 1](https://angular2guy.wordpress.com/2022/05/23/reactive-kafka-with-streaming-in-spring-boot-part-1/)
@@ -20,7 +20,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 
 ## What is the goal?
 
-The goal is to be reactive from top to bottom. To do that the project uses Angular in the frontend and Spring Boot with Reactive Web as server. Mongodb is the database connected with the reactive MongoDB driver. That enables a reactive chain from the browser to the DB. The security is done with Jwt Tokens and the logged out tokens are invalidated. The project uses an in memory MongoDB to be just cloned build and ready to run. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test. The health and performance of the application can be monitored with Spring Actuator with Prometheus interface. 
+The goal is to be reactive from top to bottom. To do that the project uses Angular in the frontend and Spring Boot with Reactive Web as server. Mongodb is the database connected with the reactive MongoDB driver. That enables a reactive chain from the browser to the DB. The security is done with Jwt Tokens and the logged out tokens are invalidated. The project uses an in memory MongoDB to be just cloned build and ready to run. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test. The health and performance of the application can be monitored with Spring Actuator with Prometheus interface. With the 'kafka' profile the Kafka support can be used for Jwt token revokation(Minikube setups(development/system available). 
 
 ## What is it?
 
@@ -33,7 +33,7 @@ The application has two scheduled jobs. The first is the ScheduledTask class. It
 
 ## Minikube setup
 
-The application can now be run in a Minikube cluster with a Helm chart. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory as a Helm chart. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. Further documentation can be found in the wiki.
+The application can now be run in a Minikube cluster with a Helm chart. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory as a Helm chart. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. A Helm chart for the Kafka development deployment in Minikube can be found in the directory 'minikube/kafka'. A Helm chart for the deployment of Kafka/Zookeeper/AngularAndSpring/MongoDb can be found in the directory 'minikube/angularandspringwithkafka'. Further documentation can be found in the blog articles. 
 
 ## Monitoring
 The Spring Actuator interface with Prometheus interface can be used as it is described in this article: 
