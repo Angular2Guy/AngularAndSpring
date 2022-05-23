@@ -33,7 +33,7 @@ The application has two scheduled jobs. The first is the ScheduledTask class. It
 
 ## Minikube setup
 
-The application can now be run in a Minikube cluster with a Helm chart. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory as a Helm chart. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. A Helm chart for the Kafka development deployment in Minikube can be found in the directory 'minikube/kafka'. A Helm chart for the deployment of Kafka/Zookeeper/AngularAndSpring/MongoDb can be found in the directory 'minikube/angularandspringwithkafka'. Further documentation can be found in the blog articles. 
+The application can now be run in a Minikube cluster with a Helm chart. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory as a Helm chart. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. A Helm chart for the Kafka development setup in Minikube can be found in the directory 'minikube/kafka'. A Helm chart for the deployment of Kafka/Zookeeper/AngularAndSpring/MongoDb system setup can be found in the directory 'minikube/angularandspringwithkafka'. Further documentation can be found in the blog articles. 
 
 ## Monitoring
 The Spring Actuator interface with Prometheus interface can be used as it is described in this article: 
