@@ -256,7 +256,7 @@ public class BitfinexService {
 				this.serviceUtils.avgHourValue(q1.getLast_price(), q2.getLast_price(), count),
 				this.serviceUtils.avgHourValue(q1.getLow(), q2.getLow(), count),
 				this.serviceUtils.avgHourValue(q1.getHigh(), q2.getHigh(), count),
-				this.serviceUtils.avgHourValue(q1.getVolume(), q2.getVolume(), count), "");
+				this.serviceUtils.avgHourValue(q1.getVolume(), q2.getVolume(), count), q1.getTimestamp());
 		myQuote.setCreatedAt(q1.getCreatedAt());
 		return myQuote;
 	}
