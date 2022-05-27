@@ -730,6 +730,8 @@ public class QuoteCb implements Quote {
 	private  BigDecimal dnt = BigDecimal.ZERO;
 	@JsonProperty("FLOW")
 	private  BigDecimal flow = BigDecimal.ZERO;
+	@JsonProperty("SAND")
+	private  BigDecimal sand = BigDecimal.ZERO;	
 	
 	@JsonProperty("SUPER")
 	public void setSuper(BigDecimal super1) {
@@ -748,8 +750,6 @@ public class QuoteCb implements Quote {
 	public void setAed(BigDecimal aed) {
 		this.aed = aed;
 	}
-
-
 
 	public void setAfn(BigDecimal afn) {
 		this.afn = afn;
@@ -4229,37 +4229,82 @@ public class QuoteCb implements Quote {
 		this.dnt = dnt;
 	}
 
+	
+	
+	public BigDecimal getSand() {
+		return sand;
+	}
+
+	public void setSand(BigDecimal sand) {
+		this.sand = sand;
+	}
+
+	
+
 	@Override
 	public String toString() {
-		return "QuoteCb [aed=" + aed + ", afn=" + afn + ", all=" + all + ", amd=" + amd + ", ang=" + ang + ", aoa="
-				+ aoa + ", ars=" + ars + ", aud=" + aud + ", awg=" + awg + ", azn=" + azn + ", bam=" + bam + ", bbd="
-				+ bbd + ", bdt=" + bdt + ", bgn=" + bgn + ", bhd=" + bhd + ", bif=" + bif + ", bmd=" + bmd + ", bnd="
-				+ bnd + ", bob=" + bob + ", brl=" + brl + ", bsd=" + bsd + ", btc=" + btc + ", btn=" + btn + ", bwp="
-				+ bwp + ", byn=" + byn + ", byr=" + byr + ", bzd=" + bzd + ", cad=" + cad + ", cdf=" + cdf + ", chf="
-				+ chf + ", clf=" + clf + ", clp=" + clp + ", cny=" + cny + ", cop=" + cop + ", crc=" + crc + ", cuc="
-				+ cuc + ", cve=" + cve + ", czk=" + czk + ", djf=" + djf + ", dkk=" + dkk + ", dop=" + dop + ", dzd="
-				+ dzd + ", eek=" + eek + ", egp=" + egp + ", ern=" + ern + ", etb=" + etb + ", eth=" + eth + ", eur="
-				+ eur + ", fjd=" + fjd + ", fkd=" + fkp + ", gbp=" + gbp + ", gel=" + gel + ", ggp=" + ggp + ", ghs="
-				+ ghs + ", gip=" + gip + ", gmd=" + gmd + ", gnf=" + gnf + ", gtq=" + gtq + ", gyd=" + gyd + ", hkd="
-				+ hkd + ", hnl=" + hnl + ", hrk=" + hrk + ", htg=" + htg + ", huf=" + huf + ", idr=" + idr + ", ils="
-				+ ils + ", imp=" + imp + ", inr=" + inr + ", iqd=" + iqd + ", isk=" + isk + ", jep=" + jep + ", jmd="
-				+ jmd + ", jod=" + jod + ", jpy=" + jpy + ", kes=" + kes + ", kgs=" + kgs + ", khr=" + khr + ", kmf="
-				+ kmf + ", krw=" + krw + ", kwd=" + kwd + ", kyd=" + kyd + ", kzt=" + kzt + ", lak=" + lak + ", lbp="
-				+ lbp + ", lkr=" + lkr + ", ldr=" + lrd + ", lsl=" + lsl + ", ltc=" + ltc + ", ltl=" + ltl + ", lvl="
-				+ lvl + ", lyd=" + lyd + ", mad=" + mad + ", mdl=" + mdl + ", mga=" + mga + ", mkd=" + mkd + ", mmk="
-				+ mmk + ", mnt=" + mnt + ", mop=" + mop + ", mro=" + mro + ", mtl=" + mtl + ", mur=" + mur + ", mvr="
-				+ mvr + ", mwk=" + mwk + ", mxn=" + mxn + ", myr=" + myr + ", mzn=" + mzn + ", nad=" + nad + ", ngn="
-				+ ngn + ", nio=" + nio + ", nok=" + nok + ", npr=" + npr + ", nzd=" + nzd + ", omr=" + omr + ", pab="
-				+ pab + ", pen=" + pen + ", pgk=" + pgk + ", php=" + php + ", pkr=" + pkr + ", pln=" + pln + ", pyg="
-				+ pyg + ", qar=" + qar + ", ron=" + ron + ", rsd=" + rsd + ", rub=" + rub + ", rwf=" + rwf + ", sar="
-				+ sar + ", sbd=" + sbd + ", scr=" + scr + ", sek=" + sek + ", sgd=" + sgd + ", shp=" + shp + ", sll="
-				+ sll + ", sos=" + sos + ", srd=" + srd + ", ssp=" + ssp + ", std=" + std + ", svc=" + svc + ", szl="
-				+ szl + ", thb=" + thb + ", tjs=" + tjs + ", tmt=" + tmt + ", tnd=" + tnd + ", top=" + top + ", try1="
-				+ try1 + ", tdd=" + ttd + ", twd=" + twd + ", tzs=" + tzs + ", uah=" + uah + ", ugx=" + ugx + ", usd="
-				+ usd + ", uyu=" + uyu + ", uzs=" + uzs + ", vef=" + vef + ", vnd=" + vnd + ", vuv=" + vuv + ", wst="
-				+ wst + ", xaf=" + xaf + ", xag=" + xag + ", xau=" + xau + ", xcd=" + xcd + ", xdr=" + xdr + ", xof="
-				+ xof + ", xpd=" + xpd + ", xpf=" + xpf + ", xpt=" + xpt + ", yer=" + yer + ", zar=" + zar + ", zmk="
-				+ zmk + ", zmw=" + zmw + ", zml=" + zwl + "]";
+		return "QuoteCb [_id=" + _id + ", createdAt=" + createdAt + ", aed=" + aed + ", afn=" + afn + ", all=" + all
+				+ ", amd=" + amd + ", ang=" + ang + ", aoa=" + aoa + ", ars=" + ars + ", aud=" + aud + ", awg=" + awg
+				+ ", azn=" + azn + ", bam=" + bam + ", bbd=" + bbd + ", bdt=" + bdt + ", bgn=" + bgn + ", bhd=" + bhd
+				+ ", bif=" + bif + ", bmd=" + bmd + ", bnd=" + bnd + ", bob=" + bob + ", brl=" + brl + ", bsd=" + bsd
+				+ ", btc=" + btc + ", btn=" + btn + ", bwp=" + bwp + ", byn=" + byn + ", byr=" + byr + ", bzd=" + bzd
+				+ ", cad=" + cad + ", cdf=" + cdf + ", chf=" + chf + ", clf=" + clf + ", clp=" + clp + ", cny=" + cny
+				+ ", cop=" + cop + ", crc=" + crc + ", cuc=" + cuc + ", cve=" + cve + ", czk=" + czk + ", djf=" + djf
+				+ ", dkk=" + dkk + ", dop=" + dop + ", dzd=" + dzd + ", eek=" + eek + ", egp=" + egp + ", ern=" + ern
+				+ ", etb=" + etb + ", eth=" + eth + ", eur=" + eur + ", fjd=" + fjd + ", fkp=" + fkp + ", gbp=" + gbp
+				+ ", gel=" + gel + ", ggp=" + ggp + ", ghs=" + ghs + ", gip=" + gip + ", gmd=" + gmd + ", gnf=" + gnf
+				+ ", gtq=" + gtq + ", gyd=" + gyd + ", hkd=" + hkd + ", hnl=" + hnl + ", hrk=" + hrk + ", htg=" + htg
+				+ ", huf=" + huf + ", idr=" + idr + ", ils=" + ils + ", imp=" + imp + ", inr=" + inr + ", iqd=" + iqd
+				+ ", isk=" + isk + ", jep=" + jep + ", jmd=" + jmd + ", jod=" + jod + ", jpy=" + jpy + ", kes=" + kes
+				+ ", kgs=" + kgs + ", khr=" + khr + ", kmf=" + kmf + ", krw=" + krw + ", kwd=" + kwd + ", kyd=" + kyd
+				+ ", kzt=" + kzt + ", lak=" + lak + ", lbp=" + lbp + ", lkr=" + lkr + ", lrd=" + lrd + ", lsl=" + lsl
+				+ ", ltc=" + ltc + ", ltl=" + ltl + ", lvl=" + lvl + ", lyd=" + lyd + ", mad=" + mad + ", mdl=" + mdl
+				+ ", mga=" + mga + ", mkd=" + mkd + ", mmk=" + mmk + ", mnt=" + mnt + ", mop=" + mop + ", mro=" + mro
+				+ ", mtl=" + mtl + ", mur=" + mur + ", mvr=" + mvr + ", mwk=" + mwk + ", mxn=" + mxn + ", myr=" + myr
+				+ ", mzn=" + mzn + ", nad=" + nad + ", ngn=" + ngn + ", nio=" + nio + ", nok=" + nok + ", npr=" + npr
+				+ ", nzd=" + nzd + ", omr=" + omr + ", pab=" + pab + ", pen=" + pen + ", pgk=" + pgk + ", php=" + php
+				+ ", pkr=" + pkr + ", pln=" + pln + ", pyg=" + pyg + ", qar=" + qar + ", ron=" + ron + ", rsd=" + rsd
+				+ ", rub=" + rub + ", rwf=" + rwf + ", sar=" + sar + ", sbd=" + sbd + ", scr=" + scr + ", sek=" + sek
+				+ ", sgd=" + sgd + ", shp=" + shp + ", sll=" + sll + ", sos=" + sos + ", srd=" + srd + ", ssp=" + ssp
+				+ ", std=" + std + ", svc=" + svc + ", szl=" + szl + ", thb=" + thb + ", tjs=" + tjs + ", tmt=" + tmt
+				+ ", tnd=" + tnd + ", top=" + top + ", try1=" + try1 + ", ttd=" + ttd + ", twd=" + twd + ", tzs=" + tzs
+				+ ", uah=" + uah + ", ugx=" + ugx + ", usd=" + usd + ", uyu=" + uyu + ", uzs=" + uzs + ", vef=" + vef
+				+ ", vnd=" + vnd + ", vuv=" + vuv + ", wst=" + wst + ", xaf=" + xaf + ", xag=" + xag + ", xau=" + xau
+				+ ", xcd=" + xcd + ", xdr=" + xdr + ", xof=" + xof + ", xpd=" + xpd + ", xpf=" + xpf + ", xpt=" + xpt
+				+ ", yer=" + yer + ", zar=" + zar + ", zmk=" + zmk + ", zmw=" + zmw + ", zwl=" + zwl + ", ves=" + ves
+				+ ", xba=" + xba + ", xts=" + xts + ", gbx=" + gbx + ", cnh=" + cnh + ", zwd=" + zwd + ", bch=" + bch
+				+ ", bsv=" + bsv + ", eth2=" + eth2 + ", etc=" + etc + ", zrx=" + zrx + ", usdc=" + usdc + ", bat="
+				+ bat + ", loom=" + loom + ", mana=" + mana + ", knc=" + knc + ", link=" + link + ", mkr=" + mkr
+				+ ", cvc=" + cvc + ", omg=" + omg + ", gnt=" + gnt + ", dai=" + dai + ", snt=" + snt + ", zec=" + zec
+				+ ", xrp=" + xrp + ", rep=" + rep + ", xlm=" + xlm + ", eos=" + eos + ", xtz=" + xtz + ", algo=" + algo
+				+ ", dash=" + dash + ", atom=" + atom + ", oxt=" + oxt + ", comp=" + comp + ", enj=" + enj + ", repv2="
+				+ repv2 + ", band=" + band + ", nmr=" + nmr + ", cgld=" + cgld + ", uma=" + uma + ", lrc=" + lrc
+				+ ", yfi=" + yfi + ", uni=" + uni + ", bal=" + bal + ", ren=" + ren + ", wbtc=" + wbtc + ", nu=" + nu
+				+ ", yfii=" + yfii + ", fil=" + fil + ", aave=" + aave + ", bnt=" + bnt + ", grt=" + grt + ", snx="
+				+ snx + ", storj=" + storj + ", sushi=" + sushi + ", matic=" + matic + ", skl=" + skl + ", ada=" + ada
+				+ ", ankr=" + ankr + ", crv=" + crv + ", icp=" + icp + ", nkn=" + nkn + ", ogn=" + ogn + ", inch1="
+				+ inch1 + ", usdt=" + usdt + ", forth=" + forth + ", ctsi=" + ctsi + ", trb=" + trb + ", poly=" + poly
+				+ ", mir=" + mir + ", rlc=" + rlc + ", dot=" + dot + ", sol=" + sol + ", doge=" + doge + ", mln=" + mln
+				+ ", gtc=" + gtc + ", amp=" + amp + ", shib=" + shib + ", chz=" + chz + ", keep=" + keep + ", lpt="
+				+ lpt + ", qnt=" + qnt + ", bond=" + bond + ", rly=" + rly + ", clv=" + clv + ", farm=" + farm
+				+ ", mask=" + mask + ", fet=" + fet + ", pax=" + pax + ", ach=" + ach + ", asm=" + asm + ", pla=" + pla
+				+ ", rai=" + rai + ", tribe=" + tribe + ", orn=" + orn + ", iotx=" + iotx + ", ust=" + ust + ", quick="
+				+ quick + ", axs=" + axs + ", req=" + req + ", wluna=" + wluna + ", tru=" + tru + ", rad=" + rad
+				+ ", coti=" + coti + ", ddx=" + ddx + ", suku=" + suku + ", rgt=" + rgt + ", xyo=" + xyo + ", zen="
+				+ zen + ", auction=" + auction + ", busd=" + busd + ", jasmy=" + jasmy + ", wcfg=" + wcfg + ", btrst="
+				+ btrst + ", agld=" + agld + ", avax=" + avax + ", fx=" + fx + ", trac=" + trac + ", lcx=" + lcx
+				+ ", arpa=" + arpa + ", badger=" + badger + ", krl=" + krl + ", perp=" + perp + ", rari=" + rari
+				+ ", deso=" + deso + ", api3=" + api3 + ", nct=" + nct + ", shping=" + shping + ", upi=" + upi
+				+ ", cro=" + cro + ", avt=" + avt + ", mdt=" + mdt + ", vgx=" + vgx + ", alcx=" + alcx + ", coval="
+				+ coval + ", fox=" + fox + ", musd=" + musd + ", gala=" + gala + ", powr=" + powr + ", gyen=" + gyen
+				+ ", alice=" + alice + ", inv=" + inv + ", lqty=" + lqty + ", pro=" + pro + ", spell=" + spell
+				+ ", ens=" + ens + ", dia=" + dia + ", blz=" + blz + ", ctx=" + ctx + ", idex=" + idex + ", mco2="
+				+ mco2 + ", pols=" + pols + ", super1=" + super1 + ", unfi=" + unfi + ", stx=" + stx + ", gods=" + gods
+				+ ", imx=" + imx + ", rbn=" + rbn + ", bico=" + bico + ", gfi=" + gfi + ", glm=" + glm + ", mpl=" + mpl
+				+ ", plu=" + plu + ", fida=" + fida + ", orca=" + orca + ", crpt=" + crpt + ", qsp=" + qsp + ", rndr="
+				+ rndr + ", syn=" + syn + ", aioz=" + aioz + ", aergo=" + aergo + ", high=" + high + ", rose=" + rose
+				+ ", ape=" + ape + ", mina=" + mina + ", gmt=" + gmt + ", gst=" + gst + ", gal=" + gal + ", dnt=" + dnt
+				+ ", flow=" + flow + ", sand=" + sand + "]";
 	}
 
 	public ObjectId get_id() {
