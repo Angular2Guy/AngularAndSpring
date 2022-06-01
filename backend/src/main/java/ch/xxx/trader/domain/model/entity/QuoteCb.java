@@ -34,719 +34,721 @@ public class QuoteCb implements Quote {
 	@JsonProperty
 	private Date createdAt = new Date();
 	@JsonProperty("AED")
-	private  BigDecimal aed = BigDecimal.ZERO;
+	private BigDecimal aed = BigDecimal.ZERO;
 	@JsonProperty("AFN")
-	private  BigDecimal afn = BigDecimal.ZERO;
+	private BigDecimal afn = BigDecimal.ZERO;
 	@JsonProperty("ALL")
-	private  BigDecimal all = BigDecimal.ZERO;
+	private BigDecimal all = BigDecimal.ZERO;
 	@JsonProperty("AMD")
-	private  BigDecimal amd = BigDecimal.ZERO;
+	private BigDecimal amd = BigDecimal.ZERO;
 	@JsonProperty("ANG")
-	private  BigDecimal ang = BigDecimal.ZERO;
+	private BigDecimal ang = BigDecimal.ZERO;
 	@JsonProperty("AOA")
-	private  BigDecimal aoa = BigDecimal.ZERO;
+	private BigDecimal aoa = BigDecimal.ZERO;
 	@JsonProperty("ARS")
-	private  BigDecimal ars = BigDecimal.ZERO;
+	private BigDecimal ars = BigDecimal.ZERO;
 	@JsonProperty("AUD")
-	private  BigDecimal aud = BigDecimal.ZERO;
+	private BigDecimal aud = BigDecimal.ZERO;
 	@JsonProperty("AWG")
-	private  BigDecimal awg = BigDecimal.ZERO;
+	private BigDecimal awg = BigDecimal.ZERO;
 	@JsonProperty("AZN")
-	private  BigDecimal azn = BigDecimal.ZERO;
+	private BigDecimal azn = BigDecimal.ZERO;
 	@JsonProperty("BAM")
-	private  BigDecimal bam = BigDecimal.ZERO;
+	private BigDecimal bam = BigDecimal.ZERO;
 	@JsonProperty("BBD")
-	private  BigDecimal bbd = BigDecimal.ZERO;
+	private BigDecimal bbd = BigDecimal.ZERO;
 	@JsonProperty("BDT")
-	private  BigDecimal bdt = BigDecimal.ZERO;
+	private BigDecimal bdt = BigDecimal.ZERO;
 	@JsonProperty("BGN")
-	private  BigDecimal bgn = BigDecimal.ZERO;
+	private BigDecimal bgn = BigDecimal.ZERO;
 	@JsonProperty("BHD")
-	private  BigDecimal bhd = BigDecimal.ZERO;
+	private BigDecimal bhd = BigDecimal.ZERO;
 	@JsonProperty("BIF")
-	private  BigDecimal bif = BigDecimal.ZERO;
+	private BigDecimal bif = BigDecimal.ZERO;
 	@JsonProperty("BMD")
-	private  BigDecimal bmd = BigDecimal.ZERO;
+	private BigDecimal bmd = BigDecimal.ZERO;
 	@JsonProperty("BND")
-	private  BigDecimal bnd = BigDecimal.ZERO;
+	private BigDecimal bnd = BigDecimal.ZERO;
 	@JsonProperty("BOB")
-	private  BigDecimal bob = BigDecimal.ZERO;
+	private BigDecimal bob = BigDecimal.ZERO;
 	@JsonProperty("BRL")
-	private  BigDecimal brl = BigDecimal.ZERO;
+	private BigDecimal brl = BigDecimal.ZERO;
 	@JsonProperty("BSD")
-	private  BigDecimal bsd = BigDecimal.ZERO;
+	private BigDecimal bsd = BigDecimal.ZERO;
 	@JsonProperty("BTC")
-	private  BigDecimal btc = BigDecimal.ZERO;
+	private BigDecimal btc = BigDecimal.ZERO;
 	@JsonProperty("BTN")
-	private  BigDecimal btn = BigDecimal.ZERO;
+	private BigDecimal btn = BigDecimal.ZERO;
 	@JsonProperty("BWP")
-	private  BigDecimal bwp = BigDecimal.ZERO;
+	private BigDecimal bwp = BigDecimal.ZERO;
 	@JsonProperty("BYN")
-	private  BigDecimal byn = BigDecimal.ZERO;
+	private BigDecimal byn = BigDecimal.ZERO;
 	@JsonProperty("BYR")
-	private  BigDecimal byr = BigDecimal.ZERO;
+	private BigDecimal byr = BigDecimal.ZERO;
 	@JsonProperty("BZD")
-	private  BigDecimal bzd = BigDecimal.ZERO;
+	private BigDecimal bzd = BigDecimal.ZERO;
 	@JsonProperty("CAD")
-	private  BigDecimal cad = BigDecimal.ZERO;
+	private BigDecimal cad = BigDecimal.ZERO;
 	@JsonProperty("CDF")
-	private  BigDecimal cdf = BigDecimal.ZERO;
+	private BigDecimal cdf = BigDecimal.ZERO;
 	@JsonProperty("CHF")
-	private  BigDecimal chf = BigDecimal.ZERO;
+	private BigDecimal chf = BigDecimal.ZERO;
 	@JsonProperty("CLF")
-	private  BigDecimal clf = BigDecimal.ZERO;
+	private BigDecimal clf = BigDecimal.ZERO;
 	@JsonProperty("CLP")
-	private  BigDecimal clp = BigDecimal.ZERO;
+	private BigDecimal clp = BigDecimal.ZERO;
 	@JsonProperty("CNY")
-	private  BigDecimal cny = BigDecimal.ZERO;
+	private BigDecimal cny = BigDecimal.ZERO;
 	@JsonProperty("COP")
-	private  BigDecimal cop = BigDecimal.ZERO;
+	private BigDecimal cop = BigDecimal.ZERO;
 	@JsonProperty("CRC")
-	private  BigDecimal crc = BigDecimal.ZERO;
+	private BigDecimal crc = BigDecimal.ZERO;
 	@JsonProperty("CUC")
-	private  BigDecimal cuc = BigDecimal.ZERO;
+	private BigDecimal cuc = BigDecimal.ZERO;
 	@JsonProperty("CVE")
-	private  BigDecimal cve = BigDecimal.ZERO;
+	private BigDecimal cve = BigDecimal.ZERO;
 	@JsonProperty("CZK")
-	private  BigDecimal czk = BigDecimal.ZERO;
+	private BigDecimal czk = BigDecimal.ZERO;
 	@JsonProperty("DJF")
-	private  BigDecimal djf = BigDecimal.ZERO;
+	private BigDecimal djf = BigDecimal.ZERO;
 	@JsonProperty("DKK")
-	private  BigDecimal dkk = BigDecimal.ZERO;
+	private BigDecimal dkk = BigDecimal.ZERO;
 	@JsonProperty("DOP")
-	private  BigDecimal dop = BigDecimal.ZERO;
+	private BigDecimal dop = BigDecimal.ZERO;
 	@JsonProperty("DZD")
-	private  BigDecimal dzd = BigDecimal.ZERO;
+	private BigDecimal dzd = BigDecimal.ZERO;
 	@JsonProperty("EEK")
-	private  BigDecimal eek = BigDecimal.ZERO;
+	private BigDecimal eek = BigDecimal.ZERO;
 	@JsonProperty("EGP")
-	private  BigDecimal egp = BigDecimal.ZERO;
+	private BigDecimal egp = BigDecimal.ZERO;
 	@JsonProperty("ERN")
-	private  BigDecimal ern = BigDecimal.ZERO;
+	private BigDecimal ern = BigDecimal.ZERO;
 	@JsonProperty("ETB")
-	private  BigDecimal etb = BigDecimal.ZERO;
+	private BigDecimal etb = BigDecimal.ZERO;
 	@JsonProperty("ETH")
-	private  BigDecimal eth = BigDecimal.ZERO;
+	private BigDecimal eth = BigDecimal.ZERO;
 	@JsonProperty("EUR")
-	private  BigDecimal eur = BigDecimal.ZERO;
+	private BigDecimal eur = BigDecimal.ZERO;
 	@JsonProperty("FJD")
-	private  BigDecimal fjd = BigDecimal.ZERO;
+	private BigDecimal fjd = BigDecimal.ZERO;
 	@JsonProperty("FKP")
-	private  BigDecimal fkp = BigDecimal.ZERO;
+	private BigDecimal fkp = BigDecimal.ZERO;
 	@JsonProperty("GBP")
-	private  BigDecimal gbp = BigDecimal.ZERO;
+	private BigDecimal gbp = BigDecimal.ZERO;
 	@JsonProperty("GEL")
-	private  BigDecimal gel = BigDecimal.ZERO;
+	private BigDecimal gel = BigDecimal.ZERO;
 	@JsonProperty("GGP")
-	private  BigDecimal ggp = BigDecimal.ZERO;
+	private BigDecimal ggp = BigDecimal.ZERO;
 	@JsonProperty("GHS")
-	private  BigDecimal ghs = BigDecimal.ZERO;
+	private BigDecimal ghs = BigDecimal.ZERO;
 	@JsonProperty("GIP")
-	private  BigDecimal gip = BigDecimal.ZERO;
+	private BigDecimal gip = BigDecimal.ZERO;
 	@JsonProperty("GMD")
-	private  BigDecimal gmd = BigDecimal.ZERO;
+	private BigDecimal gmd = BigDecimal.ZERO;
 	@JsonProperty("GNF")
-	private  BigDecimal gnf = BigDecimal.ZERO;
+	private BigDecimal gnf = BigDecimal.ZERO;
 	@JsonProperty("GTQ")
-	private  BigDecimal gtq = BigDecimal.ZERO;
+	private BigDecimal gtq = BigDecimal.ZERO;
 	@JsonProperty("GYD")
-	private  BigDecimal gyd = BigDecimal.ZERO;
+	private BigDecimal gyd = BigDecimal.ZERO;
 	@JsonProperty("HKD")
-	private  BigDecimal hkd = BigDecimal.ZERO;
+	private BigDecimal hkd = BigDecimal.ZERO;
 	@JsonProperty("HNL")
-	private  BigDecimal hnl = BigDecimal.ZERO;
+	private BigDecimal hnl = BigDecimal.ZERO;
 	@JsonProperty("HRK")
-	private  BigDecimal hrk = BigDecimal.ZERO;
+	private BigDecimal hrk = BigDecimal.ZERO;
 	@JsonProperty("HTG")
-	private  BigDecimal htg = BigDecimal.ZERO;
+	private BigDecimal htg = BigDecimal.ZERO;
 	@JsonProperty("HUF")
-	private  BigDecimal huf = BigDecimal.ZERO;
+	private BigDecimal huf = BigDecimal.ZERO;
 	@JsonProperty("IDR")
-	private  BigDecimal idr = BigDecimal.ZERO;
+	private BigDecimal idr = BigDecimal.ZERO;
 	@JsonProperty("ILS")
-	private  BigDecimal ils = BigDecimal.ZERO;
+	private BigDecimal ils = BigDecimal.ZERO;
 	@JsonProperty("IMP")
-	private  BigDecimal imp = BigDecimal.ZERO;
+	private BigDecimal imp = BigDecimal.ZERO;
 	@JsonProperty("INR")
-	private  BigDecimal inr = BigDecimal.ZERO;
+	private BigDecimal inr = BigDecimal.ZERO;
 	@JsonProperty("IQD")
-	private  BigDecimal iqd = BigDecimal.ZERO;
+	private BigDecimal iqd = BigDecimal.ZERO;
 	@JsonProperty("ISK")
-	private  BigDecimal isk = BigDecimal.ZERO;
+	private BigDecimal isk = BigDecimal.ZERO;
 	@JsonProperty("JEP")
-	private  BigDecimal jep = BigDecimal.ZERO;
+	private BigDecimal jep = BigDecimal.ZERO;
 	@JsonProperty("JMD")
-	private  BigDecimal jmd = BigDecimal.ZERO;
+	private BigDecimal jmd = BigDecimal.ZERO;
 	@JsonProperty("JOD")
-	private  BigDecimal jod = BigDecimal.ZERO;
+	private BigDecimal jod = BigDecimal.ZERO;
 	@JsonProperty("JPY")
-	private  BigDecimal jpy = BigDecimal.ZERO;
+	private BigDecimal jpy = BigDecimal.ZERO;
 	@JsonProperty("KES")
-	private  BigDecimal kes = BigDecimal.ZERO;
+	private BigDecimal kes = BigDecimal.ZERO;
 	@JsonProperty("KGS")
-	private  BigDecimal kgs = BigDecimal.ZERO;
+	private BigDecimal kgs = BigDecimal.ZERO;
 	@JsonProperty("KHR")
-	private  BigDecimal khr = BigDecimal.ZERO;
+	private BigDecimal khr = BigDecimal.ZERO;
 	@JsonProperty("KMF")
-	private  BigDecimal kmf = BigDecimal.ZERO;
+	private BigDecimal kmf = BigDecimal.ZERO;
 	@JsonProperty("KRW")
-	private  BigDecimal krw = BigDecimal.ZERO;
+	private BigDecimal krw = BigDecimal.ZERO;
 	@JsonProperty("KWD")
-	private  BigDecimal kwd = BigDecimal.ZERO;
+	private BigDecimal kwd = BigDecimal.ZERO;
 	@JsonProperty("KYD")
-	private  BigDecimal kyd = BigDecimal.ZERO;
+	private BigDecimal kyd = BigDecimal.ZERO;
 	@JsonProperty("KZT")
-	private  BigDecimal kzt = BigDecimal.ZERO;
+	private BigDecimal kzt = BigDecimal.ZERO;
 	@JsonProperty("LAK")
-	private  BigDecimal lak = BigDecimal.ZERO;
+	private BigDecimal lak = BigDecimal.ZERO;
 	@JsonProperty("LBP")
-	private  BigDecimal lbp = BigDecimal.ZERO;
+	private BigDecimal lbp = BigDecimal.ZERO;
 	@JsonProperty("LKR")
-	private  BigDecimal lkr = BigDecimal.ZERO;
+	private BigDecimal lkr = BigDecimal.ZERO;
 	@JsonProperty("LRD")
-	private  BigDecimal lrd = BigDecimal.ZERO;
+	private BigDecimal lrd = BigDecimal.ZERO;
 	@JsonProperty("LSL")
-	private  BigDecimal lsl = BigDecimal.ZERO;
+	private BigDecimal lsl = BigDecimal.ZERO;
 	@JsonProperty("LTC")
-	private  BigDecimal ltc = BigDecimal.ZERO;
+	private BigDecimal ltc = BigDecimal.ZERO;
 	@JsonProperty("LTL")
-	private  BigDecimal ltl = BigDecimal.ZERO;
+	private BigDecimal ltl = BigDecimal.ZERO;
 	@JsonProperty("LVL")
-	private  BigDecimal lvl = BigDecimal.ZERO;
+	private BigDecimal lvl = BigDecimal.ZERO;
 	@JsonProperty("LYD")
-	private  BigDecimal lyd = BigDecimal.ZERO;
+	private BigDecimal lyd = BigDecimal.ZERO;
 	@JsonProperty("MAD")
-	private  BigDecimal mad = BigDecimal.ZERO;
+	private BigDecimal mad = BigDecimal.ZERO;
 	@JsonProperty("MDL")
-	private  BigDecimal mdl = BigDecimal.ZERO;
+	private BigDecimal mdl = BigDecimal.ZERO;
 	@JsonProperty("MGA")
-	private  BigDecimal mga = BigDecimal.ZERO;
+	private BigDecimal mga = BigDecimal.ZERO;
 	@JsonProperty("MKD")
-	private  BigDecimal mkd = BigDecimal.ZERO;
+	private BigDecimal mkd = BigDecimal.ZERO;
 	@JsonProperty("MMK")
-	private  BigDecimal mmk = BigDecimal.ZERO;
+	private BigDecimal mmk = BigDecimal.ZERO;
 	@JsonProperty("MNT")
-	private  BigDecimal mnt = BigDecimal.ZERO;
+	private BigDecimal mnt = BigDecimal.ZERO;
 	@JsonProperty("MOP")
-	private  BigDecimal mop = BigDecimal.ZERO;
+	private BigDecimal mop = BigDecimal.ZERO;
 	@JsonProperty("MRO")
-	private  BigDecimal mro = BigDecimal.ZERO;
+	private BigDecimal mro = BigDecimal.ZERO;
 	@JsonProperty("MTL")
-	private  BigDecimal mtl = BigDecimal.ZERO;
+	private BigDecimal mtl = BigDecimal.ZERO;
 	@JsonProperty("MUR")
-	private  BigDecimal mur = BigDecimal.ZERO;
+	private BigDecimal mur = BigDecimal.ZERO;
 	@JsonProperty("MVR")
-	private  BigDecimal mvr = BigDecimal.ZERO;
+	private BigDecimal mvr = BigDecimal.ZERO;
 	@JsonProperty("MWK")
-	private  BigDecimal mwk = BigDecimal.ZERO;
+	private BigDecimal mwk = BigDecimal.ZERO;
 	@JsonProperty("MXN")
-	private  BigDecimal mxn = BigDecimal.ZERO;
+	private BigDecimal mxn = BigDecimal.ZERO;
 	@JsonProperty("MYR")
-	private  BigDecimal myr = BigDecimal.ZERO;
+	private BigDecimal myr = BigDecimal.ZERO;
 	@JsonProperty("MZN")
-	private  BigDecimal mzn = BigDecimal.ZERO;
+	private BigDecimal mzn = BigDecimal.ZERO;
 	@JsonProperty("NAD")
-	private  BigDecimal nad = BigDecimal.ZERO;
+	private BigDecimal nad = BigDecimal.ZERO;
 	@JsonProperty("NGN")
-	private  BigDecimal ngn = BigDecimal.ZERO;
+	private BigDecimal ngn = BigDecimal.ZERO;
 	@JsonProperty("NIO")
-	private  BigDecimal nio = BigDecimal.ZERO;
+	private BigDecimal nio = BigDecimal.ZERO;
 	@JsonProperty("NOK")
-	private  BigDecimal nok = BigDecimal.ZERO;
+	private BigDecimal nok = BigDecimal.ZERO;
 	@JsonProperty("NPR")
-	private  BigDecimal npr = BigDecimal.ZERO;
+	private BigDecimal npr = BigDecimal.ZERO;
 	@JsonProperty("NZD")
-	private  BigDecimal nzd = BigDecimal.ZERO;
+	private BigDecimal nzd = BigDecimal.ZERO;
 	@JsonProperty("OMR")
-	private  BigDecimal omr = BigDecimal.ZERO;
+	private BigDecimal omr = BigDecimal.ZERO;
 	@JsonProperty("PAB")
-	private  BigDecimal pab = BigDecimal.ZERO;
+	private BigDecimal pab = BigDecimal.ZERO;
 	@JsonProperty("PEN")
-	private  BigDecimal pen = BigDecimal.ZERO;
+	private BigDecimal pen = BigDecimal.ZERO;
 	@JsonProperty("PGK")
-	private  BigDecimal pgk = BigDecimal.ZERO;
+	private BigDecimal pgk = BigDecimal.ZERO;
 	@JsonProperty("PHP")
-	private  BigDecimal php = BigDecimal.ZERO;
+	private BigDecimal php = BigDecimal.ZERO;
 	@JsonProperty("PKR")
-	private  BigDecimal pkr = BigDecimal.ZERO;
+	private BigDecimal pkr = BigDecimal.ZERO;
 	@JsonProperty("PLN")
-	private  BigDecimal pln = BigDecimal.ZERO;
+	private BigDecimal pln = BigDecimal.ZERO;
 	@JsonProperty("PYG")
-	private  BigDecimal pyg = BigDecimal.ZERO;
+	private BigDecimal pyg = BigDecimal.ZERO;
 	@JsonProperty("QAR")
-	private  BigDecimal qar = BigDecimal.ZERO;
+	private BigDecimal qar = BigDecimal.ZERO;
 	@JsonProperty("RON")
-	private  BigDecimal ron = BigDecimal.ZERO;
+	private BigDecimal ron = BigDecimal.ZERO;
 	@JsonProperty("RSD")
-	private  BigDecimal rsd = BigDecimal.ZERO;
+	private BigDecimal rsd = BigDecimal.ZERO;
 	@JsonProperty("RUB")
-	private  BigDecimal rub = BigDecimal.ZERO;
+	private BigDecimal rub = BigDecimal.ZERO;
 	@JsonProperty("RWF")
-	private  BigDecimal rwf = BigDecimal.ZERO;
+	private BigDecimal rwf = BigDecimal.ZERO;
 	@JsonProperty("SAR")
-	private  BigDecimal sar = BigDecimal.ZERO;
+	private BigDecimal sar = BigDecimal.ZERO;
 	@JsonProperty("SBD")
-	private  BigDecimal sbd = BigDecimal.ZERO;
+	private BigDecimal sbd = BigDecimal.ZERO;
 	@JsonProperty("SCR")
-	private  BigDecimal scr = BigDecimal.ZERO;
+	private BigDecimal scr = BigDecimal.ZERO;
 	@JsonProperty("SEK")
-	private  BigDecimal sek = BigDecimal.ZERO;
+	private BigDecimal sek = BigDecimal.ZERO;
 	@JsonProperty("SGD")
-	private  BigDecimal sgd = BigDecimal.ZERO;
+	private BigDecimal sgd = BigDecimal.ZERO;
 	@JsonProperty("SHP")
-	private  BigDecimal shp = BigDecimal.ZERO;
+	private BigDecimal shp = BigDecimal.ZERO;
 	@JsonProperty("SLL")
-	private  BigDecimal sll = BigDecimal.ZERO;
+	private BigDecimal sll = BigDecimal.ZERO;
 	@JsonProperty("SOS")
-	private  BigDecimal sos = BigDecimal.ZERO;
+	private BigDecimal sos = BigDecimal.ZERO;
 	@JsonProperty("SRD")
-	private  BigDecimal srd = BigDecimal.ZERO;
+	private BigDecimal srd = BigDecimal.ZERO;
 	@JsonProperty("SSP")
-	private  BigDecimal ssp = BigDecimal.ZERO;
+	private BigDecimal ssp = BigDecimal.ZERO;
 	@JsonProperty("STD")
-	private  BigDecimal std = BigDecimal.ZERO;
+	private BigDecimal std = BigDecimal.ZERO;
 	@JsonProperty("SVC")
-	private  BigDecimal svc = BigDecimal.ZERO;
+	private BigDecimal svc = BigDecimal.ZERO;
 	@JsonProperty("SZL")
-	private  BigDecimal szl = BigDecimal.ZERO;
+	private BigDecimal szl = BigDecimal.ZERO;
 	@JsonProperty("THB")
-	private  BigDecimal thb = BigDecimal.ZERO;
+	private BigDecimal thb = BigDecimal.ZERO;
 	@JsonProperty("TJS")
-	private  BigDecimal tjs = BigDecimal.ZERO;
+	private BigDecimal tjs = BigDecimal.ZERO;
 	@JsonProperty("TMT")
-	private  BigDecimal tmt = BigDecimal.ZERO;
+	private BigDecimal tmt = BigDecimal.ZERO;
 	@JsonProperty("TND")
-	private  BigDecimal tnd = BigDecimal.ZERO;
+	private BigDecimal tnd = BigDecimal.ZERO;
 	@JsonProperty("TOP")
-	private  BigDecimal top = BigDecimal.ZERO;	
-	private  BigDecimal try1 = BigDecimal.ZERO;
+	private BigDecimal top = BigDecimal.ZERO;
+	private BigDecimal try1 = BigDecimal.ZERO;
 	@JsonProperty("TTD")
-	private  BigDecimal ttd = BigDecimal.ZERO;
+	private BigDecimal ttd = BigDecimal.ZERO;
 	@JsonProperty("TWD")
-	private  BigDecimal twd = BigDecimal.ZERO;
+	private BigDecimal twd = BigDecimal.ZERO;
 	@JsonProperty("TZS")
-	private  BigDecimal tzs = BigDecimal.ZERO;
+	private BigDecimal tzs = BigDecimal.ZERO;
 	@JsonProperty("UAH")
-	private  BigDecimal uah = BigDecimal.ZERO;
+	private BigDecimal uah = BigDecimal.ZERO;
 	@JsonProperty("UGX")
-	private  BigDecimal ugx = BigDecimal.ZERO;
+	private BigDecimal ugx = BigDecimal.ZERO;
 	@JsonProperty("USD")
-	private  BigDecimal usd = BigDecimal.ZERO;
+	private BigDecimal usd = BigDecimal.ZERO;
 	@JsonProperty("UYU")
-	private  BigDecimal uyu = BigDecimal.ZERO;
+	private BigDecimal uyu = BigDecimal.ZERO;
 	@JsonProperty("UZS")
-	private  BigDecimal uzs = BigDecimal.ZERO;
+	private BigDecimal uzs = BigDecimal.ZERO;
 	@JsonProperty("VEF")
-	private  BigDecimal vef = BigDecimal.ZERO;
+	private BigDecimal vef = BigDecimal.ZERO;
 	@JsonProperty("VND")
-	private  BigDecimal vnd = BigDecimal.ZERO;
+	private BigDecimal vnd = BigDecimal.ZERO;
 	@JsonProperty("VUV")
-	private  BigDecimal vuv = BigDecimal.ZERO;
+	private BigDecimal vuv = BigDecimal.ZERO;
 	@JsonProperty("WST")
-	private  BigDecimal wst = BigDecimal.ZERO;
+	private BigDecimal wst = BigDecimal.ZERO;
 	@JsonProperty("XAF")
-	private  BigDecimal xaf = BigDecimal.ZERO;
+	private BigDecimal xaf = BigDecimal.ZERO;
 	@JsonProperty("XAG")
-	private  BigDecimal xag = BigDecimal.ZERO;
+	private BigDecimal xag = BigDecimal.ZERO;
 	@JsonProperty("XAU")
-	private  BigDecimal xau = BigDecimal.ZERO;
+	private BigDecimal xau = BigDecimal.ZERO;
 	@JsonProperty("XCD")
-	private  BigDecimal xcd = BigDecimal.ZERO;
+	private BigDecimal xcd = BigDecimal.ZERO;
 	@JsonProperty("XDR")
-	private  BigDecimal xdr = BigDecimal.ZERO;
+	private BigDecimal xdr = BigDecimal.ZERO;
 	@JsonProperty("XOF")
-	private  BigDecimal xof = BigDecimal.ZERO;
+	private BigDecimal xof = BigDecimal.ZERO;
 	@JsonProperty("XPD")
-	private  BigDecimal xpd = BigDecimal.ZERO;
+	private BigDecimal xpd = BigDecimal.ZERO;
 	@JsonProperty("XPF")
-	private  BigDecimal xpf = BigDecimal.ZERO;
+	private BigDecimal xpf = BigDecimal.ZERO;
 	@JsonProperty("XPT")
-	private  BigDecimal xpt = BigDecimal.ZERO;
+	private BigDecimal xpt = BigDecimal.ZERO;
 	@JsonProperty("YER")
-	private  BigDecimal yer = BigDecimal.ZERO;
+	private BigDecimal yer = BigDecimal.ZERO;
 	@JsonProperty("ZAR")
-	private  BigDecimal zar = BigDecimal.ZERO;
+	private BigDecimal zar = BigDecimal.ZERO;
 	@JsonProperty("ZMK")
-	private  BigDecimal zmk = BigDecimal.ZERO;
+	private BigDecimal zmk = BigDecimal.ZERO;
 	@JsonProperty("ZMW")
-	private  BigDecimal zmw = BigDecimal.ZERO;
+	private BigDecimal zmw = BigDecimal.ZERO;
 	@JsonProperty("ZWL")
-	private  BigDecimal zwl = BigDecimal.ZERO;
+	private BigDecimal zwl = BigDecimal.ZERO;
 	@JsonProperty("VES")
-	private  BigDecimal ves = BigDecimal.ZERO;
+	private BigDecimal ves = BigDecimal.ZERO;
 	@JsonProperty("XBA")
-	private  BigDecimal xba = BigDecimal.ZERO;
+	private BigDecimal xba = BigDecimal.ZERO;
 	@JsonProperty("XTS")
-	private  BigDecimal xts = BigDecimal.ZERO;
+	private BigDecimal xts = BigDecimal.ZERO;
 	@JsonProperty("GBX")
-	private  BigDecimal gbx = BigDecimal.ZERO;
+	private BigDecimal gbx = BigDecimal.ZERO;
 	@JsonProperty("CNH")
-	private  BigDecimal cnh = BigDecimal.ZERO;
+	private BigDecimal cnh = BigDecimal.ZERO;
 	@JsonProperty("ZWD")
-	private  BigDecimal zwd = BigDecimal.ZERO;
+	private BigDecimal zwd = BigDecimal.ZERO;
 	@JsonProperty("BCH")
-	private  BigDecimal bch = BigDecimal.ZERO;
+	private BigDecimal bch = BigDecimal.ZERO;
 	@JsonProperty("BSV")
-	private  BigDecimal bsv = BigDecimal.ZERO;
+	private BigDecimal bsv = BigDecimal.ZERO;
 	@JsonProperty("ETH2")
-	private  BigDecimal eth2 = BigDecimal.ZERO;
+	private BigDecimal eth2 = BigDecimal.ZERO;
 	@JsonProperty("ETC")
-	private  BigDecimal etc = BigDecimal.ZERO;
+	private BigDecimal etc = BigDecimal.ZERO;
 	@JsonProperty("ZRX")
-	private  BigDecimal zrx = BigDecimal.ZERO;
+	private BigDecimal zrx = BigDecimal.ZERO;
 	@JsonProperty("USDC")
-	private  BigDecimal usdc = BigDecimal.ZERO;
+	private BigDecimal usdc = BigDecimal.ZERO;
 	@JsonProperty("BAT")
-	private  BigDecimal bat = BigDecimal.ZERO;
+	private BigDecimal bat = BigDecimal.ZERO;
 	@JsonProperty("LOOM")
-	private  BigDecimal loom = BigDecimal.ZERO;
+	private BigDecimal loom = BigDecimal.ZERO;
 	@JsonProperty("MANA")
-	private  BigDecimal mana = BigDecimal.ZERO;
+	private BigDecimal mana = BigDecimal.ZERO;
 	@JsonProperty("KNC")
-	private  BigDecimal knc = BigDecimal.ZERO;
+	private BigDecimal knc = BigDecimal.ZERO;
 	@JsonProperty("LINK")
-	private  BigDecimal link = BigDecimal.ZERO;
+	private BigDecimal link = BigDecimal.ZERO;
 	@JsonProperty("MKR")
-	private  BigDecimal mkr = BigDecimal.ZERO;
+	private BigDecimal mkr = BigDecimal.ZERO;
 	@JsonProperty("CVC")
-	private  BigDecimal cvc = BigDecimal.ZERO;
+	private BigDecimal cvc = BigDecimal.ZERO;
 	@JsonProperty("OMG")
-	private  BigDecimal omg = BigDecimal.ZERO;
+	private BigDecimal omg = BigDecimal.ZERO;
 	@JsonProperty("GNT")
-	private  BigDecimal gnt = BigDecimal.ZERO;
+	private BigDecimal gnt = BigDecimal.ZERO;
 	@JsonProperty("DAI")
-	private  BigDecimal dai = BigDecimal.ZERO;
+	private BigDecimal dai = BigDecimal.ZERO;
 	@JsonProperty("SNT")
-	private  BigDecimal snt = BigDecimal.ZERO;
+	private BigDecimal snt = BigDecimal.ZERO;
 	@JsonProperty("ZEC")
-	private  BigDecimal zec = BigDecimal.ZERO;
+	private BigDecimal zec = BigDecimal.ZERO;
 	@JsonProperty("XRP")
-	private  BigDecimal xrp = BigDecimal.ZERO;
+	private BigDecimal xrp = BigDecimal.ZERO;
 	@JsonProperty("REP")
-	private  BigDecimal rep = BigDecimal.ZERO;
+	private BigDecimal rep = BigDecimal.ZERO;
 	@JsonProperty("XLM")
-	private  BigDecimal xlm = BigDecimal.ZERO;
+	private BigDecimal xlm = BigDecimal.ZERO;
 	@JsonProperty("EOS")
-	private  BigDecimal eos = BigDecimal.ZERO;
+	private BigDecimal eos = BigDecimal.ZERO;
 	@JsonProperty("XTZ")
-	private  BigDecimal xtz = BigDecimal.ZERO;
+	private BigDecimal xtz = BigDecimal.ZERO;
 	@JsonProperty("ALGO")
-	private  BigDecimal algo = BigDecimal.ZERO;
+	private BigDecimal algo = BigDecimal.ZERO;
 	@JsonProperty("DASH")
-	private  BigDecimal dash = BigDecimal.ZERO;
+	private BigDecimal dash = BigDecimal.ZERO;
 	@JsonProperty("ATOM")
-	private  BigDecimal atom = BigDecimal.ZERO;
+	private BigDecimal atom = BigDecimal.ZERO;
 	@JsonProperty("OXT")
-	private  BigDecimal oxt = BigDecimal.ZERO;
+	private BigDecimal oxt = BigDecimal.ZERO;
 	@JsonProperty("COMP")
-	private  BigDecimal comp = BigDecimal.ZERO;
+	private BigDecimal comp = BigDecimal.ZERO;
 	@JsonProperty("ENJ")
-	private  BigDecimal enj = BigDecimal.ZERO;
+	private BigDecimal enj = BigDecimal.ZERO;
 	@JsonProperty("REPV2")
-	private  BigDecimal repv2 = BigDecimal.ZERO;
+	private BigDecimal repv2 = BigDecimal.ZERO;
 	@JsonProperty("BAND")
-	private  BigDecimal band = BigDecimal.ZERO;
+	private BigDecimal band = BigDecimal.ZERO;
 	@JsonProperty("NMR")
-	private  BigDecimal nmr = BigDecimal.ZERO;
+	private BigDecimal nmr = BigDecimal.ZERO;
 	@JsonProperty("CGLD")
-	private  BigDecimal cgld = BigDecimal.ZERO;
+	private BigDecimal cgld = BigDecimal.ZERO;
 	@JsonProperty("UMA")
-	private  BigDecimal uma = BigDecimal.ZERO;
+	private BigDecimal uma = BigDecimal.ZERO;
 	@JsonProperty("LRC")
-	private  BigDecimal lrc = BigDecimal.ZERO;
+	private BigDecimal lrc = BigDecimal.ZERO;
 	@JsonProperty("YFI")
-	private  BigDecimal yfi = BigDecimal.ZERO;
+	private BigDecimal yfi = BigDecimal.ZERO;
 	@JsonProperty("UNI")
-	private  BigDecimal uni = BigDecimal.ZERO;
+	private BigDecimal uni = BigDecimal.ZERO;
 	@JsonProperty("BAL")
-	private  BigDecimal bal = BigDecimal.ZERO;
+	private BigDecimal bal = BigDecimal.ZERO;
 	@JsonProperty("REN")
-	private  BigDecimal ren = BigDecimal.ZERO;
+	private BigDecimal ren = BigDecimal.ZERO;
 	@JsonProperty("WBTC")
-	private  BigDecimal wbtc = BigDecimal.ZERO;
+	private BigDecimal wbtc = BigDecimal.ZERO;
 	@JsonProperty("NU")
-	private  BigDecimal nu = BigDecimal.ZERO;
+	private BigDecimal nu = BigDecimal.ZERO;
 	@JsonProperty("YFII")
-	private  BigDecimal yfii = BigDecimal.ZERO;
+	private BigDecimal yfii = BigDecimal.ZERO;
 	@JsonProperty("FIL")
-	private  BigDecimal fil = BigDecimal.ZERO;
+	private BigDecimal fil = BigDecimal.ZERO;
 	@JsonProperty("AAVE")
-	private  BigDecimal aave = BigDecimal.ZERO;
+	private BigDecimal aave = BigDecimal.ZERO;
 	@JsonProperty("BNT")
-	private  BigDecimal bnt = BigDecimal.ZERO;
+	private BigDecimal bnt = BigDecimal.ZERO;
 	@JsonProperty("GRT")
-	private  BigDecimal grt = BigDecimal.ZERO;
+	private BigDecimal grt = BigDecimal.ZERO;
 	@JsonProperty("SNX")
-	private  BigDecimal snx = BigDecimal.ZERO;
+	private BigDecimal snx = BigDecimal.ZERO;
 	@JsonProperty("STORJ")
-	private  BigDecimal storj = BigDecimal.ZERO;
+	private BigDecimal storj = BigDecimal.ZERO;
 	@JsonProperty("SUSHI")
-	private  BigDecimal sushi = BigDecimal.ZERO;
+	private BigDecimal sushi = BigDecimal.ZERO;
 	@JsonProperty("MATIC")
-	private  BigDecimal matic = BigDecimal.ZERO;
+	private BigDecimal matic = BigDecimal.ZERO;
 	@JsonProperty("SKL")
-	private  BigDecimal skl = BigDecimal.ZERO;
+	private BigDecimal skl = BigDecimal.ZERO;
 	@JsonProperty("ADA")
-	private  BigDecimal ada = BigDecimal.ZERO;
+	private BigDecimal ada = BigDecimal.ZERO;
 	@JsonProperty("ANKR")
-	private  BigDecimal ankr = BigDecimal.ZERO;
+	private BigDecimal ankr = BigDecimal.ZERO;
 	@JsonProperty("CRV")
-	private  BigDecimal crv = BigDecimal.ZERO;
+	private BigDecimal crv = BigDecimal.ZERO;
 	@JsonProperty("ICP")
-	private  BigDecimal icp = BigDecimal.ZERO;
+	private BigDecimal icp = BigDecimal.ZERO;
 	@JsonProperty("NKN")
-	private  BigDecimal nkn = BigDecimal.ZERO;
+	private BigDecimal nkn = BigDecimal.ZERO;
 	@JsonProperty("OGN")
-	private  BigDecimal ogn = BigDecimal.ZERO;
-	private  BigDecimal inch1 = BigDecimal.ZERO;
+	private BigDecimal ogn = BigDecimal.ZERO;
+	private BigDecimal inch1 = BigDecimal.ZERO;
 	@JsonProperty("USDT")
-	private  BigDecimal usdt = BigDecimal.ZERO;
+	private BigDecimal usdt = BigDecimal.ZERO;
 	@JsonProperty("FORTH")
-	private  BigDecimal forth = BigDecimal.ZERO;
+	private BigDecimal forth = BigDecimal.ZERO;
 	@JsonProperty("CTSI")
-	private  BigDecimal ctsi = BigDecimal.ZERO;
+	private BigDecimal ctsi = BigDecimal.ZERO;
 	@JsonProperty("TRB")
-	private  BigDecimal trb = BigDecimal.ZERO;
+	private BigDecimal trb = BigDecimal.ZERO;
 	@JsonProperty("POLY")
-	private  BigDecimal poly = BigDecimal.ZERO;
+	private BigDecimal poly = BigDecimal.ZERO;
 	@JsonProperty("MIR")
-	private  BigDecimal mir = BigDecimal.ZERO;
+	private BigDecimal mir = BigDecimal.ZERO;
 	@JsonProperty("RLC")
-	private  BigDecimal rlc = BigDecimal.ZERO;
+	private BigDecimal rlc = BigDecimal.ZERO;
 	@JsonProperty("DOT")
-	private  BigDecimal dot = BigDecimal.ZERO;
+	private BigDecimal dot = BigDecimal.ZERO;
 	@JsonProperty("SOL")
-	private  BigDecimal sol = BigDecimal.ZERO;
+	private BigDecimal sol = BigDecimal.ZERO;
 	@JsonProperty("DOGE")
-	private  BigDecimal doge = BigDecimal.ZERO;
+	private BigDecimal doge = BigDecimal.ZERO;
 	@JsonProperty("MLN")
-	private  BigDecimal mln = BigDecimal.ZERO;
+	private BigDecimal mln = BigDecimal.ZERO;
 	@JsonProperty("GTC")
-	private  BigDecimal gtc = BigDecimal.ZERO;
+	private BigDecimal gtc = BigDecimal.ZERO;
 	@JsonProperty("AMP")
-	private  BigDecimal amp = BigDecimal.ZERO;
+	private BigDecimal amp = BigDecimal.ZERO;
 	@JsonProperty("SHIB")
-	private  BigDecimal shib = BigDecimal.ZERO;
+	private BigDecimal shib = BigDecimal.ZERO;
 	@JsonProperty("CHZ")
-	private  BigDecimal chz = BigDecimal.ZERO;
+	private BigDecimal chz = BigDecimal.ZERO;
 	@JsonProperty("KEEP")
-	private  BigDecimal keep = BigDecimal.ZERO;
+	private BigDecimal keep = BigDecimal.ZERO;
 	@JsonProperty("LPT")
-	private  BigDecimal lpt = BigDecimal.ZERO;
+	private BigDecimal lpt = BigDecimal.ZERO;
 	@JsonProperty("QNT")
-	private  BigDecimal qnt = BigDecimal.ZERO;
+	private BigDecimal qnt = BigDecimal.ZERO;
 	@JsonProperty("BOND")
-	private  BigDecimal bond = BigDecimal.ZERO;
+	private BigDecimal bond = BigDecimal.ZERO;
 	@JsonProperty("RLY")
-	private  BigDecimal rly = BigDecimal.ZERO;
+	private BigDecimal rly = BigDecimal.ZERO;
 	@JsonProperty("CLV")
-	private  BigDecimal clv = BigDecimal.ZERO;
+	private BigDecimal clv = BigDecimal.ZERO;
 	@JsonProperty("FARM")
-	private  BigDecimal farm = BigDecimal.ZERO;
+	private BigDecimal farm = BigDecimal.ZERO;
 	@JsonProperty("MASK")
-	private  BigDecimal mask = BigDecimal.ZERO;
+	private BigDecimal mask = BigDecimal.ZERO;
 	@JsonProperty("FET")
-	private  BigDecimal fet = BigDecimal.ZERO;
+	private BigDecimal fet = BigDecimal.ZERO;
 	@JsonProperty("PAX")
-	private  BigDecimal pax = BigDecimal.ZERO;
+	private BigDecimal pax = BigDecimal.ZERO;
 	@JsonProperty("ACH")
-	private  BigDecimal ach = BigDecimal.ZERO;
+	private BigDecimal ach = BigDecimal.ZERO;
 	@JsonProperty("ASM")
-	private  BigDecimal asm = BigDecimal.ZERO;
+	private BigDecimal asm = BigDecimal.ZERO;
 	@JsonProperty("PLA")
-	private  BigDecimal pla = BigDecimal.ZERO;
+	private BigDecimal pla = BigDecimal.ZERO;
 	@JsonProperty("RAI")
-	private  BigDecimal rai = BigDecimal.ZERO;
+	private BigDecimal rai = BigDecimal.ZERO;
 	@JsonProperty("TRIBE")
-	private  BigDecimal tribe = BigDecimal.ZERO;
+	private BigDecimal tribe = BigDecimal.ZERO;
 	@JsonProperty("ORN")
-	private  BigDecimal orn = BigDecimal.ZERO;
+	private BigDecimal orn = BigDecimal.ZERO;
 	@JsonProperty("IOTX")
-	private  BigDecimal iotx = BigDecimal.ZERO;
+	private BigDecimal iotx = BigDecimal.ZERO;
 	@JsonProperty("UST")
-	private  BigDecimal ust = BigDecimal.ZERO;
+	private BigDecimal ust = BigDecimal.ZERO;
 	@JsonProperty("QUICK")
-	private  BigDecimal quick = BigDecimal.ZERO;
+	private BigDecimal quick = BigDecimal.ZERO;
 	@JsonProperty("AXS")
-	private  BigDecimal axs = BigDecimal.ZERO;
+	private BigDecimal axs = BigDecimal.ZERO;
 	@JsonProperty("REQ")
-	private  BigDecimal req = BigDecimal.ZERO;
+	private BigDecimal req = BigDecimal.ZERO;
 	@JsonProperty("WLUNA")
-	private  BigDecimal wluna = BigDecimal.ZERO;
+	private BigDecimal wluna = BigDecimal.ZERO;
 	@JsonProperty("TRU")
-	private  BigDecimal tru = BigDecimal.ZERO;
+	private BigDecimal tru = BigDecimal.ZERO;
 	@JsonProperty("RAD")
-	private  BigDecimal rad = BigDecimal.ZERO;
+	private BigDecimal rad = BigDecimal.ZERO;
 	@JsonProperty("COTI")
-	private  BigDecimal coti = BigDecimal.ZERO;
+	private BigDecimal coti = BigDecimal.ZERO;
 	@JsonProperty("DDX")
-	private  BigDecimal ddx = BigDecimal.ZERO;
+	private BigDecimal ddx = BigDecimal.ZERO;
 	@JsonProperty("SUKU")
-	private  BigDecimal suku = BigDecimal.ZERO;
+	private BigDecimal suku = BigDecimal.ZERO;
 	@JsonProperty("RGT")
-	private  BigDecimal rgt = BigDecimal.ZERO;
+	private BigDecimal rgt = BigDecimal.ZERO;
 	@JsonProperty("XYO")
-	private  BigDecimal xyo = BigDecimal.ZERO;
+	private BigDecimal xyo = BigDecimal.ZERO;
 	@JsonProperty("ZEN")
-	private  BigDecimal zen = BigDecimal.ZERO;
+	private BigDecimal zen = BigDecimal.ZERO;
 	@JsonProperty("AUCTION")
-	private  BigDecimal auction = BigDecimal.ZERO;
+	private BigDecimal auction = BigDecimal.ZERO;
 	@JsonProperty("BUSD")
-	private  BigDecimal busd = BigDecimal.ZERO;
+	private BigDecimal busd = BigDecimal.ZERO;
 	@JsonProperty("JASMY")
-	private  BigDecimal jasmy = BigDecimal.ZERO;
+	private BigDecimal jasmy = BigDecimal.ZERO;
 	@JsonProperty("WCFG")
-	private  BigDecimal wcfg = BigDecimal.ZERO;
+	private BigDecimal wcfg = BigDecimal.ZERO;
 	@JsonProperty("BTRST")
-	private  BigDecimal btrst = BigDecimal.ZERO;
+	private BigDecimal btrst = BigDecimal.ZERO;
 	@JsonProperty("AGLD")
-	private  BigDecimal agld = BigDecimal.ZERO;
+	private BigDecimal agld = BigDecimal.ZERO;
 	@JsonProperty("AVAX")
-	private  BigDecimal avax = BigDecimal.ZERO;
+	private BigDecimal avax = BigDecimal.ZERO;
 	@JsonProperty("FX")
-	private  BigDecimal fx = BigDecimal.ZERO;
+	private BigDecimal fx = BigDecimal.ZERO;
 	@JsonProperty("TRAC")
-	private  BigDecimal trac = BigDecimal.ZERO;
+	private BigDecimal trac = BigDecimal.ZERO;
 	@JsonProperty("LCX")
-	private  BigDecimal lcx = BigDecimal.ZERO;
+	private BigDecimal lcx = BigDecimal.ZERO;
 	@JsonProperty("ARPA")
-	private  BigDecimal arpa = BigDecimal.ZERO;
+	private BigDecimal arpa = BigDecimal.ZERO;
 	@JsonProperty("BADGER")
-	private  BigDecimal badger = BigDecimal.ZERO;
+	private BigDecimal badger = BigDecimal.ZERO;
 	@JsonProperty("KRL")
-	private  BigDecimal krl = BigDecimal.ZERO;
+	private BigDecimal krl = BigDecimal.ZERO;
 	@JsonProperty("PERP")
-	private  BigDecimal perp = BigDecimal.ZERO;
+	private BigDecimal perp = BigDecimal.ZERO;
 	@JsonProperty("RARI")
-	private  BigDecimal rari = BigDecimal.ZERO;
+	private BigDecimal rari = BigDecimal.ZERO;
 	@JsonProperty("DESO")
-	private  BigDecimal deso = BigDecimal.ZERO;
+	private BigDecimal deso = BigDecimal.ZERO;
 	@JsonProperty("API3")
-	private  BigDecimal api3 = BigDecimal.ZERO;
+	private BigDecimal api3 = BigDecimal.ZERO;
 	@JsonProperty("NCT")
-	private  BigDecimal nct = BigDecimal.ZERO;
+	private BigDecimal nct = BigDecimal.ZERO;
 	@JsonProperty("SHPING")
-	private  BigDecimal shping = BigDecimal.ZERO;
+	private BigDecimal shping = BigDecimal.ZERO;
 	@JsonProperty("UPI")
-	private  BigDecimal upi = BigDecimal.ZERO;
+	private BigDecimal upi = BigDecimal.ZERO;
 	@JsonProperty("CRO")
-	private  BigDecimal cro = BigDecimal.ZERO;
+	private BigDecimal cro = BigDecimal.ZERO;
 	@JsonProperty("AVT")
-	private  BigDecimal avt = BigDecimal.ZERO;
+	private BigDecimal avt = BigDecimal.ZERO;
 	@JsonProperty("MDT")
-	private  BigDecimal mdt = BigDecimal.ZERO;
+	private BigDecimal mdt = BigDecimal.ZERO;
 	@JsonProperty("VGX")
-	private  BigDecimal vgx = BigDecimal.ZERO;
+	private BigDecimal vgx = BigDecimal.ZERO;
 	@JsonProperty("ALCX")
-	private  BigDecimal alcx = BigDecimal.ZERO;
+	private BigDecimal alcx = BigDecimal.ZERO;
 	@JsonProperty("COVAL")
-	private  BigDecimal coval = BigDecimal.ZERO;
+	private BigDecimal coval = BigDecimal.ZERO;
 	@JsonProperty("FOX")
-	private  BigDecimal fox = BigDecimal.ZERO;
+	private BigDecimal fox = BigDecimal.ZERO;
 	@JsonProperty("MUSD")
-	private  BigDecimal musd = BigDecimal.ZERO;
+	private BigDecimal musd = BigDecimal.ZERO;
 	@JsonProperty("GALA")
-	private  BigDecimal gala = BigDecimal.ZERO;
+	private BigDecimal gala = BigDecimal.ZERO;
 	@JsonProperty("POWR")
-	private  BigDecimal powr = BigDecimal.ZERO;
+	private BigDecimal powr = BigDecimal.ZERO;
 	@JsonProperty("GYEN")
-	private  BigDecimal gyen = BigDecimal.ZERO;
+	private BigDecimal gyen = BigDecimal.ZERO;
 	@JsonProperty("ALICE")
-	private  BigDecimal alice = BigDecimal.ZERO;
+	private BigDecimal alice = BigDecimal.ZERO;
 	@JsonProperty("INV")
-	private  BigDecimal inv = BigDecimal.ZERO;
+	private BigDecimal inv = BigDecimal.ZERO;
 	@JsonProperty("LQTY")
-	private  BigDecimal lqty = BigDecimal.ZERO;
+	private BigDecimal lqty = BigDecimal.ZERO;
 	@JsonProperty("PRO")
-	private  BigDecimal pro = BigDecimal.ZERO;
+	private BigDecimal pro = BigDecimal.ZERO;
 	@JsonProperty("SPELL")
-	private  BigDecimal spell = BigDecimal.ZERO;
+	private BigDecimal spell = BigDecimal.ZERO;
 	@JsonProperty("ENS")
-	private  BigDecimal ens = BigDecimal.ZERO;
+	private BigDecimal ens = BigDecimal.ZERO;
 	@JsonProperty("DIA")
-	private  BigDecimal dia = BigDecimal.ZERO;
+	private BigDecimal dia = BigDecimal.ZERO;
 	@JsonProperty("BLZ")
-	private  BigDecimal blz = BigDecimal.ZERO;
+	private BigDecimal blz = BigDecimal.ZERO;
 	@JsonProperty("CTX")
-	private  BigDecimal ctx = BigDecimal.ZERO;
+	private BigDecimal ctx = BigDecimal.ZERO;
 	@JsonProperty("IDEX")
-	private  BigDecimal idex = BigDecimal.ZERO;
+	private BigDecimal idex = BigDecimal.ZERO;
 	@JsonProperty("MCO2")
-	private  BigDecimal mco2 = BigDecimal.ZERO;
+	private BigDecimal mco2 = BigDecimal.ZERO;
 	@JsonProperty("POLS")
-	private  BigDecimal pols = BigDecimal.ZERO;
-	private  BigDecimal super1 = BigDecimal.ZERO;
+	private BigDecimal pols = BigDecimal.ZERO;
+	private BigDecimal super1 = BigDecimal.ZERO;
 	@JsonProperty("UNFI")
-	private  BigDecimal unfi = BigDecimal.ZERO;
+	private BigDecimal unfi = BigDecimal.ZERO;
 	@JsonProperty("STX")
-	private  BigDecimal stx = BigDecimal.ZERO;
+	private BigDecimal stx = BigDecimal.ZERO;
 	@JsonProperty("GODS")
-	private  BigDecimal gods = BigDecimal.ZERO;
+	private BigDecimal gods = BigDecimal.ZERO;
 	@JsonProperty("IMX")
-	private  BigDecimal imx = BigDecimal.ZERO;
+	private BigDecimal imx = BigDecimal.ZERO;
 	@JsonProperty("RBN")
-	private  BigDecimal rbn = BigDecimal.ZERO;
+	private BigDecimal rbn = BigDecimal.ZERO;
 	@JsonProperty("BICO")
-	private  BigDecimal bico = BigDecimal.ZERO;
+	private BigDecimal bico = BigDecimal.ZERO;
 	@JsonProperty("GFI")
-	private  BigDecimal gfi = BigDecimal.ZERO;
+	private BigDecimal gfi = BigDecimal.ZERO;
 	@JsonProperty("GLM")
-	private  BigDecimal glm = BigDecimal.ZERO;
+	private BigDecimal glm = BigDecimal.ZERO;
 	@JsonProperty("MPL")
-	private  BigDecimal mpl = BigDecimal.ZERO;
+	private BigDecimal mpl = BigDecimal.ZERO;
 	@JsonProperty("PLU")
-	private  BigDecimal plu = BigDecimal.ZERO;
+	private BigDecimal plu = BigDecimal.ZERO;
 	@JsonProperty("FIDA")
-	private  BigDecimal fida = BigDecimal.ZERO;
+	private BigDecimal fida = BigDecimal.ZERO;
 	@JsonProperty("ORCA")
-	private  BigDecimal orca = BigDecimal.ZERO;
+	private BigDecimal orca = BigDecimal.ZERO;
 	@JsonProperty("CRPT")
-	private  BigDecimal crpt = BigDecimal.ZERO;
+	private BigDecimal crpt = BigDecimal.ZERO;
 	@JsonProperty("QSP")
-	private  BigDecimal qsp = BigDecimal.ZERO;
+	private BigDecimal qsp = BigDecimal.ZERO;
 	@JsonProperty("RNDR")
-	private  BigDecimal rndr = BigDecimal.ZERO;
+	private BigDecimal rndr = BigDecimal.ZERO;
 	@JsonProperty("SYN")
-	private  BigDecimal syn = BigDecimal.ZERO;
+	private BigDecimal syn = BigDecimal.ZERO;
 	@JsonProperty("AIOZ")
-	private  BigDecimal aioz = BigDecimal.ZERO;
+	private BigDecimal aioz = BigDecimal.ZERO;
 	@JsonProperty("AERGO")
-	private  BigDecimal aergo = BigDecimal.ZERO;
+	private BigDecimal aergo = BigDecimal.ZERO;
 	@JsonProperty("HIGH")
-	private  BigDecimal high = BigDecimal.ZERO;
+	private BigDecimal high = BigDecimal.ZERO;
 	@JsonProperty("ROSE")
-	private  BigDecimal rose = BigDecimal.ZERO;
+	private BigDecimal rose = BigDecimal.ZERO;
 	@JsonProperty("APE")
-	private  BigDecimal ape = BigDecimal.ZERO;
+	private BigDecimal ape = BigDecimal.ZERO;
 	@JsonProperty("MINA")
-	private  BigDecimal mina = BigDecimal.ZERO;
+	private BigDecimal mina = BigDecimal.ZERO;
 	@JsonProperty("GMT")
-	private  BigDecimal gmt = BigDecimal.ZERO;
+	private BigDecimal gmt = BigDecimal.ZERO;
 	@JsonProperty("GST")
-	private  BigDecimal gst = BigDecimal.ZERO;
+	private BigDecimal gst = BigDecimal.ZERO;
 	@JsonProperty("GAL")
-	private  BigDecimal gal = BigDecimal.ZERO;
+	private BigDecimal gal = BigDecimal.ZERO;
 	@JsonProperty("DNT")
-	private  BigDecimal dnt = BigDecimal.ZERO;
+	private BigDecimal dnt = BigDecimal.ZERO;
 	@JsonProperty("FLOW")
-	private  BigDecimal flow = BigDecimal.ZERO;
+	private BigDecimal flow = BigDecimal.ZERO;
 	@JsonProperty("SAND")
-	private  BigDecimal sand = BigDecimal.ZERO;	
-	
+	private BigDecimal sand = BigDecimal.ZERO;
+	@JsonProperty("OP")
+	private BigDecimal op = BigDecimal.ZERO;
+
 	@JsonProperty("SUPER")
 	public void setSuper(BigDecimal super1) {
 		this.super1 = super1;
 	}
-	
+
 	@JsonProperty("1INCH")
 	public void set1Inch(BigDecimal inch1) {
 		this.inch1 = inch1;
 	}
-	
+
 	public void setTry1(BigDecimal try1) {
 		this.try1 = try1;
 	}
-	
+
 	public void setAed(BigDecimal aed) {
 		this.aed = aed;
 	}
@@ -755,2071 +757,1390 @@ public class QuoteCb implements Quote {
 		this.afn = afn;
 	}
 
-
-
 	public void setAll(BigDecimal all) {
 		this.all = all;
 	}
-
-
 
 	public void setAmd(BigDecimal amd) {
 		this.amd = amd;
 	}
 
-
-
 	public void setAng(BigDecimal ang) {
 		this.ang = ang;
 	}
-
-
 
 	public void setAoa(BigDecimal aoa) {
 		this.aoa = aoa;
 	}
 
-
-
 	public void setArs(BigDecimal ars) {
 		this.ars = ars;
 	}
-
-
 
 	public void setAud(BigDecimal aud) {
 		this.aud = aud;
 	}
 
+	public BigDecimal getOp() {
+		return op;
+	}
 
+	public void setOp(BigDecimal op) {
+		this.op = op;
+	}
 
 	public void setAwg(BigDecimal awg) {
 		this.awg = awg;
 	}
 
-
-
 	public void setAzn(BigDecimal azn) {
 		this.azn = azn;
 	}
-
-
 
 	public void setBam(BigDecimal bam) {
 		this.bam = bam;
 	}
 
-
-
 	public void setBbd(BigDecimal bbd) {
 		this.bbd = bbd;
 	}
-
-
 
 	public void setBdt(BigDecimal bdt) {
 		this.bdt = bdt;
 	}
 
-
-
 	public void setBgn(BigDecimal bgn) {
 		this.bgn = bgn;
 	}
-
-
 
 	public void setBhd(BigDecimal bhd) {
 		this.bhd = bhd;
 	}
 
-
-
 	public void setBif(BigDecimal bif) {
 		this.bif = bif;
 	}
-
-
 
 	public void setBmd(BigDecimal bmd) {
 		this.bmd = bmd;
 	}
 
-
-
 	public void setBnd(BigDecimal bnd) {
 		this.bnd = bnd;
 	}
-
-
 
 	public void setBob(BigDecimal bob) {
 		this.bob = bob;
 	}
 
-
-
 	public void setBrl(BigDecimal brl) {
 		this.brl = brl;
 	}
-
-
 
 	public void setBsd(BigDecimal bsd) {
 		this.bsd = bsd;
 	}
 
-
-
 	public void setBtc(BigDecimal btc) {
 		this.btc = btc;
 	}
-
-
 
 	public void setBtn(BigDecimal btn) {
 		this.btn = btn;
 	}
 
-
-
 	public void setBwp(BigDecimal bwp) {
 		this.bwp = bwp;
 	}
-
-
 
 	public void setByn(BigDecimal byn) {
 		this.byn = byn;
 	}
 
-
-
 	public void setByr(BigDecimal byr) {
 		this.byr = byr;
 	}
-
-
 
 	public void setBzd(BigDecimal bzd) {
 		this.bzd = bzd;
 	}
 
-
-
 	public void setCad(BigDecimal cad) {
 		this.cad = cad;
 	}
-
-
 
 	public void setCdf(BigDecimal cdf) {
 		this.cdf = cdf;
 	}
 
-
-
 	public void setChf(BigDecimal chf) {
 		this.chf = chf;
 	}
-
-
 
 	public void setClf(BigDecimal clf) {
 		this.clf = clf;
 	}
 
-
-
 	public void setClp(BigDecimal clp) {
 		this.clp = clp;
 	}
-
-
 
 	public void setCny(BigDecimal cny) {
 		this.cny = cny;
 	}
 
-
-
 	public void setCop(BigDecimal cop) {
 		this.cop = cop;
 	}
-
-
 
 	public void setCrc(BigDecimal crc) {
 		this.crc = crc;
 	}
 
-
-
 	public void setCuc(BigDecimal cuc) {
 		this.cuc = cuc;
 	}
-
-
 
 	public void setCve(BigDecimal cve) {
 		this.cve = cve;
 	}
 
-
-
 	public void setCzk(BigDecimal czk) {
 		this.czk = czk;
 	}
-
-
 
 	public void setDjf(BigDecimal djf) {
 		this.djf = djf;
 	}
 
-
-
 	public void setDkk(BigDecimal dkk) {
 		this.dkk = dkk;
 	}
-
-
 
 	public void setDop(BigDecimal dop) {
 		this.dop = dop;
 	}
 
-
-
 	public void setDzd(BigDecimal dzd) {
 		this.dzd = dzd;
 	}
-
-
 
 	public void setEek(BigDecimal eek) {
 		this.eek = eek;
 	}
 
-
-
 	public void setEgp(BigDecimal egp) {
 		this.egp = egp;
 	}
-
-
 
 	public void setErn(BigDecimal ern) {
 		this.ern = ern;
 	}
 
-
-
 	public void setEtb(BigDecimal etb) {
 		this.etb = etb;
 	}
-
-
 
 	public void setEth(BigDecimal eth) {
 		this.eth = eth;
 	}
 
-
-
 	public void setEur(BigDecimal eur) {
 		this.eur = eur;
 	}
-
-
 
 	public void setFjd(BigDecimal fjd) {
 		this.fjd = fjd;
 	}
 
-
-
 	public void setFkp(BigDecimal fkp) {
 		this.fkp = fkp;
 	}
-
-
 
 	public void setGbp(BigDecimal gbp) {
 		this.gbp = gbp;
 	}
 
-
-
 	public void setGel(BigDecimal gel) {
 		this.gel = gel;
 	}
-
-
 
 	public void setGgp(BigDecimal ggp) {
 		this.ggp = ggp;
 	}
 
-
-
 	public void setGhs(BigDecimal ghs) {
 		this.ghs = ghs;
 	}
-
-
 
 	public void setGip(BigDecimal gip) {
 		this.gip = gip;
 	}
 
-
-
 	public void setGmd(BigDecimal gmd) {
 		this.gmd = gmd;
 	}
-
-
 
 	public void setGnf(BigDecimal gnf) {
 		this.gnf = gnf;
 	}
 
-
-
 	public void setGtq(BigDecimal gtq) {
 		this.gtq = gtq;
 	}
-
-
 
 	public void setGyd(BigDecimal gyd) {
 		this.gyd = gyd;
 	}
 
-
-
 	public void setHkd(BigDecimal hkd) {
 		this.hkd = hkd;
 	}
-
-
 
 	public void setHnl(BigDecimal hnl) {
 		this.hnl = hnl;
 	}
 
-
-
 	public void setHrk(BigDecimal hrk) {
 		this.hrk = hrk;
 	}
-
-
 
 	public void setHtg(BigDecimal htg) {
 		this.htg = htg;
 	}
 
-
-
 	public void setHuf(BigDecimal huf) {
 		this.huf = huf;
 	}
-
-
 
 	public void setIdr(BigDecimal idr) {
 		this.idr = idr;
 	}
 
-
-
 	public void setIls(BigDecimal ils) {
 		this.ils = ils;
 	}
-
-
 
 	public void setImp(BigDecimal imp) {
 		this.imp = imp;
 	}
 
-
-
 	public void setInr(BigDecimal inr) {
 		this.inr = inr;
 	}
-
-
 
 	public void setIqd(BigDecimal iqd) {
 		this.iqd = iqd;
 	}
 
-
-
 	public void setIsk(BigDecimal isk) {
 		this.isk = isk;
 	}
-
-
 
 	public void setJep(BigDecimal jep) {
 		this.jep = jep;
 	}
 
-
-
 	public void setJmd(BigDecimal jmd) {
 		this.jmd = jmd;
 	}
-
-
 
 	public void setJod(BigDecimal jod) {
 		this.jod = jod;
 	}
 
-
-
 	public void setJpy(BigDecimal jpy) {
 		this.jpy = jpy;
 	}
-
-
 
 	public void setKes(BigDecimal kes) {
 		this.kes = kes;
 	}
 
-
-
 	public void setKgs(BigDecimal kgs) {
 		this.kgs = kgs;
 	}
-
-
 
 	public void setKhr(BigDecimal khr) {
 		this.khr = khr;
 	}
 
-
-
 	public void setKmf(BigDecimal kmf) {
 		this.kmf = kmf;
 	}
-
-
 
 	public void setKrw(BigDecimal krw) {
 		this.krw = krw;
 	}
 
-
-
 	public void setKwd(BigDecimal kwd) {
 		this.kwd = kwd;
 	}
-
-
 
 	public void setKyd(BigDecimal kyd) {
 		this.kyd = kyd;
 	}
 
-
-
 	public void setKzt(BigDecimal kzt) {
 		this.kzt = kzt;
 	}
-
-
 
 	public void setLak(BigDecimal lak) {
 		this.lak = lak;
 	}
 
-
-
 	public void setLbp(BigDecimal lbp) {
 		this.lbp = lbp;
 	}
-
-
 
 	public void setLkr(BigDecimal lkr) {
 		this.lkr = lkr;
 	}
 
-
-
 	public void setLrd(BigDecimal lrd) {
 		this.lrd = lrd;
 	}
-
-
 
 	public void setLsl(BigDecimal lsl) {
 		this.lsl = lsl;
 	}
 
-
-
 	public void setLtc(BigDecimal ltc) {
 		this.ltc = ltc;
 	}
-
-
 
 	public void setLtl(BigDecimal ltl) {
 		this.ltl = ltl;
 	}
 
-
-
 	public void setLvl(BigDecimal lvl) {
 		this.lvl = lvl;
 	}
-
-
 
 	public void setLyd(BigDecimal lyd) {
 		this.lyd = lyd;
 	}
 
-
-
 	public void setMad(BigDecimal mad) {
 		this.mad = mad;
 	}
-
-
 
 	public void setMdl(BigDecimal mdl) {
 		this.mdl = mdl;
 	}
 
-
-
 	public void setMga(BigDecimal mga) {
 		this.mga = mga;
 	}
-
-
 
 	public void setMkd(BigDecimal mkd) {
 		this.mkd = mkd;
 	}
 
-
-
 	public void setMmk(BigDecimal mmk) {
 		this.mmk = mmk;
 	}
-
-
 
 	public void setMnt(BigDecimal mnt) {
 		this.mnt = mnt;
 	}
 
-
-
 	public void setMop(BigDecimal mop) {
 		this.mop = mop;
 	}
-
-
 
 	public void setMro(BigDecimal mro) {
 		this.mro = mro;
 	}
 
-
-
 	public void setMtl(BigDecimal mtl) {
 		this.mtl = mtl;
 	}
-
-
 
 	public void setMur(BigDecimal mur) {
 		this.mur = mur;
 	}
 
-
-
 	public void setMvr(BigDecimal mvr) {
 		this.mvr = mvr;
 	}
-
-
 
 	public void setMwk(BigDecimal mwk) {
 		this.mwk = mwk;
 	}
 
-
-
 	public void setMxn(BigDecimal mxn) {
 		this.mxn = mxn;
 	}
-
-
 
 	public void setMyr(BigDecimal myr) {
 		this.myr = myr;
 	}
 
-
-
 	public void setMzn(BigDecimal mzn) {
 		this.mzn = mzn;
 	}
-
-
 
 	public void setNad(BigDecimal nad) {
 		this.nad = nad;
 	}
 
-
-
 	public void setNgn(BigDecimal ngn) {
 		this.ngn = ngn;
 	}
-
-
 
 	public void setNio(BigDecimal nio) {
 		this.nio = nio;
 	}
 
-
-
 	public void setNok(BigDecimal nok) {
 		this.nok = nok;
 	}
-
-
 
 	public void setNpr(BigDecimal npr) {
 		this.npr = npr;
 	}
 
-
-
 	public void setNzd(BigDecimal nzd) {
 		this.nzd = nzd;
 	}
-
-
 
 	public void setOmr(BigDecimal omr) {
 		this.omr = omr;
 	}
 
-
-
 	public void setPab(BigDecimal pab) {
 		this.pab = pab;
 	}
-
-
 
 	public void setPen(BigDecimal pen) {
 		this.pen = pen;
 	}
 
-
-
 	public void setPgk(BigDecimal pgk) {
 		this.pgk = pgk;
 	}
-
-
 
 	public void setPhp(BigDecimal php) {
 		this.php = php;
 	}
 
-
-
 	public void setPkr(BigDecimal pkr) {
 		this.pkr = pkr;
 	}
-
-
 
 	public void setPln(BigDecimal pln) {
 		this.pln = pln;
 	}
 
-
-
 	public void setPyg(BigDecimal pyg) {
 		this.pyg = pyg;
 	}
-
-
 
 	public void setQar(BigDecimal qar) {
 		this.qar = qar;
 	}
 
-
-
 	public void setRon(BigDecimal ron) {
 		this.ron = ron;
 	}
-
-
 
 	public void setRsd(BigDecimal rsd) {
 		this.rsd = rsd;
 	}
 
-
-
 	public void setRub(BigDecimal rub) {
 		this.rub = rub;
 	}
-
-
 
 	public void setRwf(BigDecimal rwf) {
 		this.rwf = rwf;
 	}
 
-
-
 	public void setSar(BigDecimal sar) {
 		this.sar = sar;
 	}
-
-
 
 	public void setSbd(BigDecimal sbd) {
 		this.sbd = sbd;
 	}
 
-
-
 	public void setScr(BigDecimal scr) {
 		this.scr = scr;
 	}
-
-
 
 	public void setSek(BigDecimal sek) {
 		this.sek = sek;
 	}
 
-
-
 	public void setSgd(BigDecimal sgd) {
 		this.sgd = sgd;
 	}
-
-
 
 	public void setShp(BigDecimal shp) {
 		this.shp = shp;
 	}
 
-
-
 	public void setSll(BigDecimal sll) {
 		this.sll = sll;
 	}
-
-
 
 	public void setSos(BigDecimal sos) {
 		this.sos = sos;
 	}
 
-
-
 	public void setSrd(BigDecimal srd) {
 		this.srd = srd;
 	}
-
-
 
 	public void setSsp(BigDecimal ssp) {
 		this.ssp = ssp;
 	}
 
-
-
 	public void setStd(BigDecimal std) {
 		this.std = std;
 	}
-
-
 
 	public void setSvc(BigDecimal svc) {
 		this.svc = svc;
 	}
 
-
-
 	public void setSzl(BigDecimal szl) {
 		this.szl = szl;
 	}
-
-
 
 	public void setThb(BigDecimal thb) {
 		this.thb = thb;
 	}
 
-
-
 	public void setTjs(BigDecimal tjs) {
 		this.tjs = tjs;
 	}
-
-
 
 	public void setTmt(BigDecimal tmt) {
 		this.tmt = tmt;
 	}
 
-
-
 	public void setTnd(BigDecimal tnd) {
 		this.tnd = tnd;
 	}
 
-
-
 	public void setTop(BigDecimal top) {
 		this.top = top;
 	}
-
 
 	@JsonProperty("TRY")
 	public void setTry(BigDecimal try1) {
 		this.try1 = try1;
 	}
 
-
-
 	public void setTtd(BigDecimal ttd) {
 		this.ttd = ttd;
 	}
-
-
 
 	public void setTwd(BigDecimal twd) {
 		this.twd = twd;
 	}
 
-
-
 	public void setTzs(BigDecimal tzs) {
 		this.tzs = tzs;
 	}
-
-
 
 	public void setUah(BigDecimal uah) {
 		this.uah = uah;
 	}
 
-
-
 	public void setUgx(BigDecimal ugx) {
 		this.ugx = ugx;
 	}
-
-
 
 	public void setUsd(BigDecimal usd) {
 		this.usd = usd;
 	}
 
-
-
 	public void setUyu(BigDecimal uyu) {
 		this.uyu = uyu;
 	}
-
-
 
 	public void setUzs(BigDecimal uzs) {
 		this.uzs = uzs;
 	}
 
-
-
 	public void setVef(BigDecimal vef) {
 		this.vef = vef;
 	}
-
-
 
 	public void setVnd(BigDecimal vnd) {
 		this.vnd = vnd;
 	}
 
-
-
 	public void setVuv(BigDecimal vuv) {
 		this.vuv = vuv;
 	}
-
-
 
 	public void setWst(BigDecimal wst) {
 		this.wst = wst;
 	}
 
-
-
 	public void setXaf(BigDecimal xaf) {
 		this.xaf = xaf;
 	}
-
-
 
 	public void setXag(BigDecimal xag) {
 		this.xag = xag;
 	}
 
-
-
 	public void setXau(BigDecimal xau) {
 		this.xau = xau;
 	}
-
-
 
 	public void setXcd(BigDecimal xcd) {
 		this.xcd = xcd;
 	}
 
-
-
 	public void setXdr(BigDecimal xdr) {
 		this.xdr = xdr;
 	}
-
-
 
 	public void setXof(BigDecimal xof) {
 		this.xof = xof;
 	}
 
-
-
 	public void setXpd(BigDecimal xpd) {
 		this.xpd = xpd;
 	}
-
-
 
 	public void setXpf(BigDecimal xpf) {
 		this.xpf = xpf;
 	}
 
-
-
 	public void setXpt(BigDecimal xpt) {
 		this.xpt = xpt;
 	}
-
-
 
 	public void setYer(BigDecimal yer) {
 		this.yer = yer;
 	}
 
-
-
 	public void setZar(BigDecimal zar) {
 		this.zar = zar;
 	}
-
-
 
 	public void setZmk(BigDecimal zmk) {
 		this.zmk = zmk;
 	}
 
-
-
 	public void setZmw(BigDecimal zmw) {
 		this.zmw = zmw;
 	}
-
-
 
 	public void setZwl(BigDecimal zwl) {
 		this.zwl = zwl;
 	}
 
-
-
 	public void setVes(BigDecimal ves) {
 		this.ves = ves;
 	}
-
-
 
 	public void setXba(BigDecimal xba) {
 		this.xba = xba;
 	}
 
-
-
 	public void setXts(BigDecimal xts) {
 		this.xts = xts;
 	}
-
-
 
 	public void setGbx(BigDecimal gbx) {
 		this.gbx = gbx;
 	}
 
-
-
 	public void setCnh(BigDecimal cnh) {
 		this.cnh = cnh;
 	}
-
-
 
 	public void setZwd(BigDecimal zwd) {
 		this.zwd = zwd;
 	}
 
-
-
 	public void setBch(BigDecimal bch) {
 		this.bch = bch;
 	}
-
-
 
 	public void setBsv(BigDecimal bsv) {
 		this.bsv = bsv;
 	}
 
-
-
 	public void setEth2(BigDecimal eth2) {
 		this.eth2 = eth2;
 	}
-
-
 
 	public void setEtc(BigDecimal etc) {
 		this.etc = etc;
 	}
 
-
-
 	public void setZrx(BigDecimal zrx) {
 		this.zrx = zrx;
 	}
-
-
 
 	public void setUsdc(BigDecimal usdc) {
 		this.usdc = usdc;
 	}
 
-
-
 	public void setBat(BigDecimal bat) {
 		this.bat = bat;
 	}
-
-
 
 	public void setLoom(BigDecimal loom) {
 		this.loom = loom;
 	}
 
-
-
 	public void setMana(BigDecimal mana) {
 		this.mana = mana;
 	}
-
-
 
 	public void setKnc(BigDecimal knc) {
 		this.knc = knc;
 	}
 
-
-
 	public void setLink(BigDecimal link) {
 		this.link = link;
 	}
-
-
 
 	public void setMkr(BigDecimal mkr) {
 		this.mkr = mkr;
 	}
 
-
-
 	public void setCvc(BigDecimal cvc) {
 		this.cvc = cvc;
 	}
-
-
 
 	public void setOmg(BigDecimal omg) {
 		this.omg = omg;
 	}
 
-
-
 	public void setGnt(BigDecimal gnt) {
 		this.gnt = gnt;
 	}
-
-
 
 	public void setDai(BigDecimal dai) {
 		this.dai = dai;
 	}
 
-
-
 	public void setSnt(BigDecimal snt) {
 		this.snt = snt;
 	}
-
-
 
 	public void setZec(BigDecimal zec) {
 		this.zec = zec;
 	}
 
-
-
 	public void setXrp(BigDecimal xrp) {
 		this.xrp = xrp;
 	}
-
-
 
 	public void setRep(BigDecimal rep) {
 		this.rep = rep;
 	}
 
-
-
 	public void setXlm(BigDecimal xlm) {
 		this.xlm = xlm;
 	}
-
-
 
 	public void setEos(BigDecimal eos) {
 		this.eos = eos;
 	}
 
-
-
 	public void setXtz(BigDecimal xtz) {
 		this.xtz = xtz;
 	}
-
-
 
 	public void setAlgo(BigDecimal algo) {
 		this.algo = algo;
 	}
 
-
-
 	public void setDash(BigDecimal dash) {
 		this.dash = dash;
 	}
-
-
 
 	public void setAtom(BigDecimal atom) {
 		this.atom = atom;
 	}
 
-
-
 	public void setOxt(BigDecimal oxt) {
 		this.oxt = oxt;
 	}
-
-
 
 	public void setComp(BigDecimal comp) {
 		this.comp = comp;
 	}
 
-
-
 	public void setEnj(BigDecimal enj) {
 		this.enj = enj;
 	}
-
-
 
 	public void setRepv2(BigDecimal repv2) {
 		this.repv2 = repv2;
 	}
 
-
-
 	public void setBand(BigDecimal band) {
 		this.band = band;
 	}
-
-
 
 	public void setNmr(BigDecimal nmr) {
 		this.nmr = nmr;
 	}
 
-
-
 	public void setCgld(BigDecimal cgld) {
 		this.cgld = cgld;
 	}
-
-
 
 	public void setUma(BigDecimal uma) {
 		this.uma = uma;
 	}
 
-
-
 	public void setLrc(BigDecimal lrc) {
 		this.lrc = lrc;
 	}
-
-
 
 	public void setYfi(BigDecimal yfi) {
 		this.yfi = yfi;
 	}
 
-
-
 	public void setUni(BigDecimal uni) {
 		this.uni = uni;
 	}
-
-
 
 	public void setBal(BigDecimal bal) {
 		this.bal = bal;
 	}
 
-
-
 	public void setRen(BigDecimal ren) {
 		this.ren = ren;
 	}
-
-
 
 	public void setWbtc(BigDecimal wbtc) {
 		this.wbtc = wbtc;
 	}
 
-
-
 	public void setNu(BigDecimal nu) {
 		this.nu = nu;
 	}
-
-
 
 	public void setYfii(BigDecimal yfii) {
 		this.yfii = yfii;
 	}
 
-
-
 	public void setFil(BigDecimal fil) {
 		this.fil = fil;
 	}
-
-
 
 	public void setAave(BigDecimal aave) {
 		this.aave = aave;
 	}
 
-
-
 	public void setBnt(BigDecimal bnt) {
 		this.bnt = bnt;
 	}
-
-
 
 	public void setGrt(BigDecimal grt) {
 		this.grt = grt;
 	}
 
-
-
 	public void setSnx(BigDecimal snx) {
 		this.snx = snx;
 	}
-
-
 
 	public void setStorj(BigDecimal storj) {
 		this.storj = storj;
 	}
 
-
-
 	public void setSushi(BigDecimal sushi) {
 		this.sushi = sushi;
 	}
-
-
 
 	public void setMatic(BigDecimal matic) {
 		this.matic = matic;
 	}
 
-
-
 	public void setSkl(BigDecimal skl) {
 		this.skl = skl;
 	}
-
-
 
 	public void setAda(BigDecimal ada) {
 		this.ada = ada;
 	}
 
-
-
 	public void setAnkr(BigDecimal ankr) {
 		this.ankr = ankr;
 	}
-
-
 
 	public void setCrv(BigDecimal crv) {
 		this.crv = crv;
 	}
 
-
-
 	public void setIcp(BigDecimal icp) {
 		this.icp = icp;
 	}
-
-
 
 	public void setNkn(BigDecimal nkn) {
 		this.nkn = nkn;
 	}
 
-
-
 	public void setOgn(BigDecimal ogn) {
 		this.ogn = ogn;
 	}
-
-
 
 	public void setUsdt(BigDecimal usdt) {
 		this.usdt = usdt;
 	}
 
-
-
 	public void setForth(BigDecimal forth) {
 		this.forth = forth;
 	}
-
-
 
 	public void setCtsi(BigDecimal ctsi) {
 		this.ctsi = ctsi;
 	}
 
-
-
 	public void setTrb(BigDecimal trb) {
 		this.trb = trb;
 	}
-
-
 
 	public void setPoly(BigDecimal poly) {
 		this.poly = poly;
 	}
 
-
-
 	public void setMir(BigDecimal mir) {
 		this.mir = mir;
 	}
-
-
 
 	public void setRlc(BigDecimal rlc) {
 		this.rlc = rlc;
 	}
 
-
-
 	public void setDot(BigDecimal dot) {
 		this.dot = dot;
 	}
-
-
 
 	public void setSol(BigDecimal sol) {
 		this.sol = sol;
 	}
 
-
-
 	public void setDoge(BigDecimal doge) {
 		this.doge = doge;
 	}
-
-
 
 	public void setMln(BigDecimal mln) {
 		this.mln = mln;
 	}
 
-
-
 	public void setGtc(BigDecimal gtc) {
 		this.gtc = gtc;
 	}
-
-
 
 	public void setAmp(BigDecimal amp) {
 		this.amp = amp;
 	}
 
-
-
 	public void setShib(BigDecimal shib) {
 		this.shib = shib;
 	}
-
-
 
 	public void setChz(BigDecimal chz) {
 		this.chz = chz;
 	}
 
-
-
 	public void setKeep(BigDecimal keep) {
 		this.keep = keep;
 	}
-
-
 
 	public void setLpt(BigDecimal lpt) {
 		this.lpt = lpt;
 	}
 
-
-
 	public void setQnt(BigDecimal qnt) {
 		this.qnt = qnt;
 	}
-
-
 
 	public void setBond(BigDecimal bond) {
 		this.bond = bond;
 	}
 
-
-
 	public void setRly(BigDecimal rly) {
 		this.rly = rly;
 	}
-
-
 
 	public void setClv(BigDecimal clv) {
 		this.clv = clv;
 	}
 
-
-
 	public void setFarm(BigDecimal farm) {
 		this.farm = farm;
 	}
-
-
 
 	public void setMask(BigDecimal mask) {
 		this.mask = mask;
 	}
 
-
-
 	public void setFet(BigDecimal fet) {
 		this.fet = fet;
 	}
-
-
 
 	public void setPax(BigDecimal pax) {
 		this.pax = pax;
 	}
 
-
-
 	public void setAch(BigDecimal ach) {
 		this.ach = ach;
 	}
-
-
 
 	public void setAsm(BigDecimal asm) {
 		this.asm = asm;
 	}
 
-
-
 	public void setPla(BigDecimal pla) {
 		this.pla = pla;
 	}
-
-
 
 	public void setRai(BigDecimal rai) {
 		this.rai = rai;
 	}
 
-
-
 	public void setTribe(BigDecimal tribe) {
 		this.tribe = tribe;
 	}
-
-
 
 	public void setOrn(BigDecimal orn) {
 		this.orn = orn;
 	}
 
-
-
 	public void setIotx(BigDecimal iotx) {
 		this.iotx = iotx;
 	}
-
-
 
 	public void setUst(BigDecimal ust) {
 		this.ust = ust;
 	}
 
-
-
 	public void setQuick(BigDecimal quick) {
 		this.quick = quick;
 	}
-
-
 
 	public void setAxs(BigDecimal axs) {
 		this.axs = axs;
 	}
 
-
-
 	public void setReq(BigDecimal req) {
 		this.req = req;
 	}
-
-
 
 	public void setWluna(BigDecimal wluna) {
 		this.wluna = wluna;
 	}
 
-
-
 	public void setTru(BigDecimal tru) {
 		this.tru = tru;
 	}
-
-
 
 	public void setRad(BigDecimal rad) {
 		this.rad = rad;
 	}
 
-
-
 	public void setCoti(BigDecimal coti) {
 		this.coti = coti;
 	}
-
-
 
 	public void setDdx(BigDecimal ddx) {
 		this.ddx = ddx;
 	}
 
-
-
 	public void setSuku(BigDecimal suku) {
 		this.suku = suku;
 	}
-
-
 
 	public void setRgt(BigDecimal rgt) {
 		this.rgt = rgt;
 	}
 
-
-
 	public void setXyo(BigDecimal xyo) {
 		this.xyo = xyo;
 	}
-
-
 
 	public void setZen(BigDecimal zen) {
 		this.zen = zen;
 	}
 
-
-
 	public void setAuction(BigDecimal auction) {
 		this.auction = auction;
 	}
-
-
 
 	public void setBusd(BigDecimal busd) {
 		this.busd = busd;
 	}
 
-
-
 	public void setJasmy(BigDecimal jasmy) {
 		this.jasmy = jasmy;
 	}
-
-
 
 	public void setWcfg(BigDecimal wcfg) {
 		this.wcfg = wcfg;
 	}
 
-
-
 	public void setBtrst(BigDecimal btrst) {
 		this.btrst = btrst;
 	}
-
-
 
 	public void setAgld(BigDecimal agld) {
 		this.agld = agld;
 	}
 
-
-
 	public void setAvax(BigDecimal avax) {
 		this.avax = avax;
 	}
-
-
 
 	public void setFx(BigDecimal fx) {
 		this.fx = fx;
 	}
 
-
-
 	public void setTrac(BigDecimal trac) {
 		this.trac = trac;
 	}
-
-
 
 	public void setLcx(BigDecimal lcx) {
 		this.lcx = lcx;
 	}
 
-
-
 	public void setArpa(BigDecimal arpa) {
 		this.arpa = arpa;
 	}
-
-
 
 	public void setBadger(BigDecimal badger) {
 		this.badger = badger;
 	}
 
-
-
 	public void setKrl(BigDecimal krl) {
 		this.krl = krl;
 	}
-
-
 
 	public void setPerp(BigDecimal perp) {
 		this.perp = perp;
 	}
 
-
-
 	public void setRari(BigDecimal rari) {
 		this.rari = rari;
 	}
-
-
 
 	public void setDeso(BigDecimal deso) {
 		this.deso = deso;
 	}
 
-
-
 	public void setApi3(BigDecimal api3) {
 		this.api3 = api3;
 	}
-
-
 
 	public void setNct(BigDecimal nct) {
 		this.nct = nct;
 	}
 
-
-
 	public void setShping(BigDecimal shping) {
 		this.shping = shping;
 	}
-
-
 
 	public void setUpi(BigDecimal upi) {
 		this.upi = upi;
 	}
 
-
-
 	public void setCro(BigDecimal cro) {
 		this.cro = cro;
 	}
-
-
 
 	public void setAvt(BigDecimal avt) {
 		this.avt = avt;
 	}
 
-
-
 	public void setMdt(BigDecimal mdt) {
 		this.mdt = mdt;
 	}
-
-
 
 	public void setVgx(BigDecimal vgx) {
 		this.vgx = vgx;
 	}
 
-
-
 	public void setAlcx(BigDecimal alcx) {
 		this.alcx = alcx;
 	}
-
-
 
 	public void setCoval(BigDecimal coval) {
 		this.coval = coval;
 	}
 
-
-
 	public void setFox(BigDecimal fox) {
 		this.fox = fox;
 	}
-
-
 
 	public void setMusd(BigDecimal musd) {
 		this.musd = musd;
 	}
 
-
-
 	public void setGala(BigDecimal gala) {
 		this.gala = gala;
 	}
-
-
 
 	public void setPowr(BigDecimal powr) {
 		this.powr = powr;
 	}
 
-
-
 	public void setGyen(BigDecimal gyen) {
 		this.gyen = gyen;
 	}
-
-
 
 	public void setAlice(BigDecimal alice) {
 		this.alice = alice;
 	}
 
-
-
 	public void setInv(BigDecimal inv) {
 		this.inv = inv;
 	}
-
-
 
 	public void setLqty(BigDecimal lqty) {
 		this.lqty = lqty;
 	}
 
-
-
 	public void setPro(BigDecimal pro) {
 		this.pro = pro;
 	}
-
-
 
 	public void setSpell(BigDecimal spell) {
 		this.spell = spell;
 	}
 
-
-
 	public void setEns(BigDecimal ens) {
 		this.ens = ens;
 	}
-
-
 
 	public void setDia(BigDecimal dia) {
 		this.dia = dia;
 	}
 
-
-
 	public void setBlz(BigDecimal blz) {
 		this.blz = blz;
 	}
-
-
 
 	public void setCtx(BigDecimal ctx) {
 		this.ctx = ctx;
 	}
 
-
-
 	public void setIdex(BigDecimal idex) {
 		this.idex = idex;
 	}
-
-
 
 	public void setMco2(BigDecimal mco2) {
 		this.mco2 = mco2;
 	}
 
-
-
 	public void setPols(BigDecimal pols) {
 		this.pols = pols;
 	}
-
-
 
 	public void setUnfi(BigDecimal unfi) {
 		this.unfi = unfi;
 	}
 
-
-
 	public void setStx(BigDecimal stx) {
 		this.stx = stx;
 	}
-
-
 
 	public void setGods(BigDecimal gods) {
 		this.gods = gods;
 	}
 
-
-
 	public void setImx(BigDecimal imx) {
 		this.imx = imx;
 	}
-
-
 
 	public void setRbn(BigDecimal rbn) {
 		this.rbn = rbn;
 	}
 
-
-
 	public void setBico(BigDecimal bico) {
 		this.bico = bico;
 	}
-
-
 
 	public void setGfi(BigDecimal gfi) {
 		this.gfi = gfi;
 	}
 
-
-
 	public void setGlm(BigDecimal glm) {
 		this.glm = glm;
 	}
-
-
 
 	public void setMpl(BigDecimal mpl) {
 		this.mpl = mpl;
 	}
 
-
-
 	public void setPlu(BigDecimal plu) {
 		this.plu = plu;
 	}
-
-
 
 	public void setFida(BigDecimal fida) {
 		this.fida = fida;
 	}
 
-
-
 	public void setOrca(BigDecimal orca) {
 		this.orca = orca;
 	}
-
-
 
 	public void setCrpt(BigDecimal crpt) {
 		this.crpt = crpt;
 	}
 
-
-
 	public void setQsp(BigDecimal qsp) {
 		this.qsp = qsp;
 	}
-
-
 
 	public void setRndr(BigDecimal rndr) {
 		this.rndr = rndr;
 	}
 
-
-
 	public void setSyn(BigDecimal syn) {
 		this.syn = syn;
 	}
-
-
 
 	public void setAioz(BigDecimal aioz) {
 		this.aioz = aioz;
 	}
 
-
-
 	public void setAergo(BigDecimal aergo) {
 		this.aergo = aergo;
 	}
-
-
 
 	public void setHigh(BigDecimal high) {
 		this.high = high;
 	}
 
-
-
 	public void setRose(BigDecimal rose) {
 		this.rose = rose;
 	}
-
-
 
 	public void setApe(BigDecimal ape) {
 		this.ape = ape;
 	}
 
-
-
 	public void setMina(BigDecimal mina) {
 		this.mina = mina;
 	}
-
-
 
 	public void setGmt(BigDecimal gmt) {
 		this.gmt = gmt;
 	}
 
-
-
 	public void setGst(BigDecimal gst) {
 		this.gst = gst;
 	}
 
-
-
 	public void setGal(BigDecimal gal) {
 		this.gal = gal;
 	}
-
-
 
 	public BigDecimal getUsdt() {
 		return usdt;
@@ -4229,8 +3550,6 @@ public class QuoteCb implements Quote {
 		this.dnt = dnt;
 	}
 
-	
-	
 	public BigDecimal getSand() {
 		return sand;
 	}
@@ -4239,7 +3558,21 @@ public class QuoteCb implements Quote {
 		this.sand = sand;
 	}
 
-	
+	public ObjectId get_id() {
+		return _id;
+	}
+
+	public void set_id(ObjectId _id) {
+		this._id = _id;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
 
 	@Override
 	public String toString() {
@@ -4304,22 +3637,7 @@ public class QuoteCb implements Quote {
 				+ ", plu=" + plu + ", fida=" + fida + ", orca=" + orca + ", crpt=" + crpt + ", qsp=" + qsp + ", rndr="
 				+ rndr + ", syn=" + syn + ", aioz=" + aioz + ", aergo=" + aergo + ", high=" + high + ", rose=" + rose
 				+ ", ape=" + ape + ", mina=" + mina + ", gmt=" + gmt + ", gst=" + gst + ", gal=" + gal + ", dnt=" + dnt
-				+ ", flow=" + flow + ", sand=" + sand + "]";
+				+ ", flow=" + flow + ", sand=" + sand + ", op=" + op + "]";
 	}
-
-	public ObjectId get_id() {
-		return _id;
-	}
-
-	public void set_id(ObjectId _id) {
-		this._id = _id;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
+	
 }
