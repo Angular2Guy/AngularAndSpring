@@ -23,8 +23,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Document
 public class QuoteCb implements Quote {
 
@@ -734,6 +736,8 @@ public class QuoteCb implements Quote {
 	private BigDecimal sand = BigDecimal.ZERO;
 	@JsonProperty("OP")
 	private BigDecimal op = BigDecimal.ZERO;
+	@JsonProperty("KSM")
+	private BigDecimal ksm = BigDecimal.ZERO;
 
 	@JsonProperty("SUPER")
 	public void setSuper(BigDecimal super1) {
@@ -3574,6 +3578,14 @@ public class QuoteCb implements Quote {
 		this.createdAt = createdAt;
 	}
 
+	public BigDecimal getKsm() {
+		return ksm;
+	}
+
+	public void setKsm(BigDecimal ksm) {
+		this.ksm = ksm;
+	}
+
 	@Override
 	public String toString() {
 		return "QuoteCb [_id=" + _id + ", createdAt=" + createdAt + ", aed=" + aed + ", afn=" + afn + ", all=" + all
@@ -3637,7 +3649,7 @@ public class QuoteCb implements Quote {
 				+ ", plu=" + plu + ", fida=" + fida + ", orca=" + orca + ", crpt=" + crpt + ", qsp=" + qsp + ", rndr="
 				+ rndr + ", syn=" + syn + ", aioz=" + aioz + ", aergo=" + aergo + ", high=" + high + ", rose=" + rose
 				+ ", ape=" + ape + ", mina=" + mina + ", gmt=" + gmt + ", gst=" + gst + ", gal=" + gal + ", dnt=" + dnt
-				+ ", flow=" + flow + ", sand=" + sand + ", op=" + op + "]";
+				+ ", flow=" + flow + ", sand=" + sand + ", op=" + op + ", ksm=" + ksm + "]";
 	}
-	
+
 }

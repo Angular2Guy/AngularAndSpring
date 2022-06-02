@@ -144,7 +144,7 @@ public class ScheduledTask {
 					return response.bodyToMono(WrapperCb.class);
 //					return response.bodyToMono(String.class);
 //				}).flatMap(value -> {
-//					// log.info(value);
+					// log.info(value);
 //					return Mono.just(this.messageMapper.mapJsonToObject(value, WrapperCb.class));
 				}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
