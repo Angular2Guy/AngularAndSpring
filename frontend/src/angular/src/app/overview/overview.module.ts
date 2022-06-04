@@ -29,26 +29,22 @@ import { QuoteoverviewComponent } from './quoteoverview/quoteoverview.component'
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-    entryComponents: [
-                      LoginComponent
-                    ],
     imports: [
-      CommonModule,
-      OverviewRoutingModule,
-      MatTableModule,
-      MatToolbarModule,
-      MatTabsModule,
-      MatButtonModule,
-      MatDialogModule,
-      MatFormFieldModule,
-      MatInputModule,
-      FormsModule,
-      ReactiveFormsModule
+        CommonModule,
+        OverviewRoutingModule,
+        MatTableModule,
+        MatToolbarModule,
+        MatTabsModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        ReactiveFormsModule
     ],
-
-  declarations: [
-      LoginComponent,
-      QuoteoverviewComponent
-                 ]
+    declarations: [
+        LoginComponent,
+        QuoteoverviewComponent
+    ]
 })
 export class OverviewModule { }

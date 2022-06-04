@@ -18,7 +18,7 @@ import { QuoteoverviewComponent } from '../quoteoverview/quoteoverview.component
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MyuserService } from '../../services/myuser.service';
 import { MyUser } from '../../common/my-user';
-import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, FormControl, UntypedFormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { TokenService } from 'src/app/services/token.service';
 
 
@@ -28,15 +28,15 @@ import { TokenService } from 'src/app/services/token.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  signinForm: FormGroup;
-  loginForm: FormGroup;
+  signinForm: UntypedFormGroup;
+  loginForm: UntypedFormGroup;
   loginFailed = false;
   signinFailed = false;
   pwMatching = true;
   private user = new MyUser();
 
   constructor(public dialogRef: MatDialogRef<QuoteoverviewComponent>, private tokenService: TokenService,
-          @Inject(MAT_DIALOG_DATA) public data: any, private myuserService: MyuserService, fb: FormBuilder) {
+          @Inject(MAT_DIALOG_DATA) public data: any, private myuserService: MyuserService, fb: UntypedFormBuilder) {
       this.signinForm = fb.group({
           username: ['', Validators.required],
           password: ['', Validators.required],
@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {}
 
-  validate(group: FormGroup) {
+  validate(group: UntypedFormGroup) {
       if(group.get('password').touched || group.get('password2').touched) {
           this.pwMatching = group.get('password').value === group.get('password2').value && group.get('password').value !== '';
           if(!this.pwMatching) {
