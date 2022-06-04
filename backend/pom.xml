@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>angularandspring-backend</artifactId>
 	<packaging>jar</packaging>
-	<name>demo</name>
+	<name>angularandspring-backend</name>
 	<description>Demo project for Spring Boot</description>
 	<parent>
 		<groupId>ch.xxx</groupId>
