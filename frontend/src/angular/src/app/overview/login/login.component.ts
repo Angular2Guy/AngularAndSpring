@@ -18,9 +18,16 @@ import { QuoteoverviewComponent } from '../quoteoverview/quoteoverview.component
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MyuserService } from '../../services/myuser.service';
 import { MyUser } from '../../common/my-user';
-import { UntypedFormGroup, FormControl, UntypedFormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { TokenService } from 'src/app/services/token.service';
 
+
+enum FormFields {
+	Username = 'username',
+	Password = 'password',
+	Password2 = 'password2',
+	Email = 'email',
+}
 
 @Component({
   selector: 'app-login',
@@ -28,42 +35,42 @@ import { TokenService } from 'src/app/services/token.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  signinForm: UntypedFormGroup;
-  loginForm: UntypedFormGroup;
+  signinForm: FormGroup;
+  loginForm: FormGroup;
   loginFailed = false;
   signinFailed = false;
   pwMatching = true;
   private user = new MyUser();
 
   constructor(public dialogRef: MatDialogRef<QuoteoverviewComponent>, private tokenService: TokenService,
-          @Inject(MAT_DIALOG_DATA) public data: any, private myuserService: MyuserService, fb: UntypedFormBuilder) {
+          @Inject(MAT_DIALOG_DATA) public data: any, private myuserService: MyuserService, fb: FormBuilder) {
       this.signinForm = fb.group({
-          username: ['', Validators.required],
-          password: ['', Validators.required],
-          password2: ['', Validators.required],
-          email: ['', Validators.required]
+          [FormFields.Username]: ['', Validators.required],
+          [FormFields.Password]: ['', Validators.required],
+          [FormFields.Password2]: ['', Validators.required],
+          [FormFields.Email]: ['', Validators.required]
       },{
           validator: this.validate.bind(this)
       });
       this.loginForm = fb.group({
-          username: ['', Validators.required],
-          password: ['', Validators.required]
+          [FormFields.Username]: ['', Validators.required],
+          [FormFields.Password]: ['', Validators.required]
       });
   }
 
   ngOnInit() {}
 
-  validate(group: UntypedFormGroup) {
-      if(group.get('password').touched || group.get('password2').touched) {
-          this.pwMatching = group.get('password').value === group.get('password2').value && group.get('password').value !== '';
+  validate(group: FormGroup) {
+      if(group.get(FormFields.Password).touched || group.get(FormFields.Password2).touched) {
+          this.pwMatching = group.get(FormFields.Password).value === group.get(FormFields.Password2).value && group.get(FormFields.Password).value !== '';
           if(!this.pwMatching) {
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              group.get('password').setErrors({MatchPassword: true});
+              group.get(FormFields.Password).setErrors({MatchPassword: true});
 			  // eslint-disable-next-line @typescript-eslint/naming-convention
-              group.get('password2').setErrors({MatchPassword: true});
+              group.get(FormFields.Password2).setErrors({MatchPassword: true});
           } else {
-              group.get('password').setErrors(null);
-              group.get('password2').setErrors(null);
+              group.get(FormFields.Password).setErrors(null);
+              group.get(FormFields.Password2).setErrors(null);
           }
       }
       return this.pwMatching;
@@ -71,9 +78,9 @@ export class LoginComponent implements OnInit {
 
   onSigninClick(): void {
       const myUser = new MyUser();
-      myUser.userId = this.signinForm.get('username').value;
-      myUser.password = this.signinForm.get('password').value;
-      myUser.email = this.signinForm.get('email').value;
+      myUser.userId = this.signinForm.get(FormFields.Username).value;
+      myUser.password = this.signinForm.get(FormFields.Password).value;
+      myUser.email = this.signinForm.get(FormFields.Email).value;
 //      console.log(this.signinForm);
 //      console.log(myUser);
       this.myuserService.postSignin(myUser).subscribe(us => this.signin(us),err => console.log(err));
@@ -81,8 +88,8 @@ export class LoginComponent implements OnInit {
 
   onLoginClick(): void {
       const myUser = new MyUser();
-      myUser.userId = this.loginForm.get('username').value;
-      myUser.password = this.loginForm.get('password').value;
+      myUser.userId = this.loginForm.get(FormFields.Username).value;
+      myUser.password = this.loginForm.get(FormFields.Password).value;
 //      console.log(myUser);
       this.myuserService.postLogin(myUser).subscribe(us => this.login(us),err => console.log(err));
   }
