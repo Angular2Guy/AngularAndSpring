@@ -18,37 +18,6 @@ data:
   {{ $key }}: {{ $val | b64enc }}
   {{- end}}
 ---
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: {{ .Values.persistentVolumeName }}
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  capacity:
-    storage: 1Gi
-  hostPath:
-    path: /data/kafka1
-    type: DirectoryOrCreate
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Values.volumeClaimName }}
-  labels:
-    app: postgrespv
-spec:  
-  accessModes:
-    - ReadWriteOnce
-  # storageClassName: local-storage
-  storageClassName: manual  
-  resources:
-    requests:
-      storage: 1Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
