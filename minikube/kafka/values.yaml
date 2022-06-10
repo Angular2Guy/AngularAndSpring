@@ -6,6 +6,13 @@ zookeeperImageName: bitnami/zookeeper
 zookeeperImageVersion: latest
 kafkaServiceName: kafkaservice
 zookeeperServiceName: zookeeperservice
+volumeClaimName: mongo-pv-claim
+persistentVolumeName: mongo-pv-volume
+
+secret:
+  name: app-env-secret
+  nameKafka: kafka-env-secret
+  nameZookeeper: zookeeper-env-secret
 
 envZookeeper:
   normal: 
