@@ -57,7 +57,6 @@ public class ScheduledTask {
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 	private final MyUserService myUserService;
-	private final EventMapper messageMapper;
 	private Disposable bitstampDisposable = Mono.empty().subscribe();
 	private Disposable coinbaseDisposable = Mono.empty().subscribe();
 	private Disposable itbitDisposable = Mono.empty().subscribe();
@@ -72,7 +71,6 @@ public class ScheduledTask {
 		this.itbitService = itbitService;
 		this.coinbaseService = coinbaseService;
 		this.myUserService = myUserService;
-		this.messageMapper = messageMapper;
 	}
 
 //	@PostConstruct
@@ -105,12 +103,12 @@ public class ScheduledTask {
 //				log.info(res.toString());
 					return res;
 				});
-		this.bitstampDisposable = this.bitstampService.insertQuote(request).then().subscribe(response -> {
+		this.bitstampDisposable = this.bitstampService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitstampQuote " + currPair + " " + dateFormat.format(new Date()) + " "
 						+ (new Date().getTime() - start.getTime()) + "ms");
 			}
-		}, error -> log.error("Bitstamp " + currPair + " insert error " + dateFormat.format(new Date())));
+		}, error -> log.error("Bitstamp " + currPair + " insert error " + dateFormat.format(new Date()), error));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 6000)
@@ -144,18 +142,18 @@ public class ScheduledTask {
 					return response.bodyToMono(WrapperCb.class);
 //					return response.bodyToMono(String.class);
 //				}).flatMap(value -> {
-					// log.info(value);
+//					// log.info(value);
 //					return Mono.just(this.messageMapper.mapJsonToObject(value, WrapperCb.class));
 				}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
 					return Mono.just(resp2.getRates());
-				});
-		this.coinbaseDisposable = this.coinbaseService.insertQuote(request).then().subscribe(response -> {
+				});		
+		this.coinbaseDisposable = this.coinbaseService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("CoinbaseQuote " + dateFormat.format(new Date()) + " "
 						+ (new Date().getTime() - start.getTime()) + "ms");
 			}
-		}, error -> log.error("Coinbase insert error " + dateFormat.format(new Date())));
+		}, error -> log.error("Coinbase insert error " + dateFormat.format(new Date()),error));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 21000)
@@ -171,12 +169,12 @@ public class ScheduledTask {
 //				log.info(res.toString());
 					return res;
 				});
-		this.itbitDisposable = this.itbitService.insertQuote(request).then().subscribe(response -> {
+		this.itbitDisposable = this.itbitService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("ItbitQuote " + currPair + " " + dateFormat.format(new Date()) + " "
 						+ (new Date().getTime() - start.getTime()) + "ms");
 			}
-		}, error -> log.error("Itbit " + currPair + " insert error " + dateFormat.format(new Date())));
+		}, error -> log.error("Itbit " + currPair + " insert error " + dateFormat.format(new Date()), error));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 24000)
@@ -225,12 +223,12 @@ public class ScheduledTask {
 //				log.info(res.toString());
 					return res;
 				});
-		this.bitfinexDisposable = this.bitfinexService.insertQuote(request).then().subscribe(response -> {
+		this.bitfinexDisposable = this.bitfinexService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitfinexQuote " + currPair + " " + dateFormat.format(new Date()) + " "
 						+ (new Date().getTime() - start.getTime()) + "ms");
 			}
-		}, error -> log.error("Bitfinex " + currPair + " insert error " + dateFormat.format(new Date())));
+		}, error -> log.error("Bitfinex " + currPair + " insert error " + dateFormat.format(new Date()), error));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 39000)
