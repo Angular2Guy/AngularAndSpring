@@ -10,7 +10,7 @@
       "prefix": "app",
       "i18n": {
         "locales": {
-          "de": "i18n/messages.de.xlf"
+          "de": "i18n/messages.de.json"
         },
         "sourceLocale": "en"
       },
