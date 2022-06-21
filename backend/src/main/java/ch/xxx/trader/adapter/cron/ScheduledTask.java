@@ -104,7 +104,8 @@ public class ScheduledTask {
 //				log.info(res.toString());
 					return res;
 				})
-				.timeout(Duration.ofSeconds(10L));
+				.timeout(Duration.ofSeconds(10L))
+				.doOnError(ex -> log.warn("Bitstamp data request failed", ex));
 		this.bitstampDisposable = this.bitstampService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitstampQuote " + currPair + " " + dateFormat.format(new Date()) + " "
@@ -150,7 +151,8 @@ public class ScheduledTask {
 //				log.info(resp2.getRates().toString());
 					return Mono.just(resp2.getRates());
 				})
-				.timeout(Duration.ofSeconds(10L));		
+				.timeout(Duration.ofSeconds(10L))
+				.doOnError(ex -> log.warn("Coinbase data request failed", ex));	
 		this.coinbaseDisposable = this.coinbaseService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("CoinbaseQuote " + dateFormat.format(new Date()) + " "
@@ -172,7 +174,8 @@ public class ScheduledTask {
 //				log.info(res.toString());
 					return res;
 				})
-				.timeout(Duration.ofSeconds(10L));
+				.timeout(Duration.ofSeconds(10L))
+				.doOnError(ex -> log.warn("Ibit data request failed", ex));
 		this.itbitDisposable = this.itbitService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("ItbitQuote " + currPair + " " + dateFormat.format(new Date()) + " "
@@ -227,7 +230,8 @@ public class ScheduledTask {
 //				log.info(res.toString());
 					return res;
 				})
-				.timeout(Duration.ofSeconds(10L));
+				.timeout(Duration.ofSeconds(10L))
+				.doOnError(ex -> log.warn("Bitfinex data request failed", ex));
 		this.bitfinexDisposable = this.bitfinexService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitfinexQuote " + currPair + " " + dateFormat.format(new Date()) + " "
