@@ -16,6 +16,7 @@
 package ch.xxx.trader.adapter.cron;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -102,7 +103,8 @@ public class ScheduledTask {
 					res.setPair(currPair);
 //				log.info(res.toString());
 					return res;
-				});
+				})
+				.timeout(Duration.ofSeconds(10L));
 		this.bitstampDisposable = this.bitstampService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitstampQuote " + currPair + " " + dateFormat.format(new Date()) + " "
@@ -147,7 +149,8 @@ public class ScheduledTask {
 				}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
 					return Mono.just(resp2.getRates());
-				});		
+				})
+				.timeout(Duration.ofSeconds(10L));		
 		this.coinbaseDisposable = this.coinbaseService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("CoinbaseQuote " + dateFormat.format(new Date()) + " "
@@ -168,7 +171,8 @@ public class ScheduledTask {
 				.map(res -> {
 //				log.info(res.toString());
 					return res;
-				});
+				})
+				.timeout(Duration.ofSeconds(10L));
 		this.itbitDisposable = this.itbitService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("ItbitQuote " + currPair + " " + dateFormat.format(new Date()) + " "
@@ -222,7 +226,8 @@ public class ScheduledTask {
 					res.setPair(currPair);
 //				log.info(res.toString());
 					return res;
-				});
+				})
+				.timeout(Duration.ofSeconds(10L));
 		this.bitfinexDisposable = this.bitfinexService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitfinexQuote " + currPair + " " + dateFormat.format(new Date()) + " "
