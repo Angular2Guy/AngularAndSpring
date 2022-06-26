@@ -34,9 +34,49 @@ public class QuoteCb implements Quote {
 	private ObjectId _id;
 	@Indexed(name = "QuoteCb-createdAt")
 	@JsonProperty
-	private Date createdAt = new Date();
+	private Date createdAt = new Date();	
+	@JsonProperty("DYP")
+	private BigDecimal dyp = BigDecimal.ZERO;
+	@JsonProperty("POND")
+	private BigDecimal pond = BigDecimal.ZERO;
+	@JsonProperty("TIME")
+	private BigDecimal time = BigDecimal.ZERO;
+	@JsonProperty("DAR")
+	private BigDecimal dar = BigDecimal.ZERO;
+	@JsonProperty("C98")
+	private BigDecimal c98 = BigDecimal.ZERO;
+	@JsonProperty("BIT")
+	private BigDecimal bit = BigDecimal.ZERO;
+	@JsonProperty("FIS")
+	private BigDecimal fis = BigDecimal.ZERO;
+	@JsonProperty("DEXT")
+	private BigDecimal dext = BigDecimal.ZERO;
+	@JsonProperty("ALEPH")
+	private BigDecimal aleph = BigDecimal.ZERO;
+	@JsonProperty("FORT")
+	private BigDecimal fort = BigDecimal.ZERO;
+	@JsonProperty("ELA")
+	private BigDecimal ela = BigDecimal.ZERO;
+	@JsonProperty("DREP")
+	private BigDecimal drep = BigDecimal.ZERO;
+	@JsonProperty("MUSE")
+	private BigDecimal muse = BigDecimal.ZERO;
+	@JsonProperty("INDEX")
+	private BigDecimal index = BigDecimal.ZERO;
+	@JsonProperty("WAMPL")
+	private BigDecimal wampl = BigDecimal.ZERO;
+	@JsonProperty("MATH")
+	private BigDecimal math = BigDecimal.ZERO;
+	@JsonProperty("JUP")
+	private BigDecimal jup = BigDecimal.ZERO;
+	@JsonProperty("HOPR")
+	private BigDecimal hopr = BigDecimal.ZERO;
 	@JsonProperty("AED")
-	private BigDecimal aed = BigDecimal.ZERO;
+	private BigDecimal aed = BigDecimal.ZERO;	
+	@JsonProperty("PRQ")
+	private BigDecimal prq = BigDecimal.ZERO;
+	@JsonProperty("ATA")
+	private BigDecimal ata = BigDecimal.ZERO;	
 	@JsonProperty("AFN")
 	private BigDecimal afn = BigDecimal.ZERO;
 	@JsonProperty("ALL")
@@ -3650,6 +3690,166 @@ public class QuoteCb implements Quote {
 				+ rndr + ", syn=" + syn + ", aioz=" + aioz + ", aergo=" + aergo + ", high=" + high + ", rose=" + rose
 				+ ", ape=" + ape + ", mina=" + mina + ", gmt=" + gmt + ", gst=" + gst + ", gal=" + gal + ", dnt=" + dnt
 				+ ", flow=" + flow + ", sand=" + sand + ", op=" + op + ", ksm=" + ksm + "]";
+	}
+
+	public BigDecimal getAta() {
+		return ata;
+	}
+
+	public void setAta(BigDecimal ata) {
+		this.ata = ata;
+	}
+
+	public BigDecimal getPrq() {
+		return prq;
+	}
+
+	public void setPrq(BigDecimal prq) {
+		this.prq = prq;
+	}
+
+	public BigDecimal getHopr() {
+		return hopr;
+	}
+
+	public void setHopr(BigDecimal hopr) {
+		this.hopr = hopr;
+	}
+
+	public BigDecimal getJup() {
+		return jup;
+	}
+
+	public void setJup(BigDecimal jup) {
+		this.jup = jup;
+	}
+
+	public BigDecimal getMath() {
+		return math;
+	}
+
+	public void setMath(BigDecimal math) {
+		this.math = math;
+	}
+
+	public BigDecimal getWampl() {
+		return wampl;
+	}
+
+	public void setWampl(BigDecimal wampl) {
+		this.wampl = wampl;
+	}
+
+	public BigDecimal getIndex() {
+		return index;
+	}
+
+	public void setIndex(BigDecimal index) {
+		this.index = index;
+	}
+
+	public BigDecimal getMuse() {
+		return muse;
+	}
+
+	public void setMuse(BigDecimal muse) {
+		this.muse = muse;
+	}
+
+	public BigDecimal getDrep() {
+		return drep;
+	}
+
+	public void setDrep(BigDecimal drep) {
+		this.drep = drep;
+	}
+
+	public BigDecimal getEla() {
+		return ela;
+	}
+
+	public void setEla(BigDecimal ela) {
+		this.ela = ela;
+	}
+
+	public BigDecimal getFort() {
+		return fort;
+	}
+
+	public void setFort(BigDecimal fort) {
+		this.fort = fort;
+	}
+
+	public BigDecimal getDext() {
+		return dext;
+	}
+
+	public void setDext(BigDecimal dext) {
+		this.dext = dext;
+	}
+
+	public BigDecimal getAleph() {
+		return aleph;
+	}
+
+	public void setAleph(BigDecimal aleph) {
+		this.aleph = aleph;
+	}
+
+	public BigDecimal getFis() {
+		return fis;
+	}
+
+	public void setFis(BigDecimal fis) {
+		this.fis = fis;
+	}
+
+	public BigDecimal getBit() {
+		return bit;
+	}
+
+	public void setBit(BigDecimal bit) {
+		this.bit = bit;
+	}
+
+	public BigDecimal getC98() {
+		return c98;
+	}
+
+	public void setC98(BigDecimal c98) {
+		this.c98 = c98;
+	}
+
+	public BigDecimal getDar() {
+		return dar;
+	}
+
+	public void setDar(BigDecimal dar) {
+		this.dar = dar;
+	}
+
+	public BigDecimal getTime() {
+		return time;
+	}
+
+	public void setTime(BigDecimal time) {
+		this.time = time;
+	}
+
+	public BigDecimal getPond() {
+		return pond;
+	}
+
+	public void setPond(BigDecimal pond) {
+		this.pond = pond;
+	}
+
+	public BigDecimal getDyp() {
+		return dyp;
+	}
+
+	public void setDyp(BigDecimal dyp) {
+		this.dyp = dyp;
 	}
 
 }
