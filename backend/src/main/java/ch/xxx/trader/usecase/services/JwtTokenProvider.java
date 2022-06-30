@@ -17,6 +17,7 @@ package ch.xxx.trader.usecase.services;
 
 import java.security.Key;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -67,7 +68,7 @@ public class JwtTokenProvider {
 	
 	@PostConstruct
 	public void init() {
-		this.jwtTokenKey = Keys.hmacShaKeyFor(secretKey.getBytes());
+		this.jwtTokenKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
 	}
 	
 	public void updateLoggedOutUsers(List<RevokedToken> users) {
