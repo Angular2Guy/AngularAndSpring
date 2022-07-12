@@ -31,14 +31,15 @@ public class RandomNumberTest {
 	// property: security.jwt.token.secret-key
 	@Test
 	public void generateBase64RandomNumber() {
-		ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES*8);
-		for(int i = 0;i<8;i++) {
+		final int numberOfBytes = 32;
+		ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES*numberOfBytes);
+		for(int i = 0;i<numberOfBytes;i++) {
 			buffer.putLong(i*8,rand.nextLong());
 		}
-		String encoded = Base64.getEncoder().encodeToString(buffer.array());
+		String encoded = Base64.getUrlEncoder().encodeToString(buffer.array());
 		Assertions.assertFalse(encoded.isBlank());
-		Assertions.assertArrayEquals(buffer.array(), Base64.getDecoder().decode(encoded));
-		// System.out.println(encoded);
+		Assertions.assertArrayEquals(buffer.array(), Base64.getUrlDecoder().decode(encoded));
+		//System.out.println(encoded);
 	}
 }
 

@@ -15,6 +15,7 @@
  */
 package ch.xxx.trader.usecase.services;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Base64;
@@ -61,23 +62,25 @@ public class JwtTokenProvider {
 	private long validityInMilliseconds; // 24h
 
 	private final List<UserNameUuid> loggedOutUsers = new CopyOnWriteArrayList<>();
-	
-	public record UserNameUuid(String userName, String uuid) {}
-	
+
+	public record UserNameUuid(String userName, String uuid) {
+	}
+
 	private Key jwtTokenKey;
-	
+
 	@PostConstruct
 	public void init() {
-		this.jwtTokenKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
+		this.jwtTokenKey = Keys
+				.hmacShaKeyFor(Base64.getUrlDecoder().decode(secretKey.getBytes(StandardCharsets.ISO_8859_1)));
 	}
-	
+
 	public void updateLoggedOutUsers(List<RevokedToken> users) {
 		this.loggedOutUsers.clear();
 		this.loggedOutUsers
 				.addAll(users.stream().map(myUser -> new UserNameUuid(myUser.getName(), myUser.getUuid())).toList());
 		LOG.info("updateLoggedOutUsers: {}", this.loggedOutUsers.size());
 	}
-	
+
 	public String createToken(String username, List<Role> roles) {
 		Claims claims = Jwts.claims().setSubject(username);
 		claims.put(JwtUtils.TOKENAUTHKEY, roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority()))
@@ -117,16 +120,18 @@ public class JwtTokenProvider {
 				.filter(r -> r.name().equals(str.getOrDefault(JwtUtils.AUTHORITY, ""))).findFirst().orElse(Role.GUEST))
 				.collect(Collectors.toList());
 	}
-	
+
 	public String getUsername(String token) {
-		return Jwts.parserBuilder().setSigningKey(this.jwtTokenKey).build().parseClaimsJws(token).getBody().getSubject();
+		return Jwts.parserBuilder().setSigningKey(this.jwtTokenKey).build().parseClaimsJws(token).getBody()
+				.getSubject();
 	}
 
 	public String getUuid(String token) {
 		this.validateToken(token);
-		return Jwts.parserBuilder().setSigningKey(this.jwtTokenKey).build().parseClaimsJws(token).getBody().get(JwtUtils.UUID, String.class);
+		return Jwts.parserBuilder().setSigningKey(this.jwtTokenKey).build().parseClaimsJws(token).getBody()
+				.get(JwtUtils.UUID, String.class);
 	}
-	
+
 	public String refreshToken(String token) {
 		validateToken(token);
 		Optional<Jws<Claims>> claimsOpt = this.getClaims(Optional.of(token));
@@ -140,7 +145,7 @@ public class JwtTokenProvider {
 				.compact();
 		return newToken;
 	}
-	
+
 	public String resolveToken(HttpServletRequest req) {
 		String bearerToken = req.getHeader("Authorization");
 		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -155,17 +160,18 @@ public class JwtTokenProvider {
 		}
 		return Optional.empty();
 	}
-	
+
 	public boolean validateToken(String token) {
 		try {
 			Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(this.jwtTokenKey).build().parseClaimsJws(token);
 			String subject = Optional.ofNullable(claimsJws.getBody().getSubject())
 					.orElseThrow(() -> new AuthenticationException("Invalid JWT token"));
-			String uuid = Optional.ofNullable(claimsJws.getBody().get(JwtUtils.UUID, String.class)).orElseThrow(() -> new AuthenticationException("Invalid JWT token"));
-			// LOG.info("Subject: {}, Uuid: {}, LoggedOutUsers: {}", subject, uuid, JwtTokenService.loggedOutUsers.size());
-			return this.loggedOutUsers.stream()
-					.noneMatch(myUserName -> 
-					subject.equalsIgnoreCase(myUserName.userName()) && uuid.equals(myUserName.uuid()));
+			String uuid = Optional.ofNullable(claimsJws.getBody().get(JwtUtils.UUID, String.class))
+					.orElseThrow(() -> new AuthenticationException("Invalid JWT token"));
+			// LOG.info("Subject: {}, Uuid: {}, LoggedOutUsers: {}", subject, uuid,
+			// JwtTokenService.loggedOutUsers.size());
+			return this.loggedOutUsers.stream().noneMatch(
+					myUserName -> subject.equalsIgnoreCase(myUserName.userName()) && uuid.equals(myUserName.uuid()));
 		} catch (JwtException | IllegalArgumentException e) {
 			throw new JwtTokenValidationException("Expired or invalid JWT token", e);
 		}
