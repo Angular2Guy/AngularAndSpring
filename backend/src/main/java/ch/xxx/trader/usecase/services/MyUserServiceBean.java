@@ -47,14 +47,14 @@ import reactor.core.publisher.Mono;
 public class MyUserServiceBean {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceBean.class);
 	private static final long LOGOUT_TIMEOUT = 185L;
-	protected final JwtTokenProvider jwtTokenProvider;
+	protected final JwtTokenService jwtTokenProvider;
 	private final PasswordEncryption passwordEncryption;
 	protected final MyMongoRepository myMongoRepository;
 	private final PasswordEncoder passwordEncoder;
 	 
 	private Disposable updateLoggedOutUsersDisposable = Mono.empty().subscribe();
 
-	public MyUserServiceBean(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
+	public MyUserServiceBean(JwtTokenService jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository) {
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.passwordEncryption = passwordEncryption;

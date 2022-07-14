@@ -24,7 +24,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import ch.xxx.trader.usecase.services.JwtTokenProvider;
+import ch.xxx.trader.usecase.services.JwtTokenService;
 import ch.xxx.trader.usecase.services.MyAuthenticationProvider;
 
 @EnableWebSecurity
@@ -36,10 +36,10 @@ import ch.xxx.trader.usecase.services.MyAuthenticationProvider;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final MyAuthenticationProvider authProvider;
-	private final JwtTokenProvider jwtTokenProvider;
+	private final JwtTokenService jwtTokenProvider;
 	
 
-	public WebSecurityConfig(MyAuthenticationProvider authProvider, JwtTokenProvider jwtTokenProvider) {
+	public WebSecurityConfig(MyAuthenticationProvider authProvider, JwtTokenService jwtTokenProvider) {
 		this.authProvider = authProvider;		
 		this.jwtTokenProvider = jwtTokenProvider;
 	}

@@ -53,8 +53,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component
-public class JwtTokenProvider {
-	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenProvider.class);
+public class JwtTokenService {
+	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenService.class);
 	@Value("${security.jwt.token.secret-key}")
 	private String secretKey;
 

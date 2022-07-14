@@ -42,7 +42,7 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 	private final Sinks.Many<MyUser> myUserSink = Sinks.many().multicast().onBackpressureBuffer();
 	private final ConnectableFlux<MyUser> myUserFlux = this.myUserSink.asFlux().publish();
 
-	public MyUserServiceEvents(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
+	public MyUserServiceEvents(JwtTokenService jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
 			MyEventProducer myEventProducer) {
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);

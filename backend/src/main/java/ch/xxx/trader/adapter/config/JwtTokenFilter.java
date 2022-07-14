@@ -32,14 +32,14 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import ch.xxx.trader.domain.exceptions.AuthenticationException;
-import ch.xxx.trader.usecase.services.JwtTokenProvider;
+import ch.xxx.trader.usecase.services.JwtTokenService;
 
 public class JwtTokenFilter extends BasicAuthenticationFilter {
 	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenFilter.class);
 	private static final List<String> AUTH_PATHS = List.of("/orderbook", "/authorize", "/refreshToken"); 
-	private JwtTokenProvider jwtTokenProvider;
+	private JwtTokenService jwtTokenProvider;
 
-	public JwtTokenFilter(JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager) {
+	public JwtTokenFilter(JwtTokenService jwtTokenProvider, AuthenticationManager authenticationManager) {
 		super(authenticationManager);
 		this.jwtTokenProvider = jwtTokenProvider;
 	}

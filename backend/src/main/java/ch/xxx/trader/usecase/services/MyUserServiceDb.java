@@ -30,7 +30,7 @@ import reactor.core.publisher.Mono;
 public class MyUserServiceDb extends MyUserServiceBean implements MyUserService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceDb.class);
 	
-	public MyUserServiceDb(JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder,
+	public MyUserServiceDb(JwtTokenService jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository) {
 		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
 	}
