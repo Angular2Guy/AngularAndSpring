@@ -41,6 +41,7 @@ import ch.xxx.trader.usecase.services.MyUserService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Component
 public class ScheduledTask {
@@ -105,7 +106,8 @@ public class ScheduledTask {
 					return res;
 				})
 				.timeout(Duration.ofSeconds(10L))
-				.doOnError(ex -> log.warn("Bitstamp data request failed", ex));
+				.doOnError(ex -> log.warn("Bitstamp data request failed", ex))
+				.publishOn(Schedulers.newBoundedElastic(10, 100, "BsClient", 15));
 		this.bitstampDisposable = this.bitstampService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitstampQuote " + currPair + " " + dateFormat.format(new Date()) + " "
@@ -152,7 +154,8 @@ public class ScheduledTask {
 					return Mono.just(resp2.getRates());
 				})
 				.timeout(Duration.ofSeconds(10L))
-				.doOnError(ex -> log.warn("Coinbase data request failed", ex));	
+				.doOnError(ex -> log.warn("Coinbase data request failed", ex))
+				.publishOn(Schedulers.newBoundedElastic(5, 100, "CbClient", 15));
 		this.coinbaseDisposable = this.coinbaseService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("CoinbaseQuote " + dateFormat.format(new Date()) + " "
@@ -175,7 +178,8 @@ public class ScheduledTask {
 					return res;
 				})
 				.timeout(Duration.ofSeconds(10L))
-				.doOnError(ex -> log.warn("Ibit data request failed", ex));
+				.doOnError(ex -> log.warn("Ibit data request failed", ex))
+				.publishOn(Schedulers.newBoundedElastic(2, 100, "IbClient", 15));
 		this.itbitDisposable = this.itbitService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("ItbitQuote " + currPair + " " + dateFormat.format(new Date()) + " "
@@ -231,7 +235,8 @@ public class ScheduledTask {
 					return res;
 				})
 				.timeout(Duration.ofSeconds(10L))
-				.doOnError(ex -> log.warn("Bitfinex data request failed", ex));
+				.doOnError(ex -> log.warn("Bitfinex data request failed", ex))
+				.publishOn(Schedulers.newBoundedElastic(6, 100, "CbClient", 15));
 		this.bitfinexDisposable = this.bitfinexService.insertQuote(request).subscribe(response -> {
 			if (log.isDebugEnabled()) {
 				log.debug("BitfinexQuote " + currPair + " " + dateFormat.format(new Date()) + " "
