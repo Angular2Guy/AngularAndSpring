@@ -1,4 +1,4 @@
-# This is an example application to show howto use Spring Boot, Angular and Mongodb with the Webflux features of Spring.
+# This is an example application to show howto use Spring Boot, Angular and Mongodb with the reactive Webflux features of Spring.
 
 [![CodeQL](https://github.com/Angular2Guy/AngularAndSpring/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Angular2Guy/AngularAndSpring/actions/workflows/codeql-analysis.yml)
 
@@ -31,11 +31,11 @@ If the user logs in the user can see the relevant part of the orderbooks for an 
 
 ## Data Import and Preparation
 
-The application has two scheduled jobs. The first is the ScheduledTask class. It reads the rates of the crypto currencies once a minute with different initial delays. That job provides one mongodb collection per exchange. The collections can have different documents with currency pairs like Usd to BitCoin or Eur to Ether or one document with all currency pairs, depends on what the exchanges provide. These collections provide the data for the current day chart and the current quote. To display the 7 day, 30 day, 90 day charts, hourly or daily quotes are required. Once a day the PrepareData class runs jobs to calculate the hourly and daily quotes. The jobs run between 0 and 4 o’clock. If no values are available the for the timeframe(hour, day) a value of zero is shown. For the 7 day chart the hourly data is used and for the 30 and 90 day charts the daily data is used. The SchedulingConfig class provides a config that provides the scheduler with 5 threads to enable the running of ScheduledTask class for the quote imports and the PrepareData class for aggregation concurrently. The aggregation jobs are started in intervals to separate them to reduce the database load. 
+The application has two scheduled jobs. The first is the ScheduledTask class. It reads the rates of the crypto currencies once a minute with different initial delays. That job provides one mongodb collection per exchange. The collections can have different documents with currency pairs like Usd to BitCoin or Eur to Ether or one document with all currency pairs, depends on what the exchanges provide. These collections provide the data for the current day chart and the current quote. To display the 7 day, 30 day, 90 day charts, hourly or daily quotes are required. Once a day the PrepareData class runs jobs to calculate the hourly and daily quotes. The jobs run between 0 and 4 o’clock. If no values are available the for the timeframe(hour, day) a value of zero is shown. For the 7 day chart the hourly data is used and for the 30 and 90 day charts the daily data is used. The SchedulingConfig class provides a config that provides the scheduler with 2 extra threads for each client of the ScheduledTask class for the quote imports. The PrepareData class for aggregation concurrently. The aggregation jobs are started in intervals with @Scheduled and @SchedulerLock to separate them to reduce the database load. 
 
 ## Minikube setup
 
-The application can now be run in a Minikube cluster with a Helm chart. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory as a Helm chart. It uses the resource limit support of Jdk 16 to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. A Helm chart for the Kafka development setup in Minikube can be found in the directory 'minikube/kafka'. A Helm chart for the deployment of Kafka/Zookeeper/AngularAndSpring/MongoDb system setup can be found in the directory 'minikube/angularandspringwithkafka'. Further documentation can be found in the blog articles. 
+The application can now be run in a Minikube cluster with a Helm chart. The setup has a persistent volume to store the files of mongodb. A setup of mongodb with the volume and a setup for the application. It can be found in the minikube directory as a Helm chart. It uses the resource limit support of Jdk 16+ to limit memory. Kubernetes limits the cpu use and uses the startupprobes and livenessprobes that Spring Actuator provides. A Helm chart for the Kafka development setup in Minikube can be found in the directory 'minikube/kafka'. A Helm chart for the deployment of Kafka/Zookeeper/AngularAndSpring/MongoDb system setup can be found in the directory 'minikube/angularandspringwithkafka'. Further documentation can be found in the [Blog](https://angular2guy.wordpress.com) articles. 
 
 ## Monitoring
 The Spring Actuator interface with Prometheus interface can be used as it is described in this article: 
@@ -47,7 +47,7 @@ The Spring Actuator configuration shows primarily the http performance and the G
 
 ## Setup
 
-MongoDB 4.1.x or newer.
+MongoDB 4.4.x or newer.
 
 Eclipse IDE for Enterprise Java and Web Developers newest version.
 
@@ -59,4 +59,4 @@ Nodejs 14.15.x or newer
 
 Npm 6.14.x or newer
 
-Angular Cli 13 or newer.
+Angular Cli 14 or newer.
