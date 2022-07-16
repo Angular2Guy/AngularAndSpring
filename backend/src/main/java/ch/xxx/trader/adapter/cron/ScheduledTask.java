@@ -17,7 +17,6 @@ package ch.xxx.trader.adapter.cron;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +38,8 @@ import ch.xxx.trader.usecase.services.CoinbaseService;
 import ch.xxx.trader.usecase.services.ItbitService;
 import ch.xxx.trader.usecase.services.MyUserService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
 @Component
@@ -59,7 +58,7 @@ public class ScheduledTask {
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 	private final MyUserService myUserService;
-	private Disposable coinbaseDisposable = Mono.empty().subscribe();
+	private final Scheduler webClientScheduler = Schedulers.newBoundedElastic(20, 100, "WebClient", 15);
 
 	public ScheduledTask(WebClient webClient, BitstampService bitstampService, MyUserService myUserService,
 			EventMapper messageMapper, BitfinexService bitfinexService, ItbitService itbitService,
@@ -94,7 +93,8 @@ public class ScheduledTask {
 	private void insertBsQuote(String currPair) {
 		Mono<QuoteBs> request = this.webClient.get()
 				.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
-				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
+				.accept(MediaType.APPLICATION_JSON)				
+				.exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
 				.map(res -> {
 					res.setPair(currPair);
 //				log.info(res.toString());
@@ -102,8 +102,8 @@ public class ScheduledTask {
 				})
 				.timeout(Duration.ofSeconds(10L))
 				.doOnError(ex -> log.warn("Bitstamp data request failed", ex))
-				.publishOn(Schedulers.newBoundedElastic(10, 100, "BsClient", 15));
-		request.map(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))).blockOptional();
+				.subscribeOn(this.webClientScheduler);
+		request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))).block(Duration.ofSeconds(15L));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 6000)
@@ -143,8 +143,8 @@ public class ScheduledTask {
 				})
 				.timeout(Duration.ofSeconds(10L))
 				.doOnError(ex -> log.warn("Coinbase data request failed", ex))
-				.publishOn(Schedulers.newBoundedElastic(5, 100, "CbClient", 15));
-		request.map(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote))).blockOptional();
+				.subscribeOn(this.webClientScheduler);
+		request.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote))).block(Duration.ofSeconds(15L));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 21000)
@@ -160,8 +160,8 @@ public class ScheduledTask {
 				})
 				.timeout(Duration.ofSeconds(10L))
 				.doOnError(ex -> log.warn("Ibit data request failed", ex))
-				.publishOn(Schedulers.newBoundedElastic(2, 100, "IbClient", 15));
-		request.map(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))).blockOptional();
+				.subscribeOn(this.webClientScheduler);
+		request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))).block(Duration.ofSeconds(15L));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 24000)
@@ -210,8 +210,8 @@ public class ScheduledTask {
 				})
 				.timeout(Duration.ofSeconds(10L))
 				.doOnError(ex -> log.warn("Bitfinex data request failed", ex))
-				.publishOn(Schedulers.newBoundedElastic(6, 100, "CbClient", 15));
-		request.map(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote))).blockOptional();
+				.subscribeOn(this.webClientScheduler);
+		request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote))).block(Duration.ofSeconds(15L));
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 39000)
