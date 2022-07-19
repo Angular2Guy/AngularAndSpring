@@ -91,19 +91,21 @@ public class ScheduledTask {
 	}
 
 	private void insertBsQuote(String currPair) {
-		Mono<QuoteBs> request = this.webClient.get()
-				.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
-				.accept(MediaType.APPLICATION_JSON)				
-				.exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
-				.map(res -> {
-					res.setPair(currPair);
+		try {
+			Mono<QuoteBs> request = this.webClient.get()
+					.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
+					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
+					.map(res -> {
+						res.setPair(currPair);
 //				log.info(res.toString());
-					return res;
-				})
-				.timeout(Duration.ofSeconds(10L))
-				.doOnError(ex -> log.warn("Bitstamp data request failed", ex))
-				.subscribeOn(this.webClientScheduler);
-		request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))).block(Duration.ofSeconds(15L));
+						return res;
+					}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> log.warn("Bitstamp data request failed", ex))
+					.subscribeOn(this.webClientScheduler);
+			request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote)))
+					.block(Duration.ofSeconds(15L));
+		} catch (Exception e) {
+			log.warn("insertBsQuote()", e);
+		}
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 6000)
@@ -130,38 +132,44 @@ public class ScheduledTask {
 	@Scheduled(fixedRate = 60000, initialDelay = 15000)
 	@SchedulerLock(name = "CoinbaseQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertCoinbaseQuote() {
-		Mono<QuoteCb> request = this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
-				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> {
-					return response.bodyToMono(WrapperCb.class);
+		try {
+			Mono<QuoteCb> request = this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
+					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> {
+						return response.bodyToMono(WrapperCb.class);
 //					return response.bodyToMono(String.class);
 //				}).flatMap(value -> {
 //					// log.info(value);
 //					return Mono.just(this.messageMapper.mapJsonToObject(value, WrapperCb.class));
-				}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
+					}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
-					return Mono.just(resp2.getRates());
-				})
-				.timeout(Duration.ofSeconds(10L))
-				.doOnError(ex -> log.warn("Coinbase data request failed", ex))
-				.subscribeOn(this.webClientScheduler);
-		request.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote))).block(Duration.ofSeconds(15L));
+						return Mono.just(resp2.getRates());
+					}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> log.warn("Coinbase data request failed", ex))
+					.subscribeOn(this.webClientScheduler);
+			request.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote)))
+					.block(Duration.ofSeconds(15L));
+		} catch (Exception e) {
+			log.warn("insertCoinbaseQuote() failed.", e);
+		}
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 21000)
 	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitUsdQuote() {
-		String currPair = "XBTUSD";
-		Mono<QuoteIb> request = this.webClient.get()
-				.uri(String.format("%s/v1/markets/%s/ticker", ScheduledTask.URLIB, currPair))
-				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteIb.class))
-				.map(res -> {
+		try {
+			String currPair = "XBTUSD";
+			Mono<QuoteIb> request = this.webClient.get()
+					.uri(String.format("%s/v1/markets/%s/ticker", ScheduledTask.URLIB, currPair))
+					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteIb.class))
+					.map(res -> {
 //				log.info(res.toString());
-					return res;
-				})
-				.timeout(Duration.ofSeconds(10L))
-				.doOnError(ex -> log.warn("Ibit data request failed", ex))
-				.subscribeOn(this.webClientScheduler);
-		request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))).block(Duration.ofSeconds(15L));
+						return res;
+					}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> log.warn("Ibit data request failed", ex))
+					.subscribeOn(this.webClientScheduler);
+			request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote)))
+					.block(Duration.ofSeconds(15L));
+		} catch (Exception e) {
+			log.warn("insertItbitUsdQuote()", e);
+		}
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 24000)
@@ -200,18 +208,21 @@ public class ScheduledTask {
 	}
 
 	private void insertBfQuote(String currPair) {
-		Mono<QuoteBf> request = this.webClient.get()
-				.uri(String.format("%s/v1/pubticker/%s", ScheduledTask.URLBF, currPair))
-				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBf.class))
-				.map(res -> {
-					res.setPair(currPair);
+		try {
+			Mono<QuoteBf> request = this.webClient.get()
+					.uri(String.format("%s/v1/pubticker/%s", ScheduledTask.URLBF, currPair))
+					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBf.class))
+					.map(res -> {
+						res.setPair(currPair);
 //				log.info(res.toString());
-					return res;
-				})
-				.timeout(Duration.ofSeconds(10L))
-				.doOnError(ex -> log.warn("Bitfinex data request failed", ex))
-				.subscribeOn(this.webClientScheduler);
-		request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote))).block(Duration.ofSeconds(15L));
+						return res;
+					}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> log.warn("Bitfinex data request failed", ex))
+					.subscribeOn(this.webClientScheduler);
+			request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote)))
+					.block(Duration.ofSeconds(15L));
+		} catch (Exception e) {
+			log.warn("insertBfQuote()", e);
+		}
 	}
 
 	@Scheduled(fixedRate = 60000, initialDelay = 39000)
