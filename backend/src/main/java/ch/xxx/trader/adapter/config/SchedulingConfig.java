@@ -32,6 +32,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.ChannelOption;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 @Configuration
 @EnableAspectJAutoProxy
@@ -40,11 +41,6 @@ import reactor.netty.http.client.HttpClient;
 @EnableSchedulerLock(defaultLockAtMostFor = "10m")
 public class SchedulingConfig {
 	private static final Logger log = LoggerFactory.getLogger(SchedulingConfig.class);
-	private final WebClient.Builder webClientBuilder;	
-	
-	public SchedulingConfig(WebClient.Builder webClientBuilder) {
-		this.webClientBuilder = webClientBuilder;		
-	}    
     		
     @Bean
     TimedAspect timedAspect(MeterRegistry registry) {
@@ -53,9 +49,13 @@ public class SchedulingConfig {
     
     @Bean
     public WebClient createWebClient() {
-    	HttpClient httpClient = HttpClient.create()
-    		      .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3500).responseTimeout(Duration.ofMillis(4000));
-    	ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);    	
-    	return this.webClientBuilder.clientConnector(connector).build();
+		ConnectionProvider provider = ConnectionProvider.builder("Client").maxConnections(40)
+				.maxIdleTime(Duration.ofSeconds(11)).maxLifeTime(Duration.ofSeconds(15))
+				.pendingAcquireTimeout(Duration.ofSeconds(45)).evictInBackground(Duration.ofSeconds(20)).build();
+
+		WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider)
+				.option(ChannelOption.SO_KEEPALIVE, false)				
+				.responseTimeout(Duration.ofSeconds(16L)))).build();
+		return webClient;
     }
 }

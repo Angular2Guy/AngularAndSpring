@@ -65,14 +65,8 @@ public class ScheduledTask {
 	private final Scheduler webClientScheduler = Schedulers.newBoundedElastic(20, 100, "WebClient", 15);
 
 	public ScheduledTask(BitstampService bitstampService, MyUserService myUserService, EventMapper messageMapper,
-			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService) {
-		ConnectionProvider provider = ConnectionProvider.builder("Client").maxConnections(40)
-				.maxIdleTime(Duration.ofSeconds(11)).maxLifeTime(Duration.ofSeconds(15))
-				.pendingAcquireTimeout(Duration.ofSeconds(45)).evictInBackground(Duration.ofSeconds(20)).build();
-
-		this.webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider)
-				.option(ChannelOption.SO_REUSEADDR, false).responseTimeout(Duration.ofSeconds(16L)))).build();
-
+			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService, WebClient webClient) {
+		this.webClient = webClient;
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
 		this.itbitService = itbitService;
