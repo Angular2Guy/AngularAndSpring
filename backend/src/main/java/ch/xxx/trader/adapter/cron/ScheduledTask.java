@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -37,10 +38,13 @@ import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
 import ch.xxx.trader.usecase.services.ItbitService;
 import ch.xxx.trader.usecase.services.MyUserService;
+import io.netty.channel.ChannelOption;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 @Component
 public class ScheduledTask {
@@ -60,10 +64,15 @@ public class ScheduledTask {
 	private final MyUserService myUserService;
 	private final Scheduler webClientScheduler = Schedulers.newBoundedElastic(20, 100, "WebClient", 15);
 
-	public ScheduledTask(WebClient webClient, BitstampService bitstampService, MyUserService myUserService,
-			EventMapper messageMapper, BitfinexService bitfinexService, ItbitService itbitService,
-			CoinbaseService coinbaseService) {
-		this.webClient = webClient;
+	public ScheduledTask(BitstampService bitstampService, MyUserService myUserService, EventMapper messageMapper,
+			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService) {
+		ConnectionProvider provider = ConnectionProvider.builder("Client").maxConnections(40)
+				.maxIdleTime(Duration.ofSeconds(11)).maxLifeTime(Duration.ofSeconds(15))
+				.pendingAcquireTimeout(Duration.ofSeconds(45)).evictInBackground(Duration.ofSeconds(20)).build();
+
+		this.webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider)
+				.option(ChannelOption.SO_REUSEADDR, false).responseTimeout(Duration.ofSeconds(16L)))).build();
+
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
 		this.itbitService = itbitService;
@@ -93,7 +102,7 @@ public class ScheduledTask {
 	private void insertBsQuote(String currPair) {
 		try {
 			Mono<QuoteBs> request = this.webClient.get()
-					.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
+					.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair)).httpRequest(null)
 					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
 					.map(res -> {
 						res.setPair(currPair);
