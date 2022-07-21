@@ -28,11 +28,20 @@
     	padding: 8px 0;
     	position: absolute;
     	z-index: 1;       
-		color: blue;
+		color: green;
 		border: solid 1px black;		
 	}
-	color: blue;
+	color: green;
 	cursor: pointer;
+}
+
+.cell-outdated {
+	color: #34a8eb;
+	&:hover {
+	   .popup {
+		  color: #34a8eb;
+	   }
+	}
 }
 
 .example-container {

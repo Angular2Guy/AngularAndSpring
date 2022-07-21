@@ -27,6 +27,7 @@ import { OverviewRoutingModule } from './overview-routing.module';
 import { LoginComponent } from './login/login.component';
 import { QuoteoverviewComponent } from './quoteoverview/quoteoverview.component';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
+import { LuxonDateModule } from '@angular/material-luxon-adapter';
 
 @NgModule({
     imports: [
@@ -39,6 +40,7 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
         MatDialogModule,
         MatFormFieldModule,
         MatInputModule,
+        LuxonDateModule,
         FormsModule,
         ReactiveFormsModule
     ],

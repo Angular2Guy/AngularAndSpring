@@ -27,7 +27,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgxSimpleChartsModule } from 'ngx-simple-charts';
 import { NgxLineChartsModule } from 'ngx-simple-charts/line';
-//import { NgxSimpleChartsModule } from '../charts/ngx-simple-charts.module';
 
 @NgModule({
   imports: [
