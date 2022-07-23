@@ -58,7 +58,7 @@ public class BitfinexService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(3, 10, "AvgBf", 15);
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(5, 10, "AvgBf", 15);
 
 	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils,
 			MyOrderBookClient orderBookClient, ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
@@ -124,7 +124,7 @@ public class BitfinexService {
 	public void createBfAvg() {
 		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).block();
+				.map(value -> this.createHourDayAvg()).subscribeOn(this.averageScheduler).block();
 	}
 
 	private String createHourDayAvg() {

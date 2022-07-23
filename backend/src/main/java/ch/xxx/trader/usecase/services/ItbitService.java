@@ -60,7 +60,7 @@ public class ItbitService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(3, 10, "AvgIb", 15);
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(5, 10, "AvgIb", 15);
 
 	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
 			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
@@ -191,7 +191,7 @@ public class ItbitService {
 	public void createIbAvg() {
 		this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).block();
+				.map(value -> this.createHourDayAvg()).subscribeOn(this.averageScheduler).block();
 	}
 
 	private String createHourDayAvg() {

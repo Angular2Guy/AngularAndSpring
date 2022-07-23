@@ -75,7 +75,7 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(3, 10, "AvgCb", 15);
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(5, 10, "AvgCb", 15);
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
@@ -129,7 +129,7 @@ public class CoinbaseService {
 	public void createCbAvg() {
 		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).block();
+				.map(value -> this.createHourDayAvg()).subscribeOn(this.averageScheduler).block();
 	}
 
 	private String createHourDayAvg() {

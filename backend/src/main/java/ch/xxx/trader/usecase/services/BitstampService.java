@@ -58,7 +58,7 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(3, 10, "AvgBs", 15);
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(5, 10, "AvgBs", 15);
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
@@ -125,7 +125,7 @@ public class BitstampService {
 	public void createBsAvg() {
 		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).block();
+				.map(value -> this.createHourDayAvg()).subscribeOn(this.averageScheduler).block();
 	}
 
 	private String createHourDayAvg() {
