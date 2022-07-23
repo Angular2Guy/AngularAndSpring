@@ -15,8 +15,8 @@
  */
 package ch.xxx.trader.adapter.cron;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,8 +48,7 @@ import reactor.core.scheduler.Schedulers;
 
 @Component
 public class ScheduledTask {
-	private static final Logger log = LoggerFactory.getLogger(ScheduledTask.class);
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	private static final Logger LOG = LoggerFactory.getLogger(ScheduledTask.class);
 
 	private static final String URLBS = "https://www.bitstamp.net/api";
 	private static final String URLCB = "https://api.coinbase.com/v2";
@@ -62,7 +61,7 @@ public class ScheduledTask {
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 	private final MyUserService myUserService;
-	private final Scheduler webClientScheduler = Schedulers.newBoundedElastic(40, 200, "WebClient", 15);
+	private final Scheduler webClientScheduler = Schedulers.newBoundedElastic(50, 200, "WebClient", 15);
 	private final Map<String, Optional<Disposable>> disposables = new ConcurrentHashMap<>();
 
 	public ScheduledTask(BitstampService bitstampService, MyUserService myUserService, EventMapper messageMapper,
@@ -97,6 +96,7 @@ public class ScheduledTask {
 
 	private void insertBsQuote(String currPair) {
 		this.disposeClient(currPair);
+		LocalTime start = LocalTime.now();
 		Mono<QuoteBs> request = this.webClient.get()
 				.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
@@ -104,13 +104,19 @@ public class ScheduledTask {
 					res.setPair(currPair);
 //				log.info(res.toString());
 					return res;
-				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> log.warn("Bitstamp data request failed", ex))
-				.subscribeOn(this.webClientScheduler);
+				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn("Bitstamp data request failed", ex));
 		Disposable subscribe = request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote)))
-				.timeout(Duration.ofSeconds(15L)).subscribe();
+				.timeout(Duration.ofSeconds(15L)).subscribeOn(webClientScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
+	private void logDuration(String currPair, LocalTime start) {
+		long durationInMs = Duration.between(start, LocalTime.now()).toMillis();
+		if(durationInMs > 5000) {
+			LOG.info("Duration of {}: {}ms", currPair, durationInMs);
+		}
+	}
+	
 	@Scheduled(fixedRate = 60000, initialDelay = 6000)
 	@SchedulerLock(name = "BitstampQuoteETH_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteETH() throws InterruptedException {
@@ -137,6 +143,7 @@ public class ScheduledTask {
 	public void insertCoinbaseQuote() {
 		final String currPair = "ALLUSD";
 		this.disposeClient(currPair);
+		LocalTime start = LocalTime.now();
 		Mono<QuoteCb> request = this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> {
 					return response.bodyToMono(WrapperCb.class);
@@ -147,10 +154,9 @@ public class ScheduledTask {
 				}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
 					return Mono.just(resp2.getRates());
-				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> log.warn("Coinbase data request failed", ex))
-				.subscribeOn(this.webClientScheduler);
+				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn("Coinbase data request failed", ex));
 		Disposable subscribe = request.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote)))
-				.timeout(Duration.ofSeconds(15L)).subscribe();
+				.timeout(Duration.ofSeconds(15L)).subscribeOn(this.webClientScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -159,16 +165,16 @@ public class ScheduledTask {
 	public void insertItbitUsdQuote() {
 		final String currPair = "XBTUSD";
 		this.disposeClient(currPair);
+		LocalTime start = LocalTime.now();
 		Mono<QuoteIb> request = this.webClient.get()
 				.uri(String.format("%s/v1/markets/%s/ticker", ScheduledTask.URLIB, currPair))
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteIb.class))
 				.map(res -> {
 //				log.info(res.toString());
 					return res;
-				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> log.warn("Ibit data request failed", ex))
-				.subscribeOn(this.webClientScheduler);
+				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn("Ibit data request failed", ex));
 		Disposable subscribe = request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote)))
-				.timeout(Duration.ofSeconds(15L)).subscribe();
+				.timeout(Duration.ofSeconds(15L)).subscribeOn(this.webClientScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -214,6 +220,7 @@ public class ScheduledTask {
 
 	private void insertBfQuote(String currPair) {
 		this.disposeClient(currPair);
+		LocalTime start = LocalTime.now();
 		Mono<QuoteBf> request = this.webClient.get()
 				.uri(String.format("%s/v1/pubticker/%s", ScheduledTask.URLBF, currPair))
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBf.class))
@@ -221,10 +228,9 @@ public class ScheduledTask {
 					res.setPair(currPair);
 //				log.info(res.toString());
 					return res;
-				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> log.warn("Bitfinex data request failed", ex))
-				.subscribeOn(this.webClientScheduler);
+				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn("Bitfinex data request failed", ex));				
 		Disposable subscribe = request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote)))
-				.timeout(Duration.ofSeconds(15L)).subscribe();
+				.timeout(Duration.ofSeconds(15L)).subscribeOn(this.webClientScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
