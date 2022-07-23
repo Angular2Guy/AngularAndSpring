@@ -58,6 +58,7 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(4, 10, "AvgBs", 15);
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
@@ -160,7 +161,7 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).blockLast();
+			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -189,7 +190,7 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).blockLast();
+			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
