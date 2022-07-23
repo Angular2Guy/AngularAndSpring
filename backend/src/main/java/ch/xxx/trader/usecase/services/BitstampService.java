@@ -45,10 +45,12 @@ import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class BitstampService {
-	private static final Logger log = LoggerFactory.getLogger(BitstampService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(BitstampService.class);
 	public static final String BS_HOUR_COL = "quoteBsHour";
 	public static final String BS_DAY_COL = "quoteBsDay";
 	private final MyOrderBookClient orderBookClient;
@@ -56,6 +58,7 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(4, 10, "AvgBs", 15);
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
@@ -135,7 +138,7 @@ public class BitstampService {
 			return "createBsDailyAvg() Done.";
 		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future1, future2).map(CompletableFuture::join).collect(Collectors.joining(" "));
-		log.info(combined);
+		LOG.info(combined);
 		return "done";
 	}
 
@@ -158,14 +161,14 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).blockLast();
+			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitstamp Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+			LOG.info("Prepared Bitstamp Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Hourly Data Time:"));
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Hourly Data Time:"));
 	}
 
 	private void createBsDailyAvg() {
@@ -187,14 +190,14 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).blockLast();
+			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitstamp Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+			LOG.info("Prepared Bitstamp Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Daily Data Time:"));
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Daily Data Time:"));
 	}
 
 	private boolean filterEvenMinutes(QuoteBs quote) {

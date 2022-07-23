@@ -45,10 +45,12 @@ import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class BitfinexService {
-	private static final Logger log = LoggerFactory.getLogger(BitfinexService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(BitfinexService.class);
 	public static final String BF_HOUR_COL = "quoteBfHour";
 	public static final String BF_DAY_COL = "quoteBfDay";
 	private final ReportGenerator reportGenerator;
@@ -56,6 +58,7 @@ public class BitfinexService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(4, 10, "AvgBf", 15);
 
 	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils,
 			MyOrderBookClient orderBookClient, ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
@@ -134,7 +137,7 @@ public class BitfinexService {
 			return "createBfDailyAvg() Done.";
 		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future3, future4).map(CompletableFuture::join).collect(Collectors.joining(" "));
-		log.info(combined);
+		LOG.info(combined);
 		return "done";
 	}
 
@@ -157,14 +160,14 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL).blockLast();
+			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitfinex Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+			LOG.info("Prepared Bitfinex Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Hourly Data Time:"));
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Hourly Data Time:"));
 	}
 
 	private void createBfDailyAvg() {
@@ -186,14 +189,14 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).blockLast();
+			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Bitfinex Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+			LOG.info("Prepared Bitfinex Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Daily Data Time:"));
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Daily Data Time:"));
 	}
 
 	private boolean filterEvenMinutes(QuoteBf quote) {

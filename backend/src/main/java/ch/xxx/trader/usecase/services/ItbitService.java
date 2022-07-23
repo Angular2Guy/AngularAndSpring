@@ -46,10 +46,12 @@ import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class ItbitService {
-	private static final Logger log = LoggerFactory.getLogger(ItbitService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ItbitService.class);
 	public static final String IB_HOUR_COL = "quoteIbHour";
 	public static final String IB_DAY_COL = "quoteIbDay";
 	private final Map<String, String> currpairs = new HashMap<String, String>();
@@ -58,6 +60,7 @@ public class ItbitService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(4, 10, "AvgIb", 15);
 
 	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
 			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
@@ -146,14 +149,14 @@ public class ItbitService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectIb, IB_HOUR_COL).blockLast();
+			this.myMongoRepository.insertAll(collectIb, IB_HOUR_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Itbit Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+			LOG.info("Prepared Itbit Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Hourly Data Time:"));
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Hourly Data Time:"));
 	}
 
 	private void createIbDailyAvg() {
@@ -175,14 +178,14 @@ public class ItbitService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectIb, IB_DAY_COL).blockLast();
+			this.myMongoRepository.insertAll(collectIb, IB_DAY_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Itbit Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+			LOG.info("Prepared Itbit Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Daily Data Time:"));
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Daily Data Time:"));
 	}
 
 	public void createIbAvg() {
@@ -201,7 +204,7 @@ public class ItbitService {
 			return "createIbDailyAvg() Done.";
 		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future5, future6).map(CompletableFuture::join).collect(Collectors.joining(" "));
-		log.info(combined);
+		LOG.info(combined);
 		return "done";
 	}
 

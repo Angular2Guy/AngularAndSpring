@@ -55,10 +55,12 @@ import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class CoinbaseService {
-	private static final Logger log = LoggerFactory.getLogger(CoinbaseService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CoinbaseService.class);
 	private static final Map<String, GetSetMethodFunctions> cbFunctionCache = new ConcurrentHashMap<>();
 
 	private record GetSetMethodFunctions(Function<QuoteCb, BigDecimal> getter, BiConsumer<QuoteCb, BigDecimal> setter,
@@ -73,6 +75,7 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(4, 10, "AvgCb", 15);
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
@@ -131,11 +134,11 @@ public class CoinbaseService {
 
 	private String createHourDayAvg() {
 		LocalDateTime start = LocalDateTime.now();
-		log.info("CpuConstraint property: " + this.cpuConstraint);
+		LOG.info("CpuConstraint property: " + this.cpuConstraint);
 		if (this.cpuConstraint) {
 			this.createCbHourlyAvg();
 			this.createCbDailyAvg();
-			log.info(this.serviceUtils.createAvgLogStatement(start, "Prepared Coinbase Data Time:"));
+			LOG.info(this.serviceUtils.createAvgLogStatement(start, "Prepared Coinbase Data Time:"));
 		} else {
 			// This can only be used on machines without cpu constraints.
 			CompletableFuture<String> future7 = CompletableFuture.supplyAsync(() -> {
@@ -147,7 +150,7 @@ public class CoinbaseService {
 				return "createCbDailyAvg() Done.";
 			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 			String combined = Stream.of(future7, future8).map(CompletableFuture::join).collect(Collectors.joining(" "));
-			log.info(combined);
+			LOG.info(combined);
 		}
 		return "done.";
 	}
@@ -166,14 +169,14 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).blockLast();
+			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Coinbase Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+			LOG.info("Prepared Coinbase Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Hourly Data Time:"));
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Hourly Data Time:"));
 	}
 
 	private void createCbDailyAvg() {
@@ -190,14 +193,14 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).blockLast();
+			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).subscribeOn(this.averageScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			log.info("Prepared Coinbase Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
+			LOG.info("Prepared Coinbase Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
-		log.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Daily Data Time:"));
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Daily Data Time:"));
 	}
 
 	private Collection<QuoteCb> makeCbQuoteDay(List<QuoteCb> quotes, Calendar begin, Calendar end) {
