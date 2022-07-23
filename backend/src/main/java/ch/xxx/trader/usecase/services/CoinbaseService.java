@@ -75,7 +75,7 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(4, 10, "AvgCb", 15);
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(3, 10, "AvgCb", 15);
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;

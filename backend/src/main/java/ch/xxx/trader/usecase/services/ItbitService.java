@@ -60,7 +60,7 @@ public class ItbitService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(4, 10, "AvgIb", 15);
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(3, 10, "AvgIb", 15);
 
 	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
 			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {

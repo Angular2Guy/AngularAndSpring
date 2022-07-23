@@ -58,7 +58,7 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(4, 10, "AvgBs", 15);
+	private final Scheduler averageScheduler = Schedulers.newBoundedElastic(3, 10, "AvgBs", 15);
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
