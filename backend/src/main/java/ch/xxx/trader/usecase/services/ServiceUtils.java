@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
@@ -36,7 +37,9 @@ import ch.xxx.trader.usecase.common.DtoUtils;
 
 @Service
 public class ServiceUtils {
-	public record MyTimeFrame(Calendar begin, Calendar end) {}
+	public record MyTimeFrame(Calendar begin, Calendar end) {
+	}
+
 	private final MyMongoRepository myMongoRepository;
 
 	public ServiceUtils(MyMongoRepository myMongoRepository) {
@@ -61,21 +64,33 @@ public class ServiceUtils {
 				: v2.divide(BigDecimal.valueOf(count == 0 ? 1 : count), 10, RoundingMode.HALF_UP));
 	}
 
+	public List<String> showThreads() {
+		List<String> logs = new LinkedList<>();
+		Set<Thread> threads = Thread.getAllStackTraces().keySet();		
+		logs.add(String.format("%-15s \t %-15s \t %-15s \t %s \t %s \t %s", "Name", "State", "Priority", "isDaemon", "TheadGroup", "ThreadGroupActive"));
+		for (Thread t : threads) {
+			logs.add(String.format("%-15s \t %-15s \t %-15d \t %s \t %s \t %d", t.getName(), t.getState(), t.getPriority(),
+					t.isDaemon(), t.getThreadGroup().getName(), t.getThreadGroup().activeCount()));
+		}
+		return logs;
+	}
+
 	public String createAvgLogStatement(LocalDateTime start, String statementStart) {
 		Duration myDuration = Duration.between(start.atZone(ZoneId.systemDefault()).toInstant(),
 				LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-		long millis = (myDuration.toSeconds() < 1 ? 
-				myDuration.toMillis() : (myDuration.toMillis() - myDuration.toSeconds() * 1000));
+		long millis = (myDuration.toSeconds() < 1 ? myDuration.toMillis()
+				: (myDuration.toMillis() - myDuration.toSeconds() * 1000));
 		return String.format("%s %d.%d seconds.", statementStart, myDuration.toSeconds(), millis);
 	}
-	
+
 	public MyTimeFrame createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
 		if (!this.myMongoRepository.collectionExists(colName).block()) {
 			this.myMongoRepository.createCollection(colName).block();
 		}
 		Query query = new Query();
 		query.with(Sort.by(DtoUtils.CREATEDAT).ascending());
-		Optional<? extends Quote> firstQuote = Optional.ofNullable(this.myMongoRepository.findOne(query, colType).block());
+		Optional<? extends Quote> firstQuote = Optional
+				.ofNullable(this.myMongoRepository.findOne(query, colType).block());
 		query = new Query();
 		query.with(Sort.by(DtoUtils.CREATEDAT).descending());
 		Optional<? extends Quote> lastHourQuote = Optional

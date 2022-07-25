@@ -95,6 +95,7 @@ public class ScheduledTask {
 	}
 
 	private void insertBsQuote(String currPair) {
+		LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
 		Mono<QuoteBs> request = this.webClient.get()
@@ -112,7 +113,7 @@ public class ScheduledTask {
 
 	private void logDuration(String currPair, LocalTime start) {
 		long durationInMs = Duration.between(start, LocalTime.now()).toMillis();
-		if(durationInMs > 5000) {
+		if(durationInMs > 2000) {
 			LOG.info("Duration of {}: {}ms", currPair, durationInMs);
 		}
 	}
@@ -142,6 +143,7 @@ public class ScheduledTask {
 	@SchedulerLock(name = "CoinbaseQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertCoinbaseQuote() {
 		final String currPair = "ALLUSD";
+		LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
 		Mono<QuoteCb> request = this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
@@ -164,6 +166,7 @@ public class ScheduledTask {
 	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitUsdQuote() {
 		final String currPair = "XBTUSD";
+		LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
 		Mono<QuoteIb> request = this.webClient.get()
@@ -219,6 +222,7 @@ public class ScheduledTask {
 	}
 
 	private void insertBfQuote(String currPair) {
+		LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
 		Mono<QuoteBf> request = this.webClient.get()

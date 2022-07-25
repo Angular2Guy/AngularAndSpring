@@ -23,6 +23,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -126,10 +127,11 @@ public class CoinbaseService {
 	public void createCbAvg() {
 		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).block();
+				.map(value -> this.createHourDayAvg()).block(Duration.ofHours(1L));
 	}
 
 	private String createHourDayAvg() {
+		LOG.info("createHourDayAvg()");
 		LocalDateTime start = LocalDateTime.now();
 		LOG.info("CpuConstraint property: " + this.cpuConstraint);
 		if (this.cpuConstraint) {
@@ -152,7 +154,7 @@ public class CoinbaseService {
 		return "done.";
 	}
 
-	private void createCbHourlyAvg() {
+	private void createCbHourlyAvg() {		
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -166,7 +168,7 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).blockLast();
+			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).blockLast(Duration.ofSeconds(5L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -177,6 +179,7 @@ public class CoinbaseService {
 	}
 
 	private void createCbDailyAvg() {
+		LOG.info("createCbDailyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -190,7 +193,7 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).blockLast();
+			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).blockLast(Duration.ofSeconds(5L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

@@ -17,6 +17,7 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -121,10 +122,11 @@ public class BitfinexService {
 	public void createBfAvg() {
 		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).block();
+				.map(value -> this.createHourDayAvg()).block(Duration.ofHours(1L));
 	}
 
 	private String createHourDayAvg() {
+		LOG.info("createHourDayAvg()");
 		CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> {
 			this.createBfHourlyAvg();
 			return "createBfHourlyAvg() Done.";
@@ -157,7 +159,7 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL).blockLast();
+			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL).blockLast(Duration.ofSeconds(5L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -186,7 +188,7 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).blockLast();
+			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).blockLast(Duration.ofSeconds(5L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

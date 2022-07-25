@@ -17,6 +17,7 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -146,7 +147,7 @@ public class ItbitService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectIb, IB_HOUR_COL).blockLast();
+			this.myMongoRepository.insertAll(collectIb, IB_HOUR_COL).blockLast(Duration.ofSeconds(5L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -175,7 +176,7 @@ public class ItbitService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectIb, IB_DAY_COL).blockLast();
+			this.myMongoRepository.insertAll(collectIb, IB_DAY_COL).blockLast(Duration.ofSeconds(5L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -188,10 +189,11 @@ public class ItbitService {
 	public void createIbAvg() {
 		this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).block();
+				.map(value -> this.createHourDayAvg()).block(Duration.ofHours(1L));
 	}
 
 	private String createHourDayAvg() {
+		LOG.info("createHourDayAvg()");
 		CompletableFuture<String> future5 = CompletableFuture.supplyAsync(() -> {
 			this.createIbHourlyAvg();
 			return "createIbHourlyAvg() Done.";
