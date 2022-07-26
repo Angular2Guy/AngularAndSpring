@@ -85,7 +85,7 @@ public class ScheduledTask {
 		this.myUserService.updateLoggedOutUsers();
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 3000)
 	@SchedulerLock(name = "BitstampQuoteBTC_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteBTC() throws InterruptedException {
@@ -117,7 +117,7 @@ public class ScheduledTask {
 		}
 	}
 	
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 6000)
 	@SchedulerLock(name = "BitstampQuoteETH_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteETH() throws InterruptedException {
@@ -125,7 +125,7 @@ public class ScheduledTask {
 		this.insertBsQuote(currPair);
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 9000)
 	@SchedulerLock(name = "BitstampQuoteLTC_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteLTC() throws InterruptedException {
@@ -133,7 +133,7 @@ public class ScheduledTask {
 		this.insertBsQuote(currPair);
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 12000)
 	@SchedulerLock(name = "BitstampQuoteXRP_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteXRP() throws InterruptedException {
@@ -141,7 +141,7 @@ public class ScheduledTask {
 		this.insertBsQuote(currPair);
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 15000)
 	@SchedulerLock(name = "CoinbaseQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertCoinbaseQuote() {
@@ -165,7 +165,7 @@ public class ScheduledTask {
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 21000)
 	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitUsdQuote() {
@@ -190,7 +190,7 @@ public class ScheduledTask {
 		optional.ifPresent(disposable -> disposable.dispose());
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 24000)
 	@SchedulerLock(name = "BitstampQuoteBTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteBTCUSD() throws InterruptedException {
@@ -198,7 +198,7 @@ public class ScheduledTask {
 		this.insertBsQuote(currPair);
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 27000)
 	@SchedulerLock(name = "BitstampQuoteETHUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteETHUSD() throws InterruptedException {
@@ -206,7 +206,7 @@ public class ScheduledTask {
 		this.insertBsQuote(currPair);
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 30000)
 	@SchedulerLock(name = "BitstampQuoteLTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteLTCUSD() throws InterruptedException {
@@ -214,7 +214,7 @@ public class ScheduledTask {
 		this.insertBsQuote(currPair);
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 33000)
 	@SchedulerLock(name = "BitstampQuoteXRPUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitstampQuoteXRPUSD() throws InterruptedException {
@@ -222,7 +222,7 @@ public class ScheduledTask {
 		this.insertBsQuote(currPair);
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 36000)
 	@SchedulerLock(name = "BitfinexQuoteBTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteBTCUSD() throws InterruptedException {
@@ -247,7 +247,7 @@ public class ScheduledTask {
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 39000)
 	@SchedulerLock(name = "BitfinexQuoteETHUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteETHUSD() throws InterruptedException {
@@ -255,7 +255,7 @@ public class ScheduledTask {
 		this.insertBfQuote(currPair);
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 42000)
 	@SchedulerLock(name = "BitfinexQuoteLTCUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteLTCUSD() throws InterruptedException {
@@ -263,7 +263,7 @@ public class ScheduledTask {
 		this.insertBfQuote(currPair);
 	}
 
-	@Async
+	@Async("bockingTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 45000)
 	@SchedulerLock(name = "BitfinexQuoteXRPUSD_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertBitfinexQuoteXRPUSD() throws InterruptedException {

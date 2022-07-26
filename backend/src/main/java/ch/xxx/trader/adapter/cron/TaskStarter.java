@@ -31,7 +31,7 @@ public class TaskStarter {
 		this.prepareDataTask = prepareDataTask;
 	}
 	
-	@Async
+	@Async("bockingTaskExecutor")
 	@EventListener(ApplicationReadyEvent.class)
 	public void initAvgs() {
 		log.info("ApplicationReady");
