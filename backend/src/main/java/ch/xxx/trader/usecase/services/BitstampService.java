@@ -46,6 +46,8 @@ import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class BitstampService {
@@ -57,6 +59,7 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(4, 4, "bsMongoAvg", 10);
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
@@ -123,7 +126,7 @@ public class BitstampService {
 	public void createBsAvg() {
 		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).block(Duration.ofHours(1L));
+				.map(value -> this.createHourDayAvg()).subscribeOn(this.mongoScheduler).block(Duration.ofHours(1L));
 	}
 
 	private String createHourDayAvg() {
@@ -160,7 +163,7 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).blockLast(Duration.ofSeconds(5L));
+			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(5L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -189,7 +192,7 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).blockLast(Duration.ofSeconds(5L));
+			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(5L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
