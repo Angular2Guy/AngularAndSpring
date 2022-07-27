@@ -150,7 +150,7 @@ public class ItbitService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectIb, IB_HOUR_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(5L));
+			this.myMongoRepository.insertAll(collectIb, IB_HOUR_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(20L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -179,7 +179,7 @@ public class ItbitService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectIb, IB_DAY_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(5L));
+			this.myMongoRepository.insertAll(collectIb, IB_DAY_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(20L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

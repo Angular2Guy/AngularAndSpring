@@ -171,7 +171,7 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(5L));
+			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(20L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -196,7 +196,7 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(5L));
+			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(20L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
