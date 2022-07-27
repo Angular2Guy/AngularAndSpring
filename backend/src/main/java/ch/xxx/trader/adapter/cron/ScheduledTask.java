@@ -44,6 +44,8 @@ import ch.xxx.trader.usecase.services.MyUserService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Component
 public class ScheduledTask {
@@ -61,6 +63,7 @@ public class ScheduledTask {
 	private final CoinbaseService coinbaseService;
 	private final MyUserService myUserService;
 	private final Map<String, Optional<Disposable>> disposables = new ConcurrentHashMap<>();
+	private final Scheduler mongoImportScheduler = Schedulers.newBoundedElastic(20, 20, "mongoImport", 10);
 
 	public ScheduledTask(BitstampService bitstampService, MyUserService myUserService, EventMapper messageMapper,
 			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService,
@@ -106,7 +109,7 @@ public class ScheduledTask {
 					return res;
 				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn("Bitstamp data request failed", ex));
 		Disposable subscribe = request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote)))
-				.timeout(Duration.ofSeconds(15L)).subscribe(x -> this.logDuration(currPair, start));
+				.timeout(Duration.ofSeconds(15L)).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -161,7 +164,7 @@ public class ScheduledTask {
 					return Mono.just(resp2.getRates());
 				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn("Coinbase data request failed", ex));
 		Disposable subscribe = request.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote)))
-				.timeout(Duration.ofSeconds(15L)).subscribe(x -> this.logDuration(currPair, start));
+				.timeout(Duration.ofSeconds(15L)).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -181,7 +184,7 @@ public class ScheduledTask {
 					return res;
 				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn("Ibit data request failed", ex));
 		Disposable subscribe = request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote)))
-				.timeout(Duration.ofSeconds(15L)).subscribe(x -> this.logDuration(currPair, start));
+				.timeout(Duration.ofSeconds(15L)).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -243,7 +246,7 @@ public class ScheduledTask {
 					return res;
 				}).timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn("Bitfinex data request failed", ex));				
 		Disposable subscribe = request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote)))
-				.timeout(Duration.ofSeconds(15L)).subscribe(x -> this.logDuration(currPair, start));
+				.timeout(Duration.ofSeconds(15L)).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 

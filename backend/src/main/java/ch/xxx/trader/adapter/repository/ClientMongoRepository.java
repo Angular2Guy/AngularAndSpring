@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.reactivestreams.client.MongoCollection;
 
-import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.usecase.services.MyMongoRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
