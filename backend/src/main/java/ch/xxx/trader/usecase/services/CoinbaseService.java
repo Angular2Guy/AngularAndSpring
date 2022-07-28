@@ -76,7 +76,6 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(4, 4, "cbMongoAvg", 10);
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
@@ -130,8 +129,8 @@ public class CoinbaseService {
 	public void createCbAvg() {
 		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
-				.subscribeOn(this.mongoScheduler).block();
+				.map(value -> this.createHourDayAvg())
+				.block();
 	}
 
 	private String createHourDayAvg() {
@@ -159,6 +158,7 @@ public class CoinbaseService {
 	}
 
 	private void createCbHourlyAvg() {
+		LOG.info("createCbHourlyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -172,8 +172,8 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).subscribeOn(this.mongoScheduler)
-					.blockLast(Duration.ofSeconds(20L));
+			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL)
+					.blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -198,8 +198,8 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).subscribeOn(this.mongoScheduler)
-					.blockLast(Duration.ofSeconds(20L));
+			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL)
+					.blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

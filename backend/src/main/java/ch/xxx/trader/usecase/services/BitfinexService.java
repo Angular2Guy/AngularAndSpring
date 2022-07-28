@@ -46,8 +46,6 @@ import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 @Service
 public class BitfinexService {
@@ -59,7 +57,6 @@ public class BitfinexService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(4, 4, "bfMongoAvg", 10);
 
 	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils,
 			MyOrderBookClient orderBookClient, ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
@@ -126,7 +123,7 @@ public class BitfinexService {
 		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
 				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
-				.subscribeOn(this.mongoScheduler).block();
+				.block();
 	}
 
 	private String createHourDayAvg() {
@@ -163,8 +160,8 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL).timeout(Duration.ofSeconds(20L), Flux.empty())
-					.subscribeOn(this.mongoScheduler).blockLast();
+			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL)
+					.blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -193,8 +190,7 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).timeout(Duration.ofSeconds(20L), Flux.empty())
-					.subscribeOn(this.mongoScheduler).blockLast();
+			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

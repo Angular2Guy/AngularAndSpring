@@ -17,7 +17,6 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -46,8 +45,6 @@ import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 @Service
 public class BitstampService {
@@ -59,7 +56,6 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(4, 4, "bsMongoAvg", 10);
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
@@ -126,8 +122,8 @@ public class BitstampService {
 	public void createBsAvg() {
 		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
-				.subscribeOn(this.mongoScheduler).block();
+				.map(value -> this.createHourDayAvg())
+				.block();
 	}
 
 	private String createHourDayAvg() {
@@ -164,8 +160,7 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).timeout(Duration.ofSeconds(20L), Flux.empty())
-					.subscribeOn(this.mongoScheduler).blockLast();
+			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -194,8 +189,7 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).timeout(Duration.ofSeconds(20L), Flux.empty())
-					.subscribeOn(this.mongoScheduler).blockLast();
+			this.myMongoRepository.insertAll(collectBs, BS_DAY_COL).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
