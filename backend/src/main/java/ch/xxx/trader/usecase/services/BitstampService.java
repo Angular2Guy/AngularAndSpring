@@ -28,10 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,26 +123,20 @@ public class BitstampService {
 	public void createBsAvg() {
 		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
+				.flatMap(value -> this.createHourDayAvg()).log().timeout(Duration.ofHours(1L), Mono.empty())
 				.subscribeOn(this.mongoScheduler).block();
 	}
 
-	private String createHourDayAvg() {
+	private Mono<String> createHourDayAvg() {
 		LOG.info("createHourDayAvg()");
-		CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
-			this.createBsHourlyAvg();
-			return "createBsHourlyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> {
-			this.createBsDailyAvg();
-			return "createBsDailyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		String combined = Stream.of(future1, future2).map(CompletableFuture::join).collect(Collectors.joining(" "));
-		LOG.info(combined);
-		return "done";
+		return Mono
+				.zip(this.createBsHourlyAvg().log("createBsHourlyAvg() Done."),
+						this.createBsDailyAvg().log("createBsDailyAvg() Done."))
+				.map(myTuple -> List.of(myTuple.getT1(), myTuple.getT2()).stream().map(myBool -> myBool.toString())
+						.collect(Collectors.joining(" ")));
 	}
 
-	private void createBsHourlyAvg() {
+	private Mono<Boolean> createBsHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -173,9 +164,10 @@ public class BitstampService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Hourly Data Time:"));
+		return Mono.just(Boolean.TRUE);
 	}
 
-	private void createBsDailyAvg() {
+	private Mono<Boolean> createBsDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -203,6 +195,7 @@ public class BitstampService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Daily Data Time:"));
+		return Mono.just(Boolean.TRUE);
 	}
 
 	private boolean filterEvenMinutes(QuoteBs quote) {
