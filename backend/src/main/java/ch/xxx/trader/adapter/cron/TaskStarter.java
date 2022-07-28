@@ -31,13 +31,13 @@ public class TaskStarter {
 		this.prepareDataTask = prepareDataTask;
 	}
 	
-	@Async("bockingTaskExecutor")
+	@Async
 	@EventListener(ApplicationReadyEvent.class)
 	public void initAvgs() {
 		log.info("ApplicationReady");
 		this.prepareDataTask.createBsAvg();
 		this.prepareDataTask.createBfAvg();
 		this.prepareDataTask.createIbAvg();
-		this.prepareDataTask.createCbHAvg();
+		this.prepareDataTask.createCbAvg();
 	}
 }

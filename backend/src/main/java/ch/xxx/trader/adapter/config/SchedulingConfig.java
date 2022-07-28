@@ -61,10 +61,14 @@ public class SchedulingConfig {
 		return webClient;
     }
     
-    @Bean(name = "bockingTaskExecutor")
+    @Bean(name = "clientTaskExecutor")
     public Executor threadPoolTaskExecutor() {
+        return this.createThreadPoolTaskExecutor(20);
+    }
+    
+    private Executor createThreadPoolTaskExecutor(int maxPoolSize) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setMaxPoolSize(50);
+        executor.setMaxPoolSize(maxPoolSize);
         executor.setQueueCapacity(1);
         executor.setKeepAliveSeconds(1);
         return executor;
