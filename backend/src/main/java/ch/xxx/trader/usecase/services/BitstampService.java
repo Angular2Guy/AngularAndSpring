@@ -123,7 +123,7 @@ public class BitstampService {
 	public void createBsAvg() {
 		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
-				.flatMap(value -> this.createHourDayAvg()).log().timeout(Duration.ofHours(1L), Mono.empty())
+				.flatMap(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
 				.subscribeOn(this.mongoScheduler).block();
 	}
 
@@ -132,8 +132,8 @@ public class BitstampService {
 		return Mono
 				.zip(this.createBsHourlyAvg().log("createBsHourlyAvg() Done."),
 						this.createBsDailyAvg().log("createBsDailyAvg() Done."))
-				.map(myTuple -> List.of(myTuple.getT1(), myTuple.getT2()).stream().map(myBool -> myBool.toString())
-						.collect(Collectors.joining(" ")));
+				.flatMap(myTuple -> Mono.just(List.of(myTuple.getT1(), myTuple.getT2()).stream().map(myBool -> myBool.toString())
+						.collect(Collectors.joining(" "))));
 	}
 
 	private Mono<Boolean> createBsHourlyAvg() {

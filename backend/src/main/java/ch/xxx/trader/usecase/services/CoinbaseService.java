@@ -130,35 +130,32 @@ public class CoinbaseService {
 	public void createCbAvg() {
 		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
+				.flatMap(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
 				.subscribeOn(this.mongoScheduler).block();
 	}
 
-	private String createHourDayAvg() {
+	private Mono<String> createHourDayAvg() {
 		LOG.info("createHourDayAvg()");
 		LocalDateTime start = LocalDateTime.now();
 		LOG.info("CpuConstraint property: " + this.cpuConstraint);
+		Mono<String> result = Mono.empty();
 		if (this.cpuConstraint) {
-			this.createCbHourlyAvg();
-			this.createCbDailyAvg();
+			String resultStr = List.of(this.createCbHourlyAvg(), this.createCbDailyAvg()).stream()
+					.flatMap(myBool -> Stream.of(myBool.toString())).collect(Collectors.joining(" "));
+			Mono.just(resultStr);
 			LOG.info(this.serviceUtils.createAvgLogStatement(start, "Prepared Coinbase Data Time:"));
 		} else {
 			// This can only be used on machines without cpu constraints.
-			CompletableFuture<String> future7 = CompletableFuture.supplyAsync(() -> {
-				this.createCbHourlyAvg();
-				return "createCbHourlyAvg() Done.";
-			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-			CompletableFuture<String> future8 = CompletableFuture.supplyAsync(() -> {
-				this.createCbDailyAvg();
-				return "createCbDailyAvg() Done.";
-			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-			String combined = Stream.of(future7, future8).map(CompletableFuture::join).collect(Collectors.joining(" "));
-			LOG.info(combined);
+			result = Mono
+					.zip(this.createCbHourlyAvg().log("createBfHourlyAvg() Done."),
+							this.createCbDailyAvg().log("createBfDailyAvg() Done."))
+					.flatMap(myTuple -> Mono.just(List.of(myTuple.getT1(), myTuple.getT2()).stream()
+							.map(myBool -> myBool.toString()).collect(Collectors.joining(" "))));
 		}
-		return "done.";
+		return result;
 	}
 
-	private void createCbHourlyAvg() {
+	private Mono<Boolean> createCbHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -181,9 +178,10 @@ public class CoinbaseService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Hourly Data Time:"));
+		return Mono.just(Boolean.TRUE);
 	}
 
-	private void createCbDailyAvg() {
+	private Mono<Boolean> createCbDailyAvg() {
 		LOG.info("createCbDailyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
@@ -207,6 +205,7 @@ public class CoinbaseService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Daily Data Time:"));
+		return Mono.just(Boolean.TRUE);
 	}
 
 	private Collection<QuoteCb> makeCbQuoteDay(List<QuoteCb> quotes, Calendar begin, Calendar end) {

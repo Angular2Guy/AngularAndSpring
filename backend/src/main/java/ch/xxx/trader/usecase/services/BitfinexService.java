@@ -125,26 +125,20 @@ public class BitfinexService {
 	public void createBfAvg() {
 		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
+				.flatMap(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
 				.subscribeOn(this.mongoScheduler).block();
 	}
 
-	private String createHourDayAvg() {
+	private Mono<String> createHourDayAvg() {
 		LOG.info("createHourDayAvg()");
-		CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> {
-			this.createBfHourlyAvg();
-			return "createBfHourlyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		CompletableFuture<String> future4 = CompletableFuture.supplyAsync(() -> {
-			this.createBfDailyAvg();
-			return "createBfDailyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		String combined = Stream.of(future3, future4).map(CompletableFuture::join).collect(Collectors.joining(" "));
-		LOG.info(combined);
-		return "done";
+		return Mono
+				.zip(this.createBfHourlyAvg().log("createBfHourlyAvg() Done."),
+						this.createBfDailyAvg().log("createBfDailyAvg() Done."))
+				.flatMap(myTuple -> Mono.just(List.of(myTuple.getT1(), myTuple.getT2()).stream()
+						.map(myBool -> myBool.toString()).collect(Collectors.joining(" "))));
 	}
 
-	private void createBfHourlyAvg() {
+	private Mono<Boolean> createBfHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -172,9 +166,10 @@ public class BitfinexService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Hourly Data Time:"));
+		return Mono.just(Boolean.TRUE);
 	}
 
-	private void createBfDailyAvg() {
+	private Mono<Boolean> createBfDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -202,6 +197,7 @@ public class BitfinexService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Daily Data Time:"));
+		return Mono.just(Boolean.TRUE);
 	}
 
 	private boolean filterEvenMinutes(QuoteBf quote) {
