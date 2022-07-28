@@ -45,7 +45,7 @@ public class PrepareDataTask {
 	}
 
 	@Async("bockingTaskExecutor")
-	@Scheduled(cron = "0 5 0 ? * ?")
+	@Scheduled(cron = "0 5 0,12 ? * ?")
 	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT3H", lockAtMostFor = "PT6H")
 	@Timed(value = "create.bs.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createBsAvg() {
@@ -53,7 +53,7 @@ public class PrepareDataTask {
 	}	
 
 	@Async("bockingTaskExecutor")
-	@Scheduled(cron = "0 45 0 ? * ?")
+	@Scheduled(cron = "0 45 0,12 ? * ?")
 	@SchedulerLock(name = "bitfinex_avg_scheduledTask", lockAtLeastFor = "PT3H", lockAtMostFor = "PT4H")
 	@Timed(value = "create.bf.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createBfAvg() {
@@ -61,7 +61,7 @@ public class PrepareDataTask {
 	}
 
 	@Async("bockingTaskExecutor")
-	@Scheduled(cron = "0 25 1 ? * ?")
+	@Scheduled(cron = "0 25 1,13 ? * ?")
 	@SchedulerLock(name = "itbit_avg_scheduledTask", lockAtLeastFor = "PT3H", lockAtMostFor = "PT4H")
 	@Timed(value = "create.ib.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createIbAvg() {
@@ -69,7 +69,7 @@ public class PrepareDataTask {
 	}
 
 	@Async("bockingTaskExecutor")
-	@Scheduled(cron = "0 10 2 ? * ?")
+	@Scheduled(cron = "0 10 2,14 ? * ?")
 	@SchedulerLock(name = "coinbase_avg_scheduledTask", lockAtLeastFor = "PT3H", lockAtMostFor = "PT4H")
 	@Timed(value = "create.cb.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createCbHAvg() {

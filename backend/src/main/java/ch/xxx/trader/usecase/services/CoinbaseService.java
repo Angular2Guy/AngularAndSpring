@@ -130,7 +130,8 @@ public class CoinbaseService {
 	public void createCbAvg() {
 		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).subscribeOn(this.mongoScheduler).block(Duration.ofHours(1L));
+				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
+				.subscribeOn(this.mongoScheduler).block();
 	}
 
 	private String createHourDayAvg() {
@@ -157,7 +158,7 @@ public class CoinbaseService {
 		return "done.";
 	}
 
-	private void createCbHourlyAvg() {		
+	private void createCbHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -171,7 +172,8 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(20L));
+			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL).subscribeOn(this.mongoScheduler)
+					.blockLast(Duration.ofSeconds(20L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -196,7 +198,8 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(20L));
+			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL).subscribeOn(this.mongoScheduler)
+					.blockLast(Duration.ofSeconds(20L));
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

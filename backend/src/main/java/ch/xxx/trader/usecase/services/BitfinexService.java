@@ -125,7 +125,8 @@ public class BitfinexService {
 	public void createBfAvg() {
 		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).subscribeOn(this.mongoScheduler).block(Duration.ofHours(1L));
+				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
+				.subscribeOn(this.mongoScheduler).block();
 	}
 
 	private String createHourDayAvg() {
@@ -162,7 +163,8 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(20L));
+			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL).timeout(Duration.ofSeconds(20L), Flux.empty())
+					.subscribeOn(this.mongoScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -191,7 +193,8 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).subscribeOn(this.mongoScheduler).blockLast(Duration.ofSeconds(20L));
+			this.myMongoRepository.insertAll(collectBf, BF_DAY_COL).timeout(Duration.ofSeconds(20L), Flux.empty())
+					.subscribeOn(this.mongoScheduler).blockLast();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

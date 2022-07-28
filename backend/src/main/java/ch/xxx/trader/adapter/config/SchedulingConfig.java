@@ -65,8 +65,8 @@ public class SchedulingConfig {
     public Executor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setMaxPoolSize(50);
-        executor.setQueueCapacity(5);
-        executor.setKeepAliveSeconds(5);
+        executor.setQueueCapacity(1);
+        executor.setKeepAliveSeconds(1);
         return executor;
     }
 }
