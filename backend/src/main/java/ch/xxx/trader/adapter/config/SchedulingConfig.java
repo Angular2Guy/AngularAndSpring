@@ -52,8 +52,8 @@ public class SchedulingConfig {
     @Bean
     public WebClient createWebClient() {
 		ConnectionProvider provider = ConnectionProvider.builder("Client").maxConnections(40)
-				.maxIdleTime(Duration.ofSeconds(11)).maxLifeTime(Duration.ofSeconds(15))
-				.pendingAcquireTimeout(Duration.ofSeconds(45)).evictInBackground(Duration.ofSeconds(20)).build();
+				.maxIdleTime(Duration.ofSeconds(6)).maxLifeTime(Duration.ofSeconds(7))
+				.pendingAcquireTimeout(Duration.ofSeconds(25)).evictInBackground(Duration.ofSeconds(10)).build();
 
 		WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider)
 				.option(ChannelOption.SO_KEEPALIVE, false)				
