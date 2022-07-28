@@ -131,7 +131,7 @@ public class ItbitService {
 		return Mono.empty();
 	}
 
-	private Mono<Boolean> createIbHourlyAvg() {
+	private void createIbHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_HOUR_COL, QuoteIb.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -159,10 +159,9 @@ public class ItbitService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Hourly Data Time:"));
-		return Mono.just(Boolean.TRUE);
 	}
 
-	private Mono<Boolean> createIbDailyAvg() {
+	private void createIbDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
 		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(IB_DAY_COL, QuoteIb.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -190,23 +189,28 @@ public class ItbitService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Daily Data Time:"));
-		return Mono.just(Boolean.TRUE);
 	}
 
 	public void createIbAvg() {
 		this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
-				.flatMap(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
+				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L), Mono.empty())
 				.subscribeOn(this.mongoScheduler).block();
 	}
 
-	private Mono<String> createHourDayAvg() {
+	private String createHourDayAvg() {
 		LOG.info("createHourDayAvg()");
-		return Mono
-				.zip(this.createIbHourlyAvg().log("createIbHourlyAvg() Done."),
-						this.createIbDailyAvg().log("createIbDailyAvg() Done."))
-				.flatMap(myTuple -> Mono.just(List.of(myTuple.getT1(), myTuple.getT2()).stream()
-						.map(myBool -> myBool.toString()).collect(Collectors.joining(" "))));
+		CompletableFuture<String> future5 = CompletableFuture.supplyAsync(() -> {
+			this.createIbHourlyAvg();
+			return "createIbHourlyAvg() Done.";
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		CompletableFuture<String> future6 = CompletableFuture.supplyAsync(() -> {
+			this.createIbDailyAvg();
+			return "createIbDailyAvg() Done.";
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		String combined = Stream.of(future5, future6).map(CompletableFuture::join).collect(Collectors.joining(" "));
+		LOG.info(combined);
+		return "done";
 	}
 
 	private boolean filterEvenMinutes(QuoteIb quote) {
