@@ -160,8 +160,8 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL)
-					.blockLast();
+			collectBf.filter(myColl -> !myColl.isEmpty()).flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_HOUR_COL).collectList())
+					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

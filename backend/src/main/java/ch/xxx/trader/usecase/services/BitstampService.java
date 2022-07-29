@@ -122,8 +122,7 @@ public class BitstampService {
 	public void createBsAvg() {
 		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg())
-				.block();
+				.map(value -> this.createHourDayAvg()).block();
 	}
 
 	private String createHourDayAvg() {
@@ -160,7 +159,9 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL).blockLast();
+			collectBs.filter(myColl -> !myColl.isEmpty())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BS_HOUR_COL).collectList())
+					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

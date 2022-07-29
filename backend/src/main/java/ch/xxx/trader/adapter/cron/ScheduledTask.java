@@ -118,7 +118,7 @@ public class ScheduledTask {
 
 	private void logDuration(String currPair, LocalTime start) {
 		long durationInMs = Duration.between(start, LocalTime.now()).toMillis();
-		if (durationInMs > 2000) {
+		if (durationInMs > 1000) {
 			LOG.info("Duration of {}: {}ms", currPair, durationInMs);
 		}
 	}

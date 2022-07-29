@@ -23,7 +23,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -56,8 +55,6 @@ import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 @Service
 public class CoinbaseService {
@@ -172,8 +169,9 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_HOUR_COL)
-					.blockLast();
+			collectCb.filter(myColl -> !myColl.isEmpty())
+			.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL).collectList())
+					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -198,8 +196,9 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
-			this.myMongoRepository.insertAll(collectCb, CB_DAY_COL)
-					.blockLast();
+			collectCb.filter(myColl -> !myColl.isEmpty())
+			.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL).collectList())
+					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
