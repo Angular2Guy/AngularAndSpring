@@ -125,7 +125,8 @@ public class BitfinexService {
 	public void createBfAvg() {
 		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L))
+				.map(value -> this.createHourDayAvg())
+				.timeout(Duration.ofHours(1L))
 				.doOnError(ex -> LOG.info("createBfAvg() failed.",ex))
 				.onErrorResume(e -> Mono.empty())
 				.subscribeOn(this.mongoScheduler)

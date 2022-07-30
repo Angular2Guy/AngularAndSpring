@@ -17,6 +17,7 @@ package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -196,6 +197,7 @@ public class ItbitService {
 		this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
 				.map(value -> this.createHourDayAvg())
+				.timeout(Duration.ofHours(1L))
 				.doOnError(ex -> LOG.info("createIbAvg() failed.",ex))
 				.onErrorResume(e -> Mono.empty())
 				.subscribeOn(this.mongoScheduler)

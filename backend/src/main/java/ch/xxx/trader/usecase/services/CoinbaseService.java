@@ -23,6 +23,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -130,6 +131,7 @@ public class CoinbaseService {
 		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
 				.map(value -> this.createHourDayAvg())
+				.timeout(Duration.ofHours(1L))
 				.doOnError(ex -> LOG.info("createCbAvg() failed.",ex))
 				.onErrorResume(e -> Mono.empty())
 				.subscribeOn(this.mongoScheduler)
