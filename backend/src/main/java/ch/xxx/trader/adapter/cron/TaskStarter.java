@@ -22,22 +22,33 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import ch.xxx.trader.usecase.services.BitfinexService;
+import ch.xxx.trader.usecase.services.BitstampService;
+import ch.xxx.trader.usecase.services.CoinbaseService;
+import ch.xxx.trader.usecase.services.ItbitService;
+
 @Component
 public class TaskStarter {
 	private static final Logger log = LoggerFactory.getLogger(TaskStarter.class);
-	private final PrepareDataTask prepareDataTask;
+	private final BitstampService bitstampService;
+	private final BitfinexService bitfinexService;
+	private final ItbitService itbitService;
+	private final CoinbaseService coinbaseService;
 	
-	public TaskStarter(PrepareDataTask prepareDataTask) {
-		this.prepareDataTask = prepareDataTask;
+	public TaskStarter(BitstampService bitstampService, BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService) {
+		this.bitstampService = bitstampService;
+		this.bitfinexService = bitfinexService;
+		this.itbitService = itbitService;
+		this.coinbaseService = coinbaseService;
 	}
 	
 	@Async
 	@EventListener(ApplicationReadyEvent.class)
 	public void initAvgs() {
 		log.info("ApplicationReady");
-		this.prepareDataTask.createBsAvg();
-		this.prepareDataTask.createBfAvg();
-		this.prepareDataTask.createIbAvg();
-		this.prepareDataTask.createCbAvg();
+		this.bitstampService.createBsAvg();
+		this.bitfinexService.createBfAvg();
+		this.itbitService.createIbAvg();
+		this.coinbaseService.createCbAvg();
 	}
 }

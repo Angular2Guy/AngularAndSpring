@@ -17,6 +17,7 @@ package ch.xxx.trader.adapter.cron;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -42,30 +43,34 @@ public class PrepareDataTask {
 		this.itbitService = itbitService;
 		this.coinbaseService = coinbaseService;
 	}
-
-	@Scheduled(cron = "0 5 0 ? * ?")
-	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
+	
+	@Async("avgTaskExecutor")
+	@Scheduled(cron = "0 5 0,12 ? * ?")
+	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	@Timed(value = "create.bs.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createBsAvg() {
 		this.bitstampService.createBsAvg();		
 	}	
 
-	@Scheduled(cron = "0 45 0 ? * ?")
-	@SchedulerLock(name = "bitfinex_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
+	@Async("avgTaskExecutor")
+	@Scheduled(cron = "0 45 0,12 ? * ?")
+	@SchedulerLock(name = "bitfinex_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	@Timed(value = "create.bf.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createBfAvg() {
 		this.bitfinexService.createBfAvg();
 	}
-
-	@Scheduled(cron = "0 25 1 ? * ?")
-	@SchedulerLock(name = "itbit_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
+	
+	@Async("avgTaskExecutor")
+	@Scheduled(cron = "0 25 1,13 ? * ?")
+	@SchedulerLock(name = "itbit_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	@Timed(value = "create.ib.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createIbAvg() {
 		this.itbitService.createIbAvg();
 	}
 
-	@Scheduled(cron = "0 10 2 ? * ?")
-	@SchedulerLock(name = "coinbase_avg_scheduledTask", lockAtLeastFor = "PT1M", lockAtMostFor = "PT23H")
+	@Async("avgTaskExecutor")
+	@Scheduled(cron = "0 10 2,14 ? * ?")
+	@SchedulerLock(name = "coinbase_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	@Timed(value = "create.cb.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createCbAvg() {
 		this.coinbaseService.createCbAvg();

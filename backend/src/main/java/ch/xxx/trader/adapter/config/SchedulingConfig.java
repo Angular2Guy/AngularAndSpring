@@ -66,6 +66,11 @@ public class SchedulingConfig {
         return this.createThreadPoolTaskExecutor(20);
     }
     
+    @Bean(name = "avgTaskExecutor")
+    public Executor avgTreadPoolTaskExecutor() {
+    	return this.createThreadPoolTaskExecutor(10);
+    }
+    
     private Executor createThreadPoolTaskExecutor(int maxPoolSize) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setMaxPoolSize(maxPoolSize);

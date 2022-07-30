@@ -55,6 +55,8 @@ import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class CoinbaseService {
@@ -73,6 +75,7 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 5, "mongoImport", 10);
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
@@ -127,6 +130,9 @@ public class CoinbaseService {
 		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
 				.map(value -> this.createHourDayAvg())
+				.doOnError(ex -> LOG.info("createCbAvg() failed.",ex))
+				.onErrorResume(e -> Mono.empty())
+				.subscribeOn(this.mongoScheduler)
 				.block();
 	}
 

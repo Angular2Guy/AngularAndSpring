@@ -46,6 +46,8 @@ import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class ItbitService {
@@ -58,6 +60,7 @@ public class ItbitService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 5, "mongoImport", 10);
 
 	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
 			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
@@ -192,7 +195,11 @@ public class ItbitService {
 	public void createIbAvg() {
 		this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg()).block();
+				.map(value -> this.createHourDayAvg())
+				.doOnError(ex -> LOG.info("createIbAvg() failed.",ex))
+				.onErrorResume(e -> Mono.empty())
+				.subscribeOn(this.mongoScheduler)
+				.block();
 	}
 
 	private String createHourDayAvg() {
