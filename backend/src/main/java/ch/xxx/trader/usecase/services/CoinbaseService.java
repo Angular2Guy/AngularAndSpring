@@ -130,12 +130,9 @@ public class CoinbaseService {
 	public void createCbAvg() {
 		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg())
-				.timeout(Duration.ofHours(1L))
-				.doOnError(ex -> LOG.info("createCbAvg() failed.",ex))
-				.onErrorResume(e -> Mono.empty())
-				.subscribeOn(this.mongoScheduler)
-				.block();
+				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L))
+				.doOnError(ex -> LOG.info("createCbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
+				.subscribeOn(this.mongoScheduler).block();
 	}
 
 	private String createHourDayAvg() {
@@ -178,7 +175,7 @@ public class CoinbaseService {
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
 			collectCb.filter(myColl -> !myColl.isEmpty())
-			.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL).collectList())
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -205,7 +202,7 @@ public class CoinbaseService {
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
 			collectCb.filter(myColl -> !myColl.isEmpty())
-			.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL).collectList())
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
