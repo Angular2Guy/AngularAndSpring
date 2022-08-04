@@ -15,6 +15,7 @@
  */
 package ch.xxx.trader.adapter.cron;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Map;
@@ -107,8 +108,7 @@ public class ScheduledTask {
 					res.setPair(currPair);
 //				log.info(res.toString());
 					return res;
-				}).timeout(Duration.ofSeconds(5L))				
-				.doOnError(ex -> LOG.warn("Bitstamp data request failed", ex))
+				}).timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitstamp data request failed", ex))
 				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoImportScheduler);
 		Disposable subscribe = request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote)))
 				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler)
@@ -166,8 +166,8 @@ public class ScheduledTask {
 //				log.info(resp2.getRates().toString());
 					return Mono.just(resp2.getRates());
 				}).timeout(Duration.ofSeconds(5L), Mono.empty())
-				.doOnError(ex -> LOG.warn("Coinbase data request failed", ex))
-				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoImportScheduler);
+				.doOnError(ex -> LOG.warn("Coinbase data request failed", ex)).onErrorResume(ex -> Mono.empty())
+				.subscribeOn(this.mongoImportScheduler);
 		Disposable subscribe = request.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote)))
 				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler)
 				.subscribe(x -> this.logDuration(currPair, start));
@@ -188,8 +188,7 @@ public class ScheduledTask {
 				.map(res -> {
 //				log.info(res.toString());
 					return res;
-				}).timeout(Duration.ofSeconds(5L))
-				.doOnError(ex -> LOG.warn("Ibit data request failed", ex))
+				}).timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Ibit data request failed", ex))
 				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoImportScheduler);
 		Disposable subscribe = request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote)))
 				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler)
@@ -251,15 +250,28 @@ public class ScheduledTask {
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBf.class))
 				.map(res -> {
 					res.setPair(currPair);
+					QuoteBf result = checkBfTimestamp(res);
 //				log.info(res.toString());
-					return res;
-				}).timeout(Duration.ofSeconds(5L))
-				.doOnError(ex -> LOG.warn("Bitfinex data request failed", ex))
+					return result;
+				}).timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitfinex data request failed", ex))
 				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoImportScheduler);
 		Disposable subscribe = request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote)))
 				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler)
 				.subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
+	}
+
+	private QuoteBf checkBfTimestamp(QuoteBf res) {
+		QuoteBf result = res;
+		try {
+			BigDecimal timestamp = new BigDecimal(res.getTimestamp());
+			LOG.debug(timestamp.toString());
+		} catch (Exception e) {
+			LOG.warn(String.format("Failed to parse the timestamp: %s", res.getTimestamp()), e);
+			result = new QuoteBf(res.getMid(), res.getBid(), res.getAsk(), res.getLast_price(), res.getLow(),
+					res.getHigh(), res.getVolume(), "0.0");
+		}
+		return result;
 	}
 
 	@Async("clientTaskExecutor")
