@@ -12,6 +12,7 @@
  */
 package ch.xxx.trader.adapter.events;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import ch.xxx.trader.usecase.mappers.EventMapper;
 import ch.xxx.trader.usecase.services.MyUserServiceEvents;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
+import reactor.util.retry.Retry;
 
 @Profile("kafka | prod")
 @Service
@@ -43,7 +45,8 @@ public class EventConsumer {
 	@Value("${spring.kafka.consumer.group-id}")
 	private String consumerGroupId;
 
-	public EventConsumer(MyUserServiceEvents myUserServiceEvents, ReceiverOptions<String, String> receiverOptions, EventMapper eventMapper) {
+	public EventConsumer(MyUserServiceEvents myUserServiceEvents, ReceiverOptions<String, String> receiverOptions,
+			EventMapper eventMapper) {
 		this.receiverOptions = receiverOptions;
 		this.userLogoutReceiver = KafkaReceiver
 				.create(this.receiverOptions(List.of(KafkaConfig.USER_LOGOUT_SINK_TOPIC)));
@@ -61,9 +64,17 @@ public class EventConsumer {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void doOnStartup() {
-		this.newUserReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceEvents
-				.userSigninEvent(this.eventMapper.mapJsonToObject(myRecord.value(), MyUser.class))).subscribe();
-		this.userLogoutReceiver.receiveAtmostOnce().flatMap(myRecord -> this.myUserServiceEvents
-				.logoutEvent(this.eventMapper.mapJsonToObject(myRecord.value(), RevokedTokensDto.class))).subscribe();
-	}	
+		this.newUserReceiver.receiveAtmostOnce()
+				.doOnError(error -> LOGGER.error("Error receiving event, will retry", error))
+				.retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
+				.concatMap(myRecord -> this.myUserServiceEvents
+						.userSigninEvent(this.eventMapper.mapJsonToObject(myRecord.value(), MyUser.class)))
+				.subscribe();
+		this.userLogoutReceiver.receiveAtmostOnce()
+				.doOnError(error -> LOGGER.error("Error receiving event, will retry", error))
+				.retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofMinutes(1)))
+				.concatMap(myRecord -> this.myUserServiceEvents
+						.logoutEvent(this.eventMapper.mapJsonToObject(myRecord.value(), RevokedTokensDto.class)))
+				.subscribe();
+	}
 }

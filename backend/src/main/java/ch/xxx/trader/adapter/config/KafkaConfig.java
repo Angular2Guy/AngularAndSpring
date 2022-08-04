@@ -1,5 +1,6 @@
 package ch.xxx.trader.adapter.config;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 
 import reactor.kafka.receiver.ReceiverOptions;
 import reactor.kafka.sender.KafkaSender;
@@ -32,6 +34,7 @@ public class KafkaConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConfig.class);
 	private static final String GZIP = "gzip";
 	private static final String ZSTD = "zstd";
+	private static final String SPRING_DESERIALIZER = "spring.deserializer.value.delegate.class";
 	public static final String NEW_USER_TOPIC = "new-user-topic";
 	public static final String NEW_USER_DLT_TOPIC = "new-user-topic-retry";
 	public static final String USER_LOGOUT_SOURCE_TOPIC = "user-logout-source-topic";
@@ -77,6 +80,8 @@ public class KafkaConfig {
         props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, this.compressionType);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, Class.forName(this.producerKeySerializer));
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, Class.forName(this.producerValueSerializer));
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, Class.forName(this.producerKeySerializer));
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, Class.forName(this.producerKeySerializer));
         this.senderOptions = SenderOptions.create(props);
 //        this.senderOptions.maxInFlight(10);
         props = new HashMap<>();
@@ -86,7 +91,10 @@ public class KafkaConfig {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, this.consumerAutoOffsetReset);        
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, Class.forName(this.consumerKeySerializer));
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, Class.forName(this.consumerValueSerializer));
+        props.put(SPRING_DESERIALIZER, this.consumerKeySerializer);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         this.receiverOptions = ReceiverOptions.create(props);
+        this.receiverOptions.pollTimeout(Duration.ofSeconds(1L));
 	}
 
 	@Bean
