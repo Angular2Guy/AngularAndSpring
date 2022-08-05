@@ -18,6 +18,8 @@ package ch.xxx.trader.usecase.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,13 +72,14 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 				});
 	}
 
-	public Mono<MyUser> userSigninEvent(MyUser myUser) {
-		return super.postUserSignin(myUser, true, false).flatMap(myUser1 -> {
-			if (this.myUserSink.tryEmitNext(myUser1).isFailure()) {
-				LOGGER.info("Emit to myUserSink failed. {}", myUser1);
-			}
-			return Mono.just(myUser1);
-		});
+	public Mono<MyUser> userSigninEvent(Optional<MyUser> myUserOpt) {
+		return myUserOpt.stream()
+				.flatMap(myUser -> Stream.of(super.postUserSignin(myUser, true, false).flatMap(myUser1 -> {
+					if (this.myUserSink.tryEmitNext(myUser1).isFailure()) {
+						LOGGER.info("Emit to myUserSink failed. {}", myUser1);
+					}
+					return Mono.just(myUser1);
+				}))).findFirst().orElse(Mono.empty());
 	}
 
 	@Override
@@ -92,7 +95,10 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 				.orElse(Mono.just(Boolean.FALSE));
 	}
 
-	public Mono<Boolean> logoutEvent(RevokedTokensDto revokedTokensDto) {
-		return Mono.just(this.updateLoggedOutUsers(revokedTokensDto.getRevokedTokens()));
+	public Mono<Boolean> logoutEvent(Optional<RevokedTokensDto> revokedTokensDtoOpt) {
+		return revokedTokensDtoOpt.stream()
+				.flatMap(revokedTokensDto -> Stream
+						.of(Mono.just(this.updateLoggedOutUsers(revokedTokensDto.getRevokedTokens()))))
+				.findFirst().orElse(Mono.empty());
 	}
 }

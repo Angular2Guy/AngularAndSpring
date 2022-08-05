@@ -15,6 +15,10 @@
  */
 package ch.xxx.trader.usecase.mappers;
 
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,12 +26,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class EventMapper {
+	private static final Logger LOG = LoggerFactory.getLogger(EventMapper.class);
 	private final ObjectMapper objectMapper;
-	
+
 	public EventMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
-	
+
 	public String mapDtoToString(Object dto) {
 		String dtoJson;
 		try {
@@ -37,12 +42,15 @@ public class EventMapper {
 		}
 		return dtoJson;
 	}
-	
-	public <T> T mapJsonToObject(String jsonString, Class<T> myClass) {
+
+	public <T> Optional<T> mapJsonToObject(String jsonString, Class<T> myClass) {
+		Optional<T> resultOpt;
 		try {
-			return this.objectMapper.readValue(jsonString, myClass);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
+			resultOpt = Optional.ofNullable(this.objectMapper.readValue(jsonString, myClass));
+		} catch (Exception e) {
+			LOG.warn(String.format("Failed to deserialize %s", jsonString), e);
+			resultOpt = Optional.empty();
 		}
+		return resultOpt;
 	}
 }

@@ -44,6 +44,7 @@ public class KafkaStreams {
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaStreams.class);
 	private static final long LOGOUT_TIMEOUT = 120L;
 	private static final long GRACE_TIMEOUT = 5L;
+	private static final String UNPARSEABLE_JSON = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod";
 	private ObjectMapper objectMapper;
 
 	public KafkaStreams(ObjectMapper objectMapper) {
@@ -75,12 +76,16 @@ public class KafkaStreams {
 	private String convertToRevokedTokens(List<String> value) {
 		try {
 			List<RevokedToken> revokedTokenList = value.stream().map(myValue -> {
+				RevokedToken result;
 				try {
-					return this.objectMapper.readValue(myValue, RevokedToken.class);
-				} catch (JsonProcessingException e) {
-					throw new RuntimeException(e);
+					result = this.objectMapper.readValue(myValue, RevokedToken.class);
+				} catch (Exception e) {
+					LOGGER.warn(String.format("Failed to deserialize %s", myValue), e);
+					result = new RevokedToken(null, UNPARSEABLE_JSON, UNPARSEABLE_JSON, null);
 				}
-			}).toList();
+				return result;
+			}).filter(myRevokedToken -> !UNPARSEABLE_JSON.equalsIgnoreCase(myRevokedToken.getName())
+					&& !UNPARSEABLE_JSON.equalsIgnoreCase(myRevokedToken.getUuid())).toList();
 			return this.objectMapper.writeValueAsString(new RevokedTokensDto(revokedTokenList));
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
