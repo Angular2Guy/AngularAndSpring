@@ -64,7 +64,7 @@ public class ScheduledTask {
 	private final CoinbaseService coinbaseService;
 	private final MyUserService myUserService;
 	private final Map<String, Optional<Disposable>> disposables = new ConcurrentHashMap<>();
-	private final Scheduler mongoImportScheduler = Schedulers.newBoundedElastic(20, 20, "mongoImport", 10);
+	private final Scheduler mongoImportScheduler = Schedulers.newBoundedElastic(40, 40, "mongoImport", 10);
 
 	public ScheduledTask(BitstampService bitstampService, MyUserService myUserService, EventMapper messageMapper,
 			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService,
@@ -110,10 +110,14 @@ public class ScheduledTask {
 					return res;
 				}).timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitstamp data request failed", ex))
 				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoImportScheduler);
-		Disposable subscribe = request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))
-				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler))
-				.subscribe(x -> this.logDuration(currPair, start));
-		this.disposables.put(currPair, Optional.of(subscribe));
+		Disposable subscribe = null;
+			subscribe = request
+					.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))
+							.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler)
+							.doOnError(ex -> LOG.warn("Bitstamp data store failed", ex))
+							.onErrorResume(ex -> Mono.empty()))
+					.subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start));
+			this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
 	private void logDuration(String currPair, LocalTime start) {
@@ -168,9 +172,12 @@ public class ScheduledTask {
 				}).timeout(Duration.ofSeconds(5L), Mono.empty())
 				.doOnError(ex -> LOG.warn("Coinbase data request failed", ex)).onErrorResume(ex -> Mono.empty())
 				.subscribeOn(this.mongoImportScheduler);
-		Disposable subscribe = request.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote))
-				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler))
-				.subscribe(x -> this.logDuration(currPair, start));
+		Disposable subscribe = request
+				.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote))
+						.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler)
+						.doOnError(ex -> LOG.warn("Coinbase data store failed", ex))
+						.onErrorResume(ex -> Mono.empty()))
+				.subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -190,9 +197,12 @@ public class ScheduledTask {
 					return res;
 				}).timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Ibit data request failed", ex))
 				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoImportScheduler);
-		Disposable subscribe = request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))
-				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler))
-				.subscribe(x -> this.logDuration(currPair, start));
+		Disposable subscribe = request
+				.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))
+						.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler)
+						.doOnError(ex -> LOG.warn("Itbit data store failed", ex))
+						.onErrorResume(ex -> Mono.empty()))
+				.subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -255,9 +265,12 @@ public class ScheduledTask {
 					return result;
 				}).timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitfinex data request failed", ex))
 				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoImportScheduler);
-		Disposable subscribe = request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote))
-				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler))
-				.subscribe(x -> this.logDuration(currPair, start));
+		Disposable subscribe = request
+				.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote))
+						.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler)
+						.doOnError(ex -> LOG.warn("Bitfinex data store failed", ex))
+						.onErrorResume(ex -> Mono.empty()))
+				.subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
