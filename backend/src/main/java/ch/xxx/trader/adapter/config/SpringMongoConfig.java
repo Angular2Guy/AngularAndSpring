@@ -31,7 +31,7 @@ import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMon
 
 @Configuration
 public class SpringMongoConfig  {
-	private static final Logger log = LoggerFactory.getLogger(SpringMongoConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SpringMongoConfig.class);
 	private static final String SCHED_LOCK_DB = "schedLock";
 	
     @Bean

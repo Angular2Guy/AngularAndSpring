@@ -42,7 +42,7 @@ import reactor.netty.resources.ConnectionProvider;
 @EnableAsync
 @EnableSchedulerLock(defaultLockAtMostFor = "10m")
 public class SchedulingConfig {
-	private static final Logger log = LoggerFactory.getLogger(SchedulingConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SchedulingConfig.class);
     		
     @Bean
     TimedAspect timedAspect(MeterRegistry registry) {
