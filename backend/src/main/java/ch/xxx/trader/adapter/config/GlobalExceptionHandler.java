@@ -15,64 +15,51 @@
  */
 package ch.xxx.trader.adapter.config;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.web.WebProperties.Resources;
-import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
-import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
-import org.springframework.boot.web.reactive.error.ErrorAttributes;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyExtractors;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.server.RequestPredicates;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import reactor.core.publisher.Mono;
-
-@Component
-@Order(-2)
-public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
+@ControllerAdvice
+public class GlobalExceptionHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-	public GlobalExceptionHandler(ErrorAttributes errorAttributes, Resources resources,
-			ApplicationContext applicationContext, ServerCodecConfigurer serverCodecConfigurer) {
-		super(errorAttributes, resources, applicationContext);
-	    super.setMessageWriters(serverCodecConfigurer.getWriters());
-	    super.setMessageReaders(serverCodecConfigurer.getReaders());
+	@ExceptionHandler({ Exception.class })
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public Object handleException(final Exception exception, final HttpServletRequest request) {
+		record MyEntry(String key, Object value) {
+		}
+		LOGGER.info(String.format("Execption: %s", exception.getMessage()), exception);
+		LOGGER.info("Remote Ip: {}", request.getRemoteAddr());
+		LOGGER.info("Request URL: {}", request.getRequestURL());
+		Map<String, Object> attributeMap = Collections.list(request.getAttributeNames()).stream()
+				.flatMap(attName -> Stream.of(new MyEntry(attName, request.getAttribute(attName))))
+				.collect(Collectors.toMap(myEntry -> myEntry.key, myEntry -> myEntry.value));
+		LOGGER.info("Request Attributes: {}", this.createStringFromMap(attributeMap));
+		Map<String, Object> headerMap = Collections.list(request.getHeaderNames()).stream()
+				.flatMap(headerName -> Stream.of(new MyEntry(headerName, request.getHeader(headerName))))
+				.collect(Collectors.toMap(myEntry -> myEntry.key, myEntry -> myEntry.value));
+		LOGGER.info("Request Headers: {}", this.createStringFromMap(headerMap));
+		LOGGER.info("Request Body length: {}", request.getContentLength());
+		try {
+			LOGGER.info("Request Body content: {}", new String(request.getInputStream().readAllBytes()));
+		} catch (IOException e) {
+			LOGGER.warn("Failed to display body.", e);
+		}
+		return new Object();
 	}
 
-	@Override
-	protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
-		return RouterFunctions.route(RequestPredicates.all(), this::renderErrorResponse);
-	}
-
-	private Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
-		LOGGER.info("Remote Ip: {}", request.remoteAddress());
-		LOGGER.info("Request URI: {}", request.uri());
-		LOGGER.info("Request Attributes: {}", this.createStringFromMap(request.attributes()));
-		LOGGER.info("Request Headers: {}", this.createStringFromMap(request.headers().asHttpHeaders().toSingleValueMap()));
-		LOGGER.info("Request Body length: {}", request.body(BodyExtractors.toMono(String.class)).block().length());
-		LOGGER.info("Request Body content: {}", request.body(BodyExtractors.toMono(String.class)).block());
-		Map<String, Object> errorPropertiesMap = this.getErrorAttributes(request,
-				ErrorAttributeOptions.of(Include.values()));
-		LOGGER.info("ErrorPropertiesMap: ", this.createStringFromMap(errorPropertiesMap));
-		return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
-				.body(BodyInserters.empty());
-	}
-	
-	private <K,V> String createStringFromMap(Map<K,V> myMap) {
+	private <K, V> String createStringFromMap(Map<K, V> myMap) {
 		return myMap.entrySet().stream()
 				.map(entry -> String.format("%s: %s", entry.getKey(), entry.getValue() == null ? "" : entry.getValue()))
 				.collect(Collectors.joining(" | "));
