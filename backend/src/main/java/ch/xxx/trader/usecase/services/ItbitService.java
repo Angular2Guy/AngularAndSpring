@@ -61,7 +61,7 @@ public class ItbitService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 5, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
 
 	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
 			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
@@ -144,6 +144,9 @@ public class ItbitService {
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Itbit
 			Mono<Collection<QuoteIb>> collectIb = this.myMongoRepository.find(query, QuoteIb.class)
+					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Itbit prepare hour data failed", ex))
+					.onErrorResume(ex -> Mono.empty())
+					.subscribeOn(this.mongoScheduler)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream()
 							.map(key -> makeIbQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
@@ -151,7 +154,13 @@ public class ItbitService {
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			collectIb.filter(myColl -> !myColl.isEmpty())
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), IB_HOUR_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), IB_HOUR_COL)
+							.timeout(Duration.ofSeconds(5L))
+							.doOnError(ex -> LOG.warn("Itbit prepare hour data failed", ex))
+							.onErrorResume(ex -> Mono.empty())
+							.subscribeOn(this.mongoScheduler)
+							.collectList())
+					.subscribeOn(this.mongoScheduler)
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -175,6 +184,9 @@ public class ItbitService {
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Itbit
 			Mono<Collection<QuoteIb>> collectIb = this.myMongoRepository.find(query, QuoteIb.class)
+					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Itbit prepare day data failed", ex))
+					.onErrorResume(ex -> Mono.empty())
+					.subscribeOn(this.mongoScheduler)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream()
 							.map(key -> makeIbQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
@@ -182,7 +194,12 @@ public class ItbitService {
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			collectIb.filter(myColl -> !myColl.isEmpty())
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), IB_DAY_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), IB_DAY_COL)
+							.timeout(Duration.ofSeconds(5L))
+							.doOnError(ex -> LOG.warn("Itbit prepare day data failed", ex))
+							.onErrorResume(ex -> Mono.empty())
+							.subscribeOn(this.mongoScheduler)
+							.collectList())
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -196,12 +213,9 @@ public class ItbitService {
 	public void createIbAvg() {
 		this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
 				.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT))
-				.map(value -> this.createHourDayAvg())
-				.timeout(Duration.ofHours(1L))
-				.doOnError(ex -> LOG.info("createIbAvg() failed.",ex))
-				.onErrorResume(e -> Mono.empty())
-				.subscribeOn(this.mongoScheduler)
-				.block();
+				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L))
+				.doOnError(ex -> LOG.info("createIbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
+				.subscribeOn(this.mongoScheduler).block();
 	}
 
 	private String createHourDayAvg() {

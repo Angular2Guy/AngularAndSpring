@@ -76,7 +76,7 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 5, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
@@ -172,10 +172,20 @@ public class CoinbaseService {
 			query.addCriteria(
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Coinbase
-			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
+			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
+					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
+					.onErrorResume(ex -> Mono.empty())
+					.subscribeOn(this.mongoScheduler)
+					.collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
 			collectCb.filter(myColl -> !myColl.isEmpty())
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL)
+							.timeout(Duration.ofSeconds(5L))
+							.doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
+							.onErrorResume(ex -> Mono.empty())
+							.subscribeOn(this.mongoScheduler)
+							.collectList())
+					.subscribeOn(this.mongoScheduler)
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -199,10 +209,20 @@ public class CoinbaseService {
 			query.addCriteria(
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Coinbase
-			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class).collectList()
+			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
+					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
+					.onErrorResume(ex -> Mono.empty())
+					.subscribeOn(this.mongoScheduler)
+					.collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
 			collectCb.filter(myColl -> !myColl.isEmpty())
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL)
+							.timeout(Duration.ofSeconds(5L))
+							.doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
+							.onErrorResume(ex -> Mono.empty())
+							.subscribeOn(this.mongoScheduler)
+							.collectList())
+					.subscribeOn(this.mongoScheduler)
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);

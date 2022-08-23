@@ -59,7 +59,7 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 5, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
@@ -159,6 +159,9 @@ public class BitstampService {
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
 			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
+					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitstamp prepare hour data failed", ex))
+					.onErrorResume(ex -> Mono.empty())
+					.subscribeOn(this.mongoScheduler)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream()
 							.map(key -> makeBsQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
@@ -166,7 +169,13 @@ public class BitstampService {
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			collectBs.filter(myColl -> !myColl.isEmpty())
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BS_HOUR_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BS_HOUR_COL)
+							.timeout(Duration.ofSeconds(5L))
+							.doOnError(ex -> LOG.warn("Bitstamp prepare hour data failed", ex))
+							.onErrorResume(ex -> Mono.empty())
+							.subscribeOn(this.mongoScheduler)
+							.collectList())
+					.subscribeOn(this.mongoScheduler)
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -190,6 +199,9 @@ public class BitstampService {
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
 			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
+					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitstamp prepare day data failed", ex))
+					.onErrorResume(ex -> Mono.empty())
+					.subscribeOn(this.mongoScheduler)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream()
 							.map(key -> makeBsQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
@@ -197,7 +209,13 @@ public class BitstampService {
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			collectBs.filter(myColl -> !myColl.isEmpty())
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BS_DAY_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BS_DAY_COL)
+							.timeout(Duration.ofSeconds(5L))
+							.doOnError(ex -> LOG.warn("Bitstamp prepare hour data failed", ex))
+							.onErrorResume(ex -> Mono.empty())
+							.subscribeOn(this.mongoScheduler)
+							.collectList())
+					.subscribeOn(this.mongoScheduler)
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);

@@ -59,7 +59,7 @@ public class BitfinexService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 5, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
 
 	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils,
 			MyOrderBookClient orderBookClient, ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
@@ -158,14 +158,18 @@ public class BitfinexService {
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
 			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
-					.collectMultimap(quote -> quote.getPair(), quote -> quote)
+					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitfinex prepare hour data failed", ex))
+					.onErrorResume(ex -> Mono.empty()).collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream()
 							.map(key -> makeBfQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			collectBf.filter(myColl -> !myColl.isEmpty())
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_HOUR_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_HOUR_COL)
+							.timeout(Duration.ofSeconds(5L))
+							.doOnError(ex -> LOG.warn("Bitfinex prepare hour data failed", ex))
+							.onErrorResume(ex -> Mono.empty()).collectList())
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
@@ -189,6 +193,9 @@ public class BitfinexService {
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
 			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
+					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitfinex prepare day data failed", ex))
+					.onErrorResume(ex -> Mono.empty())
+					.subscribeOn(this.mongoScheduler)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream()
 							.map(key -> makeBfQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
@@ -196,7 +203,13 @@ public class BitfinexService {
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			collectBf.filter(myColl -> !myColl.isEmpty())
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_DAY_COL).collectList())
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_DAY_COL)
+							.timeout(Duration.ofSeconds(5L))
+							.doOnError(ex -> LOG.warn("Bitfinex prepare day data failed", ex))
+							.onErrorResume(ex -> Mono.empty())
+							.subscribeOn(this.mongoScheduler)
+							.collectList())
+					.subscribeOn(this.mongoScheduler)
 					.block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
