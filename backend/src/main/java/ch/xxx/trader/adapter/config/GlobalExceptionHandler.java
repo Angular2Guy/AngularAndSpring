@@ -15,12 +15,6 @@
  */
 package ch.xxx.trader.adapter.config;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -42,31 +36,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({ MongoTimeoutException.class, TimeoutException.class })
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public Object handleException(final Exception exception, final HttpServletRequest request) {
-		record MyEntry(String key, Object value) {
-		}
+//		record MyEntry(String key, Object value) {
+//		}
 		LOGGER.info(String.format("Execption: %s", exception.getMessage()), exception);
 		LOGGER.info("Remote Ip: {}", request.getRemoteAddr());
-		LOGGER.info("Request URL: {}", request.getRequestURL());
-		Map<String, Object> attributeMap = Collections.list(request.getAttributeNames()).stream()
-				.flatMap(attName -> Stream.of(new MyEntry(attName, request.getAttribute(attName))))
-				.collect(Collectors.toMap(myEntry -> myEntry.key, myEntry -> myEntry.value));
-		LOGGER.debug("Request Attributes: {}", this.createStringFromMap(attributeMap));
-		Map<String, Object> headerMap = Collections.list(request.getHeaderNames()).stream()
-				.flatMap(headerName -> Stream.of(new MyEntry(headerName, request.getHeader(headerName))))
-				.collect(Collectors.toMap(myEntry -> myEntry.key, myEntry -> myEntry.value));
-		LOGGER.info("Request Headers: {}", this.createStringFromMap(headerMap));
-		LOGGER.info("Request Body length: {}", request.getContentLength());
-		try {
-			LOGGER.debug("Request Body content: {}", new String(request.getInputStream().readAllBytes()));
-		} catch (IOException e) {
-			LOGGER.warn("Failed to display body.", e);
-		}
+		LOGGER.info("Request URL: {}", request.getRequestURL());		
+//		Map<String, Object> attributeMap = Collections.list(request.getAttributeNames()).stream()
+//				.flatMap(attName -> Stream.of(new MyEntry(attName, request.getAttribute(attName))))
+//				.collect(Collectors.toMap(myEntry -> myEntry.key, myEntry -> myEntry.value));
+//		LOGGER.debug("Request Attributes: {}", this.createStringFromMap(attributeMap));
+//		Map<String, Object> headerMap = Collections.list(request.getHeaderNames()).stream()
+//				.flatMap(headerName -> Stream.of(new MyEntry(headerName, request.getHeader(headerName))))
+//				.collect(Collectors.toMap(myEntry -> myEntry.key, myEntry -> myEntry.value));
+//		LOGGER.info("Request Headers: {}", this.createStringFromMap(headerMap));
+//		LOGGER.info("Request Body length: {}", request.getContentLength());
+//		try {
+//			LOGGER.debug("Request Body content: {}", new String(request.getInputStream().readAllBytes()));
+//		} catch (IOException e) {
+//			LOGGER.warn("Failed to display body.", e);
+//		}
 		return new Object();
 	}
 
-	private <K, V> String createStringFromMap(Map<K, V> myMap) {
-		return myMap.entrySet().stream()
-				.map(entry -> String.format("%s: %s", entry.getKey(), entry.getValue() == null ? "" : entry.getValue()))
-				.collect(Collectors.joining(" | "));
-	}
+//	private <K, V> String createStringFromMap(Map<K, V> myMap) {
+//		return myMap.entrySet().stream()
+//				.map(entry -> String.format("%s: %s", entry.getKey(), entry.getValue() == null ? "" : entry.getValue()))
+//				.collect(Collectors.joining(" | "));
+//	}
 }
