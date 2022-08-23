@@ -58,14 +58,14 @@ public class ExceptionLoggingFilter extends GenericFilterBean {
 			Map<String, Object> attributeMap = Collections.list(request.getAttributeNames()).stream()
 					.flatMap(attName -> Stream.of(new MyEntry(attName, request.getAttribute(attName))))
 					.collect(Collectors.toMap(myEntry -> myEntry.key, myEntry -> myEntry.value));
-			LOGGER.info("Request Attributes: {}", this.createStringFromMap(attributeMap));
+			LOGGER.debug("Request Attributes: {}", this.createStringFromMap(attributeMap));
 			Map<String, Object> headerMap = Collections.list(request.getHeaderNames()).stream()
 					.flatMap(headerName -> Stream.of(new MyEntry(headerName, request.getHeader(headerName))))
 					.collect(Collectors.toMap(myEntry -> myEntry.key, myEntry -> myEntry.value));
 			LOGGER.info("Request Headers: {}", this.createStringFromMap(headerMap));
 			LOGGER.info("Request Body length: {}", request.getContentLength());
 			try {
-				LOGGER.info("Request Body content: {}", new String(request.getInputStream().readAllBytes()));
+				LOGGER.debug("Request Body content: {}", new String(request.getInputStream().readAllBytes()));
 			} catch (IOException e) {
 				LOGGER.warn("Failed to display body.", e);
 			}
