@@ -42,8 +42,12 @@ public class StatisticServiceTest {
 		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics1Month(quotesBs, dto);
-		Assertions.assertNotNull(dto.getPerformance1Month());
+		statisticService.calcStatistics5Years(quotesBs, dto);
+		Assertions.assertNotNull(dto.getPerformance5Year());
+		Assertions.assertNotNull(dto.getAvgVolume5Year());
+		Assertions.assertNotNull(dto.getRange5Year().getStart());
+		Assertions.assertNotNull(dto.getRange5Year().getEnd());
+		Assertions.assertNotNull(dto.getVolatility5Year());		
 	}
 
 	private List<QuoteBf> createBfQuotes() {
