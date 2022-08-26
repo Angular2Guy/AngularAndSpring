@@ -71,7 +71,7 @@ public class StatisticService {
 		return Mono.just(commonStatisticsDto);
 	}
 
-	private <T extends Quote> void calcStatistics5Years(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	<T extends Quote> void calcStatistics5Years(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes5Year = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(this.createBeforeDate(0, 5))).toList();
 		commonStatisticsDto.setRange5Year(
@@ -81,7 +81,7 @@ public class StatisticService {
 		commonStatisticsDto.setVolatility5Year(this.calcVolatility(quotes5Year));
 	}
 
-	private <T extends Quote> void calcStatistics2Years(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	<T extends Quote> void calcStatistics2Years(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes2Year = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(this.createBeforeDate(0, 2))).toList();
 		commonStatisticsDto.setRange2Year(
@@ -91,7 +91,7 @@ public class StatisticService {
 		commonStatisticsDto.setVolatility2Year(this.calcVolatility(quotes2Year));
 	}
 
-	private <T extends Quote> void calcStatistics1Year(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	<T extends Quote> void calcStatistics1Year(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes1Year = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(this.createBeforeDate(0, 1))).toList();
 		commonStatisticsDto.setRange1Year(
@@ -101,7 +101,7 @@ public class StatisticService {
 		commonStatisticsDto.setVolatility1Year(this.calcVolatility(quotes1Year));
 	}
 
-	private <T extends Quote> void calcStatistics6Months(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	<T extends Quote> void calcStatistics6Months(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes6Month = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(this.createBeforeDate(6, 0))).toList();
 		commonStatisticsDto.setPerformance6Month(this.calcPerformance(quotes6Month));
@@ -111,7 +111,7 @@ public class StatisticService {
 				new RangeDto(this.getMinMaxValue(quotes6Month, false), this.getMinMaxValue(quotes6Month, true)));
 	}
 
-	private <T extends Quote> void calcStatistics3Month(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	<T extends Quote> void calcStatistics3Month(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes3Month = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(this.createBeforeDate(3, 0))).toList();
 		commonStatisticsDto.setRange3Month(
@@ -121,7 +121,7 @@ public class StatisticService {
 		commonStatisticsDto.setVolatility3Month(this.calcVolatility(quotes3Month));
 	}
 
-	private <T extends Quote> void calcStatistics1Month(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	<T extends Quote> void calcStatistics1Month(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes1Month = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(this.createBeforeDate(1, 0))).toList();
 		commonStatisticsDto.setRange1Month(
@@ -157,7 +157,7 @@ public class StatisticService {
 	private <T extends Quote> Double calcPerformance(List<T> quotes) {
 		return quotes.size() < 2 ? 0.0
 				: (this.getLastValue(quotes.get(0)).doubleValue()
-						/ this.getLastValue(quotes.get(quotes.size())).doubleValue() - 1) * 100;
+						/ this.getLastValue(quotes.get(quotes.size()-1)).doubleValue() - 1) * 100;
 	}
 
 	private <T extends Quote> BigDecimal getMinMaxValue(List<T> quotes, boolean max) {
