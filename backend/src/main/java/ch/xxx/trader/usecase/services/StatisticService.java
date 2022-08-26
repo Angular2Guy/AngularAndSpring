@@ -139,7 +139,7 @@ public class StatisticService {
 		BigDecimal variance = quotes.size() < 3 ? BigDecimal.ZERO : quotes.stream().map(myQuote -> this.getLastValue(myQuote)).map(lastValue -> lastValue.subtract(average))
 				.map(avgDifference -> avgDifference.multiply(avgDifference))
 				.reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value)).divide(BigDecimal.valueOf(quotes.size()), MathContext.DECIMAL128);
-		BigDecimal volatility = variance.sqrt(MathContext.DECIMAL64);
+		BigDecimal volatility = variance.sqrt(MathContext.DECIMAL128);
 		return volatility;
 	}
 
