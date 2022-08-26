@@ -39,8 +39,8 @@ import org.springframework.stereotype.Component;
 public class ForwardServletFilter implements Filter {
 	private static final Logger LOG = LoggerFactory.getLogger(ForwardServletFilter.class);
 	public static final List<Locale> SUPPORTED_LOCALES = List.of(Locale.ENGLISH, Locale.GERMAN);
-	public static final List<String> REST_PATHS = List.of("/bitfinex", "/bitstamp", "/coinbase", "/itbit", "/myuser", 
-			"/actuator", "/swagger-ui.html", "/swagger-ui", "/v3");
+	public static final List<String> REST_PATHS = List.of("/bitfinex", "/bitstamp", "/coinbase", "/itbit", "/myuser",
+			"/statistics", "/actuator", "/swagger-ui.html", "/swagger-ui", "/v3");
 	public static final List<String> LANGUAGE_PATHS = SUPPORTED_LOCALES.stream()
 			.map(myLocale -> String.format("/%s/", myLocale.getLanguage())).collect(Collectors.toList());
 
@@ -49,15 +49,14 @@ public class ForwardServletFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest myRequest = (HttpServletRequest) request;
 //		LOG.info(String.format("ServletPath: %s", myRequest.getServletPath()));
-		if(REST_PATHS.stream()
+		if (REST_PATHS.stream()
 //				.peek(restEndPoint -> LOG.info(restEndPoint + " " + myRequest.getServletPath() + " "
 //						+ myRequest.getServletPath().indexOf(restEndPoint)))
-				.anyMatch(restEndPoint -> 0 == myRequest.getServletPath().indexOf(restEndPoint)) || 
-				(LANGUAGE_PATHS.stream()
+				.anyMatch(restEndPoint -> 0 == myRequest.getServletPath().indexOf(restEndPoint))
+				|| (LANGUAGE_PATHS.stream()
 //						.peek(langPath -> LOG.info(langPath + " " + myRequest.getServletPath() + " " + myRequest.getServletPath().indexOf(langPath)))
-						.anyMatch(langPath -> 0 == myRequest.getServletPath().indexOf(langPath))  
-						&& (myRequest.getServletPath().contains(".") && !myRequest.getServletPath().contains("?")
-				))) {
+						.anyMatch(langPath -> 0 == myRequest.getServletPath().indexOf(langPath))
+						&& (myRequest.getServletPath().contains(".") && !myRequest.getServletPath().contains("?")))) {
 			chain.doFilter(myRequest, response);
 		} else {
 			Iterable<Locale> iterable = () -> myRequest.getLocales().asIterator();
@@ -68,7 +67,7 @@ public class ForwardServletFilter implements Filter {
 			RequestDispatcher dispatcher = myRequest.getServletContext().getRequestDispatcher(forwardPath);
 			dispatcher.forward(myRequest, response);
 			return;
-		}		
+		}
 	}
 
 }
