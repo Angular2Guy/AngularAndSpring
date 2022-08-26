@@ -43,13 +43,39 @@ public class StatisticServiceTest {
 		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		statisticService.calcStatistics5Years(quotesBs, dto);
-		Assertions.assertNotNull(dto.getPerformance5Year());
-		Assertions.assertNotNull(dto.getAvgVolume5Year());
-		Assertions.assertNotNull(dto.getRange5Year().getStart());
-		Assertions.assertNotNull(dto.getRange5Year().getEnd());
-		Assertions.assertNotNull(dto.getVolatility5Year());		
+		Assertions.assertEquals(dto.getPerformance5Year().longValue(), 800L);
+		Assertions.assertEquals(dto.getAvgVolume5Year(), BigDecimal.valueOf(50L));
+		Assertions.assertEquals(dto.getRange5Year().getStart(), BigDecimal.TEN);
+		Assertions.assertEquals(dto.getRange5Year().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getVolatility5Year(), new BigDecimal("25.81988897471611"));		
 	}
 
+	@Test
+	public void statistic2Years() {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = createBfQuotes();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics2Years(quotesBf, dto);
+		Assertions.assertEquals(dto.getPerformance2Year().longValue(), 350L);
+		Assertions.assertEquals(dto.getAvgVolume2Year(), BigDecimal.valueOf(55L));
+		Assertions.assertEquals(dto.getRange2Year().getStart(), BigDecimal.valueOf(20L));
+		Assertions.assertEquals(dto.getRange2Year().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getVolatility2Year(), new BigDecimal("22.9128784747792"));		
+	}
+	
+	@Test
+	public void statistic1Year() {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = createBfQuotes();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics1Year(quotesBf, dto);
+		Assertions.assertEquals(dto.getPerformance1Year().longValue(), 200L);
+		Assertions.assertEquals(dto.getAvgVolume1Year(), BigDecimal.valueOf(60L));
+		Assertions.assertEquals(dto.getRange1Year().getStart(), BigDecimal.valueOf(30L));
+		Assertions.assertEquals(dto.getRange1Year().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getVolatility1Year(), new BigDecimal("20"));		
+	}
+	
 	private List<QuoteBf> createBfQuotes() {
 		return List.of(
 				this.createBfQuote(BigDecimal.TEN, BigDecimal.TEN, LocalDate.now().minusYears(4L)),
@@ -57,7 +83,7 @@ public class StatisticServiceTest {
 				this.createBfQuote(BigDecimal.valueOf(30L), BigDecimal.valueOf(30L), LocalDate.now().minusMonths(11L)),
 				this.createBfQuote(BigDecimal.valueOf(40L), BigDecimal.valueOf(40L), LocalDate.now().minusMonths(5L)),
 				this.createBfQuote(BigDecimal.valueOf(50L), BigDecimal.valueOf(50L), LocalDate.now().minusMonths(2L)),
-				this.createBfQuote(BigDecimal.valueOf(60L), BigDecimal.valueOf(60L) , LocalDate.now().minusDays(10L)),
+				this.createBfQuote(BigDecimal.valueOf(60L), BigDecimal.valueOf(60L) ,LocalDate.now().minusDays(10L)),
 				this.createBfQuote(BigDecimal.valueOf(70L), BigDecimal.valueOf(70L), LocalDate.now().minusDays(10L)),
 				this.createBfQuote(BigDecimal.valueOf(80L), BigDecimal.valueOf(80L), LocalDate.now().minusDays(10L)),
 				this.createBfQuote(BigDecimal.valueOf(90L), BigDecimal.valueOf(90L), LocalDate.now().minusDays(10L)));
@@ -70,7 +96,7 @@ public class StatisticServiceTest {
 				this.createBsQuote(BigDecimal.valueOf(30L), BigDecimal.valueOf(30L), LocalDate.now().minusMonths(11L)),
 				this.createBsQuote(BigDecimal.valueOf(40L), BigDecimal.valueOf(40L), LocalDate.now().minusMonths(5L)),
 				this.createBsQuote(BigDecimal.valueOf(50L), BigDecimal.valueOf(50L), LocalDate.now().minusMonths(2L)),
-				this.createBsQuote(BigDecimal.valueOf(60L), BigDecimal.valueOf(60L) , LocalDate.now().minusDays(10L)),
+				this.createBsQuote(BigDecimal.valueOf(60L), BigDecimal.valueOf(60L) ,LocalDate.now().minusDays(10L)),
 				this.createBsQuote(BigDecimal.valueOf(70L), BigDecimal.valueOf(70L), LocalDate.now().minusDays(10L)),
 				this.createBsQuote(BigDecimal.valueOf(80L), BigDecimal.valueOf(80L), LocalDate.now().minusDays(10L)),
 				this.createBsQuote(BigDecimal.valueOf(90L), BigDecimal.valueOf(90L), LocalDate.now().minusDays(10L)));

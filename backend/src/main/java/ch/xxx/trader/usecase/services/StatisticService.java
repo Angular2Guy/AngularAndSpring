@@ -132,11 +132,11 @@ public class StatisticService {
 	}
 
 	private <T extends Quote> BigDecimal calcVolatility(List<T> quotes) {
-		final BigDecimal average = quotes.size() < 2 ? BigDecimal.ZERO
+		final BigDecimal average = quotes.size() < 3 ? BigDecimal.ZERO
 				: quotes.stream().map(myQuote -> this.getLastValue(myQuote))
 						.reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value))
 						.divide(BigDecimal.valueOf(quotes.size()), MathContext.DECIMAL128);
-		BigDecimal variance = quotes.size() < 2 ? BigDecimal.ZERO : quotes.stream().map(myQuote -> this.getLastValue(myQuote)).map(lastValue -> lastValue.subtract(average))
+		BigDecimal variance = quotes.size() < 3 ? BigDecimal.ZERO : quotes.stream().map(myQuote -> this.getLastValue(myQuote)).map(lastValue -> lastValue.subtract(average))
 				.map(avgDifference -> avgDifference.multiply(avgDifference))
 				.reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value)).divide(BigDecimal.valueOf(quotes.size()), MathContext.DECIMAL128);
 		BigDecimal volatility = variance.sqrt(MathContext.DECIMAL64);
@@ -144,7 +144,7 @@ public class StatisticService {
 	}
 
 	private <T extends Quote> BigDecimal calcAvgVolume(List<T> quotes) {
-		return quotes.size() < 2 ? BigDecimal.ZERO
+		return quotes.size() < 3 ? BigDecimal.ZERO
 				: quotes.stream().map(myQuote -> this.getVolume(myQuote))
 						.reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value))
 						.divide(BigDecimal.valueOf(quotes.size()), MathContext.DECIMAL128);
@@ -155,9 +155,8 @@ public class StatisticService {
 	}
 
 	private <T extends Quote> Double calcPerformance(List<T> quotes) {
-		return quotes.size() < 2 ? 0.0
-				: (this.getLastValue(quotes.get(0)).doubleValue()
-						/ this.getLastValue(quotes.get(quotes.size()-1)).doubleValue() - 1) * 100;
+		return quotes.size() < 3 ? 0.0
+				: ((this.getLastValue(quotes.get(quotes.size()-1)).doubleValue() / this.getLastValue(quotes.get(0)).doubleValue()) - 1) * 100;
 	}
 
 	private <T extends Quote> BigDecimal getMinMaxValue(List<T> quotes, boolean max) {
