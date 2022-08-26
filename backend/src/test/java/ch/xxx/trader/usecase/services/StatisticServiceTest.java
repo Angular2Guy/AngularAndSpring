@@ -66,14 +66,53 @@ public class StatisticServiceTest {
 	@Test
 	public void statistic1Year() {
 		StatisticService statisticService = new StatisticService(this.myMongoRepository);
-		List<QuoteBf> quotesBf = createBfQuotes();
+		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics1Year(quotesBf, dto);
+		statisticService.calcStatistics1Year(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance1Year().longValue(), 200L);
 		Assertions.assertEquals(dto.getAvgVolume1Year(), BigDecimal.valueOf(60L));
 		Assertions.assertEquals(dto.getRange1Year().getStart(), BigDecimal.valueOf(30L));
 		Assertions.assertEquals(dto.getRange1Year().getEnd(), BigDecimal.valueOf(90L));
 		Assertions.assertEquals(dto.getVolatility1Year(), new BigDecimal("20"));		
+	}
+	
+	@Test
+	public void statistic6Months() {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = createBfQuotes();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics6Months(quotesBf, dto);
+		Assertions.assertEquals(dto.getPerformance6Month().longValue(), 125L);
+		Assertions.assertEquals(dto.getAvgVolume6Month(), BigDecimal.valueOf(65L));
+		Assertions.assertEquals(dto.getRange6Month().getStart(), BigDecimal.valueOf(40L));
+		Assertions.assertEquals(dto.getRange6Month().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getVolatility6Month(), new BigDecimal("17.07825127659933"));		
+	}
+	
+	@Test
+	public void statistic3Months() {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBs> quotesBs = createBsQuotes();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics3Month(quotesBs, dto);
+		Assertions.assertEquals(dto.getPerformance3Month().longValue(), 80L);
+		Assertions.assertEquals(dto.getAvgVolume3Month(), BigDecimal.valueOf(70L));
+		Assertions.assertEquals(dto.getRange3Month().getStart(), BigDecimal.valueOf(50L));
+		Assertions.assertEquals(dto.getRange3Month().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getVolatility3Month(), new BigDecimal("14.14213562373095"));		
+	}
+
+	@Test
+	public void statistic1Month() {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = createBfQuotes();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics1Month(quotesBf, dto);
+		Assertions.assertEquals(dto.getPerformance1Month().longValue(), 50L);
+		Assertions.assertEquals(dto.getAvgVolume1Month(), BigDecimal.valueOf(75L));
+		Assertions.assertEquals(dto.getRange1Month().getStart(), BigDecimal.valueOf(60L));
+		Assertions.assertEquals(dto.getRange1Month().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getVolatility1Month(), new BigDecimal("11.18033988749895"));		
 	}
 	
 	private List<QuoteBf> createBfQuotes() {
