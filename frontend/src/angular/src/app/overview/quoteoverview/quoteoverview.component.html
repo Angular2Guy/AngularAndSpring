@@ -2,6 +2,7 @@
 	<mat-toolbar color="primary">		
 			<span i18n>Curreny Table</span> 
 			<span class="example-fill-remaining-space"></span>
+			<span><button mat-button (click)="statistics()" i18n>Statistics</button></span>
 			<span><button mat-button (click)="orderbooks()" i18n>Orderbooks</button></span>
 			<span><button mat-button *ngIf="!loggedIn" (click)="openLoginDialog()" i18n>Login</button></span>		
 			<span><button mat-button *ngIf="loggedIn" (click)="logout()" i18n>Logout</button></span>

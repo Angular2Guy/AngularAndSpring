@@ -101,6 +101,10 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
       this.router.navigateByUrl('/orderbooks');
     }
 
+    statistics(): void {
+	  this.router.navigateByUrl('/statistics');
+    }
+
     selectedRow(row: Myrow): void {
       //console.log(row);
       if(row.exchange === 'Bitstamp') {
