@@ -75,6 +75,10 @@ export class CbdetailComponent extends DetailBase implements OnInit {
         } );
     }
 
+  back(): void {
+	this.router.navigate(['/']);
+  }
+
     changeTf() {
         this.currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteCbSmall[]>;

@@ -17,7 +17,7 @@ td {
 	width: 150px;
 }
 .radioGroup {
-	margin-left: 100px;
+	//margin-left: 100px;
 }
 .radioButton {
 	margin-left: 10px;
@@ -25,4 +25,9 @@ td {
 .chart-container {
 	height: calc(100vh - 250px);
 	width: 100%;
+}
+.example-fill-remaining-space {
+  // This fills the remaining space, by using flexbox. 
+  // Every toolbar row uses a flexbox row layout.
+  flex: 1 1 auto;
 }

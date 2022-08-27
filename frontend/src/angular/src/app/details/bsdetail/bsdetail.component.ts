@@ -58,6 +58,10 @@ export class BsdetailComponent extends DetailBase implements OnInit {
         });
     }
 
+  back(): void {
+	this.router.navigate(['/']);
+  }
+
     changeTf() {
         const currpair = this.route.snapshot.paramMap.get('currpair');
         let quoteObserv: Observable<QuoteBs[]>;

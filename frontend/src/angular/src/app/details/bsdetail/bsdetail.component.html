@@ -1,5 +1,10 @@
 <div>
-	<mat-toolbar color="primary"><span i18n>Bitstamp</span> <span class="currPair">{{currPair}}</span></mat-toolbar>
+	<mat-toolbar color="primary">
+	<span i18n>Bitstamp</span> 
+	<span class="currPair">{{currPair}}</span>
+	<span class="example-fill-remaining-space"></span>
+	<span class="back-button"><button mat-button (click)="back()" i18n>Back</button></span>
+	</mat-toolbar>
 	<div>
 		<table>
 			<tbody>
@@ -34,7 +39,6 @@
 			</tbody>
 		</table>
 		<div class="detailLinks">
-			<a [routerLink]="['/overview']" i18n>back</a> 
 			<span>
 				<mat-radio-group class="radioGroup" [(ngModel)]="timeframe" (change)="changeTf()">
 					 <mat-radio-button class="radioButton" *ngFor="let tf of utils.timeframes" [value]="tf"><span i18n>{tf, plural, =1 {today} other {{{tf}} days}}</span></mat-radio-button>				 

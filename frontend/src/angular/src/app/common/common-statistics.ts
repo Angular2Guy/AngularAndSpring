@@ -15,11 +15,9 @@
  */
 export enum StatisticCurrencyPair {bcUsd='BcUsd', ethUsd='EthUsd', lcUsd='LcUsd', rpUsd='RpUsd'}
 
-export enum CoinExchange {
-		bitfinex='Bitfinex', bitstamp='Bitstamp'
-	}
- 
-export interface CommonStatistics {
+export enum CoinExchange { bitfinex='Bitfinex', bitstamp='Bitstamp' }
+
+export class CommonStatistics {
 	currPair: StatisticCurrencyPair;
 	performance1Month: number;
 	performance3Month: number;
@@ -47,7 +45,7 @@ export interface CommonStatistics {
 	range5Year: RangeValues;
 }
 
-export interface RangeValues {
+export class RangeValues {
 	start: number;
 	end: number;
 }
