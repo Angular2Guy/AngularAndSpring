@@ -56,7 +56,10 @@ public class StatisticService {
 		Mono<CommonStatisticsDto> result = this.myMongoRepository
 				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitStampKey()), TimeFrame.Year5),
 						QuoteBs.class, BitstampService.BS_DAY_COL)
-				.collectList().flatMap(myList -> this.calcStatistics(myList));
+				.collectList().flatMap(myList -> this.calcStatistics(myList)).map(value -> {
+					value.setCurrPair(currPair);
+					return value;
+				});
 		return result;
 	}
 
@@ -178,7 +181,10 @@ public class StatisticService {
 		Mono<CommonStatisticsDto> result = this.myMongoRepository
 				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitfinexKey()), TimeFrame.Year5),
 						QuoteBf.class, BitfinexService.BF_DAY_COL)
-				.collectList().flatMap(myList -> this.calcStatistics(myList));
+				.collectList().flatMap(myList -> this.calcStatistics(myList)).map(value -> {
+					value.setCurrPair(currPair);
+					return value;
+				});
 		return result;
 	}
 }
