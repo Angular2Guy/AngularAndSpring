@@ -54,7 +54,7 @@ public class StatisticService {
 
 	private Mono<CommonStatisticsDto> createBitStampStatistics(StatisticsCurrPair currPair) {
 		Mono<CommonStatisticsDto> result = this.myMongoRepository
-				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitStampKey()), TimeFrame.Year5),
+				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitStampKey()), TimeFrame.Year5, 5000),
 						QuoteBs.class, BitstampService.BS_DAY_COL)
 				.collectList().flatMap(myList -> this.calcStatistics(myList)).map(value -> {
 					value.setCurrPair(currPair);
@@ -125,8 +125,9 @@ public class StatisticService {
 	}
 
 	<T extends Quote> void calcStatistics1Month(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+		Date beforeDate = this.createBeforeDate(1, 0);
 		List<T> quotes1Month = quotes.stream()
-				.filter(myQuote -> myQuote.getCreatedAt().after(this.createBeforeDate(1, 0))).toList();
+				.filter(myQuote -> myQuote.getCreatedAt().after(beforeDate)).toList();
 		commonStatisticsDto.setRange1Month(
 				new RangeDto(this.getMinMaxValue(quotes1Month, false), this.getMinMaxValue(quotes1Month, true)));
 		commonStatisticsDto.setAvgVolume1Month(this.calcAvgVolume(quotes1Month));

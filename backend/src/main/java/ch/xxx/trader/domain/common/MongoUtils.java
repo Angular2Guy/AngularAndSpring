@@ -43,12 +43,12 @@ public class MongoUtils {
 		}
 	};
 
-	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin) {
+	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin, int limit) {
 		Calendar cal = GregorianCalendar.getInstance();
 		cal.add(Calendar.DAY_OF_YEAR, -1);
 		Query query = new Query();
 		query.allowDiskUse(true);
-		query.limit(1000);
+		query.limit(limit);
 		if (pair.isPresent()) {
 			query.addCriteria(Criteria.where("pair").is(pair.get()));
 		}
@@ -63,6 +63,10 @@ public class MongoUtils {
 			query.with(Sort.by("createdAt").descending());
 		}
 		return query;
+	}
+	
+	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin) {
+		return buildQuery(pair, ascending, begin, 1000);
 	}
 
 	public static final Query build90DayQuery(Optional<String> pair) {
@@ -83,7 +87,7 @@ public class MongoUtils {
 		return buildQuery(pair, true, Optional.of(cal));
 	}
 
-	public static final Query buildTimeFrameQuery(Optional<String> pair, TimeFrame timeFrame) {
+	public static final Query buildTimeFrameQuery(Optional<String> pair, TimeFrame timeFrame, int limit) {
 		Calendar cal = GregorianCalendar.getInstance();
 		Query query = new Query();
 		switch (timeFrame) {
@@ -120,14 +124,18 @@ public class MongoUtils {
 			break;
 		case Year2:
 			cal.add(Calendar.YEAR, -2);
-			query = buildQuery(pair, true, Optional.of(cal));
+			query = buildQuery(pair, true, Optional.of(cal), 5000);
 			break;
 		case Year5:
 			cal.add(Calendar.YEAR, -5);
-			query = buildQuery(pair, true, Optional.of(cal));
+			query = buildQuery(pair, true, Optional.of(cal),5000);
 			break;
 		}
 		return query;
+	}
+	
+	public static final Query buildTimeFrameQuery(Optional<String> pair, TimeFrame timeFrame) {
+		return buildTimeFrameQuery(pair, timeFrame, 1000);
 	}
 
 	public static final Query buildTodayQuery(Optional<String> pair) {
