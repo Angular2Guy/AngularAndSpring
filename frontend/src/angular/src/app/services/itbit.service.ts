@@ -16,9 +16,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { QuoteBs } from '../common/quote-bs';
-import { QuoteCb } from '../common/quote-cb';
+import { catchError } from 'rxjs/operators';
 import { QuoteIb } from '../common/quote-ib';
 import { Utils } from './utils';
 import { OrderbookIb } from '../common/orderbook-ib';

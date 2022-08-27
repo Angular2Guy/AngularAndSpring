@@ -15,6 +15,8 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CoinExchange, StatisticCurrencyPair } from '../common/common-statistics';
+import { StatisticService } from '../services/statistic.service';
 
 @Component({
   selector: 'app-statistics',
@@ -23,9 +25,10 @@ import { Router } from '@angular/router';
 })
 export class StatisticsComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private statisticService: StatisticService) { }
 
   ngOnInit(): void {
+	this.statisticService.getCommonStatistics(StatisticCurrencyPair.bcUsd, CoinExchange.bitstamp).subscribe(result => console.log(result));
   }
 
   back(): void {
