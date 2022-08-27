@@ -14,6 +14,7 @@
    limitations under the License.
  */
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-statistics',
@@ -22,9 +23,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StatisticsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+  }
+
+  back(): void {
+	this.router.navigate(['/']);
   }
 
 }

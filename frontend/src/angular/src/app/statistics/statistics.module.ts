@@ -17,6 +17,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatisticsComponent } from './statistics.component';
 import { StatisticsRoutingModule } from './statistics-routing.module';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { StatisticsRoutingModule } from './statistics-routing.module';
   imports: [
     CommonModule,
     StatisticsRoutingModule,
+    MatToolbarModule,
+    MatButtonModule,
   ]
 })
 export class StatisticsModule { }

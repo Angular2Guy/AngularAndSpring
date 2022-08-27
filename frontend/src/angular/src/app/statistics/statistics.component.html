@@ -1,1 +1,38 @@
-<p>statistics works!</p>
+<div>
+	<mat-toolbar color="primary">
+	   <span i18n>Statistics</span> 
+	   <span class="example-fill-remaining-space"></span>
+	   <span class="back-button"><button mat-button (click)="back()" i18n>Back</button></span>
+	</mat-toolbar>
+	<div>
+		<table>
+			<tbody>
+				<tr>					
+					<td><span i18n>Last</span>:</td>
+					<td id="last_price">0</td>
+					<td><span i18n>High</span>:</td>
+					<td id="high">0</td>
+					<td><span i18n>Low</span>:</td>
+					<td id="low">0</td>										
+				</tr>
+				<tr>
+					<td><span i18n>Bid</span>:</td>
+					<td id="bid">0</td>
+					<td><span i18n>Ask</span>:</td>
+					<td id="ask">0</td>
+					<td><span i18n>Mid</span>:</td>
+					<td id="mid">0</td>									
+				</tr>
+				<tr>
+					<td><span i18n>Pair</span>:</td>
+					<td id="currPair">abc</td>
+					<td><span i18n>Timestamp</span>:</td>
+					<td id="createdAt">1.1.2000</td>					
+					<td><span i18n>Volume</span>:</td>
+					<td id="volume">5</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="detailLinks">
+        </div>
+</div>
