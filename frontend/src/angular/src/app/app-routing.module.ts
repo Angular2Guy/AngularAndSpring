@@ -22,7 +22,8 @@ const routes: Routes = [
     {path: 'details', loadChildren: () => import('./details/details.module').then(m => m.DetailsModule)},
     {path: 'orderbooks', loadChildren: () => import('./orderbooks/orderbooks.module')
 		.then(m => m.OrderbooksModule), canActivate: [AuthGuardService]},
-    {path: '**', component: SplashComponent}
+	{path: 'statistics', loadChildren: () => import('./statistics/statistics.module').then(m => m.StatisticsModule)},
+    {path: '**', component: SplashComponent},
 ];
 
 @NgModule({
