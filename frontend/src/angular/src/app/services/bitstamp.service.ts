@@ -72,7 +72,7 @@ export class BitstampService {
     }
 
     get6MonthsQuotes(currencypair: string): Observable<QuoteBs[]> {
-        return this.http.get<QuoteBs[]>(this.bitstamp+'/'+currencypair+'/6months', this.reqOptionsArgs)
+        return this.http.get<QuoteBs[]>(this.bitstamp+'/'+currencypair+'/6month', this.reqOptionsArgs)
 			.pipe(catchError(this.utils.handleError<QuoteBs[]>('get6MonthsQuotes')));
     }
 
