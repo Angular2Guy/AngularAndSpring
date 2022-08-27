@@ -41,6 +41,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
+import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.QuoteIb;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
@@ -90,45 +91,61 @@ public class ItbitService {
 	}
 
 	public Flux<QuoteIb> tfQuotes(String timeFrame, String pair) {
+		Flux<QuoteIb> result = Flux.empty();
 		final String newPair = this.currpairs.get(pair);
 		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(newPair));
-			return this.myMongoRepository.find(query, QuoteIb.class).filter(q -> filterEvenMinutes(q));
+			result = this.myMongoRepository.find(query, QuoteIb.class).filter(q -> filterEvenMinutes(q));
 		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build7DayQuery(Optional.of(newPair));
-			return this.myMongoRepository.find(query, QuoteIb.class, IB_HOUR_COL);
+			result = this.myMongoRepository.find(query, QuoteIb.class, IB_HOUR_COL);
 		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build30DayQuery(Optional.of(newPair));
-			return this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
+			result = this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
 		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build90DayQuery(Optional.of(newPair));
-			return this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
+			result = this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
+		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(newPair), TimeFrame.Month6);
+			result = this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
+		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(newPair), TimeFrame.Year1);
+			result = this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
 		}
 
-		return Flux.empty();
+		return result;
 	}
 
 	public Mono<byte[]> pdfReport(String timeFrame, String pair) {
 		final String newPair = this.currpairs.get(pair);
+		Mono<byte[]> result = Mono.empty();
 		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(this.myMongoRepository.find(query, QuoteIb.class)
+			result = this.reportGenerator.generateReport(this.myMongoRepository.find(query, QuoteIb.class)
 					.filter(this::filter10Minutes).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build7DayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(
+			result = this.reportGenerator.generateReport(
 					this.myMongoRepository.find(query, QuoteIb.class, IB_HOUR_COL).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build30DayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(
+			result = this.reportGenerator.generateReport(
 					this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
 		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build90DayQuery(Optional.of(newPair));
-			return this.reportGenerator.generateReport(
+			result = this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
+		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(newPair), TimeFrame.Month6);
+			result = this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
+		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(newPair), TimeFrame.Year1);
+			result = this.reportGenerator.generateReport(
 					this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
 		}
 
-		return Mono.empty();
+		return result;
 	}
 
 	private void createIbHourlyAvg() {

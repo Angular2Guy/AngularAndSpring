@@ -19,7 +19,7 @@ import { ItbitService } from '../services/itbit.service';
 import { BitfinexService } from '../services/bitfinex.service';
 
 export class CommonUtils {
-    public timeframes = [1, 7, 30, 90];
+    public timeframes = [1, 7, 30, 90, 180, 365];
     private currpairs = new Map<string,string>();
 
     constructor() {
@@ -58,6 +58,10 @@ export class CommonUtils {
             url = url + currpair + '/30days/pdf';
         } else if(timeframe === this.timeframes[3]) {
             url = url + currpair + '/90days/pdf';
+        } else if(timeframe === this.timeframes[4]) {
+            url = url + currpair + '/6month/pdf';
+        } else if(timeframe === this.timeframes[5]) {
+            url = url + currpair + '/1year/pdf';
         } else {
             url = url + currpair + '/today/pdf';
         }

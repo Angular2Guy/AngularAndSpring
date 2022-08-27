@@ -17,9 +17,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { QuoteBs } from '../common/quote-bs';
 import { QuoteCbSmall, QuoteCb } from '../common/quote-cb';
-import { QuoteIb } from '../common/quote-ib';
 import { Utils } from './utils';
 
 @Injectable({providedIn: 'root'})
@@ -60,6 +58,16 @@ export class CoinbaseService {
     get90DayQuotes(): Observable<QuoteCbSmall[]> {
         return this.http.get<QuoteCbSmall[]>(this.coinbase+'/90days', this.reqOptionsArgs)
 			.pipe(catchError(this.utils.handleError<QuoteCbSmall[]>('get90DayQuotes')));
+    }
+
+    get6MonthsQuotes(): Observable<QuoteCbSmall[]> {
+        return this.http.get<QuoteCbSmall[]>(this.coinbase+'/6month', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteCbSmall[]>('get6MonthsQuotes')));
+    }
+
+    get1YearQuotes(): Observable<QuoteCbSmall[]> {
+        return this.http.get<QuoteCbSmall[]>(this.coinbase+'/1year', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteCbSmall[]>('get1YearQuotes')));
     }
 
     lowercaseKeys(quote: QuoteCb): QuoteCb {

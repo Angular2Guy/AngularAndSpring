@@ -72,6 +72,10 @@ export class BfdetailComponent extends DetailBase implements OnInit {
 			quoteObserv = this.serviceBf.get30DayQuotes( currpair );
 		} else if ( this.timeframe === this.utils.timeframes[3] ) {
 			quoteObserv = this.serviceBf.get90DayQuotes( currpair );
+		} else if ( this.timeframe === this.utils.timeframes[4] ) {
+			quoteObserv = this.serviceBf.get6MonthsQuotes( currpair );
+		} else if ( this.timeframe === this.utils.timeframes[5] ) {
+			quoteObserv = this.serviceBf.get1YearQuotes( currpair );
 		} else {
 			quoteObserv = this.serviceBf.getTodayQuotes( currpair );
 		}

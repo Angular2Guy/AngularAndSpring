@@ -69,6 +69,10 @@ export class IbdetailComponent extends DetailBase implements OnInit {
 			 quoteObserv = this.serviceIb.get30DayQuotes( currpair );
 		} else if ( this.timeframe === this.utils.timeframes[3] ) {
 			 quoteObserv = this.serviceIb.get90DayQuotes( currpair );
+		} else if ( this.timeframe === this.utils.timeframes[4] ) {
+			quoteObserv = this.serviceIb.get6MonthsQuotes( currpair );
+		} else if ( this.timeframe === this.utils.timeframes[5] ) {
+			quoteObserv = this.serviceIb.get1YearQuotes( currpair );
 		} else {
 			quoteObserv = this.serviceIb.getTodayQuotes( currpair );
 		}

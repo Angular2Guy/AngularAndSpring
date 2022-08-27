@@ -63,6 +63,16 @@ export class BitfinexService {
 		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get90DayQuotes')));
   }
 
+  get6MonthsQuotes(currencypair: string): Observable<QuoteBf[]> {
+      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/6month', this.reqOptionsArgs)
+		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get6MonthQuotes')));
+  }
+
+  get1YearQuotes(currencypair: string): Observable<QuoteBf[]> {
+      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/1year', this.reqOptionsArgs)
+		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get1YearQuotes')));
+  }
+
   getOrderbook(currencypair: string): Observable<OrderbookBf> {
       const reqOptions = {headers: this.utils.createTokenHeader()};
       return this.http.get<OrderbookBf>(this.bitfinex+'/'+currencypair+'/orderbook/', reqOptions)

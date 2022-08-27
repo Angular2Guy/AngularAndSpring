@@ -88,6 +88,10 @@ export class CbdetailComponent extends DetailBase implements OnInit {
 			quoteObserv = this.serviceCb.get30DayQuotes();
 		} else if ( this.timeframe === this.utils.timeframes[3] ) {
 			quoteObserv = this.serviceCb.get90DayQuotes();
+		} else if ( this.timeframe === this.utils.timeframes[4] ) {
+			quoteObserv = this.serviceCb.get6MonthsQuotes();
+		} else if ( this.timeframe === this.utils.timeframes[5] ) {
+			quoteObserv = this.serviceCb.get1YearQuotes();
 		} else {
 			quoteObserv = this.serviceCb.getTodayQuotes();
 		}

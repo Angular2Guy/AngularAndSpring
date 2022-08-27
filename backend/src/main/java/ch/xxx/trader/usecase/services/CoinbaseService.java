@@ -50,6 +50,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
+import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.domain.model.entity.QuoteCbSmall;
 import ch.xxx.trader.usecase.common.DtoUtils;
@@ -121,7 +122,21 @@ public class CoinbaseService {
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()));
 	}
+	
+	public Flux<QuoteCbSmall> sixMonthsQuotesBc() {
+		Query query = MongoUtils.buildTimeFrameQuery(Optional.empty(), TimeFrame.Month6);
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(q -> filterEvenMinutes(q))
+				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
+						quote.getLtc()));
+	}
 
+	public Flux<QuoteCbSmall> oneYearQuotesBc() {
+		Query query = MongoUtils.buildTimeFrameQuery(Optional.empty(), TimeFrame.Year1);
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(q -> filterEvenMinutes(q))
+				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
+						quote.getLtc()));
+	}
+	
 	public Mono<QuoteCb> currentQuoteBc() {
 		Query query = MongoUtils.buildCurrentQuery(Optional.empty());
 		return this.myMongoRepository.findOne(query, QuoteCb.class);

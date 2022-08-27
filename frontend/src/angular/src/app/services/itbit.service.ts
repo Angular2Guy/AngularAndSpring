@@ -58,6 +58,16 @@ export class ItbitService {
 			.pipe(catchError(this.utils.handleError<QuoteIb[]>('get30DayQuotes')));
     }
 
+    get6MonthsQuotes(currencypair: string): Observable<QuoteIb[]> {
+        return this.http.get<QuoteIb[]>(this.itbit+'/'+currencypair+'/6month', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteIb[]>('get6MonthsQuotes')));
+    }
+
+    get1YearQuotes(currencypair: string): Observable<QuoteIb[]> {
+        return this.http.get<QuoteIb[]>(this.itbit+'/'+currencypair+'/1year', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteIb[]>('get1YearQuotes')));
+    }
+
     getOrderbook(currencypair: string): Observable<OrderbookIb> {
         const reqOptions = {headers: this.utils.createTokenHeader()};
         return this.http.get<OrderbookIb>(this.itbit+'/'+currencypair+'/orderbook/', reqOptions)

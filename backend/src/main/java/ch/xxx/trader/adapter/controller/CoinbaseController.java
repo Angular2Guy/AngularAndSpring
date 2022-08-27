@@ -53,6 +53,16 @@ public class CoinbaseController {
 	public Flux<QuoteCbSmall> nintyDaysQuotesBc() {
 		return this.coinbaseService.nintyDaysQuotesBc();
 	}
+
+	@GetMapping("/6month")
+	public Flux<QuoteCbSmall> sixMonthsQuotesBc() {
+		return this.coinbaseService.sixMonthsQuotesBc();
+	}
+	
+	@GetMapping("/1year")
+	public Flux<QuoteCbSmall> oneYearQuotesBc() {
+		return this.coinbaseService.oneYearQuotesBc();
+	}
 	
 	@GetMapping("/current")
 	public Mono<QuoteCb> currentQuoteBc() {

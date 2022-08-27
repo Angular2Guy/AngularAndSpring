@@ -18,8 +18,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { QuoteBs } from '../common/quote-bs';
-import { QuoteCb } from '../common/quote-cb';
-import { QuoteIb } from '../common/quote-ib';
 import { Utils } from './utils';
 import { OrderbookBs } from '../common/orderbook-bs';
 
@@ -71,6 +69,16 @@ export class BitstampService {
     get90DayQuotes(currencypair: string): Observable<QuoteBs[]> {
         return this.http.get<QuoteBs[]>(this.bitstamp+'/'+currencypair+'/90days', this.reqOptionsArgs)
 			.pipe(catchError(this.utils.handleError<QuoteBs[]>('get90DayQuotes')));
+    }
+
+    get6MonthsQuotes(currencypair: string): Observable<QuoteBs[]> {
+        return this.http.get<QuoteBs[]>(this.bitstamp+'/'+currencypair+'/6months', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteBs[]>('get6MonthsQuotes')));
+    }
+
+    get1YearQuotes(currencypair: string): Observable<QuoteBs[]> {
+        return this.http.get<QuoteBs[]>(this.bitstamp+'/'+currencypair+'/1year', this.reqOptionsArgs)
+			.pipe(catchError(this.utils.handleError<QuoteBs[]>('get1YearQuotes')));
     }
 
     getOrderbook(currencypair: string): Observable<OrderbookBs> {
