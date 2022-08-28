@@ -14,7 +14,8 @@
    limitations under the License.
  */
 import { Component, Input, OnInit } from '@angular/core';
-import { CoinExchange } from 'src/app/common/common-statistics';
+import { CoinExchange, CommonStatistics, StatisticCurrencyPair } from 'src/app/common/common-statistics';
+import { StatisticService } from 'src/app/services/statistic.service';
 
 @Component({
   selector: 'app-statistic-details',
@@ -22,13 +23,16 @@ import { CoinExchange } from 'src/app/common/common-statistics';
   styleUrls: ['./statistic-details.component.scss']
 })
 export class StatisticDetailsComponent implements OnInit {
-
   @Input()
   coinExchange: CoinExchange;
 
-  constructor() { }
+  commonStatistics = new CommonStatistics();
+
+  constructor(private statisticService: StatisticService) { }
 
   ngOnInit(): void {
+	this.statisticService.getCommonStatistics(StatisticCurrencyPair.bcUsd, CoinExchange.bitstamp)
+	   .subscribe(result => this.commonStatistics = result);
   }
 
 }
