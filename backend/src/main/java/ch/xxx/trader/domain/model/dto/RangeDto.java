@@ -18,26 +18,30 @@ package ch.xxx.trader.domain.model.dto;
 import java.math.BigDecimal;
 
 public class RangeDto {
-	private BigDecimal start = BigDecimal.ZERO;
-	private BigDecimal end = BigDecimal.ZERO;
+	private BigDecimal min = BigDecimal.ZERO;
+	private BigDecimal max = BigDecimal.ZERO;
 	
 	public RangeDto() {}
 	
-	public RangeDto(BigDecimal start, BigDecimal end) {
-		this.start = start;
-		this.end = end;
+	public RangeDto(BigDecimal min, BigDecimal max) {
+		this.min = min;
+		this.max = max;
+	}
+
+	public BigDecimal getMin() {
+		return min;
+	}
+
+	public BigDecimal getMax() {
+		return max;
+	}
+
+	public void setMin(BigDecimal min) {
+		this.min = min;
+	}
+
+	public void setMax(BigDecimal max) {
+		this.max = max;
 	}
 	
-	public BigDecimal getStart() {
-		return start;
-	}
-	public void setStart(BigDecimal start) {
-		this.start = start;
-	}
-	public BigDecimal getEnd() {
-		return end;
-	}
-	public void setEnd(BigDecimal end) {
-		this.end = end;
-	}
 }

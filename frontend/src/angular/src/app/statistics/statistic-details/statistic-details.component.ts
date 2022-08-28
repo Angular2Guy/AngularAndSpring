@@ -25,6 +25,7 @@ import { StatisticService } from 'src/app/services/statistic.service';
 export class StatisticDetailsComponent implements OnInit {
   @Input()
   coinExchange: CoinExchange;
+  statisticCurrencyPair = StatisticCurrencyPair;
 
   commonStatistics = new CommonStatistics();
 

@@ -45,8 +45,8 @@ public class StatisticServiceTest {
 		statisticService.calcStatistics5Years(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance5Year().longValue(), 800L);
 		Assertions.assertEquals(dto.getAvgVolume5Year(), BigDecimal.valueOf(50L));
-		Assertions.assertEquals(dto.getRange5Year().getStart(), BigDecimal.TEN);
-		Assertions.assertEquals(dto.getRange5Year().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getRange5Year().getMin(), BigDecimal.TEN);
+		Assertions.assertEquals(dto.getRange5Year().getMax(), BigDecimal.valueOf(90L));
 		Assertions.assertEquals(dto.getVolatility5Year(), new BigDecimal("25.81988897471611256786176933188266"));		
 	}
 
@@ -58,8 +58,8 @@ public class StatisticServiceTest {
 		statisticService.calcStatistics2Years(quotesBf, dto);
 		Assertions.assertEquals(dto.getPerformance2Year().longValue(), 350L);
 		Assertions.assertEquals(dto.getAvgVolume2Year(), BigDecimal.valueOf(55L));
-		Assertions.assertEquals(dto.getRange2Year().getStart(), BigDecimal.valueOf(20L));
-		Assertions.assertEquals(dto.getRange2Year().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getRange2Year().getMin(), BigDecimal.valueOf(20L));
+		Assertions.assertEquals(dto.getRange2Year().getMax(), BigDecimal.valueOf(90L));
 		Assertions.assertEquals(dto.getVolatility2Year(), new BigDecimal("22.91287847477920003294023596864004"));		
 	}
 	
@@ -71,8 +71,8 @@ public class StatisticServiceTest {
 		statisticService.calcStatistics1Year(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance1Year().longValue(), 200L);
 		Assertions.assertEquals(dto.getAvgVolume1Year(), BigDecimal.valueOf(60L));
-		Assertions.assertEquals(dto.getRange1Year().getStart(), BigDecimal.valueOf(30L));
-		Assertions.assertEquals(dto.getRange1Year().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getRange1Year().getMin(), BigDecimal.valueOf(30L));
+		Assertions.assertEquals(dto.getRange1Year().getMax(), BigDecimal.valueOf(90L));
 		Assertions.assertEquals(dto.getVolatility1Year(), new BigDecimal("20"));		
 	}
 	
@@ -84,8 +84,8 @@ public class StatisticServiceTest {
 		statisticService.calcStatistics6Months(quotesBf, dto);
 		Assertions.assertEquals(dto.getPerformance6Month().longValue(), 125L);
 		Assertions.assertEquals(dto.getAvgVolume6Month(), BigDecimal.valueOf(65L));
-		Assertions.assertEquals(dto.getRange6Month().getStart(), BigDecimal.valueOf(40L));
-		Assertions.assertEquals(dto.getRange6Month().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getRange6Month().getMin(), BigDecimal.valueOf(40L));
+		Assertions.assertEquals(dto.getRange6Month().getMax(), BigDecimal.valueOf(90L));
 		Assertions.assertEquals(dto.getVolatility6Month(), new BigDecimal("17.07825127659933063870173113420175"));		
 	}
 	
@@ -97,8 +97,8 @@ public class StatisticServiceTest {
 		statisticService.calcStatistics3Month(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance3Month().longValue(), 80L);
 		Assertions.assertEquals(dto.getAvgVolume3Month(), BigDecimal.valueOf(70L));
-		Assertions.assertEquals(dto.getRange3Month().getStart(), BigDecimal.valueOf(50L));
-		Assertions.assertEquals(dto.getRange3Month().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getRange3Month().getMin(), BigDecimal.valueOf(50L));
+		Assertions.assertEquals(dto.getRange3Month().getMax(), BigDecimal.valueOf(90L));
 		Assertions.assertEquals(dto.getVolatility3Month(), new BigDecimal("14.14213562373095048801688724209698"));	
 	}
 
@@ -110,8 +110,8 @@ public class StatisticServiceTest {
 		statisticService.calcStatistics1Month(quotesBf, dto);
 		Assertions.assertEquals(dto.getPerformance1Month().longValue(), 50L);
 		Assertions.assertEquals(dto.getAvgVolume1Month(), BigDecimal.valueOf(75L));
-		Assertions.assertEquals(dto.getRange1Month().getStart(), BigDecimal.valueOf(60L));
-		Assertions.assertEquals(dto.getRange1Month().getEnd(), BigDecimal.valueOf(90L));
+		Assertions.assertEquals(dto.getRange1Month().getMin(), BigDecimal.valueOf(60L));
+		Assertions.assertEquals(dto.getRange1Month().getMax(), BigDecimal.valueOf(90L));
 		Assertions.assertEquals(dto.getVolatility1Month(), new BigDecimal("11.18033988749894848204586834365638"));		
 	}
 	

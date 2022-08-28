@@ -46,6 +46,6 @@ export class CommonStatistics {
 }
 
 export class RangeValues {
-	start: number;
-	end: number;
+	min: number;
+	max: number;
 }
