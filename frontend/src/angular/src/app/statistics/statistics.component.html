@@ -7,10 +7,10 @@
 	<div>
 	   <mat-tab-group>
 	      <mat-tab label="Bitstamp">
-	         <app-statistic-details coinBase="coinBase.Bitstamp"></app-statistic-details>
+	         <app-statistic-details [coinExchange]="coinExchange.bitstamp"></app-statistic-details>
 	      </mat-tab>
 	      <mat-tab label="Bitfinex">
-	         <app-statistic-details coinBase="coinBase.Bitfinex"></app-statistic-details>
+	         <app-statistic-details [coinExchange]="coinExchange.bitfinex"></app-statistic-details>
 	      </mat-tab>
 	   </mat-tab-group>	
 	</div>

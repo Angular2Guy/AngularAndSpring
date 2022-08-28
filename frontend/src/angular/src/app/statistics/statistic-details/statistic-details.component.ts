@@ -26,13 +26,19 @@ export class StatisticDetailsComponent implements OnInit {
   @Input()
   coinExchange: CoinExchange;
   statisticCurrencyPair = StatisticCurrencyPair;
-
+  selCurrency = StatisticCurrencyPair.bcUsd;
   commonStatistics = new CommonStatistics();
 
   constructor(private statisticService: StatisticService) { }
 
   ngOnInit(): void {
-	this.statisticService.getCommonStatistics(StatisticCurrencyPair.bcUsd, CoinExchange.bitstamp)
+	console.log(this.coinExchange);
+	this.statisticService.getCommonStatistics(this.selCurrency, this.coinExchange)
+	   .subscribe(result => this.commonStatistics = result);
+  }
+
+  updateCurrency(): void {
+	this.statisticService.getCommonStatistics(this.selCurrency, this.coinExchange)
 	   .subscribe(result => this.commonStatistics = result);
   }
 

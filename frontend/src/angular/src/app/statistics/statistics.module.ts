@@ -22,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatRadioModule} from '@angular/material/radio';
 import { StatisticDetailsComponent } from './statistic-details/statistic-details.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,8 @@ import { StatisticDetailsComponent } from './statistic-details/statistic-details
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     StatisticsRoutingModule,
     MatToolbarModule,
     MatButtonModule,
