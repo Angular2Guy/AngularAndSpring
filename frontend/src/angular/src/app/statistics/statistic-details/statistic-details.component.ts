@@ -13,17 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { StatisticsComponent } from './statistics.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { CoinExchange } from 'src/app/common/common-statistics';
 
-const routes: Routes = [{
-    path: '',
-    component: StatisticsComponent
-    }];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+@Component({
+  selector: 'app-statistic-details',
+  templateUrl: './statistic-details.component.html',
+  styleUrls: ['./statistic-details.component.scss']
 })
-export class StatisticsRoutingModule { }
+export class StatisticDetailsComponent implements OnInit {
+
+  @Input()
+  coinExchange: CoinExchange;
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}

@@ -25,11 +25,13 @@ import { StatisticService } from '../services/statistic.service';
 })
 export class StatisticsComponent implements OnInit {
   commonStatistics = new CommonStatistics();
+  coinExchange=CoinExchange;
 
   constructor(private router: Router, private statisticService: StatisticService) { }
 
   ngOnInit(): void {
-	this.statisticService.getCommonStatistics(StatisticCurrencyPair.bcUsd, CoinExchange.bitstamp).subscribe(result => this.commonStatistics = result);
+	this.statisticService.getCommonStatistics(StatisticCurrencyPair.bcUsd, CoinExchange.bitstamp)
+	   .subscribe(result => this.commonStatistics = result);
   }
 
   back(): void {

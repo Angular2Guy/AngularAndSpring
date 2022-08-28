@@ -19,16 +19,20 @@ import { StatisticsComponent } from './statistics.component';
 import { StatisticsRoutingModule } from './statistics-routing.module';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import {MatTabsModule} from '@angular/material/tabs';
+import { StatisticDetailsComponent } from './statistic-details/statistic-details.component';
 
 @NgModule({
   declarations: [
-    StatisticsComponent
+    StatisticsComponent,
+    StatisticDetailsComponent
   ],
   imports: [
     CommonModule,
     StatisticsRoutingModule,
     MatToolbarModule,
     MatButtonModule,
+    MatTabsModule
   ]
 })
 export class StatisticsModule { }
