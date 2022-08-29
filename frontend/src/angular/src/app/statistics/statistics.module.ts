@@ -19,10 +19,13 @@ import { StatisticsComponent } from './statistics.component';
 import { StatisticsRoutingModule } from './statistics-routing.module';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatRadioModule} from '@angular/material/radio';
+import { MatTabsModule } from '@angular/material/tabs';
+import  {MatRadioModule } from '@angular/material/radio';
 import { StatisticDetailsComponent } from './statistic-details/statistic-details.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxSimpleChartsModule } from 'ngx-simple-charts';
+import { NgxBarChartsModule } from 'ngx-simple-charts/bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -37,7 +40,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatToolbarModule,
     MatButtonModule,
     MatTabsModule,
-    MatRadioModule
+    MatRadioModule,
+    NgxSimpleChartsModule,
+    NgxBarChartsModule,
+    MatProgressSpinnerModule
   ]
 })
 export class StatisticsModule { }

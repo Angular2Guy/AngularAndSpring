@@ -69,5 +69,12 @@
 		 </tbody>		 
       </table>
    </div>
-   {{selCurrency}}
+   <div *ngIf="chartsLoading" class="center-div">
+	   <mat-progress-spinner			
+			mode="indeterminate"
+			color="primary"></mat-progress-spinner>
+   </div>
+   <div *ngIf="!chartsLoading" class="chart-container">
+	  <sc-bar-chart [chartBars]="chartBars"></sc-bar-chart>
+   </div>
 </div>

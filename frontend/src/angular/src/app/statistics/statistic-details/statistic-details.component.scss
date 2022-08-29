@@ -42,3 +42,16 @@ td, th {
 th {
 	font-weight: 600;
 }
+
+.chart-container {
+	height: calc(100vh - 340px);
+	width: 100%;
+}
+
+.center-div {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: calc(100vh - 340px);
+}
