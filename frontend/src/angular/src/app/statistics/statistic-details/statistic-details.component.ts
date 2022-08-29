@@ -32,9 +32,19 @@ export class StatisticDetailsComponent implements OnInit {
   commonStatistics = new CommonStatistics();
   chartBars!: ChartBars;
   chartsLoading = true;
-  _tabIndex=0;
+  private myTabIndex=0;
 
   constructor(private statisticService: StatisticService) { }
+
+  get tabIndex() {
+	return this.myTabIndex;
+  }
+
+  @Input()
+  set tabIndex(tabIndex: number) {
+	this.myTabIndex = tabIndex;
+	this.updateCurrency();
+  }
 
   ngOnInit(): void {
 	this.statisticService.getCommonStatistics(this.selCurrency, this.coinExchange)
@@ -51,23 +61,18 @@ export class StatisticDetailsComponent implements OnInit {
 	}
   }
 
-  get tabIndex() {
-	return this._tabIndex;
-  }
-
-  @Input()
-  set tabIndex(tabIndex: number) {
-	this._tabIndex = tabIndex;
-	this.updateCurrency();
-  }
 
   private createChartBars(commonStatistics: CommonStatistics): ChartBars {
-	const performanceValues = [{x: '1 Month',y: commonStatistics.performance1Month}, {x: '3 Months', y: commonStatistics.performance3Month}, 
-	  {x: '6 Months', y: commonStatistics.performance6Month}, {x: '1 Year', y: commonStatistics.performance1Year}, {x: '2 Years', y: commonStatistics.performance2Year}, 
-	  {x: '5 Years', y: commonStatistics.performance5Year}].reverse() as [ChartBar];	
-	const myChartBars = {title: 'Performance', from: '', xScaleHeight: 100, yScaleWidth: 100, chartBars: performanceValues} as ChartBars;
+	const performanceValues = [{x: $localize `:@@Month1:1 Month`, y: commonStatistics.performance1Month},
+	  {x: $localize `:@@Month3:3 Months`, y: commonStatistics.performance3Month},
+	  {x: $localize `:@@Month6:6 Months`, y: commonStatistics.performance6Month},
+	  {x: $localize `:@@Year1:1 Year`, y: commonStatistics.performance1Year},
+	  {x: $localize `:@@Year2:2 Years`, y: commonStatistics.performance2Year},
+	  {x: $localize `:@@Year5:5 Years`, y: commonStatistics.performance5Year}].reverse() as [ChartBar];
+	const myChartBars = {title: $localize `:@@Performance:Performance`, from: '',
+	   xScaleHeight: 100, yScaleWidth: 100, chartBars: performanceValues} as ChartBars;
 	this.chartsLoading = false;
-	console.log(myChartBars);
+	// console.log(myChartBars);
 	return myChartBars;
   }
 }

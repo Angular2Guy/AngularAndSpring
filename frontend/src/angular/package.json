@@ -15,7 +15,8 @@
     "postinstall": "ngcc",
     "postbuild": "npm run deploy",
     "predeploy": "rimraf ../../main/resources/static/*",
-    "deploy": "cpx 'base/*' dist/testproject/ && cpx 'dist/testproject/**' ../../../backend/src/main/resources/static/"
+    "deploy": "cpx 'base/*' dist/testproject/ && cpx 'dist/testproject/**' ../../../backend/src/main/resources/static/",
+    "extract-i18n": "ng extract-i18n --format=json"
   },
   "private": true,
   "dependencies": {
