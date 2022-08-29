@@ -32,6 +32,7 @@ export class StatisticDetailsComponent implements OnInit {
   commonStatistics = new CommonStatistics();
   chartBars!: ChartBars;
   chartsLoading = true;
+  _tabIndex=0;
 
   constructor(private statisticService: StatisticService) { }
 
@@ -42,18 +43,31 @@ export class StatisticDetailsComponent implements OnInit {
   }
 
   updateCurrency(): void {
-	this.chartsLoading = true;
-	this.statisticService.getCommonStatistics(this.selCurrency, this.coinExchange)
-	   .pipe(tap(result => this.chartBars = this.createChartBars(result)))
-	   .subscribe(result => this.commonStatistics = result);
+	if(!this.chartsLoading) {
+	   this.chartsLoading = true;
+	   this.statisticService.getCommonStatistics(this.selCurrency, this.coinExchange)
+	      .pipe(tap(result => this.chartBars = this.createChartBars(result)))
+	      .subscribe(result => this.commonStatistics = result);
+	}
+  }
+
+  get tabIndex() {
+	return this._tabIndex;
+  }
+
+  @Input()
+  set tabIndex(tabIndex: number) {
+	this._tabIndex = tabIndex;
+	this.updateCurrency();
   }
 
   private createChartBars(commonStatistics: CommonStatistics): ChartBars {
 	const performanceValues = [{x: '1 Month',y: commonStatistics.performance1Month}, {x: '3 Months', y: commonStatistics.performance3Month}, 
 	  {x: '6 Months', y: commonStatistics.performance6Month}, {x: '1 Year', y: commonStatistics.performance1Year}, {x: '2 Years', y: commonStatistics.performance2Year}, 
-	  {x: '5 Years', y: commonStatistics.performance5Year}].reverse();	
+	  {x: '5 Years', y: commonStatistics.performance5Year}].reverse() as [ChartBar];	
 	const myChartBars = {title: 'Performance', from: '', xScaleHeight: 100, yScaleWidth: 100, chartBars: performanceValues} as ChartBars;
 	this.chartsLoading = false;
+	console.log(myChartBars);
 	return myChartBars;
   }
 }

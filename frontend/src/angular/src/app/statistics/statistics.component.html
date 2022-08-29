@@ -5,12 +5,12 @@
 	   <span class="back-button"><button mat-button (click)="back()" i18n>Back</button></span>
 	</mat-toolbar>
 	<div>
-	   <mat-tab-group>
+	   <mat-tab-group (selectedTabChange)="onSelTabChange($event)">
 	      <mat-tab label="Bitstamp">
-	         <app-statistic-details [coinExchange]="coinExchange.bitstamp"></app-statistic-details>
+	         <app-statistic-details [tabIndex]="tabIndex" [coinExchange]="coinExchange.bitstamp"></app-statistic-details>
 	      </mat-tab>
 	      <mat-tab label="Bitfinex">
-	         <app-statistic-details [coinExchange]="coinExchange.bitfinex"></app-statistic-details>
+	         <app-statistic-details [tabIndex]="tabIndex" [coinExchange]="coinExchange.bitfinex"></app-statistic-details>
 	      </mat-tab>
 	   </mat-tab-group>	
 	</div>

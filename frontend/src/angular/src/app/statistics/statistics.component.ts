@@ -25,10 +25,15 @@ import { CoinExchange, CommonStatistics } from '../common/common-statistics';
 export class StatisticsComponent {
   commonStatistics = new CommonStatistics();
   coinExchange=CoinExchange;
+  tabIndex=0;
 
   constructor(private router: Router) { }
 
   back(): void {
 	this.router.navigate(['/']);
+  }
+
+  onSelTabChange(event: any): void {
+	this.tabIndex = event.index;
   }
 }
