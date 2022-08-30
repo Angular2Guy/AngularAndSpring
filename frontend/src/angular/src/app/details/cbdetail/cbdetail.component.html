@@ -1,53 +1,53 @@
 <div>
 	<mat-toolbar color="primary">
-	<span i18n>Coinbase</span> 
+	<span i18n="@@coinbase">Coinbase</span> 
 	<span class="currPair">{{myCurrPair}}</span>
 	<span class="example-fill-remaining-space"></span>
-	<span class="back-button"><button mat-button (click)="back()" i18n>Back</button></span>
+	<span class="back-button"><button mat-button (click)="back()" i18n="@@back">Back</button></span>
 	</mat-toolbar>
 	<div>
 		<table>
 			<tbody>
 				<tr *ngIf="currpair === BTCUSD">	
-					<td><span i18n>Pair</span>:</td>
+					<td i18n="@@pair">Pair:</td>
 					<td>{{myCurrPair}}</td>
-					<td><span i18n>Last Usd</span>:</td>
+					<td i18n="@@lastUsd">Last Usd:</td>
 					<td id="usd">{{currQuote?.usd | number:'1.2'}}</td>				
-					<td><span i18n>Last Eur</span>:</td>
+					<td i18n="@@lastEur">Last Eur:</td>
 					<td id="eur">{{currQuote?.eur | number:'1.2'}}</td>
-					<td><span i18n>Last Yen</span>:</td>
+					<td i18n="@@lastYen">Last Yen:</td>
 					<td id="jpy">{{currQuote?.jpy | number:'1.2'}}</td>
-					<td><span i18n>Last Pound</span>:</td>
+					<td i18n="@@lastGbp">Last Pound:</td>
 					<td id="gbp">{{currQuote?.gbp | number:'1.2'}}</td>
-					<td><span i18n>Timestamp</span>:</td>
+					<td i18n="@@timestamp">Timestamp:</td>
 					<td id="createdAt">{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
 				</tr>					
 				<tr *ngIf="currpair === ETHUSD">
-					<td><span i18n>Pair</span>:</td>
+					<td i18n="@@pair">Pair:</td>
 					<td>{{myCurrPair}}</td>					
-					<td><span i18n>Last Usd</span>:</td>
+					<td i18n="@@lastUsd">Last Usd:</td>
 					<td>{{currQuote?.usd / currQuote?.eth | number:'1.2'}}</td>				
-					<td><span i18n>Last Eur</span>:</td>
+					<td i18n="@@lastEur">Last Eur:</td>
 					<td>{{currQuote?.eur / currQuote?.eth | number:'1.2'}}</td>
-					<td><span i18n>Last Yen</span>:</td>
+					<td i18n="@@lastYen">Last Yen:</td>
 					<td>{{currQuote?.jpy / currQuote?.eth | number:'1.2'}}</td>
-					<td><span i18n>Last Pound</span>:</td>
+					<td i18n="@@lastGbp">Last Pound:</td>
 					<td>{{currQuote?.gbp / currQuote?.eth | number:'1.2'}}</td>
-					<td><span i18n>Timestamp</span>:</td>
+					<td i18n="@@timestamp">Timestamp:</td>
 					<td>{{currQuote?.createdAt | date:'HH:mm:ss' }}</td>
 				</tr>
 				<tr *ngIf="currpair === LTCUSD">
-					<td><span i18n>Pair</span>:</td>
+					<td i18n="@@pair">Pair:</td>
 					<td>{{myCurrPair}}</td>					
-					<td><span i18n>Last Usd</span>:</td>
+					<td i18n="@@lastUsd">Last Usd:</td>
 					<td>{{currQuote?.usd / currQuote?.ltc | number:'1.2'}}</td>				
-					<td><span i18n>Last Eur</span>:</td>
+					<td i18n="@@lastEur">Last Eur:</td>
 					<td>{{currQuote?.eur / currQuote?.ltc | number:'1.2'}}</td>
-					<td><span i18n>Last Yen</span>:</td>
+					<td i18n="@@lastYen">Last Yen:</td>
 					<td>{{currQuote?.jpy / currQuote?.ltc | number:'1.2'}}</td>
-					<td><span i18n>Last Pound</span>:</td>
+					<td i18n="@@lastGbp">Last Pound:</td>
 					<td>{{currQuote?.gbp / currQuote?.ltc | number:'1.2'}}</td>
-					<td><span i18n>Timestamp</span>:</td>
+					<td i18n="@@timestamp">Timestamp:</td>
 					<td id="createdAt">{{ currQuote?.createdAt | date:'HH:mm:ss' }}</td>
 				</tr>
 			</tbody>

@@ -1,31 +1,31 @@
 <div>
 	<mat-toolbar color="primary">
-	<span i18n>Orderbooks</span></mat-toolbar>
+	<span i18n="@@orderbooks">Orderbooks</span></mat-toolbar>
 	<div class="flexcontainer">
 		<div class="flexchild">
 			<form (ngSubmit)="onSubmit()" #obForm="ngForm">
 				<mat-list>
 					<mat-list-item>
-						<mat-checkbox [(ngModel)]="model.bitstampCb" name="bitstampCb" i18n>Bitstamp</mat-checkbox>
+						<mat-checkbox [(ngModel)]="model.bitstampCb" name="bitstampCb" i18n="@@bitstamp">Bitstamp</mat-checkbox>
 					</mat-list-item>
 					<mat-list-item>
-						<mat-checkbox [(ngModel)]="model.itbitCb" name="itbitCb" i18n>Itbit</mat-checkbox>		
+						<mat-checkbox [(ngModel)]="model.itbitCb" name="itbitCb" i18n="@@itbit">Itbit</mat-checkbox>		
 					</mat-list-item>
 					<mat-list-item>
-						<mat-checkbox [(ngModel)]="model.bitfinexCb" name="bitfinexCb" i18n>Bitfinex</mat-checkbox>
+						<mat-checkbox [(ngModel)]="model.bitfinexCb" name="bitfinexCb" i18n="@@bitfinex">Bitfinex</mat-checkbox>
 					</mat-list-item>
 					<mat-list-item>
 						<div class="formatMs">
 							<mat-radio-group [(ngModel)]="model.buysell" name="buysell">
-  								<mat-radio-button name="buysell" value="1" i18n>Buy</mat-radio-button>
-  								<mat-radio-button name="buysell" value="0" i18n>Sell</mat-radio-button>
+  								<mat-radio-button name="buysell" value="1" i18n="@@buy">Buy</mat-radio-button>
+  								<mat-radio-button name="buysell" value="0" i18n="@@sell">Sell</mat-radio-button>
 							</mat-radio-group>
 						</div>
 					</mat-list-item>
 					<mat-list-item></mat-list-item>			
 					<mat-list-item>
 						<mat-form-field> 
-							<mat-select [(ngModel)]="model.currpair" required name="currpair" placeholder-i18n placeholder="currency pair"> 
+							<mat-select [(ngModel)]="model.currpair" required name="currpair" placeholder-i18n="@@currencyPair" placeholder="currency pair"> 
 								<mat-option *ngFor="let curr of currencies" [value]="curr.value"> {{curr.name}} </mat-option> 
 							</mat-select> 
 						</mat-form-field>
@@ -34,23 +34,23 @@
 						<div>						 
 							<div class="formatMs"> 
 								<mat-form-field>
-									<input matInput type="number" [(ngModel)]="model.amount" name="amount" required placeholder-i18n placeholder="Amount" >
+									<input matInput type="number" [(ngModel)]="model.amount" name="amount" required placeholder-i18n="@@amount" placeholder="Amount" >
 								</mat-form-field>
 							</div>
 						</div> 
 					</mat-list-item>
 					<mat-list-item></mat-list-item>
 					<mat-list-item>
-						<button mat-button type="submit" [disabled]="!obForm.form.valid" i18n>Search</button>
-						<button mat-button (click)="onBack()" i18n>Back</button>
+						<button mat-button type="submit" [disabled]="!obForm.form.valid" i18n="@@search">Search</button>
+						<button mat-button (click)="onBack()" i18n="@@back">Back</button>
 					</mat-list-item>
 				</mat-list>
 			</form>						
 		</div>
 		<div class="flexchild">
 			<mat-list>
-				<mat-list-item><span i18n>Bitstamp Orders</span></mat-list-item>
-				<mat-list-item><span i18n>Price</span>&nbsp; - &nbsp;<span i18n>Amount</span></mat-list-item>
+				<mat-list-item><span i18n="@@orderbooksBitstampOrders">Bitstamp Orders</span></mat-list-item>
+				<mat-list-item><span i18n="@@price">Price</span>&nbsp; - &nbsp;<span i18n="@@amount">Amount</span></mat-list-item>
 				<mat-list-item *ngFor="let order of bsOrders">
 					<span [style.color]="order.color">{{order.price}} - {{order.amount}}</span>
 				</mat-list-item>
@@ -58,8 +58,8 @@
 		</div>	
 		<div class="flexchild">
 			<mat-list>
-				<mat-list-item><span i18n>Itbit Orders</span></mat-list-item>
-				<mat-list-item><span i18n>Price</span>&nbsp; - &nbsp;<span i18n>Amount</span></mat-list-item>
+				<mat-list-item><span i18n="@@orderbooksItbitOrders">Itbit Orders</span></mat-list-item>
+				<mat-list-item><span i18n="@@price">Price</span>&nbsp; - &nbsp;<span i18n="@@amount">Amount</span></mat-list-item>
 				<mat-list-item *ngFor="let order of ibOrders">
 					<span [style.color]="order.color">{{order.price}} - {{order.amount}}</span>
 				</mat-list-item>
@@ -67,8 +67,8 @@
 		</div>
 		<div class="flexchild">
 			<mat-list>
-				<mat-list-item><span i18n>Bitfinex Orders</span></mat-list-item>
-				<mat-list-item><span i18n>Price</span>&nbsp; - &nbsp;<span i18n>Amount</span></mat-list-item>
+				<mat-list-item><span i18n="@@orderbooksBitfinexOrders">Bitfinex Orders</span></mat-list-item>
+				<mat-list-item><span i18n="@@price">Price</span>&nbsp; - &nbsp;<span i18n="@@amount">Amount</span></mat-list-item>
 				<mat-list-item *ngFor="let order of bfOrders">
 					<span [style.color]="order.color">{{order.price}} - {{order.amount}}</span>
 				</mat-list-item>

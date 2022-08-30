@@ -69,7 +69,7 @@ export class StatisticDetailsComponent implements OnInit {
 	  {x: $localize `:@@Year1:1 Year`, y: commonStatistics.performance1Year},
 	  {x: $localize `:@@Year2:2 Years`, y: commonStatistics.performance2Year},
 	  {x: $localize `:@@Year5:5 Years`, y: commonStatistics.performance5Year}].reverse() as [ChartBar];
-	const myChartBars = {title: $localize `:@@Performance:Performance`, from: '',
+	const myChartBars = {title: $localize `:@@statisticsPerformance:Performance`, from: '',
 	   xScaleHeight: 100, yScaleWidth: 100, chartBars: performanceValues} as ChartBars;
 	this.chartsLoading = false;
 	// console.log(myChartBars);

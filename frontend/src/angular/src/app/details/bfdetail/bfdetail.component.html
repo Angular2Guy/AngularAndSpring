@@ -1,35 +1,35 @@
 <div>
 	<mat-toolbar color="primary">
-	<span i18n>Bitfinex</span> 
+	<span i18n="@@bitfinex">Bitfinex</span> 
 	<span class="currPair">{{currPair}}</span>
 	<span class="example-fill-remaining-space"></span>
-	<span class="back-button"><button mat-button (click)="back()" i18n>Back</button></span>
+	<span class="back-button"><button mat-button (click)="back()" i18n="@@back">Back</button></span>
 	</mat-toolbar>
 	<div>
 		<table>
 			<tbody>
 				<tr>					
-					<td><span i18n>Last</span>:</td>
+					<td i18n="@@last">Last:</td>
 					<td id="last_price">{{currQuote?.last_price | number:'1.2'}}</td>
-					<td><span i18n>High</span>:</td>
+					<td i18n="@@high">High:</td>
 					<td id="high">{{currQuote?.high | number:'1.2'}}</td>
-					<td><span i18n>Low</span>:</td>
+					<td i18n="@@low">Low:</td>
 					<td id="low">{{currQuote?.low | number:'1.2'}}</td>										
 				</tr>
 				<tr>
-					<td><span i18n>Bid</span>:</td>
+					<td i18n="@@bid">Bid:</td>
 					<td id="bid">{{currQuote?.bid | number:'1.2'}}</td>
-					<td><span i18n>Ask</span>:</td>
+					<td i18n="@@ask">Ask:</td>
 					<td id="ask">{{currQuote?.ask | number:'1.2'}}</td>
-					<td><span i18n>Mid</span>:</td>
+					<td i18n="@@mid">Mid:</td>
 					<td id="mid">{{currQuote?.mid | number:'1.2'}}</td>									
 				</tr>
 				<tr>
-					<td><span i18n>Pair</span>:</td>
+					<td i18n="@@pair">Pair:</td>
 					<td id="currPair">{{currPair}}</td>
-					<td><span i18n>Timestamp</span>:</td>
+					<td i18n="@@timestamp">Timestamp:</td>
 					<td id="createdAt">{{ currQuote?.createdAt | date:'HH:mm:ss' }}</td>					
-					<td><span i18n>Volume</span>:</td>
+					<td i18n="@@volume">Volume:</td>
 					<td id="volume">{{currQuote?.volume | number:'1.2'}}</td>
 				</tr>
 			</tbody>
@@ -39,7 +39,7 @@
 				<mat-radio-group class="radioGroup" [(ngModel)]="timeframe" (change)="changeTf()">
 					 <mat-radio-button class="radioButton" *ngFor="let tf of utils.timeframes" [value]="tf"><span i18n>{tf, plural, =1 {today} other {{{tf}} days}}</span></mat-radio-button>
 				</mat-radio-group>
-				<button mat-button class="radioButton" (click)="showReport()" [ngStyle]="{'visibility': todayQuotes.length > 0 ? 'visible' : 'hidden'}" i18n>show report</button>
+				<button mat-button class="radioButton" (click)="showReport()" [ngStyle]="{'visibility': todayQuotes.length > 0 ? 'visible' : 'hidden'}"  i18n="@@showReport">show report</button>
 			</span>		
 		</div>			
     	<div #chartContainer class="chart-container">			
