@@ -22,6 +22,7 @@
     "lastEur": "Last Eur:",
     "lastYen": "Last Yen:",
     "lastGbp": "Last Pound:",
+    "radioDays": "{VAR_PLURAL, plural, =1 {today} other {{INTERPOLATION} days}}",
     "itbit": "Itbit",
     "orderbooks": "Orderbooks",
     "buy": "Buy",
@@ -69,6 +70,6 @@
     "Year1": "1 Year",
     "Year2": "2 Years",
     "Year5": "5 Years",
-    "Performance": "Performance"
+    "statistics": "Statistics"
   }
 }

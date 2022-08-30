@@ -55,7 +55,7 @@
 		<div class="detailLinks">
 			<span>
 				<mat-radio-group class="radioGroup" [(ngModel)]="timeframe" (change)="changeTf()">
-					 <mat-radio-button class="radioButton" *ngFor="let tf of utils.timeframes" [value]="tf"><span i18n>{tf, plural, =1 {today} other {{{tf}} days}}</span></mat-radio-button>				 
+					 <mat-radio-button class="radioButton" *ngFor="let tf of utils.timeframes" [value]="tf"><span i18n="@@radioDays">{tf, plural, =1 {today} other {{{tf}} days}}</span></mat-radio-button>				 
 				</mat-radio-group>	
 			</span>
 		</div>	
