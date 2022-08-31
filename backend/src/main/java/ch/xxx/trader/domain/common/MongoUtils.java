@@ -102,7 +102,7 @@ public class MongoUtils {
 		}
 		case Month3 -> {
 			cal.add(Calendar.MONTH, -3);
-			yield query = buildQuery(pair, true, Optional.of(cal));
+			yield buildQuery(pair, true, Optional.of(cal));
 		}
 		case Month6 -> {
 			cal.add(Calendar.MONTH, -6);
