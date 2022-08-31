@@ -43,7 +43,8 @@ public class MongoUtils {
 		}
 	};
 
-	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin, int limit) {
+	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin,
+			int limit) {
 		Calendar cal = GregorianCalendar.getInstance();
 		cal.add(Calendar.DAY_OF_YEAR, -1);
 		Query query = new Query();
@@ -64,7 +65,7 @@ public class MongoUtils {
 		}
 		return query;
 	}
-	
+
 	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin) {
 		return buildQuery(pair, ascending, begin, 1000);
 	}
@@ -89,51 +90,41 @@ public class MongoUtils {
 
 	public static final Query buildTimeFrameQuery(Optional<String> pair, TimeFrame timeFrame, int limit) {
 		Calendar cal = GregorianCalendar.getInstance();
-		Query query = new Query();
-		switch (timeFrame) {
-		case CURRENT:
-			query = buildCurrentQuery(pair);
-			break;
-		case TODAY:
-			query = buildTodayQuery(pair);
-			break;
-		case SEVENDAYS:
-			query = build7DayQuery(pair);
-			break;
-		case THIRTYDAYS:
-			query = build30DayQuery(pair);
-			break;
-		case NINTYDAYS:
-			query = build90DayQuery(pair);
-			break;
-		case Month1:
+		Query query = switch (timeFrame) {
+		case CURRENT -> buildCurrentQuery(pair);
+		case TODAY -> buildTodayQuery(pair);
+		case SEVENDAYS -> build7DayQuery(pair);
+		case THIRTYDAYS -> build30DayQuery(pair);
+		case NINTYDAYS -> build90DayQuery(pair);
+		case Month1 -> {
 			cal.add(Calendar.MONTH, -1);
-			query = buildQuery(pair, true, Optional.of(cal));
-			break;
-		case Month3:
-			cal.add(Calendar.MONTH, -3);
-			query = buildQuery(pair, true, Optional.of(cal));
-			break;
-		case Month6:
-			cal.add(Calendar.MONTH, -6);
-			query = buildQuery(pair, true, Optional.of(cal));
-			break;
-		case Year1:
-			cal.add(Calendar.YEAR, -1);
-			query = buildQuery(pair, true, Optional.of(cal));
-			break;
-		case Year2:
-			cal.add(Calendar.YEAR, -2);
-			query = buildQuery(pair, true, Optional.of(cal), 5000);
-			break;
-		case Year5:
-			cal.add(Calendar.YEAR, -5);
-			query = buildQuery(pair, true, Optional.of(cal),5000);
-			break;
+			yield buildQuery(pair, true, Optional.of(cal));
 		}
+		case Month3 -> {
+			cal.add(Calendar.MONTH, -3);
+			yield query = buildQuery(pair, true, Optional.of(cal));
+		}
+		case Month6 -> {
+			cal.add(Calendar.MONTH, -6);
+			yield buildQuery(pair, true, Optional.of(cal));
+		}
+		case Year1 -> {
+			cal.add(Calendar.YEAR, -1);
+			yield buildQuery(pair, true, Optional.of(cal));
+		}
+		case Year2 -> {
+			cal.add(Calendar.YEAR, -2);
+			yield buildQuery(pair, true, Optional.of(cal), 5000);
+		}
+		case Year5 -> {
+			cal.add(Calendar.YEAR, -5);
+			yield buildQuery(pair, true, Optional.of(cal), 5000);
+		}
+		default -> new Query();
+		};
 		return query;
 	}
-	
+
 	public static final Query buildTimeFrameQuery(Optional<String> pair, TimeFrame timeFrame) {
 		return buildTimeFrameQuery(pair, timeFrame, 1000);
 	}
