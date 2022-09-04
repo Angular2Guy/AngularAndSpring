@@ -29,12 +29,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -61,14 +63,17 @@ public class BitfinexService {
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	private final Executor futureExecutor;
 
 	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils,
-			MyOrderBookClient orderBookClient, ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
+			@Qualifier("futureTaskExecutor") Executor futureExecutor, MyOrderBookClient orderBookClient,
+			ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
 		this.myMongoRepository = myMongoRepository;
 		this.serviceUtils = serviceUtils;
+		this.futureExecutor = futureExecutor;
 	}
 
 	public Mono<String> getOrderbook(String currpair) {
@@ -98,10 +103,10 @@ public class BitfinexService {
 		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
 			result = this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL);
-		} else if(MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
+		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
 			result = this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL);
-		} else if(MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
+		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
 			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
 			result = this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL);
 		}
@@ -127,21 +132,25 @@ public class BitfinexService {
 			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
 			result = this.reportGenerator.generateReport(
 					this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL).map(this.reportMapper::convert));
-		} else if(MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
-			 Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
-			 result = this.reportGenerator.generateReport(
-						this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL).map(this.reportMapper::convert));
-		} else if(MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
-			 Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
-			 result = this.reportGenerator.generateReport(
-						this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL).map(this.reportMapper::convert));
+		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
+			result = this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL).map(this.reportMapper::convert));
+		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
+			result = this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL).map(this.reportMapper::convert));
 		}
 		return result;
 	}
 
 	public void createBfAvg() {
-		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
-				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT))
+		this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
+				.timeout(Duration.ofMinutes(5L))
+				.doOnError(ex -> LOG.info("ensureIndex(" + BF_HOUR_COL + ") failed.", ex))
+				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT)
+						.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+						.doOnError(ex -> LOG.info("ensureIndex(" + BF_DAY_COL + ") failed.", ex)))
 				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L))
 				.doOnError(ex -> LOG.info("createBfAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
 				.subscribeOn(this.mongoScheduler).block();
@@ -152,11 +161,11 @@ public class BitfinexService {
 		CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> {
 			this.createBfHourlyAvg();
 			return "createBfHourlyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS, this.futureExecutor));
 		CompletableFuture<String> future4 = CompletableFuture.supplyAsync(() -> {
 			this.createBfDailyAvg();
 			return "createBfDailyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS, this.futureExecutor));
 		String combined = Stream.of(future3, future4).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		LOG.info(combined);
 		return "done";
@@ -211,8 +220,7 @@ public class BitfinexService {
 			// Bitfinex
 			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitfinex prepare day data failed", ex))
-					.onErrorResume(ex -> Mono.empty())
-					.subscribeOn(this.mongoScheduler)
+					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
 					.map(multimap -> multimap.keySet().stream()
 							.map(key -> makeBfQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
@@ -223,11 +231,8 @@ public class BitfinexService {
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_DAY_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Bitfinex prepare day data failed", ex))
-							.onErrorResume(ex -> Mono.empty())
-							.subscribeOn(this.mongoScheduler)
-							.collectList())
-					.subscribeOn(this.mongoScheduler)
-					.block();
+							.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
+					.subscribeOn(this.mongoScheduler).block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);

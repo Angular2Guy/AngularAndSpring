@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -44,6 +45,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -78,10 +80,13 @@ public class CoinbaseService {
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
 	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	private final Executor futureExecutor;
 
-	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
+	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils,
+			@Qualifier("futureTaskExecutor") Executor futureExecutor) {
 		this.myMongoRepository = myMongoRepository;
 		this.serviceUtils = serviceUtils;
+		this.futureExecutor = futureExecutor;
 		try {
 			BeanInfo beanInfo = Introspector.getBeanInfo(QuoteCb.class);
 			this.propertyDescriptors = Stream.of(beanInfo.getPropertyDescriptors())
@@ -122,7 +127,7 @@ public class CoinbaseService {
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()));
 	}
-	
+
 	public Flux<QuoteCbSmall> sixMonthsQuotesBc() {
 		Query query = MongoUtils.buildTimeFrameQuery(Optional.empty(), TimeFrame.Month6);
 		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(q -> filterEvenMinutes(q))
@@ -136,15 +141,19 @@ public class CoinbaseService {
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()));
 	}
-	
+
 	public Mono<QuoteCb> currentQuoteBc() {
 		Query query = MongoUtils.buildCurrentQuery(Optional.empty());
 		return this.myMongoRepository.findOne(query, QuoteCb.class);
 	}
 
 	public void createCbAvg() {
-		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
-				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT))
+		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
+				.timeout(Duration.ofMinutes(5L))
+				.doOnError(ex -> LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", ex))
+				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT)
+						.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+						.doOnError(ex -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex)))
 				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L))
 				.doOnError(ex -> LOG.info("createCbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
 				.subscribeOn(this.mongoScheduler).block();
@@ -163,11 +172,11 @@ public class CoinbaseService {
 			CompletableFuture<String> future7 = CompletableFuture.supplyAsync(() -> {
 				this.createCbHourlyAvg();
 				return "createCbHourlyAvg() Done.";
-			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS, this.futureExecutor));
 			CompletableFuture<String> future8 = CompletableFuture.supplyAsync(() -> {
 				this.createCbDailyAvg();
 				return "createCbDailyAvg() Done.";
-			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
+			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS, this.futureExecutor));
 			String combined = Stream.of(future7, future8).map(CompletableFuture::join).collect(Collectors.joining(" "));
 			LOG.info(combined);
 		}
@@ -189,19 +198,14 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
 					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
-					.onErrorResume(ex -> Mono.empty())
-					.subscribeOn(this.mongoScheduler)
-					.collectList()
+					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
 			collectCb.filter(myColl -> !myColl.isEmpty())
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
-							.onErrorResume(ex -> Mono.empty())
-							.subscribeOn(this.mongoScheduler)
-							.collectList())
-					.subscribeOn(this.mongoScheduler)
-					.block();
+							.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
+					.subscribeOn(this.mongoScheduler).block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -226,19 +230,14 @@ public class CoinbaseService {
 			// Coinbase
 			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
 					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
-					.onErrorResume(ex -> Mono.empty())
-					.subscribeOn(this.mongoScheduler)
-					.collectList()
+					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
 			collectCb.filter(myColl -> !myColl.isEmpty())
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
-							.onErrorResume(ex -> Mono.empty())
-							.subscribeOn(this.mongoScheduler)
-							.collectList())
-					.subscribeOn(this.mongoScheduler)
-					.block();
+							.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
+					.subscribeOn(this.mongoScheduler).block();
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
