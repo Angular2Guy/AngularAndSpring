@@ -145,8 +145,8 @@ public class BitstampService {
 		return result;
 	}
 
-	public void createBsAvg() {
-		this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
+	public Mono<String> createBsAvg() {
+		return this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
 				.timeout(Duration.ofMinutes(5L))
 				.doOnError(ex -> LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", ex))
 				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT)
@@ -154,7 +154,7 @@ public class BitstampService {
 						.doOnError(ex -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex)))
 				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L))
 				.doOnError(ex -> LOG.info("createBsAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-				.subscribeOn(this.mongoScheduler).block();
+				.subscribeOn(this.mongoScheduler);
 	}
 
 	private String createHourDayAvg() {

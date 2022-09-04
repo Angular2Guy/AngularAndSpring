@@ -147,8 +147,8 @@ public class CoinbaseService {
 		return this.myMongoRepository.findOne(query, QuoteCb.class);
 	}
 
-	public void createCbAvg() {
-		this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
+	public Mono<String> createCbAvg() {
+		return this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
 				.timeout(Duration.ofMinutes(5L))
 				.doOnError(ex -> LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", ex))
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT)
@@ -156,7 +156,7 @@ public class CoinbaseService {
 						.doOnError(ex -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex)))
 				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L))
 				.doOnError(ex -> LOG.info("createCbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-				.subscribeOn(this.mongoScheduler).block();
+				.subscribeOn(this.mongoScheduler);
 	}
 
 	private String createHourDayAvg() {

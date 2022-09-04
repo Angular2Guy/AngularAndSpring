@@ -15,6 +15,8 @@
  */
 package ch.xxx.trader.adapter.cron;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -25,8 +27,8 @@ import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
 import ch.xxx.trader.usecase.services.ItbitService;
-import io.micrometer.core.annotation.Timed;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import reactor.core.Disposable;
 
 @Component
 public class PrepareDataTask {
@@ -35,6 +37,10 @@ public class PrepareDataTask {
 	private final BitfinexService bitfinexService;
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
+	private Optional<Disposable> bitstampDisposableOpt = Optional.empty();
+	private Optional<Disposable> bitfinexDisposableOpt = Optional.empty();
+	private Optional<Disposable> itbitDisposableOpt = Optional.empty();
+	private Optional<Disposable> coinbaseDisposableOpt = Optional.empty();
 
 	public PrepareDataTask(BitstampService bitstampService, BitfinexService bitfinexService, ItbitService itbitService,
 			CoinbaseService coinbaseService) {
@@ -44,35 +50,35 @@ public class PrepareDataTask {
 		this.coinbaseService = coinbaseService;
 	}
 	
-	@Async("avgTaskExecutor")
+	@Async
 	@Scheduled(cron = "0 5 0,12 ? * ?")
 	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
-	@Timed(value = "create.bs.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createBsAvg() {
-		this.bitstampService.createBsAvg();		
+		this.bitstampDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
+		this.bitstampDisposableOpt = Optional.of(this.bitstampService.createBsAvg().subscribe());		
 	}	
 
-	@Async("avgTaskExecutor")
+	@Async
 	@Scheduled(cron = "0 45 0,12 ? * ?")
 	@SchedulerLock(name = "bitfinex_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
-	@Timed(value = "create.bf.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createBfAvg() {
-		this.bitfinexService.createBfAvg();
+		this.bitfinexDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
+		this.bitfinexDisposableOpt = Optional.of(this.bitfinexService.createBfAvg().subscribe());
 	}
 	
-	@Async("avgTaskExecutor")
+	@Async
 	@Scheduled(cron = "0 25 1,13 ? * ?")
 	@SchedulerLock(name = "itbit_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
-	@Timed(value = "create.ib.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createIbAvg() {
-		this.itbitService.createIbAvg();
+		this.itbitDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
+		this.itbitDisposableOpt = Optional.of(this.itbitService.createIbAvg().subscribe());
 	}
 
-	@Async("avgTaskExecutor")
+	@Async
 	@Scheduled(cron = "0 10 2,14 ? * ?")
 	@SchedulerLock(name = "coinbase_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
-	@Timed(value = "create.cb.avg", percentiles = { 0.5, 0.95, 0.99 })
 	public void createCbAvg() {
-		this.coinbaseService.createCbAvg();
+		this.coinbaseDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
+		this.coinbaseDisposableOpt = Optional.of(this.coinbaseService.createCbAvg().subscribe());
 	}
 }

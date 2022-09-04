@@ -42,13 +42,13 @@ public class TaskStarter {
 		this.coinbaseService = coinbaseService;
 	}
 	
-	@Async("avgTaskExecutor")
+	@Async("futureTaskExecutor")
 	@EventListener(ApplicationReadyEvent.class)
 	public void initAvgs() {
 		log.info("ApplicationReady");
-		this.bitstampService.createBsAvg();
-		this.bitfinexService.createBfAvg();
-		this.itbitService.createIbAvg();
-		this.coinbaseService.createCbAvg();
+		this.bitstampService.createBsAvg().block();
+		this.bitfinexService.createBfAvg().block();
+		this.itbitService.createIbAvg().block();
+		this.coinbaseService.createCbAvg().block();
 	}
 }

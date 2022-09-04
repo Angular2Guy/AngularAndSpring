@@ -66,11 +66,6 @@ public class SchedulingConfig {
         return this.createThreadPoolTaskExecutor(20);
     }
     
-    @Bean(name = "avgTaskExecutor")
-    public Executor avgTreadPoolTaskExecutor() {
-    	return this.createThreadPoolTaskExecutor(10);
-    }
-    
     @Bean(name = "futureTaskExecutor")
     public Executor futureTreadPoolTaskExecutor() {
     	return this.createThreadPoolTaskExecutor(10);

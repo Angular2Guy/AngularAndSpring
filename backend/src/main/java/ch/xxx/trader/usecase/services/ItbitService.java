@@ -225,8 +225,8 @@ public class ItbitService {
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Itbit Daily Data Time:"));
 	}
 
-	public void createIbAvg() {
-		this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
+	public Mono<String> createIbAvg() {
+		return this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
 				.timeout(Duration.ofMinutes(5L))
 				.doOnError(ex -> LOG.info("ensureIndex(" + IB_HOUR_COL + ") failed.", ex))
 				.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT)
@@ -234,7 +234,7 @@ public class ItbitService {
 						.doOnError(ex -> LOG.info("ensureIndex(" + IB_DAY_COL + ") failed.", ex)))
 				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L))
 				.doOnError(ex -> LOG.info("createIbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-				.subscribeOn(this.mongoScheduler).block();
+				.subscribeOn(this.mongoScheduler);
 	}
 
 	private String createHourDayAvg() {
