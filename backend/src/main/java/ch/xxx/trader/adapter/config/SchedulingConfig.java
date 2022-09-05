@@ -67,8 +67,8 @@ public class SchedulingConfig {
     }
     
     @Bean(name = "futureTaskExecutor")
-    public Executor futureTreadPoolTaskExecutor() {
-    	return this.createThreadPoolTaskExecutor(10);
+    public Executor futureThreadPoolTaskExecutor() {
+    	return this.createThreadPoolTaskExecutor(20);
     }
     
     private Executor createThreadPoolTaskExecutor(int maxPoolSize) {
