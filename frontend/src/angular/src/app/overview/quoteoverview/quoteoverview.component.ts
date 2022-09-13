@@ -29,7 +29,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { MyuserService } from '../../services/myuser.service';
 import { filter } from 'rxjs/operators';
-import { TokenService } from 'src/app/services/token.service';
+import { TokenService } from 'ngx-simple-charts/base-service';
 import {DateTime, Duration} from 'luxon';
 
 @Component({

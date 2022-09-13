@@ -18,7 +18,7 @@ import { CanActivate,ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { MyuserService } from './myuser.service';
-import { TokenService } from './token.service';
+import { TokenService } from 'ngx-simple-charts/base-service';
 
 @Injectable({providedIn: 'root'})
 export class AuthGuardService implements CanActivate {

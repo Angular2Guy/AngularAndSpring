@@ -20,7 +20,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { MyUser } from '../common/my-user';
 import { Utils } from './utils';
 import { AuthCheck } from '../common/authcheck';
-import { TokenService } from './token.service';
+import { TokenService } from 'ngx-simple-charts/base-service';
 
 @Injectable({providedIn: 'root'})
 export class MyuserService {

@@ -23,7 +23,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import  {MatRadioModule } from '@angular/material/radio';
 import { StatisticDetailsComponent } from './statistic-details/statistic-details.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxSimpleChartsModule } from 'ngx-simple-charts';
 import { NgxBarChartsModule } from 'ngx-simple-charts/bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -41,7 +40,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatButtonModule,
     MatTabsModule,
     MatRadioModule,
-    NgxSimpleChartsModule,
     NgxBarChartsModule,
     MatProgressSpinnerModule
   ]

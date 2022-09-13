@@ -19,7 +19,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { MyuserService } from '../../services/myuser.service';
 import { MyUser } from '../../common/my-user';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { TokenService } from 'src/app/services/token.service';
+import { TokenService } from 'ngx-simple-charts/base-service';
 
 
 enum FormFields {

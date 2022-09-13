@@ -22,7 +22,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SplashComponent } from './splash/splash.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TokenInterceptor } from './services/token.interceptor';
+import { NgxServiceModule,SimpleChartsConfig } from 'ngx-simple-charts/base-service';
 
 
 @NgModule({
@@ -36,9 +36,8 @@ import { TokenInterceptor } from './services/token.interceptor';
 		BrowserAnimationsModule,
 		HttpClientModule,
 		MatProgressSpinnerModule,
+		NgxServiceModule.forRoot({tokenRefreshPath: '/myuser/refreshToken', logoutPath: '/myuser/logout', loginRoute: '/login'})
 	],
-	providers: [
-		{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }
