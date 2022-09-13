@@ -28,8 +28,6 @@ import { BitstampService } from '../../services/bitstamp.service';
 import { QuoteBs } from '../../common/quote-bs';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
-//import { NgxSimpleChartsModule } from 'src/app/charts/ngx-simple-charts.module';
-import { NgxSimpleChartsModule } from 'ngx-simple-charts';
 import { NgxLineChartsModule } from 'ngx-simple-charts/line';
 
 class MockService extends BitstampService {
@@ -75,8 +73,7 @@ describe('BsdetailComponent', () => {
                 BrowserAnimationsModule,
                 MatToolbarModule,
                 MatRadioModule,
-                NgxLineChartsModule,
-				NgxSimpleChartsModule],
+                NgxLineChartsModule],
       declarations: [ BsdetailComponent ],
       providers:  [{provide: BitstampService, useValue: mockService } ]
     })

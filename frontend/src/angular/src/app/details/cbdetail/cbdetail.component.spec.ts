@@ -28,8 +28,6 @@ import { CoinbaseService } from '../../services/coinbase.service';
 import { QuoteCb, QuoteCbSmall } from '../../common/quote-cb';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
-//import { NgxSimpleChartsModule } from 'src/app/charts/ngx-simple-charts.module';
-import { NgxSimpleChartsModule } from 'ngx-simple-charts';
 import { NgxLineChartsModule } from 'ngx-simple-charts/line';
 
 
@@ -71,8 +69,7 @@ describe('CbdetailComponent', () => {
                   BrowserAnimationsModule,
                   MatToolbarModule,
                   MatRadioModule,
-                  NgxLineChartsModule,
-				  NgxSimpleChartsModule],
+                  NgxLineChartsModule],
       declarations: [ CbdetailComponent ],
       providers: [{provide: CoinbaseService, useValue: mockService }]
     })
