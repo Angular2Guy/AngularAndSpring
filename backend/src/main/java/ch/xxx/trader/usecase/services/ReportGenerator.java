@@ -16,6 +16,7 @@
 package ch.xxx.trader.usecase.services;
 
 import java.io.ByteArrayOutputStream;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,32 +38,41 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class ReportGenerator {
-	private static final Logger log = LoggerFactory.getLogger(ReportGenerator.class);	
-	
-	public Mono<byte[]> generateReport( Flux<QuotePdf> quotes) {
-		byte[] result = new byte[0];
-		Date start = new Date();
-		try {
-			JasperReport jasperReport = JasperCompileManager.compileReport(this.getClass().getClassLoader().getResourceAsStream("currencyReport.jrxml"));
-			Map<String,Object> params = new HashMap<>();
-			List<QuotePdf> myQuotes = quotes.collectList().block();
-			params.put("quotes", new JRBeanCollectionDataSource(myQuotes));
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,params, new JRBeanCollectionDataSource(myQuotes));
-			
-			JRPdfExporter pdfExporter = new JRPdfExporter();
-            pdfExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-            ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
-            pdfExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
-            pdfExporter.exportReport();
-            
-            result = pdfReportStream.toByteArray();
-		} catch (JRException e) {
-			log.error("Report generation failed.",e);
-		}
-		log.info("Report generated in: "+ (new Date().getTime() - start.getTime()) +"ms");
-		return Mono.just(result);
+	private static final Logger log = LoggerFactory.getLogger(ReportGenerator.class);
+	private static volatile JasperReport jasperReport = null;
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(2, 100, "reports", 10);
+
+	public Mono<byte[]> generateReport(Flux<QuotePdf> quotes) {
+		return quotes.publishOn(mongoScheduler).collectList().map(quotePdfs -> {
+			byte[] result = new byte[0];
+			Date start = new Date();
+			try {
+				if (jasperReport == null) {
+					jasperReport = JasperCompileManager.compileReport(
+							this.getClass().getClassLoader().getResourceAsStream("currencyReport.jrxml"));
+				}
+				Map<String, Object> params = new HashMap<>();
+				params.put("quotes", new JRBeanCollectionDataSource(quotePdfs));
+				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params,
+						new JRBeanCollectionDataSource(quotePdfs));
+
+				JRPdfExporter pdfExporter = new JRPdfExporter();
+				pdfExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+				ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
+				pdfExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
+				pdfExporter.exportReport();
+
+				result = pdfReportStream.toByteArray();
+			} catch (JRException e) {
+				log.error("Report generation failed.", e);
+			}
+			log.info("Report generated in: " + (new Date().getTime() - start.getTime()) + "ms");
+			return result;
+		});
 	}
 }
