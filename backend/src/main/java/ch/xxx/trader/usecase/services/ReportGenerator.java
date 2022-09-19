@@ -55,6 +55,7 @@ public class ReportGenerator {
 				if (jasperReport == null) {
 					jasperReport = JasperCompileManager.compileReport(
 							this.getClass().getClassLoader().getResourceAsStream("currencyReport.jrxml"));
+					LOGGER.info("Report compiled in: " + (new Date().getTime() - start.getTime()) + "ms");
 				}
 				Map<String, Object> params = new HashMap<>();
 				params.put("quotes", new JRBeanCollectionDataSource(quotePdfs));
