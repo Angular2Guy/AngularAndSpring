@@ -16,10 +16,8 @@
 package ch.xxx.trader.usecase.services;
 
 import java.io.ByteArrayOutputStream;
-
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -43,8 +41,10 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 public class ReportGenerator {
-	private static final Logger log = LoggerFactory.getLogger(ReportGenerator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReportGenerator.class);
+	//volatile to protect concurrent read/write accesses
 	private static volatile JasperReport jasperReport = null;
+	//limit cpu load to max 2 concurrently generated reports
 	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(2, 100, "reports", 10);
 
 	public Mono<byte[]> generateReport(Flux<QuotePdf> quotes) {
@@ -69,9 +69,9 @@ public class ReportGenerator {
 
 				result = pdfReportStream.toByteArray();
 			} catch (JRException e) {
-				log.error("Report generation failed.", e);
+				LOGGER.error("Report generation failed.", e);
 			}
-			log.info("Report generated in: " + (new Date().getTime() - start.getTime()) + "ms");
+			LOGGER.info("Report generated in: " + (new Date().getTime() - start.getTime()) + "ms");
 			return result;
 		});
 	}
