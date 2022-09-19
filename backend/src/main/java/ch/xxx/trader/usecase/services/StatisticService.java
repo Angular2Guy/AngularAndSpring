@@ -66,7 +66,7 @@ public class StatisticService {
 	private <T extends Quote> Mono<CommonStatisticsDto> calcStatistics(List<T> quotes) {
 		CommonStatisticsDto commonStatisticsDto = new CommonStatisticsDto();
 		calcStatistics1Month(quotes, commonStatisticsDto);		
-		calcStatistics3Month(quotes, commonStatisticsDto);			
+		calcStatistics3Months(quotes, commonStatisticsDto);			
 		calcStatistics6Months(quotes, commonStatisticsDto);
 		calcStatistics1Year(quotes, commonStatisticsDto);
 		calcStatistics2Years(quotes, commonStatisticsDto);
@@ -114,7 +114,7 @@ public class StatisticService {
 				new RangeDto(this.getMinMaxValue(quotes6Month, false), this.getMinMaxValue(quotes6Month, true)));
 	}
 
-	<T extends Quote> void calcStatistics3Month(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	<T extends Quote> void calcStatistics3Months(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes3Month = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(this.createBeforeDate(3, 0))).toList();
 		commonStatisticsDto.setRange3Month(

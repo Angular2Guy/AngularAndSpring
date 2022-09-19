@@ -15,6 +15,8 @@
  */
 package ch.xxx.trader.usecase.services;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -28,11 +30,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
+import ch.xxx.trader.domain.model.dto.RangeDto;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 
 @ExtendWith(MockitoExtension.class)
 public class StatisticServiceTest {
+	private enum StatisticKeys {
+		getPerformance, getAvgVolume, getRange, getVolatility
+	}
+	
 	@Mock
 	private MyMongoRepository myMongoRepository;
 	
@@ -94,7 +101,7 @@ public class StatisticServiceTest {
 		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics3Month(quotesBs, dto);
+		statisticService.calcStatistics3Months(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance3Month().longValue(), 80L);
 		Assertions.assertEquals(dto.getAvgVolume3Month(), BigDecimal.valueOf(70L));
 		Assertions.assertEquals(dto.getRange3Month().getMin(), BigDecimal.valueOf(50L));
@@ -113,6 +120,86 @@ public class StatisticServiceTest {
 		Assertions.assertEquals(dto.getRange1Month().getMin(), BigDecimal.valueOf(60L));
 		Assertions.assertEquals(dto.getRange1Month().getMax(), BigDecimal.valueOf(90L));
 		Assertions.assertEquals(dto.getVolatility1Month(), new BigDecimal("11.18033988749894848204586834365638"));		
+	}
+	
+	@Test
+	public void statistic1MonthEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = List.of();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics1Month(quotesBf, dto);
+		String durationStr = "1Month";
+	
+		checkEmptyResult(dto, durationStr);		
+	}
+
+	@Test
+	public void statistic3MonthEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = List.of();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics3Months(quotesBf, dto);
+		String durationStr = "3Month";
+	
+		checkEmptyResult(dto, durationStr);		
+	}
+
+	@Test
+	public void statistic6MonthEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = List.of();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics6Months(quotesBf, dto);
+		String durationStr = "6Month";
+	
+		checkEmptyResult(dto, durationStr);		
+	}
+	
+	@Test
+	public void statistic1YearEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = List.of();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics1Year(quotesBf, dto);
+		String durationStr = "1Year";
+	
+		checkEmptyResult(dto, durationStr);		
+	}
+	
+	@Test
+	public void statistic2YearEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = List.of();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics2Years(quotesBf, dto);
+		String durationStr = "2Year";
+	
+		checkEmptyResult(dto, durationStr);		
+	}
+	
+	@Test
+	public void statistic5YearEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+		List<QuoteBf> quotesBf = List.of();
+		CommonStatisticsDto dto = new CommonStatisticsDto();
+		statisticService.calcStatistics5Years(quotesBf, dto);
+		String durationStr = "5Year";
+	
+		checkEmptyResult(dto, durationStr);		
+	}
+	
+	private void checkEmptyResult(CommonStatisticsDto dto, String durationStr)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Method declaredMethod = CommonStatisticsDto.class.getDeclaredMethod(StatisticKeys.getPerformance + durationStr);
+		Assertions.assertEquals(((Double) declaredMethod.invoke(dto)).longValue(), 0L);
+		declaredMethod = CommonStatisticsDto.class.getDeclaredMethod(StatisticKeys.getAvgVolume + durationStr);
+		Assertions.assertEquals(((BigDecimal) declaredMethod.invoke(dto)).longValue(), 0L);
+		declaredMethod = CommonStatisticsDto.class.getDeclaredMethod(StatisticKeys.getRange + durationStr);
+		Assertions.assertEquals(((RangeDto) declaredMethod.invoke(dto)).getMin().longValue(), 0L);
+		declaredMethod = CommonStatisticsDto.class.getDeclaredMethod(StatisticKeys.getRange + durationStr);
+		Assertions.assertEquals(((RangeDto) declaredMethod.invoke(dto)).getMax().longValue(), 0L);
+		declaredMethod = CommonStatisticsDto.class.getDeclaredMethod(StatisticKeys.getVolatility + durationStr);
+		Assertions.assertEquals(((BigDecimal) declaredMethod.invoke(dto)).longValue(), 0L);
 	}
 	
 	private List<QuoteBf> createBfQuotes() {
