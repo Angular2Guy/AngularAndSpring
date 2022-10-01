@@ -18,6 +18,8 @@ package ch.xxx.trader.adapter.config;
 import java.time.Duration;
 import java.util.concurrent.Executor;
 
+import javax.net.ssl.SSLException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -32,9 +34,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.netty.channel.ChannelOption;
+import io.netty.handler.ssl.SslContextBuilder;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
+import reactor.netty.tcp.SslProvider.SslContextSpec;
 
 @Configuration
 @EnableAspectJAutoProxy
@@ -53,13 +57,25 @@ public class SchedulingConfig {
     public WebClient createWebClient() {
 		ConnectionProvider provider = ConnectionProvider.builder("Client").maxConnections(40)
 				.maxIdleTime(Duration.ofSeconds(6)).maxLifeTime(Duration.ofSeconds(7))
-				.pendingAcquireTimeout(Duration.ofSeconds(25)).evictInBackground(Duration.ofSeconds(10)).build();
+				.pendingAcquireTimeout(Duration.ofSeconds(9L)).evictInBackground(Duration.ofSeconds(10)).build();
 
 		WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider)
-				.option(ChannelOption.SO_KEEPALIVE, false)				
+				.secure(spec -> sslTimeouts(spec))
+				.option(ChannelOption.SO_KEEPALIVE, false)
 				.responseTimeout(Duration.ofSeconds(16L)))).build();
 		return webClient;
     }
+
+	private void sslTimeouts(SslContextSpec spec) {
+		try {
+			spec.sslContext(SslContextBuilder.forClient().build())
+				    .handshakeTimeout(Duration.ofSeconds(8))
+				    .closeNotifyFlushTimeout(Duration.ofSeconds(6))
+				    .closeNotifyReadTimeout(Duration.ofSeconds(6));
+		} catch (SSLException e) {
+			throw new RuntimeException(e);
+		}
+	}
     
     @Bean(name = "clientTaskExecutor")
     public Executor threadPoolTaskExecutor() {
