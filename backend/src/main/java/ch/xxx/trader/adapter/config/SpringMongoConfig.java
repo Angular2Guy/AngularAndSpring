@@ -30,22 +30,22 @@ import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMongoLockProvider;
 
 @Configuration
-public class SpringMongoConfig  {
+public class SpringMongoConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringMongoConfig.class);
 	private static final String SCHED_LOCK_DB = "schedLock";
-	
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    
-    @Bean
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
 	public ServerCodecConfigurer serverCodecConfigurer() {
 		return new DefaultServerCodecConfigurer();
 	}
-    
-    @Bean
-    public LockProvider lockProvider(MongoClient mongo) {
-        return new ReactiveStreamsMongoLockProvider(mongo.getDatabase(SCHED_LOCK_DB));
-    }
+
+	@Bean
+	public LockProvider lockProvider(MongoClient mongo) {
+		return new ReactiveStreamsMongoLockProvider(mongo.getDatabase(SCHED_LOCK_DB));
+	}
 }
