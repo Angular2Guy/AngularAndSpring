@@ -36,7 +36,7 @@ import { DetailBase, Tuple } from 'src/app/common/detail-base';
 })
 export class BsdetailComponent extends DetailBase implements OnInit {
 
-    protected currQuote: QuoteBs;
+    public currQuote: QuoteBs;
     protected todayQuotes: QuoteBs[] = [];
 
     constructor(private route: ActivatedRoute, private router: Router, private serviceBs: BitstampService,
