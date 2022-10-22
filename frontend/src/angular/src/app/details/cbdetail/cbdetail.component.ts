@@ -36,16 +36,16 @@ import { DetailBase, Tuple } from 'src/app/common/detail-base';
 } )
 export class CbdetailComponent extends DetailBase implements OnInit {
 
-    currQuote: QuoteCb;
-    todayQuotes: QuoteCbSmall[] = [];
-    currpair: string;
-    myCurrPair = '';
     // eslint-disable-next-line @typescript-eslint/naming-convention
     readonly BTCUSD: string;
 	// eslint-disable-next-line @typescript-eslint/naming-convention
     readonly ETHUSD: string;
 	// eslint-disable-next-line @typescript-eslint/naming-convention
     readonly LTCUSD: string;
+    protected currQuote: QuoteCb;
+    protected todayQuotes: QuoteCbSmall[] = [];
+    protected currpair: string;
+    protected myCurrPair = '';
 
     constructor( private route: ActivatedRoute, private router: Router, private serviceCb: CoinbaseService,
 		@Inject(LOCALE_ID) private myLocale: string) {

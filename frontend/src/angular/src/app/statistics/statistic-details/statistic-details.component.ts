@@ -27,11 +27,11 @@ import { StatisticService } from 'src/app/services/statistic.service';
 export class StatisticDetailsComponent implements OnInit {
   @Input()
   coinExchange: CoinExchange;
-  statisticCurrencyPair = StatisticCurrencyPair;
-  selCurrency = StatisticCurrencyPair.bcUsd;
-  commonStatistics = new CommonStatistics();
-  chartBars!: ChartBars;
-  chartsLoading = true;
+  protected statisticCurrencyPair = StatisticCurrencyPair;
+  protected selCurrency = StatisticCurrencyPair.bcUsd;
+  protected commonStatistics = new CommonStatistics();
+  protected chartBars!: ChartBars;
+  protected chartsLoading = true;
   private myTabIndex=0;
 
   constructor(private statisticService: StatisticService) { }

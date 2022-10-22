@@ -22,7 +22,7 @@ import { environment } from './../environments/environment';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'app';
+  protected title = 'app';
 
   constructor(@Inject(LOCALE_ID) private locale: string) {}
 

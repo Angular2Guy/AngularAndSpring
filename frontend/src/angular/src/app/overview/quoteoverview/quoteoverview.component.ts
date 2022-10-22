@@ -38,8 +38,8 @@ import {DateTime, Duration} from 'luxon';
   styleUrls: ['./quoteoverview.component.scss']
 })
 export class QuoteoverviewComponent implements OnInit,OnDestroy {
-    public datasource = new Myds();
-    public loggedIn = false;
+    protected datasource = new Myds();
+    protected loggedIn = false;
     private interval: any;
     private utils = new CommonUtils();
 

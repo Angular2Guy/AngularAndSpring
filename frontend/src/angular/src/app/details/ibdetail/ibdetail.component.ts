@@ -35,8 +35,8 @@ import { DetailBase, Tuple } from 'src/app/common/detail-base';
     ]
 } )
 export class IbdetailComponent extends DetailBase implements OnInit {
-    currQuote: QuoteIb;
-    todayQuotes: QuoteIb[] = [];
+    protected currQuote: QuoteIb;
+    protected todayQuotes: QuoteIb[] = [];
 
     constructor( private route: ActivatedRoute, private router: Router, private serviceIb: ItbitService,
 		@Inject(LOCALE_ID) private myLocale: string) {

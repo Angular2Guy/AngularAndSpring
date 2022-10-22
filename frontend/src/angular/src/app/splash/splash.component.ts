@@ -30,7 +30,7 @@ import { trigger, state, animate, transition, style } from '@angular/animations'
                ])]
 })
 export class SplashComponent implements OnInit,AfterViewInit {
-  myState = false;
+  protected myState = false;
 
   constructor(private router: Router) { }
 

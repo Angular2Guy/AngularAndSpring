@@ -35,11 +35,11 @@ enum FormFields {
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  signinForm: FormGroup;
-  loginForm: FormGroup;
-  loginFailed = false;
-  signinFailed = false;
-  pwMatching = true;
+  protected signinForm: FormGroup;
+  protected loginForm: FormGroup;
+  protected loginFailed = false;
+  protected signinFailed = false;
+  protected pwMatching = true;
   private user = new MyUser();
 
   constructor(public dialogRef: MatDialogRef<QuoteoverviewComponent>, private tokenService: TokenService,
@@ -62,7 +62,8 @@ export class LoginComponent implements OnInit {
 
   validate(group: FormGroup) {
       if(group.get(FormFields.Password).touched || group.get(FormFields.Password2).touched) {
-          this.pwMatching = group.get(FormFields.Password).value === group.get(FormFields.Password2).value && group.get(FormFields.Password).value !== '';
+          this.pwMatching = group.get(FormFields.Password).value === 
+             group.get(FormFields.Password2).value && group.get(FormFields.Password).value !== '';
           if(!this.pwMatching) {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               group.get(FormFields.Password).setErrors({MatchPassword: true});

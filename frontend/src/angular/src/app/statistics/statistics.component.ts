@@ -23,9 +23,9 @@ import { CoinExchange, CommonStatistics } from '../common/common-statistics';
   styleUrls: ['./statistics.component.scss']
 })
 export class StatisticsComponent {
-  commonStatistics = new CommonStatistics();
-  coinExchange=CoinExchange;
-  tabIndex=0;
+  protected commonStatistics = new CommonStatistics();
+  protected coinExchange=CoinExchange;
+  protected tabIndex=0;
 
   constructor(private router: Router) { }
 

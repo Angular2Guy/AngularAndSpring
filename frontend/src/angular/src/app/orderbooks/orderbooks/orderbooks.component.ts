@@ -29,14 +29,14 @@ import { OrderbookIb } from '../../common/orderbook-ib';
 } )
 export class OrderbooksComponent implements OnInit {
 
-    orderbookBs: OrderbookBs;
-    orderbookBf: OrderbookBf;
-    orderbookIb: OrderbookIb;
     public currencies: MyCurr[];
-    model = new MyModel( null, false, false, false, 1, null );
-    bsOrders: MyOrder[] = [];
-    bfOrders: MyOrder[] = [];
-    ibOrders: MyOrder[] = [];
+    protected orderbookBs: OrderbookBs;
+    protected orderbookBf: OrderbookBf;
+    protected orderbookIb: OrderbookIb;
+    protected model = new MyModel( null, false, false, false, 1, null );
+    protected bsOrders: MyOrder[] = [];
+    protected bfOrders: MyOrder[] = [];
+    protected ibOrders: MyOrder[] = [];
 
     constructor( private router: Router,
         private serviceBs: BitstampService,
@@ -44,7 +44,8 @@ export class OrderbooksComponent implements OnInit {
         private serviceBf: BitfinexService ) { }
 
     ngOnInit() {
-        this.currencies = [new MyCurr( this.serviceBf.BTCUSD, 'Btc - Usd' ), new MyCurr( this.serviceBf.ETHUSD, 'Eth - Usd' ), new MyCurr( this.serviceBf.LTCUSD, 'Ltc - Usd' ), new MyCurr( this.serviceBf.XRPUSD, 'Xrp - Usd' )];
+        this.currencies = [new MyCurr( this.serviceBf.BTCUSD, 'Btc - Usd' ), new MyCurr( this.serviceBf.ETHUSD, 'Eth - Usd' ),
+           new MyCurr( this.serviceBf.LTCUSD, 'Ltc - Usd' ), new MyCurr( this.serviceBf.XRPUSD, 'Xrp - Usd' )];
     }
 
     onSubmit() {
