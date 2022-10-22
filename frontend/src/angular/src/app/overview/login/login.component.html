@@ -6,13 +6,13 @@
 				<li>
 					<mat-form-field> 
 						<input matInput
-							i18n-placeholder="@@loginUsername" placeholder="Username" tabindex="1" formControlName="username"> 
+							i18n-placeholder="@@loginUsername" placeholder="Username" tabindex="1" formControlName="{{formFields.username}}"> 
 					</mat-form-field>
 				</li>
 				<li>
 					<mat-form-field> 
 						<input matInput
-							i18n-placeholder="@@loginPassword" placeholder="Password" tabindex="2" formControlName="password" type="password">
+							i18n-placeholder="@@loginPassword" placeholder="Password" tabindex="2" formControlName="{{formFields.password}}" type="password">
 					</mat-form-field>
 				</li>
 				<li *ngIf="loginFailed" class="errorText" i18n="@@loginLoginFailed"> Login Failed </li>
@@ -29,23 +29,23 @@
 				<li>
 					<mat-form-field> 
 						<input matInput
-							i18n-placeholder="@@loginUsername" placeholder="Username" tabindex="1" formControlName="username"> 
+							i18n-placeholder="@@loginUsername" placeholder="Username" tabindex="1" formControlName="{{formFields.username}}"> 
 					</mat-form-field>
 				</li>
 				<li>
 					<mat-form-field> 
 						<input matInput
-							i18n-placeholder="@@loginPassword" placeholder="Password" tabindex="2" formControlName="password" type="password">
+							i18n-placeholder="@@loginPassword" placeholder="Password" tabindex="2" formControlName="{{formFields.password}}" type="password">
 					</mat-form-field>
 					<mat-form-field style="margin-left: 20px;"> 
 						<input matInput
-							i18n-placeholder="@@loginPassword" placeholder="Password" tabindex="3" formControlName="password2" type="password">
+							i18n-placeholder="@@loginPassword" placeholder="Password" tabindex="3" formControlName="{{formFields.password2}}" type="password">
 					</mat-form-field>
 				</li>
 				<li>
 					<mat-form-field> 
 						<input matInput
-							i18n-placeholder="@@loginEmail" placeholder="Email" tabindex="4" formControlName="email">
+							i18n-placeholder="@@loginEmail" placeholder="Email" tabindex="4" formControlName="{{formFields.email}}">
 					</mat-form-field>
 				</li>			
 				<li *ngIf="signinFailed" class="errorText" i18n="@@loginSigninFailed"> Signin Failed </li>	
