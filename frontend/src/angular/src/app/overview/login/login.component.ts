@@ -54,8 +54,8 @@ export class LoginComponent implements OnInit {
           validator: this.validate.bind(this)
       });
       this.loginForm = fb.group({
-          [FormFields.username]: ['', Validators.required],
-          [FormFields.password]: ['', Validators.required]
+          [FormFields.username]: ['', [Validators.required, Validators.minLength(4)]],
+          [FormFields.password]: ['', [Validators.required, Validators.minLength(4)]]
       });
   }
 
