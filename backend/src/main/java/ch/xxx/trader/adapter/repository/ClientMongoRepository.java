@@ -17,6 +17,8 @@ package ch.xxx.trader.adapter.repository;
 
 import java.util.Collection;
 
+import javax.validation.Valid;
+
 import org.bson.Document;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
@@ -40,7 +42,7 @@ public class ClientMongoRepository implements MyMongoRepository {
 	}
 
 	@Override
-	public <T> Mono<T> save(T objectToSave) {
+	public <T> Mono<T> save(@Valid T objectToSave) {
 		return this.operations.save(objectToSave);
 	}
 
@@ -65,7 +67,7 @@ public class ClientMongoRepository implements MyMongoRepository {
 	}
 
 	@Override
-	public <T> Flux<T> insertAll(Mono<? extends Collection<? extends T>> batchToSave, String collectionName) {
+	public <T> Flux<T> insertAll(@Valid Mono<? extends Collection<? extends T>> batchToSave, String collectionName) {
 		return this.operations.insertAll(batchToSave, collectionName);
 	}
 
@@ -87,7 +89,7 @@ public class ClientMongoRepository implements MyMongoRepository {
 	}
 
 	@Override
-	public <T> Mono<T> insert(Mono<T> quote) {
+	public <T> Mono<T> insert(@Valid Mono<T> quote) {
 		return this.operations.insert(quote);
 	}
 
