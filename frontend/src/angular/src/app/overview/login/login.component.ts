@@ -46,9 +46,9 @@ export class LoginComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<QuoteoverviewComponent>, private tokenService: TokenService,
           @Inject(MAT_DIALOG_DATA) public data: any, private myuserService: MyuserService, fb: FormBuilder) {
       this.signinForm = fb.group({
-          [FormFields.username]: ['', Validators.required],
-          [FormFields.password]: ['', Validators.required],
-          [FormFields.password2]: ['', Validators.required],
+          [FormFields.username]: ['', [Validators.required, Validators.minLength(4)]],
+          [FormFields.password]: ['', [Validators.required, Validators.minLength(4)]],
+          [FormFields.password2]: ['', [Validators.required, Validators.minLength(4)]],
           [FormFields.email]: ['', Validators.required]
       },{
           validator: this.validate.bind(this)

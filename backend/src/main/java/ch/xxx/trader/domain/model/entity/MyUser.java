@@ -19,6 +19,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -36,10 +40,15 @@ public class MyUser implements UserDetails {
 
 	@Id
 	private ObjectId _id;
+	@NotNull
 	@JsonProperty
-	private Date createdAt = new Date();	
+	private Date createdAt = new Date();
+	@NotBlank
+	@Size(min = 4)
 	@JsonProperty
 	private String userId;
+	@NotBlank
+	@Size(min = 4)
 	@JsonProperty
 	private String password;
 	@JsonProperty

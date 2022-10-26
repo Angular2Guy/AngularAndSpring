@@ -18,6 +18,9 @@ package ch.xxx.trader.domain.model.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -30,9 +33,11 @@ public class QuoteBs implements Quote {
 	
 	@Id
 	private ObjectId _id;
+	@NotBlank
 	@Indexed
 	@JsonProperty
 	private String pair;
+	@NotNull
 	@Indexed(name = "QuoteBs-createdAt")
 	@JsonProperty
 	private Date createdAt = new Date();

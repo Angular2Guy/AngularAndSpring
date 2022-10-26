@@ -18,6 +18,10 @@ package ch.xxx.trader.domain.model.entity;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -28,10 +32,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class RevokedToken {
 	@Id
 	private ObjectId _id;
+	@NotBlank
+	@Size(min = 2)
 	@JsonProperty
 	private String name;
 	@JsonProperty
 	private String uuid;
+	@NotNull
 	@JsonProperty
 	private LocalDateTime lastLogout;
 	

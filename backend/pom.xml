@@ -46,6 +46,10 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 			<scope>runtime</scope>
@@ -210,7 +214,7 @@
 				<property>
 					<name>docker</name>
 					<value>!true</value>
-				</property>				
+				</property>
 			</activation>
 			<dependencies>
 				<dependency>
