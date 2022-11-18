@@ -15,7 +15,7 @@
  */
 package ch.xxx.trader.adapter.config;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.mongodb.MongoTimeoutException;
 
+import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import io.netty.handler.timeout.TimeoutException;
 
 @ControllerAdvice
@@ -40,7 +41,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 //		}
 		LOGGER.info(String.format("Execption: %s", exception.getMessage()), exception);
 		LOGGER.info("Remote Ip: {}", request.getRemoteAddr());
-		LOGGER.info("Request URL: {}", request.getRequestURL());		
+		LOGGER.info("Request URL: {}", request.getRequestURL());
 //		Map<String, Object> attributeMap = Collections.list(request.getAttributeNames()).stream()
 //				.flatMap(attName -> Stream.of(new MyEntry(attName, request.getAttribute(attName))))
 //				.collect(Collectors.toMap(myEntry -> myEntry.key, myEntry -> myEntry.value));
@@ -55,6 +56,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 //		} catch (IOException e) {
 //			LOGGER.warn("Failed to display body.", e);
 //		}
+		return new Object();
+	}
+
+	@ExceptionHandler({ AuthenticationException.class })
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public Object handleAuthenticationException(final Exception exception, final HttpServletRequest request) {
+		LOGGER.trace("AuthenticationException", exception);
 		return new Object();
 	}
 

@@ -30,13 +30,11 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -51,6 +49,8 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class JwtTokenService {
@@ -121,6 +121,13 @@ public class JwtTokenService {
 				.collect(Collectors.toList());
 	}
 
+	public Authentication getAuthentication(String token) {
+		if (this.getAuthorities(token).stream().filter(role -> role.equals(Role.GUEST)).count() > 0) {
+			return new UsernamePasswordAuthenticationToken(this.getUsername(token), null);
+		}
+		return new UsernamePasswordAuthenticationToken(this.getUsername(token), "", this.getAuthorities(token));
+	}
+	
 	public String getUsername(String token) {
 		return Jwts.parserBuilder().setSigningKey(this.jwtTokenKey).build().parseClaimsJws(token).getBody()
 				.getSubject();

@@ -39,10 +39,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
+import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
@@ -81,7 +84,12 @@ public class BitstampService {
 	}
 
 	public Mono<String> getOrderbook(String currpair) {
-		return this.orderBookClient.getOrderbookBitstamp(currpair);
+		if(SecurityContextHolder.getContext().getAuthentication() != null 
+				&& SecurityContextHolder.getContext().getAuthentication() instanceof UsernamePasswordAuthenticationToken) {
+			return this.orderBookClient.getOrderbookBitstamp(currpair);			
+		} else {
+			throw new AuthenticationException("getOrderbook");
+		}
 	}
 
 	public Mono<QuoteBs> currentQuoteBtc(String pair) {

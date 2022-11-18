@@ -75,7 +75,7 @@ export class BitfinexService {
 
   getOrderbook(currencypair: string): Observable<OrderbookBf> {
       const reqOptions = {headers: this.utils.createTokenHeader()};
-      return this.http.get<OrderbookBf>(this.bitfinex+'/'+currencypair+'/orderbook/', reqOptions)
+      return this.http.get<OrderbookBf>(this.bitfinex+'/'+currencypair+'/orderbook', reqOptions)
 		.pipe(catchError(this.utils.handleError<OrderbookBf>('getOrderbook')));
   }
 }

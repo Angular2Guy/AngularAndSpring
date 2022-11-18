@@ -15,7 +15,7 @@
  */
 package ch.xxx.trader.adapter.controller;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

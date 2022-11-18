@@ -17,7 +17,7 @@ package ch.xxx.trader.architecture;
 
 import static com.tngtech.archunit.lang.conditions.ArchConditions.beAnnotatedWith;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

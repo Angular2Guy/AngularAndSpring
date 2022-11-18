@@ -18,7 +18,7 @@ package ch.xxx.trader.domain.model.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

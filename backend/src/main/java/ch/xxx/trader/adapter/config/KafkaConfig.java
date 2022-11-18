@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.apache.kafka.clients.DefaultHostResolver;
 import org.apache.kafka.clients.admin.NewTopic;

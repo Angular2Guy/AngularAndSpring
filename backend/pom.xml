@@ -81,8 +81,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<version>4.0.7-beta</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo.spring27x</artifactId>
+			<version>4.0.4-beta</version>
 		</dependency>
 		<dependency>
 			<groupId>net.javacrumbs.shedlock</groupId>
@@ -115,10 +122,6 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.5</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -220,7 +223,7 @@
 				<dependency>
 					<groupId>de.flapdoodle.embed</groupId>
 					<artifactId>de.flapdoodle.embed.mongo</artifactId>
-					<version>3.5.1</version>
+					<version>4.0.7-beta</version>
 				</dependency>
 			</dependencies>
 		</profile>

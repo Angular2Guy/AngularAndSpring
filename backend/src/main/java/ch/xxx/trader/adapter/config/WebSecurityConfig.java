@@ -15,56 +15,37 @@
  */
 package ch.xxx.trader.adapter.config;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.SecurityFilterChain;
 
 import ch.xxx.trader.usecase.services.JwtTokenService;
-import ch.xxx.trader.usecase.services.MyAuthenticationProvider;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-	    securedEnabled = true,
-	    jsr250Enabled = true,
-	    prePostEnabled = true
-	)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@Configuration
+@Order(SecurityProperties.DEFAULT_FILTER_ORDER)
+public class WebSecurityConfig {
 
-	private final MyAuthenticationProvider authProvider;
 	private final JwtTokenService jwtTokenProvider;
-	
 
-	public WebSecurityConfig(MyAuthenticationProvider authProvider, JwtTokenService jwtTokenProvider) {
-		this.authProvider = authProvider;		
+	public WebSecurityConfig(JwtTokenService jwtTokenProvider) {
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		JwtTokenFilter jwtTokenFilter = new JwtTokenFilter(jwtTokenProvider, this.getAuthenticationManagerBean());
-		http.cors().and().csrf().disable()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-		.authorizeRequests().antMatchers("**/orderbook").authenticated().and()
-		.authorizeRequests().anyRequest().anonymous().and()
-		.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-	}
-	
-	
-	private AuthenticationManager getAuthenticationManagerBean() {		
-		try {
-			return super.authenticationManagerBean();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-    
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authProvider);
+
+	@Bean
+	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+		HttpSecurity result = http.cors().and().csrf().disable().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and().authorizeHttpRequests()
+				.requestMatchers("**/orderbook").authenticated()
+				.requestMatchers("/**").permitAll()
+				.anyRequest().authenticated()
+				.and().apply(new JwtTokenFilterConfigurer(jwtTokenProvider)).and();
+		return result.build();
 	}
 }

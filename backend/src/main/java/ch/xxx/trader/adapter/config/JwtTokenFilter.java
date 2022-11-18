@@ -16,57 +16,42 @@
 package ch.xxx.trader.adapter.config;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.GenericFilterBean;
 
-import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.usecase.services.JwtTokenService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
-public class JwtTokenFilter extends BasicAuthenticationFilter {
-	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenFilter.class);
-	private static final List<String> AUTH_PATHS = List.of("/orderbook", "/authorize", "/refreshToken"); 
+public class JwtTokenFilter extends GenericFilterBean {	
+	private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenFilter.class);
+	
 	private JwtTokenService jwtTokenProvider;
 
-	public JwtTokenFilter(JwtTokenService jwtTokenProvider, AuthenticationManager authenticationManager) {
-		super(authenticationManager);
+	public JwtTokenFilter(JwtTokenService jwtTokenProvider) {
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
 			throws IOException, ServletException {
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		String token = this.jwtTokenProvider.resolveToken(httpRequest);		
-		UsernamePasswordAuthenticationToken authToken;
-		if (AUTH_PATHS.stream().anyMatch(authPath -> httpRequest.getRequestURL().toString().contains(authPath))) { 
-		  if(Optional.ofNullable(token).map(myToken -> jwtTokenProvider.validateToken(myToken)).orElse(false)) {
-			authToken = Optional.ofNullable(token)
-					.map(myToken -> this.jwtTokenProvider.getUsername(token))
-					.map(myToken -> {
-						UsernamePasswordAuthenticationToken authenticationToken = this.jwtTokenProvider.getUserAuthenticationToken(token);
-						authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));						
-						return authenticationToken;
-					}).orElse(new UsernamePasswordAuthenticationToken(null, null));
-		  } else {
-			  throw new AuthenticationException("Invalid Token!");
-		  }
-			//LOG.info(""+authToken.isAuthenticated());
+
+		String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
+		if (token != null && jwtTokenProvider.validateToken(token)) {
+			Authentication auth = token != null ? jwtTokenProvider.getAuthentication(token) : null;
+			SecurityContextHolder.getContext().setAuthentication(auth);
 		} else {
-			authToken = new UsernamePasswordAuthenticationToken(null, null);
+			LOGGER.debug("Token rejected: {}", token);
 		}
-		this.getAuthenticationManager().authenticate(authToken);
-		chain.doFilter(request, response);
+
+		filterChain.doFilter(req, res);
 	}
+
 }
