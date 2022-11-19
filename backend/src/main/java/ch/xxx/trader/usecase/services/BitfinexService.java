@@ -39,13 +39,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
-import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
@@ -80,12 +77,7 @@ public class BitfinexService {
 	}
 
 	public Mono<String> getOrderbook(String currpair) {
-		if(SecurityContextHolder.getContext().getAuthentication() != null 
-				&& SecurityContextHolder.getContext().getAuthentication() instanceof UsernamePasswordAuthenticationToken) {
-			return this.orderBookClient.getOrderbookBitfinex(currpair);			
-		} else {
-			throw new AuthenticationException("getOrderbook");
-		}
+		return this.orderBookClient.getOrderbookBitfinex(currpair);
 	}
 
 	public Mono<QuoteBf> insertQuote(Mono<QuoteBf> quote) {
@@ -191,7 +183,7 @@ public class BitfinexService {
 			query.addCriteria(
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
-			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)					
+			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitfinex prepare hour data failed", ex))
 					.onErrorResume(ex -> Mono.empty()).subscribeOn(mongoScheduler)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
@@ -201,7 +193,7 @@ public class BitfinexService {
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			collectBf.filter(myColl -> !myColl.isEmpty())
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_HOUR_COL)							
+					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_HOUR_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Bitfinex prepare hour data failed", ex))
 							.onErrorResume(ex -> Mono.empty()).subscribeOn(mongoScheduler).collectList())
@@ -227,7 +219,7 @@ public class BitfinexService {
 			query.addCriteria(
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
-			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)					
+			Mono<Collection<QuoteBf>> collectBf = this.myMongoRepository.find(query, QuoteBf.class)
 					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitfinex prepare day data failed", ex))
 					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler)
 					.collectMultimap(quote -> quote.getPair(), quote -> quote)
@@ -238,8 +230,7 @@ public class BitfinexService {
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
 			collectBf.filter(myColl -> !myColl.isEmpty())
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_DAY_COL)
-							.subscribeOn(mongoScheduler)
-							.timeout(Duration.ofSeconds(5L))
+							.subscribeOn(mongoScheduler).timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Bitfinex prepare day data failed", ex))
 							.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
 					.subscribeOn(this.mongoScheduler).block();

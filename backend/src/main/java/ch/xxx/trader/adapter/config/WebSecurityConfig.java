@@ -24,6 +24,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+import ch.xxx.trader.domain.common.Role;
 import ch.xxx.trader.usecase.services.JwtTokenService;
 
 @EnableWebSecurity
@@ -40,12 +41,11 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		HttpSecurity result = http.cors().and().csrf().disable().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and().authorizeHttpRequests()
-				.requestMatchers("**/orderbook").authenticated()
-				.requestMatchers("/**").permitAll()
-				.anyRequest().authenticated()
-				.and().apply(new JwtTokenFilterConfigurer(jwtTokenProvider)).and();
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/*/*/orderbook", "/*/*/*/orderbook")						
+						.hasAuthority(Role.USERS.toString()))
+				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/**").permitAll())				
+				.apply(new JwtTokenFilterConfigurer(jwtTokenProvider)).and();
 		return result.build();
 	}
 }
