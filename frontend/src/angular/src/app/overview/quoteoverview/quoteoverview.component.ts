@@ -79,7 +79,7 @@ export class QuoteoverviewComponent implements OnInit,OnDestroy {
 
     openLoginDialog(): void {
       const dialogRef = this.dialog.open(LoginComponent, {
-        width: '500px',
+        width: '600px',
         data: { loggedIn: this.loggedIn}
       });
 
