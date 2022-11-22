@@ -2,10 +2,10 @@
 	<mat-toolbar color="primary">		
 			<span i18n="@@quoteOverviewCurrencyTable">Curreny Table</span> 
 			<span class="example-fill-remaining-space"></span>
-			<span><button mat-button (click)="statistics()" i18n="@@quoteOverviewStatistics">Statistics</button></span>
-			<span><button mat-button (click)="orderbooks()" i18n="@@quoteOverviewOrderbooks">Orderbooks</button></span>
-			<span><button mat-button *ngIf="!loggedIn" (click)="openLoginDialog()" i18n="@@quoteOverviewLogin">Login</button></span>		
-			<span><button mat-button *ngIf="loggedIn" (click)="logout()" i18n="@@quoteOverviewLogout">Logout</button></span>
+			<span><button mat-flat-button color="primary" (click)="statistics()" i18n="@@quoteOverviewStatistics">Statistics</button></span>
+			<span><button mat-flat-button color="primary" (click)="orderbooks()" i18n="@@quoteOverviewOrderbooks">Orderbooks</button></span>
+			<span><button mat-flat-button color="primary" *ngIf="!loggedIn" (click)="openLoginDialog()" i18n="@@quoteOverviewLogin">Login</button></span>		
+			<span><button mat-flat-button color="primary" *ngIf="loggedIn" (click)="logout()" i18n="@@quoteOverviewLogout">Logout</button></span>
 	</mat-toolbar>
 	<div>
 		<mat-table #table [dataSource]="datasource"> 
