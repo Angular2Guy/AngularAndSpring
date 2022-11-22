@@ -26,7 +26,7 @@ import { By } from '@angular/platform-browser';
 import { of, Observable } from 'rxjs';
 import { QuoteBf } from '../../common/quote-bf';
 import { HttpClient } from '@angular/common/http';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgxLineChartsModule } from 'ngx-simple-charts/line';
 

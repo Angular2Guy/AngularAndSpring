@@ -15,7 +15,7 @@
  */
 import { Component, OnInit, Inject } from '@angular/core';
 import { QuoteoverviewComponent } from '../quoteoverview/quoteoverview.component';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MyuserService } from '../../services/myuser.service';
 import { MyUser } from '../../common/my-user';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';

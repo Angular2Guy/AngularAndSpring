@@ -26,7 +26,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CbdetailComponent } from './cbdetail.component';
 import { CoinbaseService } from '../../services/coinbase.service';
 import { QuoteCb, QuoteCbSmall } from '../../common/quote-cb';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgxLineChartsModule } from 'ngx-simple-charts/line';
 

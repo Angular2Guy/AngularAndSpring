@@ -22,8 +22,8 @@ import { IbdetailComponent } from './ibdetail/ibdetail.component';
 import { CbdetailComponent } from './cbdetail/cbdetail.component';
 import { BsdetailComponent } from './bsdetail/bsdetail.component';
 import { BfdetailComponent } from './bfdetail/bfdetail.component';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgxLineChartsModule } from 'ngx-simple-charts/line';
 
