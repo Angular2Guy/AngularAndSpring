@@ -46,8 +46,8 @@ export class OrderbooksComponent implements OnInit {
     ngOnInit() {
         this.currencies = [new MyCurr( this.serviceBf.BTCUSD, 'Btc - Usd' ), new MyCurr( this.serviceBf.ETHUSD, 'Eth - Usd' ),
            new MyCurr( this.serviceBf.LTCUSD, 'Ltc - Usd' ), new MyCurr( this.serviceBf.XRPUSD, 'Xrp - Usd' )];
+        console.log('hallo');
     }
-
     onSubmit() {
         //console.log( this.model );
         if ( this.model.itbitCb && this.model.currpair === this.serviceBf.BTCUSD ) {
@@ -75,9 +75,9 @@ export class OrderbooksComponent implements OnInit {
             this.bfOrders = [];
         }
     }
-
-    onBack() {
-        this.router.navigateByUrl( '/overview' );
+    back() {
+		console.log('Back');
+        this.router.navigate(['/overview']);
     }
 
     private filterObBs( ob: OrderbookBs ): MyOrder[] {
