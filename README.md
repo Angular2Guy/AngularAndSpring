@@ -61,8 +61,8 @@ Java 17 or newer
 
 Maven 3.8.1 or newer
 
-Nodejs 14.15.x or newer
+Nodejs 14.20.x or newer
 
 Npm 6.14.x or newer
 
-Angular Cli 14 or newer.
+Angular Cli 15 or newer.
