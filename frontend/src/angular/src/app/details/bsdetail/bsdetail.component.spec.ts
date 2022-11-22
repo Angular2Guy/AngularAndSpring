@@ -26,7 +26,7 @@ import { BsdetailComponent } from './bsdetail.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BitstampService } from '../../services/bitstamp.service';
 import { QuoteBs } from '../../common/quote-bs';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgxLineChartsModule } from 'ngx-simple-charts/line';
 

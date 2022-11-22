@@ -25,7 +25,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {DataSource, CollectionViewer} from '@angular/cdk/collections';
 import { Router } from '@angular/router';
 import { CommonUtils } from '../../common/common-utils';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { LoginComponent } from '../login/login.component';
 import { MyuserService } from '../../services/myuser.service';
 import { filter } from 'rxjs/operators';

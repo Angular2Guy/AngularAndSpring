@@ -18,13 +18,13 @@ import { CommonModule } from '@angular/common';
 import { StatisticsComponent } from './statistics.component';
 import { StatisticsRoutingModule } from './statistics-routing.module';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTabsModule } from '@angular/material/tabs';
-import  {MatRadioModule } from '@angular/material/radio';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import  {MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { StatisticDetailsComponent } from './statistic-details/statistic-details.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxBarChartsModule } from 'ngx-simple-charts/bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 
 @NgModule({
   declarations: [
