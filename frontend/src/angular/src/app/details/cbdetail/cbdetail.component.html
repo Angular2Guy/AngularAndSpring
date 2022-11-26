@@ -59,9 +59,9 @@
 				</mat-radio-group>	
 			</span>
 		</div>	
-		<div #chartContainer class="chart-container">
+		<div #chartContainer class="chart-container" [@showChart]="chartShow | async">
 			<sc-line-chart [chartPoints]="chartPoints"></sc-line-chart>
 		</div>		
-		<div> {{todayQuotes?.length }} </div>
+		<div> {{todayQuotes?.length }} {{chartShow | async}}</div>
 	</div>
 </div>

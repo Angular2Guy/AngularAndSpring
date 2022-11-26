@@ -20,7 +20,7 @@ td {
 	//margin-left: 100px;
 }
 .radioButton {
-	margin-left: 10px;
+	margin-left: 10px;	
 }
 .chart-container {
 	height: calc(100vh - 250px);
@@ -30,4 +30,7 @@ td {
   // This fills the remaining space, by using flexbox. 
   // Every toolbar row uses a flexbox row layout.
   flex: 1 1 auto;
+}
+::ng-deep .mdc-form-field > label {
+	cursor: pointer;
 }

@@ -16,7 +16,7 @@
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { QuoteIb } from '../../common/quote-ib';
 import { ItbitService } from '../../services/itbit.service';
 import { DetailBase, Tuple } from 'src/app/common/detail-base';
@@ -25,16 +25,13 @@ import { DetailBase, Tuple } from 'src/app/common/detail-base';
     selector: 'app-ibdetail',
     templateUrl: './ibdetail.component.html',
     styleUrls: ['./ibdetail.component.scss'],
-    animations: [
+   animations: [
         trigger( 'showChart', [
-            state( 'true', style( { opacity: 1 } ) ),
-            state( 'false', style( { opacity: 0 } ) ),
-            transition( '1 => 0', animate( '300ms' ) ),
-            transition( '0 => 1', animate( '300ms' ) )
-        ] )
-    ]
+            transition('false => true', [ style({ opacity: 0 }), animate(1000,  style({ opacity: 1 }))] )
+    ])]
 } )
 export class IbdetailComponent extends DetailBase implements OnInit {
+	public chartShow =  new BehaviorSubject(false);
     public currQuote: QuoteIb;
     protected todayQuotes: QuoteIb[] = [];
 
@@ -44,6 +41,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
 	}
 
     ngOnInit() {
+	    this.chartShow.next(false);
         this.route.params.subscribe( params => {
             this.currPair = params.currpair;
             this.serviceIb.getCurrentQuote( this.currPair )
@@ -52,6 +50,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
                 .subscribe( quotes => {
                     this.todayQuotes = quotes;
 					this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.lastPrice)));
+					this.chartShow.next(true);
                 } );
         } );
     }
@@ -61,6 +60,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
   }
 
     changeTf() {
+	    this.chartShow.next(false);
         const currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteIb[]>;
         if ( this.timeframe === this.utils.timeframes[1] ) {
@@ -79,6 +79,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
         quoteObserv.subscribe( quotes => {
             this.todayQuotes = quotes;
 			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.lastPrice)));
+			this.chartShow.next(true);
         } );
     }
 

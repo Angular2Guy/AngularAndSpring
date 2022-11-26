@@ -16,7 +16,7 @@
 import { Component, OnInit, LOCALE_ID, Inject } from '@angular/core';
 import {ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { BitstampService } from '../../services/bitstamp.service';
 import { QuoteBs } from '../../common/quote-bs';
 import { DetailBase, Tuple } from 'src/app/common/detail-base';
@@ -26,16 +26,12 @@ import { DetailBase, Tuple } from 'src/app/common/detail-base';
   templateUrl: './bsdetail.component.html',
   styleUrls: ['./bsdetail.component.scss'],
   animations: [
-               trigger('showChart', [
-                 state('true' , style({ opacity: 1 })),
-                 state('false', style({ opacity: 0 })),
-                 transition('1 => 0', animate('300ms')),
-                 transition('0 => 1', animate('300ms'))
-               ])
-             ]
+        trigger( 'showChart', [
+            transition('false => true', [ style({ opacity: 0 }), animate(1000,  style({ opacity: 1 }))] )           
+    ])]
 })
 export class BsdetailComponent extends DetailBase implements OnInit {
-
+    public chartShow =  new BehaviorSubject(false);
     public currQuote: QuoteBs;
     protected todayQuotes: QuoteBs[] = [];
 
@@ -45,6 +41,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
 	}
 
     ngOnInit() {
+	    this.chartShow.next(false);
         this.route.params.subscribe(params => {
         this.serviceBs.getCurrentQuote(params.currpair)
         .subscribe(quote => {
@@ -54,6 +51,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
         .subscribe(quotes => {
             this.todayQuotes = quotes;
 			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.last)));
+			this.chartShow.next(true);
             });
         });
     }
@@ -63,6 +61,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
   }
 
     changeTf() {
+	    this.chartShow.next(false);
         const currpair = this.route.snapshot.paramMap.get('currpair');
         let quoteObserv: Observable<QuoteBs[]>;
             if(this.timeframe === this.utils.timeframes[1]) {
@@ -82,6 +81,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
         quoteObserv.subscribe(quotes => {
             this.todayQuotes = quotes;
 			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.last)));
+			this.chartShow.next(true);
             });
     }
 

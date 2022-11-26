@@ -16,7 +16,7 @@
 import { Component, OnInit, LOCALE_ID, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, state, animate, transition, style } from '@angular/animations';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { QuoteCb, QuoteCbSmall } from '../../common/quote-cb';
 import { CoinbaseService } from '../../services/coinbase.service';
 import { DetailBase, Tuple } from 'src/app/common/detail-base';
@@ -25,17 +25,13 @@ import { DetailBase, Tuple } from 'src/app/common/detail-base';
     selector: 'app-cbdetail',
     templateUrl: './cbdetail.component.html',
     styleUrls: ['./cbdetail.component.scss'],
-    animations: [
+   animations: [
         trigger( 'showChart', [
-            state( 'true', style( { opacity: 1 } ) ),
-            state( 'false', style( { opacity: 0 } ) ),
-            transition( '1 => 0', animate( '300ms' ) ),
-            transition( '0 => 1', animate( '300ms' ) )
-        ] )
-    ]
+            transition('false => true', [ style({ opacity: 0 }), animate(1000,  style({ opacity: 1 }))] )
+    ])]
 } )
 export class CbdetailComponent extends DetailBase implements OnInit {
-
+    public chartShow =  new BehaviorSubject(false);
     public currpair: string;
     public currQuote: QuoteCb;
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -56,6 +52,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
     }
 
     ngOnInit() {
+	    this.chartShow.next(false);
         this.route.params.subscribe( params => {
             this.currpair = params.currpair;
             this.myCurrPair = this.utils.getCurrpairName( this.currpair );
@@ -71,6 +68,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
                     } else if ( this.currpair === this.serviceCb.LTCUSD ) {
                         this.updateChartData(quotes.map( quote => new Tuple<string, number>(quote.createdAt, (quote.usd / quote.ltc ))));
                     }
+                    this.chartShow.next(true);
                 } );
         } );
     }
@@ -80,6 +78,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
   }
 
     changeTf() {
+	    this.chartShow.next(false);
         this.currpair = this.route.snapshot.paramMap.get( 'currpair' );
         let quoteObserv: Observable<QuoteCbSmall[]>;
         if ( this.timeframe === this.utils.timeframes[1] ) {
@@ -104,8 +103,9 @@ export class CbdetailComponent extends DetailBase implements OnInit {
             } else if ( this.currpair === this.serviceCb.ETHUSD ) {
                 this.updateChartData(quotes.map( quote => new Tuple<string, number>(quote.createdAt, (quote.usd / quote.eth))));
             } else if ( this.currpair === this.serviceCb.LTCUSD ) {
-               this.updateChartData(quotes.map( quote => new Tuple<string, number>(quote.createdAt, (quote.usd / quote.ltc ))));
+               this.updateChartData(quotes.map( quote => new Tuple<string, number>(quote.createdAt, (quote.usd / quote.ltc ))));               
             }
+            this.chartShow.next(true);
         } );
     }
 
