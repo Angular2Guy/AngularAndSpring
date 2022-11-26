@@ -31,7 +31,6 @@ import { DetailBase, Tuple } from 'src/app/common/detail-base';
     ])]
 } )
 export class CbdetailComponent extends DetailBase implements OnInit {
-    public chartShow =  new BehaviorSubject(false);
     public currpair: string;
     public currQuote: QuoteCb;
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -40,6 +39,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
     readonly ETHUSD: string;
 	// eslint-disable-next-line @typescript-eslint/naming-convention
     readonly LTCUSD: string;
+    protected chartShow =  new BehaviorSubject(false);
     protected todayQuotes: QuoteCbSmall[] = [];
     protected myCurrPair = '';
 
@@ -103,7 +103,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
             } else if ( this.currpair === this.serviceCb.ETHUSD ) {
                 this.updateChartData(quotes.map( quote => new Tuple<string, number>(quote.createdAt, (quote.usd / quote.eth))));
             } else if ( this.currpair === this.serviceCb.LTCUSD ) {
-               this.updateChartData(quotes.map( quote => new Tuple<string, number>(quote.createdAt, (quote.usd / quote.ltc ))));               
+               this.updateChartData(quotes.map( quote => new Tuple<string, number>(quote.createdAt, (quote.usd / quote.ltc ))));
             }
             this.chartShow.next(true);
         } );

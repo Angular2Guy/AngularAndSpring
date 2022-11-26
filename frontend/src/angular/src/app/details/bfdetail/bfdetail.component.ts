@@ -27,12 +27,12 @@ import { DetailBase, Tuple } from '../../common/detail-base';
     styleUrls: ['./bfdetail.component.scss'],
     animations: [
         trigger( 'showChart', [
-            transition('false => true', [ style({ opacity: 0 }), animate(1000,  style({ opacity: 1 }))] )           
+            transition('false => true', [ style({ opacity: 0 }), animate(1000,  style({ opacity: 1 }))] )
     ])]
 } )
 export class BfdetailComponent extends DetailBase implements OnInit {
-    public chartShow =  new BehaviorSubject(false);
     public currQuote: QuoteBf;
+    protected chartShow =  new BehaviorSubject(false);
     protected todayQuotes: QuoteBf[] = [];
 
     constructor( private route: ActivatedRoute, private router: Router, private serviceBf: BitfinexService,

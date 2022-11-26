@@ -31,8 +31,8 @@ import { DetailBase, Tuple } from 'src/app/common/detail-base';
     ])]
 } )
 export class IbdetailComponent extends DetailBase implements OnInit {
-	public chartShow =  new BehaviorSubject(false);
     public currQuote: QuoteIb;
+	protected chartShow =  new BehaviorSubject(false);
     protected todayQuotes: QuoteIb[] = [];
 
     constructor( private route: ActivatedRoute, private router: Router, private serviceIb: ItbitService,
