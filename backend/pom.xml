@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<version>4.0.7-beta</version>
+			<version>3.5.3</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -228,7 +228,7 @@
 				<dependency>
 					<groupId>de.flapdoodle.embed</groupId>
 					<artifactId>de.flapdoodle.embed.mongo</artifactId>
-					<version>4.0.7-beta</version>
+					<version>3.5.3</version>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -240,6 +240,19 @@
 					<value>true</value>
 				</property>
 			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<configuration>
+							<excludes>
+								<exclude>**/adapter/config/FlapDoodleConfig.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 		<profile>
 			<id>kafka</id>
