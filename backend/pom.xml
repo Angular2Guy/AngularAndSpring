@@ -160,6 +160,12 @@
 							<goal>stop</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>process-aot</id>
+						<goals>
+							<goal>process-aot</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
