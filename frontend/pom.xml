@@ -74,7 +74,6 @@
 							<workingDirectory>src/angular</workingDirectory>
 						</configuration>
 					</execution>
-					<!--
 					<execution>
 						<id>angular-cli test</id>
 						<goals>
@@ -90,7 +89,6 @@
 							<workingDirectory>src/angular</workingDirectory>
 						</configuration>
 					</execution>
-					-->
 				</executions>
 			</plugin>
 		</plugins>
