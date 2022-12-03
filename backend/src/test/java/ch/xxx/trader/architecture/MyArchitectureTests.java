@@ -123,12 +123,15 @@ public class MyArchitectureTests {
 		return beAnnotatedWithAnInjectionAnnotation;
 	}
 	
-    static final class DoNotIncludeAotGenerated implements ImportOption {
-        private static final Pattern AOT_GENERATED_PATTERN = Pattern.compile(".*(__BeanDefinitions|SpringCGLIB\\$\\$0)\\.class$");
+	static final class DoNotIncludeAotGenerated implements ImportOption {
+		private static final Pattern AOT_GENERATED_PATTERN = Pattern
+				.compile(".*(__BeanDefinitions|SpringCGLIB\\$\\$0)\\.class$");
+		private static final Pattern AOT_TEST_GENERATED_PATTERN = Pattern
+				.compile(".*__TestContext.*\\.class$");
 
-        @Override
-        public boolean includes(Location location) {
-            return !location.matches(AOT_GENERATED_PATTERN);
-        }
-    }
+		@Override
+		public boolean includes(Location location) {
+			return !(location.matches(AOT_GENERATED_PATTERN) || location.matches(AOT_TEST_GENERATED_PATTERN));
+		}
+	}
 }

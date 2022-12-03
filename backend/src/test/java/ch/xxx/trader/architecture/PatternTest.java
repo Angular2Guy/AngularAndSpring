@@ -29,16 +29,22 @@ import ch.xxx.trader.architecture.MyArchitectureTests.DoNotIncludeAotGenerated;
 public class PatternTest {
 	private List<String> testStrings = List.of(
 			"ch.xxx.trader.adapter.controller.StatisticsController__BeanDefinitions.class",
-			"file:/home/sven/git/AngularAndSpring/backend/target/classes/ch/xxx/trader/TraderApplication$$SpringCGLIB$$0.class");
+			"file:/home/sven/git/AngularAndSpring/backend/target/classes/ch/xxx/trader/TraderApplication$$SpringCGLIB$$0.class",
+			"ch.xxx.maps.usecase.service.CompanySiteService__TestContext001_BeanDefinitions.class");
 	private final DoNotIncludeAotGenerated importOption = new MyArchitectureTests.DoNotIncludeAotGenerated();
 
 	@Test
-	public void testMatcherBeanDefinition() throws URISyntaxException {		
+	public void testMatcherBeanDefinition() throws URISyntaxException {
 		Assertions.assertFalse(importOption.includes(Location.of(Path.of(testStrings.get(0)))));
+	}
+
+	@Test
+	public void testMatcherCgLib() throws URISyntaxException {
+		Assertions.assertFalse(importOption.includes(Location.of(Path.of(testStrings.get(1)))));
 	}
 	
 	@Test
-	public void testMatcherCgLib() throws URISyntaxException {		
-		Assertions.assertFalse(importOption.includes(Location.of(Path.of(testStrings.get(1)))));
+	public void testMatcherTests() throws URISyntaxException {
+		Assertions.assertFalse(importOption.includes(Location.of(Path.of(testStrings.get(2)))));
 	}
 }
