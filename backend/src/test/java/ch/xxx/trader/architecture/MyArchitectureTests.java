@@ -17,7 +17,8 @@ package ch.xxx.trader.architecture;
 
 import static com.tngtech.archunit.lang.conditions.ArchConditions.beAnnotatedWith;
 
-import jakarta.annotation.PostConstruct;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -29,7 +30,9 @@ import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
+import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.core.importer.ImportOption.DoNotIncludeTests;
+import com.tngtech.archunit.core.importer.Location;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchCondition;
@@ -41,13 +44,17 @@ import com.tngtech.archunit.library.GeneralCodingRules;
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition;
 
 import ch.xxx.trader.adapter.cron.TaskStarter;
+import ch.xxx.trader.architecture.MyArchitectureTests.DoNotIncludeAotGenerated;
+import jakarta.annotation.PostConstruct;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
-@AnalyzeClasses(packages = "ch.xxx.trader", importOptions = { DoNotIncludeTests.class })
+@AnalyzeClasses(packages = "ch.xxx.trader", importOptions = { DoNotIncludeTests.class, DoNotIncludeAotGenerated.class })
 public class MyArchitectureTests {
 	private static final ArchRule NO_CLASSES_SHOULD_USE_FIELD_INJECTION = createNoFieldInjectionRule();
 
-	private JavaClasses importedClasses = new ClassFileImporter().importPackages("ch.xxx.trader");
+	private JavaClasses importedClasses = new ClassFileImporter()
+			.withImportOptions(List.of(new DoNotIncludeTests(), new DoNotIncludeAotGenerated()))
+			.importPackages("ch.xxx.trader");
 
 	@ArchTest
 	static final ArchRule clean_architecture_respected = Architectures.onionArchitecture().domainModels("..domain..")
@@ -70,7 +77,6 @@ public class MyArchitectureTests {
 
 	@Test
 	public void ruleControllerAnnotations() {
-
 		ArchRule beAnnotatedWith = ArchRuleDefinition.classes().that().resideInAPackage("..adapter.controller..")
 				.should().beAnnotatedWith(RestController.class);
 		beAnnotatedWith.check(this.importedClasses);
@@ -116,4 +122,13 @@ public class MyArchitectureTests {
 						.as("be annotated with an injection annotation"));
 		return beAnnotatedWithAnInjectionAnnotation;
 	}
+	
+    static final class DoNotIncludeAotGenerated implements ImportOption {
+        private static final Pattern AOT_GENERATED_PATTERN = Pattern.compile(".*(__BeanDefinitions|SpringCGLIB\\$\\$0)\\.class$");
+
+        @Override
+        public boolean includes(Location location) {
+            return !location.matches(AOT_GENERATED_PATTERN);
+        }
+    }
 }
