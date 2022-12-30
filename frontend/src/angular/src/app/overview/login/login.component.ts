@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
   protected signinFailed = false;
   protected pwMatching = true;
   protected formFields = FormFields;
+  protected waitingForResponse = false;
   private user = new MyUser();
 
   constructor(public dialogRef: MatDialogRef<QuoteoverviewComponent>, private tokenService: TokenService,
@@ -85,6 +86,7 @@ export class LoginComponent implements OnInit {
       myUser.email = this.signinForm.get(FormFields.email).value;
 //      console.log(this.signinForm);
 //      console.log(myUser);
+this.waitingForResponse = true;
       this.myuserService.postSignin(myUser).subscribe(us => this.signin(us),err => console.log(err));
   }
 
@@ -93,12 +95,14 @@ export class LoginComponent implements OnInit {
       myUser.userId = this.loginForm.get(FormFields.username).value;
       myUser.password = this.loginForm.get(FormFields.password).value;
 //      console.log(myUser);
+this.waitingForResponse = true;
       this.myuserService.postLogin(myUser).subscribe(us => this.login(us),err => console.log(err));
   }
 
   signin(us: MyUser): void {
       this.user = us;
       this.data.loggedIn = !!us?.token;
+      this.waitingForResponse = false;
       if(this.user.userId !== null) {
           this.signinFailed = false;
           this.dialogRef.close(this.data.loggedIn);
@@ -110,6 +114,7 @@ export class LoginComponent implements OnInit {
   login(us: MyUser): void {
       this.user = us;
       this.data.loggedIn = !!us?.token;
+      this.waitingForResponse = false;
       if(this.user.userId !== null) {
           this.loginFailed = false;
           this.tokenService.token = us.token;

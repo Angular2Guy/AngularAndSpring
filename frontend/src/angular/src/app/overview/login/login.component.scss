@@ -20,3 +20,10 @@ ul {
 .errorText {
 	color: red;
 }
+
+.spinner-container {
+	display: flex; 
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+}

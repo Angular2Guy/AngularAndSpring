@@ -15,7 +15,7 @@
  */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -39,6 +39,7 @@ import { LuxonDateModule } from '@angular/material-luxon-adapter';
         MatButtonModule,
         MatDialogModule,
         MatFormFieldModule,
+        MatProgressSpinnerModule,
         MatInputModule,
         LuxonDateModule,
         FormsModule,
