@@ -14,22 +14,22 @@
    limitations under the License.
  */
 
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { BsdetailComponent } from './bsdetail/bsdetail.component';
-import { IbdetailComponent } from './ibdetail/ibdetail.component';
-import { CbdetailComponent } from './cbdetail/cbdetail.component';
-import { BfdetailComponent } from './bfdetail/bfdetail.component';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { BsdetailComponent } from "./bsdetail/bsdetail.component";
+import { IbdetailComponent } from "./ibdetail/ibdetail.component";
+import { CbdetailComponent } from "./cbdetail/cbdetail.component";
+import { BfdetailComponent } from "./bfdetail/bfdetail.component";
 
 const routes: Routes = [
-                        {path: 'bsdetail/:currpair', component: BsdetailComponent},
-                        {path: 'ibdetail/:currpair', component: IbdetailComponent},
-                        {path: 'cbdetail/:currpair', component: CbdetailComponent},
-                        {path: 'bfdetail/:currpair', component: BfdetailComponent},
-                        ];
+  { path: "bsdetail/:currpair", component: BsdetailComponent },
+  { path: "ibdetail/:currpair", component: IbdetailComponent },
+  { path: "cbdetail/:currpair", component: CbdetailComponent },
+  { path: "bfdetail/:currpair", component: BfdetailComponent },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class DetailsRoutingModule { }
+export class DetailsRoutingModule {}

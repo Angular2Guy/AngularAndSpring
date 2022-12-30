@@ -13,17 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { QuoteoverviewComponent } from './quoteoverview/quoteoverview.component';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { QuoteoverviewComponent } from "./quoteoverview/quoteoverview.component";
 
-const routes: Routes = [{
-    path: '',
-    component: QuoteoverviewComponent
-    }];
+const routes: Routes = [
+  {
+    path: "",
+    component: QuoteoverviewComponent,
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class OverviewRoutingModule { }
+export class OverviewRoutingModule {}

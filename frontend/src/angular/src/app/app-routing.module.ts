@@ -12,22 +12,43 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
-import { AuthGuardService } from './services/auth-guard.service';
-import { SplashComponent } from './splash/splash.component';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule, PreloadAllModules } from "@angular/router";
+import { AuthGuardService } from "./services/auth-guard.service";
+import { SplashComponent } from "./splash/splash.component";
 
 const routes: Routes = [
-    {path: 'overview', loadChildren: () => import('./overview/overview.module').then(m => m.OverviewModule)},
-    {path: 'details', loadChildren: () => import('./details/details.module').then(m => m.DetailsModule)},
-    {path: 'orderbooks', loadChildren: () => import('./orderbooks/orderbooks.module')
-		.then(m => m.OrderbooksModule), canActivate: [AuthGuardService]},
-	{path: 'statistics', loadChildren: () => import('./statistics/statistics.module').then(m => m.StatisticsModule)},
-    {path: '**', component: SplashComponent},
+  {
+    path: "overview",
+    loadChildren: () =>
+      import("./overview/overview.module").then((m) => m.OverviewModule),
+  },
+  {
+    path: "details",
+    loadChildren: () =>
+      import("./details/details.module").then((m) => m.DetailsModule),
+  },
+  {
+    path: "orderbooks",
+    loadChildren: () =>
+      import("./orderbooks/orderbooks.module").then((m) => m.OrderbooksModule),
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "statistics",
+    loadChildren: () =>
+      import("./statistics/statistics.module").then((m) => m.StatisticsModule),
+  },
+  { path: "**", component: SplashComponent },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { enableTracing: false, preloadingStrategy: PreloadAllModules })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, {
+      enableTracing: false,
+      preloadingStrategy: PreloadAllModules,
+    }),
+  ],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -13,58 +13,58 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { BitstampService } from '../services/bitstamp.service';
-import { CoinbaseService } from '../services/coinbase.service';
-import { ItbitService } from '../services/itbit.service';
-import { BitfinexService } from '../services/bitfinex.service';
+import { BitstampService } from "../services/bitstamp.service";
+import { CoinbaseService } from "../services/coinbase.service";
+import { ItbitService } from "../services/itbit.service";
+import { BitfinexService } from "../services/bitfinex.service";
 
 export class CommonUtils {
-    public timeframes = [1, 7, 30, 90, 180, 365];
-    private currpairs = new Map<string,string>();
+  public timeframes = [1, 7, 30, 90, 180, 365];
+  private currpairs = new Map<string, string>();
 
-    constructor() {
-        const serviceBs = new BitstampService(null);
-        const serviceCb = new CoinbaseService(null);
-        const serviceIb = new ItbitService(null);
-        const serviceBf = new BitfinexService(null);
-        this.currpairs.set(serviceBs.BTCEUR, 'Bitcoin Eur');
-        this.currpairs.set(serviceBs.ETHEUR, 'Ether Eur');
-        this.currpairs.set(serviceBs.LTCEUR, 'Litecoin Eur');
-        this.currpairs.set(serviceBs.XRPEUR, 'Ripple Eur');
-        this.currpairs.set(serviceBs.BTCUSD, 'Bitcoin Usd');
-        this.currpairs.set(serviceBs.ETHUSD, 'Ether Usd');
-        this.currpairs.set(serviceBs.LTCUSD, 'Litecoin Usd');
-        this.currpairs.set(serviceBs.XRPUSD, 'Ripple Usd');
-        this.currpairs.set(serviceIb.BTCEUR, 'Bitcoin Eur');
-        this.currpairs.set(serviceIb.BTCUSD, 'Bitcoin Usd');
-        this.currpairs.set(serviceCb.BTCUSD, 'Bitcoin Usd');
-        this.currpairs.set(serviceCb.ETHUSD, 'Ether Usd');
-        this.currpairs.set(serviceCb.LTCUSD, 'Litecoin Usd');
-        this.currpairs.set(serviceBf.BTCUSD, 'Bitcoin Usd');
-        this.currpairs.set(serviceBf.ETHUSD, 'Ether Usd');
-        this.currpairs.set(serviceBf.LTCUSD, 'Litecoin Usd');
-        this.currpairs.set(serviceBf.XRPUSD, 'Ripple Usd');
-    }
+  constructor() {
+    const serviceBs = new BitstampService(null);
+    const serviceCb = new CoinbaseService(null);
+    const serviceIb = new ItbitService(null);
+    const serviceBf = new BitfinexService(null);
+    this.currpairs.set(serviceBs.BTCEUR, "Bitcoin Eur");
+    this.currpairs.set(serviceBs.ETHEUR, "Ether Eur");
+    this.currpairs.set(serviceBs.LTCEUR, "Litecoin Eur");
+    this.currpairs.set(serviceBs.XRPEUR, "Ripple Eur");
+    this.currpairs.set(serviceBs.BTCUSD, "Bitcoin Usd");
+    this.currpairs.set(serviceBs.ETHUSD, "Ether Usd");
+    this.currpairs.set(serviceBs.LTCUSD, "Litecoin Usd");
+    this.currpairs.set(serviceBs.XRPUSD, "Ripple Usd");
+    this.currpairs.set(serviceIb.BTCEUR, "Bitcoin Eur");
+    this.currpairs.set(serviceIb.BTCUSD, "Bitcoin Usd");
+    this.currpairs.set(serviceCb.BTCUSD, "Bitcoin Usd");
+    this.currpairs.set(serviceCb.ETHUSD, "Ether Usd");
+    this.currpairs.set(serviceCb.LTCUSD, "Litecoin Usd");
+    this.currpairs.set(serviceBf.BTCUSD, "Bitcoin Usd");
+    this.currpairs.set(serviceBf.ETHUSD, "Ether Usd");
+    this.currpairs.set(serviceBf.LTCUSD, "Litecoin Usd");
+    this.currpairs.set(serviceBf.XRPUSD, "Ripple Usd");
+  }
 
-    getCurrpairName(key: string) {
-        return this.currpairs.get(key);
-    }
+  getCurrpairName(key: string) {
+    return this.currpairs.get(key);
+  }
 
-    createReportUrl(timeframe: number, currpair: string): string {
-        let url = '/';
-        if(timeframe === this.timeframes[1]) {
-            url = url + currpair + '/7days/pdf';
-        } else if(timeframe === this.timeframes[2]) {
-            url = url + currpair + '/30days/pdf';
-        } else if(timeframe === this.timeframes[3]) {
-            url = url + currpair + '/90days/pdf';
-        } else if(timeframe === this.timeframes[4]) {
-            url = url + currpair + '/6month/pdf';
-        } else if(timeframe === this.timeframes[5]) {
-            url = url + currpair + '/1year/pdf';
-        } else {
-            url = url + currpair + '/today/pdf';
-        }
-        return url;
+  createReportUrl(timeframe: number, currpair: string): string {
+    let url = "/";
+    if (timeframe === this.timeframes[1]) {
+      url = url + currpair + "/7days/pdf";
+    } else if (timeframe === this.timeframes[2]) {
+      url = url + currpair + "/30days/pdf";
+    } else if (timeframe === this.timeframes[3]) {
+      url = url + currpair + "/90days/pdf";
+    } else if (timeframe === this.timeframes[4]) {
+      url = url + currpair + "/6month/pdf";
+    } else if (timeframe === this.timeframes[5]) {
+      url = url + currpair + "/1year/pdf";
+    } else {
+      url = url + currpair + "/today/pdf";
     }
+    return url;
+  }
 }

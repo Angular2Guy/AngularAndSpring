@@ -14,16 +14,16 @@
    limitations under the License.
  */
 export interface QuoteBf {
-    _id: string;
-    pair: string;
-    createdAt: string;
-    mid: number;
-    bid: number;
-    ask: number;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    last_price: number;
-    low: number;
-    high: number;
-    volume: number;
-    timestamp: string;
+  _id: string;
+  pair: string;
+  createdAt: string;
+  mid: number;
+  bid: number;
+  ask: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  last_price: number;
+  low: number;
+  high: number;
+  volume: number;
+  timestamp: string;
 }

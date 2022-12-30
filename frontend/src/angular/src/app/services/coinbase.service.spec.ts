@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from "@angular/core/testing";
 
-import { CoinbaseService } from './coinbase.service';
+import { CoinbaseService } from "./coinbase.service";
 
 //describe('CoinbaseService', () => {
 //  beforeEach(() => {

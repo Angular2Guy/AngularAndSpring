@@ -13,79 +13,102 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { trigger, state, animate, transition, style } from '@angular/animations';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { QuoteIb } from '../../common/quote-ib';
-import { ItbitService } from '../../services/itbit.service';
-import { DetailBase, Tuple } from 'src/app/common/detail-base';
+import { Component, OnInit, Inject, LOCALE_ID } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import {
+  trigger,
+  state,
+  animate,
+  transition,
+  style,
+} from "@angular/animations";
+import { BehaviorSubject, Observable } from "rxjs";
+import { QuoteIb } from "../../common/quote-ib";
+import { ItbitService } from "../../services/itbit.service";
+import { DetailBase, Tuple } from "src/app/common/detail-base";
 
-@Component( {
-    selector: 'app-ibdetail',
-    templateUrl: './ibdetail.component.html',
-    styleUrls: ['./ibdetail.component.scss'],
-   animations: [
-        trigger( 'showChart', [
-            transition('false => true', [ style({ opacity: 0 }), animate(1000,  style({ opacity: 1 }))] )
-    ])]
-} )
+@Component({
+  selector: "app-ibdetail",
+  templateUrl: "./ibdetail.component.html",
+  styleUrls: ["./ibdetail.component.scss"],
+  animations: [
+    trigger("showChart", [
+      transition("false => true", [
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
+})
 export class IbdetailComponent extends DetailBase implements OnInit {
-    public currQuote: QuoteIb;
-	protected chartShow =  new BehaviorSubject(false);
-    protected todayQuotes: QuoteIb[] = [];
+  public currQuote: QuoteIb;
+  protected chartShow = new BehaviorSubject(false);
+  protected todayQuotes: QuoteIb[] = [];
 
-    constructor( private route: ActivatedRoute, private router: Router, private serviceIb: ItbitService,
-		@Inject(LOCALE_ID) private myLocale: string) {
-		super(myLocale);
-	}
-
-    ngOnInit() {
-	    this.chartShow.next(false);
-        this.route.params.subscribe( params => {
-            this.currPair = params.currpair;
-            this.serviceIb.getCurrentQuote( this.currPair )
-                .subscribe( quote => this.currQuote = quote );
-            this.serviceIb.getTodayQuotes( this.currPair )
-                .subscribe( quotes => {
-                    this.todayQuotes = quotes;
-					this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.lastPrice)));
-					this.chartShow.next(true);
-                } );
-        } );
-    }
-
-  back(): void {
-	this.router.navigate(['/']);
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private serviceIb: ItbitService,
+    @Inject(LOCALE_ID) private myLocale: string
+  ) {
+    super(myLocale);
   }
 
-    changeTf() {
-	    this.chartShow.next(false);
-        const currpair = this.route.snapshot.paramMap.get( 'currpair' );
-        let quoteObserv: Observable<QuoteIb[]>;
-        if ( this.timeframe === this.utils.timeframes[1] ) {
-			quoteObserv = this.serviceIb.get7DayQuotes( currpair );
-		} else if ( this.timeframe === this.utils.timeframes[2] ) {
-			 quoteObserv = this.serviceIb.get30DayQuotes( currpair );
-		} else if ( this.timeframe === this.utils.timeframes[3] ) {
-			 quoteObserv = this.serviceIb.get90DayQuotes( currpair );
-		} else if ( this.timeframe === this.utils.timeframes[4] ) {
-			quoteObserv = this.serviceIb.get6MonthsQuotes( currpair );
-		} else if ( this.timeframe === this.utils.timeframes[5] ) {
-			quoteObserv = this.serviceIb.get1YearQuotes( currpair );
-		} else {
-			quoteObserv = this.serviceIb.getTodayQuotes( currpair );
-		}
-        quoteObserv.subscribe( quotes => {
-            this.todayQuotes = quotes;
-			this.updateChartData(quotes.map(quote => new Tuple<string, number>(quote.createdAt, quote.lastPrice)));
-			this.chartShow.next(true);
-        } );
-    }
+  ngOnInit() {
+    this.chartShow.next(false);
+    this.route.params.subscribe((params) => {
+      this.currPair = params.currpair;
+      this.serviceIb
+        .getCurrentQuote(this.currPair)
+        .subscribe((quote) => (this.currQuote = quote));
+      this.serviceIb.getTodayQuotes(this.currPair).subscribe((quotes) => {
+        this.todayQuotes = quotes;
+        this.updateChartData(
+          quotes.map(
+            (quote) =>
+              new Tuple<string, number>(quote.createdAt, quote.lastPrice)
+          )
+        );
+        this.chartShow.next(true);
+      });
+    });
+  }
 
-    showReport() {
-        const currpair = this.route.snapshot.paramMap.get( 'currpair' );
-        const url = '/itbit' + this.utils.createReportUrl( this.timeframe, currpair );
-        window.open( url );
+  back(): void {
+    this.router.navigate(["/"]);
+  }
+
+  changeTf() {
+    this.chartShow.next(false);
+    const currpair = this.route.snapshot.paramMap.get("currpair");
+    let quoteObserv: Observable<QuoteIb[]>;
+    if (this.timeframe === this.utils.timeframes[1]) {
+      quoteObserv = this.serviceIb.get7DayQuotes(currpair);
+    } else if (this.timeframe === this.utils.timeframes[2]) {
+      quoteObserv = this.serviceIb.get30DayQuotes(currpair);
+    } else if (this.timeframe === this.utils.timeframes[3]) {
+      quoteObserv = this.serviceIb.get90DayQuotes(currpair);
+    } else if (this.timeframe === this.utils.timeframes[4]) {
+      quoteObserv = this.serviceIb.get6MonthsQuotes(currpair);
+    } else if (this.timeframe === this.utils.timeframes[5]) {
+      quoteObserv = this.serviceIb.get1YearQuotes(currpair);
+    } else {
+      quoteObserv = this.serviceIb.getTodayQuotes(currpair);
     }
+    quoteObserv.subscribe((quotes) => {
+      this.todayQuotes = quotes;
+      this.updateChartData(
+        quotes.map(
+          (quote) => new Tuple<string, number>(quote.createdAt, quote.lastPrice)
+        )
+      );
+      this.chartShow.next(true);
+    });
+  }
+
+  showReport() {
+    const currpair = this.route.snapshot.paramMap.get("currpair");
+    const url = "/itbit" + this.utils.createReportUrl(this.timeframe, currpair);
+    window.open(url);
+  }
 }

@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from "@angular/core/testing";
 
-import { ItbitService } from './itbit.service';
+import { ItbitService } from "./itbit.service";
 
 //describe('ItbitService', () => {
 //  beforeEach(() => {

@@ -16,7 +16,8 @@
     "postbuild": "npm run deploy",
     "predeploy": "rimraf ../../main/resources/static/*",
     "deploy": "cpy 'base/*' dist/testproject/ && cpy 'dist/testproject/**' ../../../backend/src/main/resources/static/",
-    "extract-i18n": "ng extract-i18n --format=json"
+    "extract-i18n": "ng extract-i18n --format=json",
+    "prettier": "npx prettier --write 'src/**/*.{ts,html,scss,json}'"
   },
   "private": true,
   "dependencies": {
@@ -62,6 +63,7 @@
     "ts-node": "~10.4.0",
     "typescript": "~4.8.4",
     "rimraf": "^3.0.2",
+    "prettier": "^2.4.1",
     "webpack-bundle-analyzer": "^4.5.0",
     "eslint": "^7.26.0",
     "eslint-plugin-import": "^2.22.1",

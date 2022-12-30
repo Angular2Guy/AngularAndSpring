@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from "@angular/core/testing";
 
-import { AuthGuardService } from './auth-guard.service';
+import { AuthGuardService } from "./auth-guard.service";
 
 //describe('AuthGuardService', () => {
 //  beforeEach(() => {

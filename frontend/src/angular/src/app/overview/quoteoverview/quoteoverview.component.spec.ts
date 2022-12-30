@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
-import { QuoteoverviewComponent } from './quoteoverview.component';
+import { QuoteoverviewComponent } from "./quoteoverview.component";
 
 //describe('QuoteoverviewComponent', () => {
 //  let component: QuoteoverviewComponent;

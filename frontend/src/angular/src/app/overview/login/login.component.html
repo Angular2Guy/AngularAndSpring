@@ -1,71 +1,144 @@
 <div mat-dialog-content>
-<mat-tab-group> 
-	<mat-tab i18n-label="@@loginLogin" label="Login">
-	<ng-container [ngTemplateOutlet]="waitingSpinner" *ngIf="waitingForResponse"></ng-container>
-		<form [formGroup]="loginForm" novalidate *ngIf="!waitingForResponse">  
-			<ul>
-				<li>
-					<mat-form-field> 
-						<input matInput
-							i18n-placeholder="@@loginUsername" placeholder="Username" tabindex="1" formControlName="{{formFields.username}}"> 
-					</mat-form-field>
-				</li>
-				<li>
-					<mat-form-field> 
-						<input matInput
-							i18n-placeholder="@@loginPassword" placeholder="Password" tabindex="2" formControlName="{{formFields.password}}" type="password">
-					</mat-form-field>
-				</li>
-				<li *ngIf="loginFailed" class="errorText" i18n="@@loginLoginFailed"> Login Failed </li>
-				<li>
-					<button mat-button (click)="onLoginClick()" [disabled]="!loginForm.valid" tabindex="-1" i18n="@@ok">Ok</button>
-					<button mat-button (click)="onCancelClick()" tabindex="-1" i18n="@@cancel">Cancel</button>
-				</li>
-			</ul>
-		</form>
-	</mat-tab> 
-	<mat-tab i18n-label="@@loginSignin" label="Signin">
-	<ng-container [ngTemplateOutlet]="waitingSpinner" *ngIf="waitingForResponse"></ng-container>
-		<form [formGroup]="signinForm" novalidate *ngIf="!waitingForResponse">
-			<ul>
-				<li>
-					<mat-form-field> 
-						<input matInput
-							i18n-placeholder="@@loginUsername" placeholder="Username" tabindex="1" formControlName="{{formFields.username}}"> 
-					</mat-form-field>
-				</li>
-				<li>
-					<mat-form-field> 
-						<input matInput
-							i18n-placeholder="@@loginPassword" placeholder="Password" tabindex="2" formControlName="{{formFields.password}}" type="password">
-					</mat-form-field>
-					<mat-form-field style="margin-left: 20px;"> 
-						<input matInput
-							i18n-placeholder="@@loginPassword" placeholder="Password" tabindex="3" formControlName="{{formFields.password2}}" type="password">
-					</mat-form-field>
-				</li>
-				<li>
-					<mat-form-field> 
-						<input matInput
-							i18n-placeholder="@@loginEmail" placeholder="Email" tabindex="4" formControlName="{{formFields.email}}">
-					</mat-form-field>
-				</li>			
-				<li *ngIf="signinFailed" class="errorText" i18n="@@loginSigninFailed"> Signin Failed </li>	
-				<li>
-					<button mat-button (click)="onSigninClick()" [disabled]="!signinForm.valid" tabindex="-1"  i18n="@@ok">Ok</button>
-					<button mat-button (click)="onCancelClick()" tabindex="-1" i18n="@@cancel">Cancel</button>
-				</li>
-			</ul>
-		</form>
-	</mat-tab> 	
-</mat-tab-group>
+  <mat-tab-group>
+    <mat-tab i18n-label="@@loginLogin" label="Login">
+      <ng-container
+        [ngTemplateOutlet]="waitingSpinner"
+        *ngIf="waitingForResponse"
+      ></ng-container>
+      <form [formGroup]="loginForm" novalidate>
+        <ul *ngIf="!waitingForResponse">
+          <li>
+            <mat-form-field>
+              <input
+                matInput
+                i18n-placeholder="@@loginUsername"
+                placeholder="Username"
+                tabindex="1"
+                formControlName="{{ formFields.username }}"
+              />
+            </mat-form-field>
+          </li>
+          <li>
+            <mat-form-field>
+              <input
+                matInput
+                i18n-placeholder="@@loginPassword"
+                placeholder="Password"
+                tabindex="2"
+                formControlName="{{ formFields.password }}"
+                type="password"
+              />
+            </mat-form-field>
+          </li>
+          <li *ngIf="loginFailed" class="errorText" i18n="@@loginLoginFailed">
+            Login Failed
+          </li>
+          <li>
+            <button
+              mat-button
+              (click)="onLoginClick()"
+              [disabled]="!loginForm.valid"
+              tabindex="-1"
+              i18n="@@ok"
+            >
+              Ok
+            </button>
+            <button
+              mat-button
+              (click)="onCancelClick()"
+              tabindex="-1"
+              i18n="@@cancel"
+            >
+              Cancel
+            </button>
+          </li>
+        </ul>
+      </form>
+    </mat-tab>
+    <mat-tab i18n-label="@@loginSignin" label="Signin">
+      <ng-container
+        [ngTemplateOutlet]="waitingSpinner"
+        *ngIf="waitingForResponse"
+      ></ng-container>
+      <form [formGroup]="signinForm" novalidate>
+        <ul *ngIf="!waitingForResponse">
+          <li>
+            <mat-form-field>
+              <input
+                matInput
+                i18n-placeholder="@@loginUsername"
+                placeholder="Username"
+                tabindex="1"
+                formControlName="{{ formFields.username }}"
+              />
+            </mat-form-field>
+          </li>
+          <li>
+            <mat-form-field>
+              <input
+                matInput
+                i18n-placeholder="@@loginPassword"
+                placeholder="Password"
+                tabindex="2"
+                formControlName="{{ formFields.password }}"
+                type="password"
+              />
+            </mat-form-field>
+            <mat-form-field style="margin-left: 20px">
+              <input
+                matInput
+                i18n-placeholder="@@loginPassword"
+                placeholder="Password"
+                tabindex="3"
+                formControlName="{{ formFields.password2 }}"
+                type="password"
+              />
+            </mat-form-field>
+          </li>
+          <li>
+            <mat-form-field>
+              <input
+                matInput
+                i18n-placeholder="@@loginEmail"
+                placeholder="Email"
+                tabindex="4"
+                formControlName="{{ formFields.email }}"
+              />
+            </mat-form-field>
+          </li>
+          <li *ngIf="signinFailed" class="errorText" i18n="@@loginSigninFailed">
+            Signin Failed
+          </li>
+          <li>
+            <button
+              mat-button
+              (click)="onSigninClick()"
+              [disabled]="!signinForm.valid"
+              tabindex="-1"
+              i18n="@@ok"
+            >
+              Ok
+            </button>
+            <button
+              mat-button
+              (click)="onCancelClick()"
+              tabindex="-1"
+              i18n="@@cancel"
+            >
+              Cancel
+            </button>
+          </li>
+        </ul>
+      </form>
+    </mat-tab>
+  </mat-tab-group>
 </div>
 
 <ng-template #waitingSpinner>
   <div class="spinner-container">
-  	<div>
-  		<h1 i18n="@@loginWaiting">Waiting...</h1>
-  		<mat-spinner></mat-spinner>  		
-  	</div>
+    <div>
+      <h1 i18n="@@loginWaiting">Waiting...</h1>
+      <mat-spinner></mat-spinner>
+    </div>
   </div>
 </ng-template>

@@ -14,23 +14,23 @@
    limitations under the License.
  */
 td {
-	width: 150px;
+  width: 150px;
 }
 .radioGroup {
-	//margin-left: 100px;
+  //margin-left: 100px;
 }
 .radioButton {
-	margin-left: 10px;	
+  margin-left: 10px;
 }
 .chart-container {
-	height: calc(100vh - 250px);
-	width: 100%;
+  height: calc(100vh - 250px);
+  width: 100%;
 }
 .example-fill-remaining-space {
-  // This fills the remaining space, by using flexbox. 
+  // This fills the remaining space, by using flexbox.
   // Every toolbar row uses a flexbox row layout.
   flex: 1 1 auto;
 }
 ::ng-deep .mdc-form-field > label {
-	cursor: pointer;
+  cursor: pointer;
 }

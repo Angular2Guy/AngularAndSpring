@@ -13,39 +13,47 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-export enum StatisticCurrencyPair {bcUsd='BcUsd', ethUsd='EthUsd', lcUsd='LcUsd', rpUsd='RpUsd'}
+export enum StatisticCurrencyPair {
+  bcUsd = "BcUsd",
+  ethUsd = "EthUsd",
+  lcUsd = "LcUsd",
+  rpUsd = "RpUsd",
+}
 
-export enum CoinExchange { bitfinex='Bitfinex', bitstamp='Bitstamp' }
+export enum CoinExchange {
+  bitfinex = "Bitfinex",
+  bitstamp = "Bitstamp",
+}
 
 export class CommonStatistics {
-	currPair: StatisticCurrencyPair;
-	performance1Month: number;
-	performance3Month: number;
-	performance6Month: number;
-	performance1Year: number;
-	performance2Year: number;
-	performance5Year: number;
-	volatility1Month: number;
-	volatility3Month: number;
-	volatility6Month: number;
-	volatility1Year: number;
-	volatility2Year: number;
-	volatility5Year: number;
-	avgVolume1Month: number;
-	avgVolume3Month: number;
-	avgVolume6Month: number;
-	avgVolume1Year: number;
-	avgVolume2Year: number;
-	avgVolume5Year: number;
-	range1Month: RangeValues;
-	range3Month: RangeValues;
-	range6Month: RangeValues;
-	range1Year: RangeValues;
-	range2Year: RangeValues;
-	range5Year: RangeValues;
+  currPair: StatisticCurrencyPair;
+  performance1Month: number;
+  performance3Month: number;
+  performance6Month: number;
+  performance1Year: number;
+  performance2Year: number;
+  performance5Year: number;
+  volatility1Month: number;
+  volatility3Month: number;
+  volatility6Month: number;
+  volatility1Year: number;
+  volatility2Year: number;
+  volatility5Year: number;
+  avgVolume1Month: number;
+  avgVolume3Month: number;
+  avgVolume6Month: number;
+  avgVolume1Year: number;
+  avgVolume2Year: number;
+  avgVolume5Year: number;
+  range1Month: RangeValues;
+  range3Month: RangeValues;
+  range6Month: RangeValues;
+  range1Year: RangeValues;
+  range2Year: RangeValues;
+  range5Year: RangeValues;
 }
 
 export class RangeValues {
-	min: number;
-	max: number;
+  min: number;
+  max: number;
 }

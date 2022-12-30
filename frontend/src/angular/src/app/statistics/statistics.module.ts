@@ -13,24 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { StatisticsComponent } from './statistics.component';
-import { StatisticsRoutingModule } from './statistics-routing.module';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTabsModule } from '@angular/material/tabs';
-import  {MatRadioModule } from '@angular/material/radio';
-import { StatisticDetailsComponent } from './statistic-details/statistic-details.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxBarChartsModule } from 'ngx-simple-charts/bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { StatisticsComponent } from "./statistics.component";
+import { StatisticsRoutingModule } from "./statistics-routing.module";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatButtonModule } from "@angular/material/button";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatRadioModule } from "@angular/material/radio";
+import { StatisticDetailsComponent } from "./statistic-details/statistic-details.component";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NgxBarChartsModule } from "ngx-simple-charts/bar";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
-  declarations: [
-    StatisticsComponent,
-    StatisticDetailsComponent
-  ],
+  declarations: [StatisticsComponent, StatisticDetailsComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -41,7 +38,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatTabsModule,
     MatRadioModule,
     NgxBarChartsModule,
-    MatProgressSpinnerModule
-  ]
+    MatProgressSpinnerModule,
+  ],
 })
-export class StatisticsModule { }
+export class StatisticsModule {}

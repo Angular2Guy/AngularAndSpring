@@ -13,69 +13,103 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { QuoteBf } from '../common/quote-bf';
-import { Utils } from './utils';
-import { OrderbookBf } from '../common/orderbook-bf';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { catchError, map, tap } from "rxjs/operators";
+import { QuoteBf } from "../common/quote-bf";
+import { Utils } from "./utils";
+import { OrderbookBf } from "../common/orderbook-bf";
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: "root" })
 export class BitfinexService {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  BTCUSD = 'btcusd';
+  BTCUSD = "btcusd";
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ETHUSD = 'ethusd';
+  ETHUSD = "ethusd";
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  LTCUSD = 'ltcusd';
+  LTCUSD = "ltcusd";
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  XRPUSD = 'xrpusd';
-  private reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
-  private readonly bitfinex = '/bitfinex';
+  XRPUSD = "xrpusd";
+  private reqOptionsArgs = {
+    headers: new HttpHeaders().set("Content-Type", "application/json"),
+  };
+  private readonly bitfinex = "/bitfinex";
 
   private utils = new Utils();
 
   constructor(private http: HttpClient) {}
 
   getCurrentQuote(currencypair: string): Observable<QuoteBf> {
-      return this.http.get<QuoteBf>(this.bitfinex+'/'+currencypair+'/current', this.reqOptionsArgs)
-		.pipe(catchError(this.utils.handleError<QuoteBf>('getCurrentQuote')));
+    return this.http
+      .get<QuoteBf>(
+        this.bitfinex + "/" + currencypair + "/current",
+        this.reqOptionsArgs
+      )
+      .pipe(catchError(this.utils.handleError<QuoteBf>("getCurrentQuote")));
   }
 
   getTodayQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/today', this.reqOptionsArgs)
-		.pipe(catchError(this.utils.handleError<QuoteBf[]>('getTodayQuotes')));
+    return this.http
+      .get<QuoteBf[]>(
+        this.bitfinex + "/" + currencypair + "/today",
+        this.reqOptionsArgs
+      )
+      .pipe(catchError(this.utils.handleError<QuoteBf[]>("getTodayQuotes")));
   }
 
   get7DayQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/7days', this.reqOptionsArgs)
-		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get7DayQuotes')));
+    return this.http
+      .get<QuoteBf[]>(
+        this.bitfinex + "/" + currencypair + "/7days",
+        this.reqOptionsArgs
+      )
+      .pipe(catchError(this.utils.handleError<QuoteBf[]>("get7DayQuotes")));
   }
 
   get30DayQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/30days', this.reqOptionsArgs)
-		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get30DayQuotes')));
+    return this.http
+      .get<QuoteBf[]>(
+        this.bitfinex + "/" + currencypair + "/30days",
+        this.reqOptionsArgs
+      )
+      .pipe(catchError(this.utils.handleError<QuoteBf[]>("get30DayQuotes")));
   }
 
   get90DayQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/90days', this.reqOptionsArgs)
-		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get90DayQuotes')));
+    return this.http
+      .get<QuoteBf[]>(
+        this.bitfinex + "/" + currencypair + "/90days",
+        this.reqOptionsArgs
+      )
+      .pipe(catchError(this.utils.handleError<QuoteBf[]>("get90DayQuotes")));
   }
 
   get6MonthsQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/6month', this.reqOptionsArgs)
-		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get6MonthQuotes')));
+    return this.http
+      .get<QuoteBf[]>(
+        this.bitfinex + "/" + currencypair + "/6month",
+        this.reqOptionsArgs
+      )
+      .pipe(catchError(this.utils.handleError<QuoteBf[]>("get6MonthQuotes")));
   }
 
   get1YearQuotes(currencypair: string): Observable<QuoteBf[]> {
-      return this.http.get<QuoteBf[]>(this.bitfinex+'/'+currencypair+'/1year', this.reqOptionsArgs)
-		.pipe(catchError(this.utils.handleError<QuoteBf[]>('get1YearQuotes')));
+    return this.http
+      .get<QuoteBf[]>(
+        this.bitfinex + "/" + currencypair + "/1year",
+        this.reqOptionsArgs
+      )
+      .pipe(catchError(this.utils.handleError<QuoteBf[]>("get1YearQuotes")));
   }
 
   getOrderbook(currencypair: string): Observable<OrderbookBf> {
-      const reqOptions = {headers: this.utils.createTokenHeader()};
-      return this.http.get<OrderbookBf>(this.bitfinex+'/'+currencypair+'/orderbook', reqOptions)
-		.pipe(catchError(this.utils.handleError<OrderbookBf>('getOrderbook')));
+    const reqOptions = { headers: this.utils.createTokenHeader() };
+    return this.http
+      .get<OrderbookBf>(
+        this.bitfinex + "/" + currencypair + "/orderbook",
+        reqOptions
+      )
+      .pipe(catchError(this.utils.handleError<OrderbookBf>("getOrderbook")));
   }
 }

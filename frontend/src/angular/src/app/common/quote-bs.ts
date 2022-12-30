@@ -14,16 +14,16 @@
    limitations under the License.
  */
 export interface QuoteBs {
-    _id: string;
-    pair: string;
-    createdAt: string;
-    high: number;
-    last: number;
-    timestamp: string;
-    bid: number;
-    vwap: number;
-    volume: number;
-    low: number;
-    ask: number;
-    open: number;
+  _id: string;
+  pair: string;
+  createdAt: string;
+  high: number;
+  last: number;
+  timestamp: string;
+  bid: number;
+  vwap: number;
+  volume: number;
+  low: number;
+  ask: number;
+  open: number;
 }

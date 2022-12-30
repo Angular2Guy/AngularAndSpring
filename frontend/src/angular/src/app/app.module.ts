@@ -13,31 +13,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { SplashComponent } from './splash/splash.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgxServiceModule,SimpleChartsConfig } from 'ngx-simple-charts/base-service';
-
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { SplashComponent } from "./splash/splash.component";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import {
+  NgxServiceModule,
+  SimpleChartsConfig,
+} from "ngx-simple-charts/base-service";
 
 @NgModule({
-	declarations: [
-		AppComponent,
-		SplashComponent,
-	],
-	imports: [
-		BrowserModule,
-		AppRoutingModule,
-		BrowserAnimationsModule,
-		HttpClientModule,
-		MatProgressSpinnerModule,
-		NgxServiceModule.forRoot({tokenRefreshPath: '/myuser/refreshToken', logoutPath: '/myuser/logout', loginRoute: '/login'})
-	],
-	bootstrap: [AppComponent]
+  declarations: [AppComponent, SplashComponent],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    MatProgressSpinnerModule,
+    NgxServiceModule.forRoot({
+      tokenRefreshPath: "/myuser/refreshToken",
+      logoutPath: "/myuser/logout",
+      loginRoute: "/login",
+    }),
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

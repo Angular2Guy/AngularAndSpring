@@ -14,12 +14,12 @@
    limitations under the License.
  */
 export interface OrderbookBf {
-    bids: OrderBf[];
-    asks: OrderBf[];
+  bids: OrderBf[];
+  asks: OrderBf[];
 }
 
 export interface OrderBf {
-    price: string;
-    amount: string;
-    timestamp: Date;
+  price: string;
+  amount: string;
+  timestamp: Date;
 }

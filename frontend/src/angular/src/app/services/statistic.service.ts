@@ -13,24 +13,38 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CommonStatistics, StatisticCurrencyPair, CoinExchange } from '../common/common-statistics';
-import { Utils } from './utils';
-import { catchError } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import {
+  CommonStatistics,
+  StatisticCurrencyPair,
+  CoinExchange,
+} from "../common/common-statistics";
+import { Utils } from "./utils";
+import { catchError } from "rxjs/operators";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class StatisticService {
-  private readonly statistics = '/statistics';
+  private readonly statistics = "/statistics";
   private utils = new Utils();
 
-  constructor(private http: HttpClient) { }
-  
-  getCommonStatistics(currencypair: StatisticCurrencyPair, coinExchange: CoinExchange): Observable<CommonStatistics> {
-     return this.http.get<CommonStatistics>(`${this.statistics}/overview/${coinExchange}/${currencypair}`)
-			.pipe(catchError(this.utils.handleError<CommonStatistics>('getCommonStatistics')));
+  constructor(private http: HttpClient) {}
+
+  getCommonStatistics(
+    currencypair: StatisticCurrencyPair,
+    coinExchange: CoinExchange
+  ): Observable<CommonStatistics> {
+    return this.http
+      .get<CommonStatistics>(
+        `${this.statistics}/overview/${coinExchange}/${currencypair}`
+      )
+      .pipe(
+        catchError(
+          this.utils.handleError<CommonStatistics>("getCommonStatistics")
+        )
+      );
   }
 }

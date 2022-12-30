@@ -13,51 +13,66 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { MyUser } from '../common/my-user';
-import { Utils } from './utils';
-import { AuthCheck } from '../common/authcheck';
-import { TokenService } from 'ngx-simple-charts/base-service';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, of } from "rxjs";
+import { catchError, map, tap } from "rxjs/operators";
+import { MyUser } from "../common/my-user";
+import { Utils } from "./utils";
+import { AuthCheck } from "../common/authcheck";
+import { TokenService } from "ngx-simple-charts/base-service";
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: "root" })
 export class MyuserService {
-  private reqOptionsArgs = { headers: new HttpHeaders().set( 'Content-Type', 'application/json' ) };
+  private reqOptionsArgs = {
+    headers: new HttpHeaders().set("Content-Type", "application/json"),
+  };
   private utils = new Utils();
-  private myUserUrl = '/myuser';
+  private myUserUrl = "/myuser";
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
   postLogin(user: MyUser): Observable<MyUser> {
-      return this.http.post<MyUser>(this.myUserUrl+'/login', user, this.reqOptionsArgs).pipe(map(res => {
+    return this.http
+      .post<MyUser>(this.myUserUrl + "/login", user, this.reqOptionsArgs)
+      .pipe(
+        map((res) => {
           const retval = res as MyUser;
           this.tokenService.token = res.token;
           this.tokenService.userId = res.userId;
           return retval;
-      }),catchError(this.utils.handleError<MyUser>('postLogin')));
+        }),
+        catchError(this.utils.handleError<MyUser>("postLogin"))
+      );
   }
 
   postSignin(user: MyUser): Observable<MyUser> {
-      return this.http.post<MyUser>(this.myUserUrl+'/signin', user, this.reqOptionsArgs).pipe(map(res => {
-              const retval = res as MyUser;
-              retval.salt = 'xxx';
-              retval.password = 'yyy';
-              return retval;
-          }),catchError(this.utils.handleError<MyUser>('postSignin')));
+    return this.http
+      .post<MyUser>(this.myUserUrl + "/signin", user, this.reqOptionsArgs)
+      .pipe(
+        map((res) => {
+          const retval = res as MyUser;
+          retval.salt = "xxx";
+          retval.password = "yyy";
+          return retval;
+        }),
+        catchError(this.utils.handleError<MyUser>("postSignin"))
+      );
   }
 
   postCheckAuthorisation(path: string): Observable<AuthCheck> {
-      const authcheck = new AuthCheck();
-      authcheck.path = path;
-      const reqOptions = {headers: this.utils.createTokenHeader()};
-      return this.http.post<AuthCheck>(this.myUserUrl+'/authorize', authcheck, reqOptions)
-		.pipe(catchError(this.utils.handleError<AuthCheck>('postCheckAuthorisation')));
+    const authcheck = new AuthCheck();
+    authcheck.path = path;
+    const reqOptions = { headers: this.utils.createTokenHeader() };
+    return this.http
+      .post<AuthCheck>(this.myUserUrl + "/authorize", authcheck, reqOptions)
+      .pipe(
+        catchError(this.utils.handleError<AuthCheck>("postCheckAuthorisation"))
+      );
   }
 
   postLogout(): boolean {
-	this.tokenService.logout();
-	return true;
+    this.tokenService.logout();
+    return true;
   }
 }

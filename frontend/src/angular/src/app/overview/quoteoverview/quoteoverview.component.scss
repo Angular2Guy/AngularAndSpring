@@ -14,47 +14,47 @@
    limitations under the License.
  */
 .popup {
-	display: none;
+  display: none;
 }
 
 .cell:hover {
-	.popup {		
-		display: block;		    
-    	width: 160px;
-    	margin-top: 0px;
-    	margin-left: 100px;
-    	background: #FFFFFF;    				  	
-    	border-radius: 6px;
-    	padding: 8px 0;
-    	position: absolute;
-    	z-index: 1;       
-		color: green;
-		border: solid 1px black;		
-	}
-	color: green;
-	cursor: pointer;
+  .popup {
+    display: block;
+    width: 160px;
+    margin-top: 0px;
+    margin-left: 100px;
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    color: green;
+    border: solid 1px black;
+  }
+  color: green;
+  cursor: pointer;
 }
 
 .cell-outdated {
-	color: #34a8eb;
-	&:hover {
-	   .popup {
-		  color: #34a8eb;
-	   }
-	}
+  color: #34a8eb;
+  &:hover {
+    .popup {
+      color: #34a8eb;
+    }
+  }
 }
 
 .example-container {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
 }
 
 .mat-mdc-table {
-  overflow: auto;  
+  overflow: auto;
 }
 
 .example-fill-remaining-space {
-  // This fills the remaining space, by using flexbox. 
+  // This fills the remaining space, by using flexbox.
   // Every toolbar row uses a flexbox row layout.
   flex: 1 1 auto;
 }

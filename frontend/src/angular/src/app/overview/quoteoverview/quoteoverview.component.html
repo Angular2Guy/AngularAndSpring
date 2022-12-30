@@ -1,41 +1,128 @@
 <div>
-	<mat-toolbar color="primary">		
-			<span i18n="@@quoteOverviewCurrencyTable">Curreny Table</span> 
-			<span class="example-fill-remaining-space"></span>
-			<span><button mat-flat-button color="primary" (click)="statistics()" i18n="@@quoteOverviewStatistics">Statistics</button></span>
-			<span><button mat-flat-button color="primary" (click)="orderbooks()" i18n="@@quoteOverviewOrderbooks">Orderbooks</button></span>
-			<span><button mat-flat-button color="primary" *ngIf="!loggedIn" (click)="openLoginDialog()" i18n="@@quoteOverviewLogin">Login</button></span>		
-			<span><button mat-flat-button color="primary" *ngIf="loggedIn" (click)="logout()" i18n="@@quoteOverviewLogout">Logout</button></span>
-	</mat-toolbar>
-	<div>
-		<mat-table #table [dataSource]="datasource"> 
-			<ng-container matColumnDef="exchange"> 
-				<mat-header-cell *matHeaderCellDef i18n="@@quoteOverviewExchange"> Exchange </mat-header-cell> 
-				<mat-cell *matCellDef="let element" class="cell"> {{element?.exchange}} </mat-cell> 
-			</ng-container> 
-			<ng-container matColumnDef="currpair"> 
-				<mat-header-cell *matHeaderCellDef i18n="@@quoteOverviewCurrencyPair"> Currency Pair </mat-header-cell> 
-				<mat-cell *matCellDef="let element" class="cell"> {{element?.currpair}} </mat-cell> </ng-container> 
-			<ng-container matColumnDef="last"> 
-				<mat-header-cell *matHeaderCellDef i18n="@@quoteOverviewLast"> Last </mat-header-cell> 
-				<mat-cell *matCellDef="let element" class="cell" [class.cell-outdated]="isElementOutdated(element)"> 
-					<div >{{!element?.last || element?.last < 0.01 ? '--' : element?.last | number:'1.2'}}</div>  
-					<div class="popup">
-						<ul>
-							<li><span i18n="@@quoteOverviewHigh">High</span> {{!element?.last || element?.high < 0.01 ? '--' : element?.high | number:'1.2'}}</li>
-							<li><span i18n="@@quoteOverviewLow">Low</span> {{!element?.last || element?.low < 0.01 ? '--' : element?.low | number:'1.2'}}</li>
-						</ul>
-					</div> 
-				</mat-cell> 
-			</ng-container> 
-			<ng-container matColumnDef="volume"> 
-				<mat-header-cell *matHeaderCellDef i18n="@@quoteOverviewVolume"> Volume </mat-header-cell> 
-				<mat-cell *matCellDef="let element" class="cell"  [class.cell-outdated]="isElementOutdated(element)">
-				 {{element?.volume < 1 ? '--' : element?.volume | number:'1.2'}} </mat-cell> 
-			</ng-container> 
-			<mat-header-row *matHeaderRowDef="['exchange', 'currpair', 'last', 'volume']"></mat-header-row>
-		<mat-row *matRowDef="let row; columns: ['exchange', 'currpair', 'last', 'volume'];" 
-			(click)="selectedRow(row)"></mat-row> 
-		</mat-table>
-	</div>
+  <mat-toolbar color="primary">
+    <span i18n="@@quoteOverviewCurrencyTable">Curreny Table</span>
+    <span class="example-fill-remaining-space"></span>
+    <span
+      ><button
+        mat-flat-button
+        color="primary"
+        (click)="statistics()"
+        i18n="@@quoteOverviewStatistics"
+      >
+        Statistics
+      </button></span
+    >
+    <span
+      ><button
+        mat-flat-button
+        color="primary"
+        (click)="orderbooks()"
+        i18n="@@quoteOverviewOrderbooks"
+      >
+        Orderbooks
+      </button></span
+    >
+    <span
+      ><button
+        mat-flat-button
+        color="primary"
+        *ngIf="!loggedIn"
+        (click)="openLoginDialog()"
+        i18n="@@quoteOverviewLogin"
+      >
+        Login
+      </button></span
+    >
+    <span
+      ><button
+        mat-flat-button
+        color="primary"
+        *ngIf="loggedIn"
+        (click)="logout()"
+        i18n="@@quoteOverviewLogout"
+      >
+        Logout
+      </button></span
+    >
+  </mat-toolbar>
+  <div>
+    <mat-table #table [dataSource]="datasource">
+      <ng-container matColumnDef="exchange">
+        <mat-header-cell *matHeaderCellDef i18n="@@quoteOverviewExchange">
+          Exchange
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="cell">
+          {{ element?.exchange }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="currpair">
+        <mat-header-cell *matHeaderCellDef i18n="@@quoteOverviewCurrencyPair">
+          Currency Pair
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="cell">
+          {{ element?.currpair }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="last">
+        <mat-header-cell *matHeaderCellDef i18n="@@quoteOverviewLast">
+          Last
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let element"
+          class="cell"
+          [class.cell-outdated]="isElementOutdated(element)"
+        >
+          <div>
+            {{
+              !element?.last || element?.last < 0.01
+                ? "--"
+                : (element?.last | number : "1.2")
+            }}
+          </div>
+          <div class="popup">
+            <ul>
+              <li>
+                <span i18n="@@quoteOverviewHigh">High</span>
+                {{
+                  !element?.last || element?.high < 0.01
+                    ? "--"
+                    : (element?.high | number : "1.2")
+                }}
+              </li>
+              <li>
+                <span i18n="@@quoteOverviewLow">Low</span>
+                {{
+                  !element?.last || element?.low < 0.01
+                    ? "--"
+                    : (element?.low | number : "1.2")
+                }}
+              </li>
+            </ul>
+          </div>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="volume">
+        <mat-header-cell *matHeaderCellDef i18n="@@quoteOverviewVolume">
+          Volume
+        </mat-header-cell>
+        <mat-cell
+          *matCellDef="let element"
+          class="cell"
+          [class.cell-outdated]="isElementOutdated(element)"
+        >
+          {{ element?.volume < 1 ? "--" : (element?.volume | number : "1.2") }}
+        </mat-cell>
+      </ng-container>
+      <mat-header-row
+        *matHeaderRowDef="['exchange', 'currpair', 'last', 'volume']"
+      ></mat-header-row>
+      <mat-row
+        *matRowDef="
+          let row;
+          columns: ['exchange', 'currpair', 'last', 'volume']
+        "
+        (click)="selectedRow(row)"
+      ></mat-row>
+    </mat-table>
+  </div>
 </div>

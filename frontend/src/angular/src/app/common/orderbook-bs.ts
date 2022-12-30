@@ -14,8 +14,7 @@
    limitations under the License.
  */
 export interface OrderbookBs {
-    timestamp: Date;
-    bids: string[][];
-    asks: string[][];
+  timestamp: Date;
+  bids: string[][];
+  asks: string[][];
 }
-

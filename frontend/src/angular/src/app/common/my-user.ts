@@ -14,14 +14,14 @@
    limitations under the License.
  */
 export class MyUser {
-	_id: string;
-	userId: string;
-	password: string;
-	salt: string;
-	email: string;
-	btcAmount: number;
-	ethAmount: number;
-	ltcAmount: number;
-	xrpAmount: number;
-    token: string;
+  _id: string;
+  userId: string;
+  password: string;
+  salt: string;
+  email: string;
+  btcAmount: number;
+  ethAmount: number;
+  ltcAmount: number;
+  xrpAmount: number;
+  token: string;
 }

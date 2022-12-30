@@ -13,19 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Injectable } from '@angular/core';
-import { CanActivate,ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
-import { Observable } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { MyuserService } from './myuser.service';
-import { TokenService } from 'ngx-simple-charts/base-service';
+import { Injectable } from "@angular/core";
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from "@angular/router";
+import { Observable } from "rxjs";
+import { catchError, map, tap } from "rxjs/operators";
+import { MyuserService } from "./myuser.service";
+import { TokenService } from "ngx-simple-charts/base-service";
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: "root" })
 export class AuthGuardService implements CanActivate {
+  constructor(private tokenService: TokenService) {}
 
-  constructor(private tokenService: TokenService) { }
-
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
-        return !!this.tokenService.token && !!this.tokenService.userId;
-    }
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean | Observable<boolean> | Promise<boolean> {
+    return !!this.tokenService.token && !!this.tokenService.userId;
+  }
 }

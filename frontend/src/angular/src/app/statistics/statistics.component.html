@@ -1,17 +1,27 @@
 <div>
-	<mat-toolbar color="primary">
-	   <span i18n="@@statistics">Statistics</span> 
-	   <span class="example-fill-remaining-space"></span>
-	   <span class="back-button"><button mat-flat-button color="primary" (click)="back()" i18n="@@back">Back</button></span>
-	</mat-toolbar>
-	<div>
-	   <mat-tab-group (selectedTabChange)="onSelTabChange($event)">
-	      <mat-tab label="Bitstamp" label-i18n="@@bitstamp">
-	         <app-statistic-details [tabIndex]="tabIndex" [coinExchange]="coinExchange.bitstamp"></app-statistic-details>
-	      </mat-tab>
-	      <mat-tab label="Bitfinex" label-i18n="@@bitfinex">
-	         <app-statistic-details [tabIndex]="tabIndex" [coinExchange]="coinExchange.bitfinex"></app-statistic-details>
-	      </mat-tab>
-	   </mat-tab-group>	
-	</div>
+  <mat-toolbar color="primary">
+    <span i18n="@@statistics">Statistics</span>
+    <span class="example-fill-remaining-space"></span>
+    <span class="back-button"
+      ><button mat-flat-button color="primary" (click)="back()" i18n="@@back">
+        Back
+      </button></span
+    >
+  </mat-toolbar>
+  <div>
+    <mat-tab-group (selectedTabChange)="onSelTabChange($event)">
+      <mat-tab label="Bitstamp" label-i18n="@@bitstamp">
+        <app-statistic-details
+          [tabIndex]="tabIndex"
+          [coinExchange]="coinExchange.bitstamp"
+        ></app-statistic-details>
+      </mat-tab>
+      <mat-tab label="Bitfinex" label-i18n="@@bitfinex">
+        <app-statistic-details
+          [tabIndex]="tabIndex"
+          [coinExchange]="coinExchange.bitfinex"
+        ></app-statistic-details>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
 </div>

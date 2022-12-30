@@ -14,18 +14,18 @@
    limitations under the License.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DetailsRoutingModule } from './details-routing.module';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { IbdetailComponent } from './ibdetail/ibdetail.component';
-import { CbdetailComponent } from './cbdetail/cbdetail.component';
-import { BsdetailComponent } from './bsdetail/bsdetail.component';
-import { BfdetailComponent } from './bfdetail/bfdetail.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { NgxLineChartsModule } from 'ngx-simple-charts/line';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { DetailsRoutingModule } from "./details-routing.module";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { IbdetailComponent } from "./ibdetail/ibdetail.component";
+import { CbdetailComponent } from "./cbdetail/cbdetail.component";
+import { BsdetailComponent } from "./bsdetail/bsdetail.component";
+import { BfdetailComponent } from "./bfdetail/bfdetail.component";
+import { MatButtonModule } from "@angular/material/button";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { NgxLineChartsModule } from "ngx-simple-charts/line";
 
 @NgModule({
   imports: [
@@ -36,13 +36,13 @@ import { NgxLineChartsModule } from 'ngx-simple-charts/line';
     MatRadioModule,
     MatButtonModule,
     DetailsRoutingModule,
-	NgxLineChartsModule
+    NgxLineChartsModule,
   ],
   declarations: [
     IbdetailComponent,
     CbdetailComponent,
     BsdetailComponent,
-    BfdetailComponent
-  ]
+    BfdetailComponent,
+  ],
 })
-export class DetailsModule { }
+export class DetailsModule {}

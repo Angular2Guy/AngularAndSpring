@@ -14,8 +14,8 @@
    limitations under the License.
  */
 export class AuthCheck {
-    createdAt: Date;
-    hash: string;
-    path: string;
-    authorized: boolean;
+  createdAt: Date;
+  hash: string;
+  path: string;
+  authorized: boolean;
 }

@@ -42,6 +42,7 @@
     "loginSignin": "Signin",
     "loginEmail": "Email",
     "loginSigninFailed": " Signin Failed ",
+    "loginWaiting": "Waiting...",
     "quoteOverviewCurrencyTable": "Curreny Table",
     "quoteOverviewStatistics": "Statistics",
     "quoteOverviewOrderbooks": "Orderbooks",

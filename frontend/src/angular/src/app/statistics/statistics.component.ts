@@ -13,27 +13,27 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CoinExchange, CommonStatistics } from '../common/common-statistics';
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { CoinExchange, CommonStatistics } from "../common/common-statistics";
 
 @Component({
-  selector: 'app-statistics',
-  templateUrl: './statistics.component.html',
-  styleUrls: ['./statistics.component.scss']
+  selector: "app-statistics",
+  templateUrl: "./statistics.component.html",
+  styleUrls: ["./statistics.component.scss"],
 })
 export class StatisticsComponent {
   protected commonStatistics = new CommonStatistics();
-  protected coinExchange=CoinExchange;
-  protected tabIndex=0;
+  protected coinExchange = CoinExchange;
+  protected tabIndex = 0;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   back(): void {
-	this.router.navigate(['/']);
+    this.router.navigate(["/"]);
   }
 
   onSelTabChange(event: any): void {
-	this.tabIndex = event.index;
+    this.tabIndex = event.index;
   }
 }

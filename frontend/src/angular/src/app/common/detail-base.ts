@@ -10,37 +10,45 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { CommonUtils } from './common-utils';
-import { formatDate } from '@angular/common';
-import { ChartPoint,ChartPoints } from 'ngx-simple-charts/line';
+import { CommonUtils } from "./common-utils";
+import { formatDate } from "@angular/common";
+import { ChartPoint, ChartPoints } from "ngx-simple-charts/line";
 
-export class Tuple<A,B> {
-	constructor(private myA: A, private myB: B) {}
+export class Tuple<A, B> {
+  constructor(private myA: A, private myB: B) {}
 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	get A() {
-		return this.myA;
-	}
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	get B() {
-		return this.myB;
-	}
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  get A() {
+    return this.myA;
+  }
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  get B() {
+    return this.myB;
+  }
 }
 
 export abstract class DetailBase {
-	chartPoints: ChartPoints[] = [];
-	utils = new CommonUtils();
-    currPair = '';
-    timeframe = this.utils.timeframes[0];
-	readonly yScaleWidth = 50;
-	readonly xScaleHeight = 20;
+  chartPoints: ChartPoints[] = [];
+  utils = new CommonUtils();
+  currPair = "";
+  timeframe = this.utils.timeframes[0];
+  readonly yScaleWidth = 50;
+  readonly xScaleHeight = 20;
 
-	constructor(protected locale: string) {}
+  constructor(protected locale: string) {}
 
-	protected updateChartData(values: Tuple<string, number>[]): void {
-		const myChartPoint = values.filter(value => value.B > 0.009).map(myCP => ({x: new Date(myCP.A), y: myCP.B} as ChartPoint));
-		this.chartPoints = [{name: this.currPair, chartPointList: myChartPoint,
-			yScaleWidth: this.yScaleWidth, xScaleHeight: this.xScaleHeight} as ChartPoints];
-		//console.log(this.chartPoints);
-	}
+  protected updateChartData(values: Tuple<string, number>[]): void {
+    const myChartPoint = values
+      .filter((value) => value.B > 0.009)
+      .map((myCP) => ({ x: new Date(myCP.A), y: myCP.B } as ChartPoint));
+    this.chartPoints = [
+      {
+        name: this.currPair,
+        chartPointList: myChartPoint,
+        yScaleWidth: this.yScaleWidth,
+        xScaleHeight: this.xScaleHeight,
+      } as ChartPoints,
+    ];
+    //console.log(this.chartPoints);
+  }
 }

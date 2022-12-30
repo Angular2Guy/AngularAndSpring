@@ -14,21 +14,21 @@
    limitations under the License.
  */
 export interface QuoteIb {
-    _id: string;
-    createdAt: string;
-    pair: string;
-    bid: number;
-    bidAmt: number;
-    ask: number;
-    askAmt: number;
-    lastPrice: number;
-    stAmt: number;
-    volume24h: number;
-    volumeToday: number;
-    high24h: number;
-    low24h: number;
-    openToday: number;
-    vwapToday: number;
-    vwap24h: number;
-    serverTimeUTC: string;
+  _id: string;
+  createdAt: string;
+  pair: string;
+  bid: number;
+  bidAmt: number;
+  ask: number;
+  askAmt: number;
+  lastPrice: number;
+  stAmt: number;
+  volume24h: number;
+  volumeToday: number;
+  high24h: number;
+  low24h: number;
+  openToday: number;
+  vwapToday: number;
+  vwap24h: number;
+  serverTimeUTC: string;
 }

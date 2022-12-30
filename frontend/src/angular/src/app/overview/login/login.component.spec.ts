@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
-import { LoginComponent } from './login.component';
+import { LoginComponent } from "./login.component";
 
 //describe('LoginComponent', () => {
 //  let component: LoginComponent;
