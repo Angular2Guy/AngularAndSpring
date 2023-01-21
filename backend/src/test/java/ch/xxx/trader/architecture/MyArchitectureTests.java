@@ -45,15 +45,16 @@ import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition;
 
 import ch.xxx.trader.adapter.cron.TaskStarter;
 import ch.xxx.trader.architecture.MyArchitectureTests.DoNotIncludeAotGenerated;
+import ch.xxx.trader.architecture.MyArchitectureTests.DoNotIncludeNamedTests;
 import jakarta.annotation.PostConstruct;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
-@AnalyzeClasses(packages = "ch.xxx.trader", importOptions = { DoNotIncludeTests.class, DoNotIncludeAotGenerated.class })
+@AnalyzeClasses(packages = "ch.xxx.trader", importOptions = { DoNotIncludeTests.class, DoNotIncludeAotGenerated.class, DoNotIncludeNamedTests.class })
 public class MyArchitectureTests {
 	private static final ArchRule NO_CLASSES_SHOULD_USE_FIELD_INJECTION = createNoFieldInjectionRule();
 
 	private JavaClasses importedClasses = new ClassFileImporter()
-			.withImportOptions(List.of(new DoNotIncludeTests(), new DoNotIncludeAotGenerated()))
+			.withImportOptions(List.of(new DoNotIncludeTests(), new DoNotIncludeAotGenerated(), new DoNotIncludeNamedTests()))
 			.importPackages("ch.xxx.trader");
 
 	@ArchTest
@@ -123,11 +124,21 @@ public class MyArchitectureTests {
 		return beAnnotatedWithAnInjectionAnnotation;
 	}
 	
+	
+	static final class DoNotIncludeNamedTests implements ImportOption {
+		private static final Pattern CUSTOM_TEST_PATTERN = Pattern.compile(".*(Test|Tests)\\.class$");
+
+		@Override
+		public boolean includes(Location location) {
+			return !location.matches(CUSTOM_TEST_PATTERN);
+		}
+
+	}
 	static final class DoNotIncludeAotGenerated implements ImportOption {
 		private static final Pattern AOT_GENERATED_PATTERN = Pattern
-				.compile(".*(__BeanDefinitions|SpringCGLIB\\$\\$0)\\.class$");
+				.compile(".*(__BeanDefinitions|SpringCGLIB\\$\\$\\d)\\.class$");
 		private static final Pattern AOT_TEST_GENERATED_PATTERN = Pattern
-				.compile(".*__TestContext.*\\.class$");
+				.compile(".*(__TestContext|__Autowiring).*\\.class$");
 
 		@Override
 		public boolean includes(Location location) {
