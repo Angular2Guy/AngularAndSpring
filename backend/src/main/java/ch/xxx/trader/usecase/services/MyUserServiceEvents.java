@@ -57,7 +57,7 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 	}
 
 	public Boolean updateLoggedOutUsers(List<RevokedToken> revokedTokens) {
-		this.jwtTokenProvider.updateLoggedOutUsers(revokedTokens);
+		this.jwtTokenService.updateLoggedOutUsers(revokedTokens);
 		return Boolean.TRUE;
 	}
 

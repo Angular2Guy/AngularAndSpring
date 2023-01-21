@@ -47,7 +47,7 @@ import reactor.core.publisher.Mono;
 public class MyUserServiceBean {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceBean.class);
 	private static final long LOGOUT_TIMEOUT = 185L;
-	protected final JwtTokenService jwtTokenProvider;
+	protected final JwtTokenService jwtTokenService;
 	private final PasswordEncryption passwordEncryption;
 	protected final MyMongoRepository myMongoRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -56,7 +56,7 @@ public class MyUserServiceBean {
 
 	public MyUserServiceBean(JwtTokenService jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository) {
-		this.jwtTokenProvider = jwtTokenProvider;
+		this.jwtTokenService = jwtTokenProvider;
 		this.passwordEncryption = passwordEncryption;
 		this.myMongoRepository = myMongoRepository;
 		this.passwordEncoder = passwordEncoder;
@@ -66,7 +66,7 @@ public class MyUserServiceBean {
 		this.updateLoggedOutUsersDisposable.dispose();
 		this.updateLoggedOutUsersDisposable = this.myMongoRepository.find(new Query(), RevokedToken.class).collectList()
 				.flatMapIterable(revokedTokens -> {
-					this.jwtTokenProvider.updateLoggedOutUsers(revokedTokens.stream()
+					this.jwtTokenService.updateLoggedOutUsers(revokedTokens.stream()
 //							.filter(StreamHelpers.distinctByKey(value -> value.getUuid()))
 							.filter(myRevokedToken -> myRevokedToken.getLastLogout() == null || !myRevokedToken
 									.getLastLogout().isBefore(LocalDateTime.now().minusSeconds(LOGOUT_TIMEOUT)))
@@ -87,7 +87,7 @@ public class MyUserServiceBean {
 	}
 
 	private AuthCheck mapMyUser(MyUser myUser, AuthCheck authcheck, Optional<String> token) {
-		Optional<Jws<Claims>> claims = this.jwtTokenProvider.getClaims(token);
+		Optional<Jws<Claims>> claims = this.jwtTokenService.getClaims(token);
 		if (myUser.getUserId() != null && claims.isPresent()
 				&& myUser.getUserId().equals(claims.get().getBody().getSubject())
 				&& new Date().before(claims.get().getBody().getExpiration())) {
@@ -143,12 +143,12 @@ public class MyUserServiceBean {
 	}
 
 	protected String getTokenUuid(String bearerStr) {
-		return this.jwtTokenProvider.getUuid(JwtUtils.resolveToken(bearerStr)
+		return this.jwtTokenService.getUuid(JwtUtils.resolveToken(bearerStr)
 				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
 	}
 
 	protected String getTokenUsername(String bearerStr) {
-		return this.jwtTokenProvider.getUsername(JwtUtils.resolveToken(bearerStr)
+		return this.jwtTokenService.getUsername(JwtUtils.resolveToken(bearerStr)
 				.orElseThrow(() -> new AuthenticationException("Invalid bearer string.")));
 	}
 
@@ -164,7 +164,7 @@ public class MyUserServiceBean {
 	private MyUser loginHelp(MyUser user, String passwd) {
 		if (user.getUserId() != null) {
 			if (this.passwordEncoder.matches(passwd, user.getPassword())) {
-				String jwtToken = this.jwtTokenProvider.createToken(user.getUserId(), Arrays.asList(Role.USERS));
+				String jwtToken = this.jwtTokenService.createToken(user.getUserId(), Arrays.asList(Role.USERS));
 				user.setToken(jwtToken);
 				user.setPassword("XXX");
 				return user;
@@ -174,11 +174,11 @@ public class MyUserServiceBean {
 	}
 
 	public RefreshTokenDto refreshToken(String bearerStr) {
-		Optional<String> tokenOpt = this.jwtTokenProvider.resolveToken(bearerStr);
+		Optional<String> tokenOpt = this.jwtTokenService.resolveToken(bearerStr);
 		if (tokenOpt.isEmpty()) {
 			throw new AuthenticationException("Invalid token");
 		}
-		String newToken = this.jwtTokenProvider.refreshToken(tokenOpt.get());
+		String newToken = this.jwtTokenService.refreshToken(tokenOpt.get());
 		LOGGER.info("Jwt Token refreshed.");
 		return new RefreshTokenDto(newToken);
 	}
