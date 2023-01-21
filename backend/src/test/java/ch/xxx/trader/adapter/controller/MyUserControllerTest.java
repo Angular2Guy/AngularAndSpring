@@ -16,13 +16,15 @@
 package ch.xxx.trader.adapter.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.engine.TestExecutionResult.Status;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,10 +35,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.xxx.trader.adapter.config.WebSecurityConfig;
+import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.usecase.services.JwtTokenService;
 import ch.xxx.trader.usecase.services.MyUserService;
@@ -50,7 +52,7 @@ public class MyUserControllerTest {
 			+ "XCdxhJddp7dSt_aX7_JUdzJVDh7GhQY-RTDI2sboDWwujg_HUvnMt5huLFdy8c2Fm9RPjEj_nDKluLvbCCNipXCoAy8nGfB0C6DTuwPUK9PgrNe5ON5OKtJEY7rVj4n15InreksN5J0P0A==";
 	@MockBean
 	private MyUserService myUserService;
-	@Autowired
+	@MockBean
 	private JwtTokenService jwtTokenService;
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -71,5 +73,15 @@ public class MyUserControllerTest {
 		Mockito.when(this.myUserService.postUserSignin(any(MyUser.class))).thenReturn(Mono.just(myUser));
 		this.mockMvc.perform(post("/myuser/signin").accept(MediaType.APPLICATION_JSON).servletPath("/myuser")
 				.content(this.objectMapper.writeValueAsString(myUser))).andExpect(status().isNotFound());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getRefreshTokenTest() throws Exception {
+		Mockito.when(this.jwtTokenService.createToken(any(String.class), any(List.class))).thenReturn(TOKEN_KEY);
+		this.mockMvc.perform(
+				get("/myuser/refreshToken").header(WebUtils.AUTHORIZATION, String.format("Bearer %s", TOKEN_KEY))
+						.accept(MediaType.APPLICATION_JSON).servletPath("/myuser"))
+				.andExpect(status().isNotFound());
 	}
 }
