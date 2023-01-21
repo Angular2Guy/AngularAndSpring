@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -45,7 +44,6 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -79,14 +77,11 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
-	private final Executor futureExecutor;
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);	
 
-	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils,
-			@Qualifier("futureTaskExecutor") Executor futureExecutor) {
+	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
-		this.serviceUtils = serviceUtils;
-		this.futureExecutor = futureExecutor;
+		this.serviceUtils = serviceUtils;		
 		try {
 			BeanInfo beanInfo = Introspector.getBeanInfo(QuoteCb.class);
 			this.propertyDescriptors = Stream.of(beanInfo.getPropertyDescriptors())
@@ -172,11 +167,11 @@ public class CoinbaseService {
 			CompletableFuture<String> future7 = CompletableFuture.supplyAsync(() -> {
 				this.createCbHourlyAvg();
 				return "createCbHourlyAvg() Done.";
-			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS, this.futureExecutor));
+			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 			CompletableFuture<String> future8 = CompletableFuture.supplyAsync(() -> {
 				this.createCbDailyAvg();
 				return "createCbDailyAvg() Done.";
-			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS, this.futureExecutor));
+			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 			String combined = Stream.of(future7, future8).map(CompletableFuture::join).collect(Collectors.joining(" "));
 			LOG.info(combined);
 		}

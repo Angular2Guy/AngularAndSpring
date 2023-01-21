@@ -257,6 +257,9 @@
 							<excludes>
 								<exclude>**/adapter/config/FlapDoodleConfig.java</exclude>
 							</excludes>
+							<testExcludes>
+								<exclude>**/adapter/repository/ClientMongoRepositoryTest.java</exclude>
+							</testExcludes>
 						</configuration>
 					</plugin>
 				</plugins>

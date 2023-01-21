@@ -50,7 +50,7 @@ public class PrepareDataTask {
 		this.coinbaseService = coinbaseService;
 	}
 	
-	@Async("futureTaskExecutor")
+	@Async
 	@Scheduled(cron = "0 5 0,12 ? * ?")
 	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createBsAvg() {
@@ -58,7 +58,7 @@ public class PrepareDataTask {
 		this.bitstampDisposableOpt = Optional.of(this.bitstampService.createBsAvg().subscribe());		
 	}	
 
-	@Async("futureTaskExecutor")
+	@Async
 	@Scheduled(cron = "0 45 0,12 ? * ?")
 	@SchedulerLock(name = "bitfinex_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createBfAvg() {
@@ -66,7 +66,7 @@ public class PrepareDataTask {
 		this.bitfinexDisposableOpt = Optional.of(this.bitfinexService.createBfAvg().subscribe());
 	}
 	
-	@Async("futureTaskExecutor")
+	@Async
 	@Scheduled(cron = "0 25 1,13 ? * ?")
 	@SchedulerLock(name = "itbit_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createIbAvg() {
@@ -74,7 +74,7 @@ public class PrepareDataTask {
 		this.itbitDisposableOpt = Optional.of(this.itbitService.createIbAvg().subscribe());
 	}
 
-	@Async("futureTaskExecutor")
+	@Async
 	@Scheduled(cron = "0 10 2,14 ? * ?")
 	@SchedulerLock(name = "coinbase_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createCbAvg() {

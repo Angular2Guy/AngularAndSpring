@@ -42,7 +42,7 @@ public class TaskStarter {
 		this.coinbaseService = coinbaseService;
 	}
 	
-	@Async("futureTaskExecutor")
+	@Async
 	@EventListener(ApplicationReadyEvent.class)
 	public void initAvgs() {
 		log.info("ApplicationReady");

@@ -30,14 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -65,17 +63,15 @@ public class ItbitService {
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
-	private final Executor futureExecutor;
 
 	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
-			@Qualifier("futureTaskExecutor") Executor futureExecutor, MyMongoRepository myMongoRepository,
+			MyMongoRepository myMongoRepository,
 			ServiceUtils serviceUtils) {
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
 		this.myMongoRepository = myMongoRepository;
 		this.serviceUtils = serviceUtils;
-		this.futureExecutor = futureExecutor;
 		this.currpairs.put("btcusd", "XBTUSD");
 		this.currpairs.put("btceur", "XBTEUR");
 	}
@@ -242,11 +238,11 @@ public class ItbitService {
 		CompletableFuture<String> future5 = CompletableFuture.supplyAsync(() -> {
 			this.createIbHourlyAvg();
 			return "createIbHourlyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS, this.futureExecutor));
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		CompletableFuture<String> future6 = CompletableFuture.supplyAsync(() -> {
 			this.createIbDailyAvg();
 			return "createIbDailyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS, this.futureExecutor));
+		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 		String combined = Stream.of(future5, future6).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		LOG.info(combined);
 		return "done";
