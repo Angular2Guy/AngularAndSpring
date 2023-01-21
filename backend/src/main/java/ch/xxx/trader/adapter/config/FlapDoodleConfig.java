@@ -45,7 +45,7 @@ public class FlapDoodleConfig {
 	
 	@PostConstruct
 	public void initMongoDb() {
-		if (this.serverPort.isBlank() || this.serverPort.contains("8080")
+		if (this.serverPort.isBlank() || this.serverPort.contains("8080") || this.serverPort.matches("\\d")
 				&& (this.activeProfiles.isBlank() || !this.activeProfiles.toLowerCase().contains("prod"))) {
 			try {
 				MongodStarter starter = MongodStarter.getDefaultInstance();
@@ -63,7 +63,7 @@ public class FlapDoodleConfig {
 
 	@PreDestroy
 	public void stopMongoDb() {
-		if (this.serverPort.isBlank() || this.serverPort.contains("8080")
+		if (this.serverPort.isBlank() || this.serverPort.contains("8080") || this.serverPort.matches("\\d")
 				&& (this.activeProfiles.isBlank() || !this.activeProfiles.toLowerCase().contains("prod"))) {
 			try {
 				this.mongodExecutable.stop();
