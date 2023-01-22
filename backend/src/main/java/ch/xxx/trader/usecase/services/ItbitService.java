@@ -57,7 +57,7 @@ public class ItbitService {
 	private static final Logger LOG = LoggerFactory.getLogger(ItbitService.class);
 	public static final String IB_HOUR_COL = "quoteIbHour";
 	public static final String IB_DAY_COL = "quoteIbDay";
-	private static volatile boolean singleInstanceLock = false;
+	public static volatile boolean singleInstanceLock = false;
 	private final Map<String, String> currpairs = new HashMap<String, String>();
 	private final ReportGenerator reportGenerator;
 	private final MyOrderBookClient orderBookClient;
@@ -235,8 +235,7 @@ public class ItbitService {
 							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
 							.doOnError(ex -> LOG.info("ensureIndex(" + IB_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-					.doOnError(ex -> LOG.info("createIbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-					.doFinally(value -> ItbitService.singleInstanceLock = false)
+					.doOnError(ex -> LOG.info("createIbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())					
 					.subscribeOn(this.mongoScheduler);			
 		}
 		return result;

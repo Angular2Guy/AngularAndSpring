@@ -56,7 +56,7 @@ public class BitfinexService {
 	private static final Logger LOG = LoggerFactory.getLogger(BitfinexService.class);
 	public static final String BF_HOUR_COL = "quoteBfHour";
 	public static final String BF_DAY_COL = "quoteBfDay";
-	private static volatile boolean singleInstanceLock = false;
+	public static volatile boolean singleInstanceLock = false;
 	private final ReportGenerator reportGenerator;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
@@ -155,7 +155,7 @@ public class BitfinexService {
 							.doOnError(ex -> LOG.info("ensureIndex(" + BF_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
 					.doOnError(ex -> LOG.info("createBfAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-					.doFinally(value -> BitfinexService.singleInstanceLock = false).subscribeOn(this.mongoScheduler);
+					.subscribeOn(this.mongoScheduler);
 		}
 		return result;
 	}

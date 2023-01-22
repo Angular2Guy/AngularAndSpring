@@ -55,6 +55,10 @@ public class TaskStarter {
 			this.bitfinexService.createBfAvg().block();
 			this.itbitService.createIbAvg().block();
 			this.coinbaseService.createCbAvg().block();
+			BitstampService.singleInstanceLock = false;
+			BitfinexService.singleInstanceLock = false;
+			ItbitService.singleInstanceLock = false;
+			CoinbaseService.singleInstanceLock = false;
 		}
 	}
 }

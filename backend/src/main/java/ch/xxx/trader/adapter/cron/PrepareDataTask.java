@@ -55,7 +55,7 @@ public class PrepareDataTask {
 	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createBsAvg() {
 		this.bitstampDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
-		this.bitstampDisposableOpt = Optional.of(this.bitstampService.createBsAvg().subscribe());		
+		this.bitstampDisposableOpt = Optional.of(this.bitstampService.createBsAvg().doFinally(value -> BitstampService.singleInstanceLock = false).subscribe());		
 	}	
 
 	@Async
@@ -63,7 +63,7 @@ public class PrepareDataTask {
 	@SchedulerLock(name = "bitfinex_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createBfAvg() {
 		this.bitfinexDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
-		this.bitfinexDisposableOpt = Optional.of(this.bitfinexService.createBfAvg().subscribe());
+		this.bitfinexDisposableOpt = Optional.of(this.bitfinexService.createBfAvg().doFinally(value -> BitfinexService.singleInstanceLock = false).subscribe());
 	}
 	
 	@Async
@@ -71,7 +71,7 @@ public class PrepareDataTask {
 	@SchedulerLock(name = "itbit_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createIbAvg() {
 		this.itbitDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
-		this.itbitDisposableOpt = Optional.of(this.itbitService.createIbAvg().subscribe());
+		this.itbitDisposableOpt = Optional.of(this.itbitService.createIbAvg().doFinally(value -> ItbitService.singleInstanceLock = false).subscribe());
 	}
 
 	@Async
@@ -79,6 +79,6 @@ public class PrepareDataTask {
 	@SchedulerLock(name = "coinbase_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createCbAvg() {
 		this.coinbaseDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
-		this.coinbaseDisposableOpt = Optional.of(this.coinbaseService.createCbAvg().subscribe());
+		this.coinbaseDisposableOpt = Optional.of(this.coinbaseService.createCbAvg().doFinally(value -> CoinbaseService.singleInstanceLock = false).subscribe());
 	}
 }

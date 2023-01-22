@@ -71,7 +71,7 @@ public class CoinbaseService {
 
 	public static final String CB_HOUR_COL = "quoteCbHour";
 	public static final String CB_DAY_COL = "quoteCbDay";
-	private static volatile boolean singleInstanceLock = false;
+	public static volatile boolean singleInstanceLock = false;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	@Value("${kubernetes.pod.cpu.constraint}")
@@ -157,7 +157,7 @@ public class CoinbaseService {
 							.doOnError(ex -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
 					.doOnError(ex -> LOG.info("createCbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-					.doFinally(value -> CoinbaseService.singleInstanceLock = false).subscribeOn(this.mongoScheduler);
+					.subscribeOn(this.mongoScheduler);
 		}
 		return result;
 	}

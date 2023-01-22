@@ -56,7 +56,7 @@ public class BitstampService {
 	private static final Logger LOG = LoggerFactory.getLogger(BitstampService.class);
 	public static final String BS_HOUR_COL = "quoteBsHour";
 	public static final String BS_DAY_COL = "quoteBsDay";
-	private static volatile boolean singleInstanceLock = false;
+	public static volatile boolean singleInstanceLock = false;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportGenerator reportGenerator;
 	private final ReportMapper reportMapper;
@@ -156,7 +156,7 @@ public class BitstampService {
 							.doOnError(ex -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
 					.doOnError(ex -> LOG.info("createBsAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-					.doFinally(value -> BitstampService.singleInstanceLock = false).subscribeOn(this.mongoScheduler);
+					.subscribeOn(this.mongoScheduler);
 		}
 		return result;
 	}
