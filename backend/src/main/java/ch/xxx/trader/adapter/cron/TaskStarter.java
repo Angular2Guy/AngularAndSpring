@@ -17,6 +17,7 @@ package ch.xxx.trader.adapter.cron;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -34,21 +35,26 @@ public class TaskStarter {
 	private final BitfinexService bitfinexService;
 	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
-	
-	public TaskStarter(BitstampService bitstampService, BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService) {
+	@Value("${single.instance.deployment:false}")
+	private boolean singleInstanceDeployment;
+
+	public TaskStarter(BitstampService bitstampService, BitfinexService bitfinexService, ItbitService itbitService,
+			CoinbaseService coinbaseService) {
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
 		this.itbitService = itbitService;
 		this.coinbaseService = coinbaseService;
 	}
-	
+
 	@Async
 	@EventListener(ApplicationReadyEvent.class)
 	public void initAvgs() {
-		log.info("ApplicationReady");
-		this.bitstampService.createBsAvg().block();
-		this.bitfinexService.createBfAvg().block();
-		this.itbitService.createIbAvg().block();
-		this.coinbaseService.createCbAvg().block();
+		if (this.singleInstanceDeployment) {
+			log.info("ApplicationReady");
+			this.bitstampService.createBsAvg().block();
+			this.bitfinexService.createBfAvg().block();
+			this.itbitService.createIbAvg().block();
+			this.coinbaseService.createCbAvg().block();
+		}
 	}
 }

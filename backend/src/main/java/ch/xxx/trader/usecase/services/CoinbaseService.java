@@ -71,17 +71,20 @@ public class CoinbaseService {
 
 	public static final String CB_HOUR_COL = "quoteCbHour";
 	public static final String CB_DAY_COL = "quoteCbDay";
+	private static volatile boolean singleInstanceLock = false;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	@Value("${kubernetes.pod.cpu.constraint}")
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);	
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	@Value("${single.instance.deployment:false}")
+	private boolean singleInstanceDeployment;
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
-		this.serviceUtils = serviceUtils;		
+		this.serviceUtils = serviceUtils;
 		try {
 			BeanInfo beanInfo = Introspector.getBeanInfo(QuoteCb.class);
 			this.propertyDescriptors = Stream.of(beanInfo.getPropertyDescriptors())
@@ -143,15 +146,20 @@ public class CoinbaseService {
 	}
 
 	public Mono<String> createCbAvg() {
-		return this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
-				.timeout(Duration.ofMinutes(5L))
-				.doOnError(ex -> LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", ex))
-				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT)
-						.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-						.doOnError(ex -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex)))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-				.doOnError(ex -> LOG.info("createCbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-				.subscribeOn(this.mongoScheduler);
+		Mono<String> result = Mono.empty();
+		if ((this.singleInstanceDeployment && !CoinbaseService.singleInstanceLock) || !this.singleInstanceDeployment) {
+			CoinbaseService.singleInstanceLock = true;
+			result = this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
+					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+					.doOnError(ex -> LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", ex))
+					.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT)
+							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+							.doOnError(ex -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex)))
+					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
+					.doOnError(ex -> LOG.info("createCbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
+					.doFinally(value -> CoinbaseService.singleInstanceLock = false).subscribeOn(this.mongoScheduler);
+		}
+		return result;
 	}
 
 	private String createHourDayAvg() {

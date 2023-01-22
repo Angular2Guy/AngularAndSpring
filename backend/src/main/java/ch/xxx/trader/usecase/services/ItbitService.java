@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,7 @@ public class ItbitService {
 	private static final Logger LOG = LoggerFactory.getLogger(ItbitService.class);
 	public static final String IB_HOUR_COL = "quoteIbHour";
 	public static final String IB_DAY_COL = "quoteIbDay";
+	private static volatile boolean singleInstanceLock = false;
 	private final Map<String, String> currpairs = new HashMap<String, String>();
 	private final ReportGenerator reportGenerator;
 	private final MyOrderBookClient orderBookClient;
@@ -63,10 +65,11 @@ public class ItbitService {
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	@Value("${single.instance.deployment:false}")
+	private boolean singleInstanceDeployment;
 
 	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
-			MyMongoRepository myMongoRepository,
-			ServiceUtils serviceUtils) {
+			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
@@ -222,15 +225,21 @@ public class ItbitService {
 	}
 
 	public Mono<String> createIbAvg() {
-		return this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
-				.timeout(Duration.ofMinutes(5L))
-				.doOnError(ex -> LOG.info("ensureIndex(" + IB_HOUR_COL + ") failed.", ex))
-				.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT)
-						.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-						.doOnError(ex -> LOG.info("ensureIndex(" + IB_DAY_COL + ") failed.", ex)))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-				.doOnError(ex -> LOG.info("createIbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-				.subscribeOn(this.mongoScheduler);
+		Mono<String> result = Mono.empty();
+		if ((this.singleInstanceDeployment && !ItbitService.singleInstanceLock) || !this.singleInstanceDeployment) {
+			ItbitService.singleInstanceLock = true;
+			result = this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
+					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+					.doOnError(ex -> LOG.info("ensureIndex(" + IB_HOUR_COL + ") failed.", ex))
+					.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT)
+							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+							.doOnError(ex -> LOG.info("ensureIndex(" + IB_DAY_COL + ") failed.", ex)))
+					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
+					.doOnError(ex -> LOG.info("createIbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
+					.doFinally(value -> ItbitService.singleInstanceLock = false)
+					.subscribeOn(this.mongoScheduler);			
+		}
+		return result;
 	}
 
 	private String createHourDayAvg() {

@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -55,16 +56,18 @@ public class BitstampService {
 	private static final Logger LOG = LoggerFactory.getLogger(BitstampService.class);
 	public static final String BS_HOUR_COL = "quoteBsHour";
 	public static final String BS_DAY_COL = "quoteBsDay";
+	private static volatile boolean singleInstanceLock = false;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportGenerator reportGenerator;
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	@Value("${single.instance.deployment:false}")
+	private boolean singleInstanceDeployment;
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
-			 ServiceUtils serviceUtils,
-			ReportGenerator reportGenerator, ReportMapper reportMapper) {
+			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
 		this.orderBookClient = orderBookClient;
 		this.reportGenerator = reportGenerator;
 		this.reportMapper = reportMapper;
@@ -77,7 +80,7 @@ public class BitstampService {
 	}
 
 	public Mono<String> getOrderbook(String currpair) {
-			return this.orderBookClient.getOrderbookBitstamp(currpair);			
+		return this.orderBookClient.getOrderbookBitstamp(currpair);
 	}
 
 	public Mono<QuoteBs> currentQuoteBtc(String pair) {
@@ -142,15 +145,20 @@ public class BitstampService {
 	}
 
 	public Mono<String> createBsAvg() {
-		return this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
-				.timeout(Duration.ofMinutes(5L))
-				.doOnError(ex -> LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", ex))
-				.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT)
-						.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-						.doOnError(ex -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex)))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-				.doOnError(ex -> LOG.info("createBsAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-				.subscribeOn(this.mongoScheduler);
+		Mono<String> result = Mono.empty();
+		if ((this.singleInstanceDeployment && !BitstampService.singleInstanceLock) || !this.singleInstanceDeployment) {
+			BitstampService.singleInstanceLock = true;
+			result = this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
+					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+					.doOnError(ex -> LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", ex))
+					.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT)
+							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+							.doOnError(ex -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex)))
+					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
+					.doOnError(ex -> LOG.info("createBsAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
+					.doFinally(value -> BitstampService.singleInstanceLock = false).subscribeOn(this.mongoScheduler);
+		}
+		return result;
 	}
 
 	private String createHourDayAvg() {

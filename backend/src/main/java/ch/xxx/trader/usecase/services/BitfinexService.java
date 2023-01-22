@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -55,17 +56,18 @@ public class BitfinexService {
 	private static final Logger LOG = LoggerFactory.getLogger(BitfinexService.class);
 	public static final String BF_HOUR_COL = "quoteBfHour";
 	public static final String BF_DAY_COL = "quoteBfDay";
+	private static volatile boolean singleInstanceLock = false;
 	private final ReportGenerator reportGenerator;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
 	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
-	
+	@Value("${single.instance.deployment:false}")
+	private boolean singleInstanceDeployment;
 
 	public BitfinexService(ReportGenerator reportGenerator, ServiceUtils serviceUtils,
-			 MyOrderBookClient orderBookClient,
-			ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
+			MyOrderBookClient orderBookClient, ReportMapper reportMapper, MyMongoRepository myMongoRepository) {
 		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
@@ -142,15 +144,20 @@ public class BitfinexService {
 	}
 
 	public Mono<String> createBfAvg() {
-		return this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT).subscribeOn(this.mongoScheduler)
-				.timeout(Duration.ofMinutes(5L))
-				.doOnError(ex -> LOG.info("ensureIndex(" + BF_HOUR_COL + ") failed.", ex))
-				.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT)
-						.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-						.doOnError(ex -> LOG.info("ensureIndex(" + BF_DAY_COL + ") failed.", ex)))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-				.doOnError(ex -> LOG.info("createBfAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
-				.subscribeOn(this.mongoScheduler);
+		Mono<String> result = Mono.empty();
+		if ((this.singleInstanceDeployment && !BitfinexService.singleInstanceLock) || !this.singleInstanceDeployment) {
+			BitfinexService.singleInstanceLock = true;
+			result = this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
+					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+					.doOnError(ex -> LOG.info("ensureIndex(" + BF_HOUR_COL + ") failed.", ex))
+					.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT)
+							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
+							.doOnError(ex -> LOG.info("ensureIndex(" + BF_DAY_COL + ") failed.", ex)))
+					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
+					.doOnError(ex -> LOG.info("createBfAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
+					.doFinally(value -> BitfinexService.singleInstanceLock = false).subscribeOn(this.mongoScheduler);
+		}
+		return result;
 	}
 
 	private String createHourDayAvg() {
