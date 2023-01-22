@@ -149,7 +149,7 @@ public class CoinbaseService {
 				.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT)
 						.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
 						.doOnError(ex -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex)))
-				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(1L))
+				.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
 				.doOnError(ex -> LOG.info("createCbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
 				.subscribeOn(this.mongoScheduler);
 	}
