@@ -11,7 +11,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 * [Reactive Kafka with Streaming in Spring Boot Part 1](https://angular2guy.wordpress.com/2022/05/23/reactive-kafka-with-streaming-in-spring-boot-part-1/)
 * [Reactive Kafka with Streaming in Spring Boot Part 2](https://angular2guy.wordpress.com/2022/06/09/reactive-kafka-with-streaming-in-spring-boot-part-2/)
 * [Reactive Kafka with Streaming in Spring Boot Part 3](https://angular2guy.wordpress.com/2022/06/10/reactive-kafka-with-streaming-in-spring-boot-part-3/)
-* [AngularAndSpring uses LambdaMetafactory for Getter/Setter access](https://angular2guy.wordpress.com/2022/05/12/angularandspring-uses-lambdametafactory-for-getter-setter-access/)
+* [Performance improvement for Getter/Setter access with LambdaMetafactory](https://angular2guy.wordpress.com/2022/05/12/angularandspring-uses-lambdametafactory-for-getter-setter-access/)
 * [Spring Boot/MongoDb Performance Analysis and Improvements](https://angular2guy.wordpress.com/2022/02/15/spring-boot-mongodb-performance-analysis-and-improvements/)
 * [Ngx-Simple-Charts multiline and legend support howto](https://angular2guy.wordpress.com/2021/10/02/ngx-simple-charts-multiline-and-legend-support-howto/)
 * [Deep Links With Angular Routing and i18n in Prod Mode](https://angular2guy.wordpress.com/2021/07/31/deep-links-with-angular-routing-and-i18n-in-prod-mode/)
