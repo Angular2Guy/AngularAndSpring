@@ -235,7 +235,7 @@ public class ItbitService {
 							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
 							.doOnError(ex -> LOG.info("ensureIndex(" + IB_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-					.doOnError(ex -> LOG.info("createIbAvg() failed.", ex)).onErrorResume(e -> Mono.empty())					
+					.doOnError(ex -> LOG.info("createIbAvg() failed.", ex))					
 					.subscribeOn(this.mongoScheduler);			
 		}
 		return result;

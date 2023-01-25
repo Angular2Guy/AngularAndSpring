@@ -155,7 +155,7 @@ public class BitstampService {
 							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
 							.doOnError(ex -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(3L))
-					.doOnError(ex -> LOG.info("createBsAvg() failed.", ex)).onErrorResume(e -> Mono.empty())
+					.doOnError(ex -> LOG.info("createBsAvg() failed.", ex))
 					.subscribeOn(this.mongoScheduler);
 		}
 		return result;

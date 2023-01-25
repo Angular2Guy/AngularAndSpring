@@ -79,14 +79,15 @@ public class SchedulingConfig {
     
     @Bean(name = "clientTaskExecutor")
     public Executor threadPoolTaskExecutor() {
-        return this.createThreadPoolTaskExecutor(20);
+        return this.createThreadPoolTaskExecutor(40);
     }
     
     private Executor createThreadPoolTaskExecutor(int maxPoolSize) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setMaxPoolSize(maxPoolSize);
         executor.setQueueCapacity(1);
-        executor.setKeepAliveSeconds(5);
+        executor.setKeepAliveSeconds(1);
+        executor.setAllowCoreThreadTimeOut(true);        
         return executor;
     }
 }

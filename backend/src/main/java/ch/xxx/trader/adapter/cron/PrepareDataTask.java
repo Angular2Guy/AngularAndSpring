@@ -32,7 +32,7 @@ import reactor.core.Disposable;
 
 @Component
 public class PrepareDataTask {
-	private static final Logger log = LoggerFactory.getLogger(PrepareDataTask.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PrepareDataTask.class);
 	private final BitstampService bitstampService;
 	private final BitfinexService bitfinexService;
 	private final ItbitService itbitService;
@@ -49,29 +49,35 @@ public class PrepareDataTask {
 		this.itbitService = itbitService;
 		this.coinbaseService = coinbaseService;
 	}
-	
+
 	@Async
 	@Scheduled(cron = "0 5 0,12 ? * ?")
 	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createBsAvg() {
 		this.bitstampDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
-		this.bitstampDisposableOpt = Optional.of(this.bitstampService.createBsAvg().doFinally(value -> BitstampService.singleInstanceLock = false).subscribe());		
-	}	
+		this.bitstampDisposableOpt = Optional.of(this.bitstampService.createBsAvg()
+				.doFinally(value -> BitstampService.singleInstanceLock = false).subscribe(result -> {
+				}, error -> LOG.warn("createBsAvg() failed.", error)));
+	}
 
 	@Async
 	@Scheduled(cron = "0 45 0,12 ? * ?")
 	@SchedulerLock(name = "bitfinex_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createBfAvg() {
 		this.bitfinexDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
-		this.bitfinexDisposableOpt = Optional.of(this.bitfinexService.createBfAvg().doFinally(value -> BitfinexService.singleInstanceLock = false).subscribe());
+		this.bitfinexDisposableOpt = Optional.of(this.bitfinexService.createBfAvg()
+				.doFinally(value -> BitfinexService.singleInstanceLock = false).subscribe(result -> {
+				}, error -> LOG.warn("createBfAvg() failed.", error)));
 	}
-	
+
 	@Async
 	@Scheduled(cron = "0 25 1,13 ? * ?")
 	@SchedulerLock(name = "itbit_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createIbAvg() {
 		this.itbitDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
-		this.itbitDisposableOpt = Optional.of(this.itbitService.createIbAvg().doFinally(value -> ItbitService.singleInstanceLock = false).subscribe());
+		this.itbitDisposableOpt = Optional.of(this.itbitService.createIbAvg()
+				.doFinally(value -> ItbitService.singleInstanceLock = false).subscribe(result -> {
+				}, error -> LOG.warn("createIbAvg() failed.", error)));
 	}
 
 	@Async
@@ -79,6 +85,8 @@ public class PrepareDataTask {
 	@SchedulerLock(name = "coinbase_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createCbAvg() {
 		this.coinbaseDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
-		this.coinbaseDisposableOpt = Optional.of(this.coinbaseService.createCbAvg().doFinally(value -> CoinbaseService.singleInstanceLock = false).subscribe());
+		this.coinbaseDisposableOpt = Optional.of(this.coinbaseService.createCbAvg()
+				.doFinally(value -> CoinbaseService.singleInstanceLock = false).subscribe(result -> {
+				}, error -> LOG.warn("createCbAvg() failed.", error)));
 	}
 }
