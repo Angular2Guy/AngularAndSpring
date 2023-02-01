@@ -15,10 +15,9 @@
  */
 package ch.xxx.trader.adapter.config;
 
-import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -26,10 +25,10 @@ import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.mongodb.MongoClientSettings;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
 
+import jakarta.annotation.PostConstruct;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMongoLockProvider;
 
@@ -37,6 +36,16 @@ import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMon
 public class SpringMongoConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringMongoConfig.class);
 	private static final String SCHED_LOCK_DB = "schedLock";
+	@Value("${spring.data.mongodb.uri:}")
+	private String mongoDbUri;
+	@Value("${MONGODB_HOST:}")
+	private String mongoDbHost;
+	
+	@PostConstruct
+	public void init() {
+		LOGGER.info("MongoDbUri: {}", this.mongoDbUri);
+		LOGGER.info("MongoDbHost: {}", this.mongoDbHost);
+	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -45,8 +54,9 @@ public class SpringMongoConfig {
 
 	@Bean
 	public MongoClient mongoClient() {
-		return MongoClients.create(MongoClientSettings.builder()
-				.applyToSocketSettings(builder -> builder.readTimeout(125, TimeUnit.SECONDS)).build());
+		return MongoClients.create(this.mongoDbUri);
+//		return MongoClients.create(MongoClientSettings.builder()
+//				.applyToSocketSettings(builder -> builder.readTimeout(125, TimeUnit.SECONDS)).build());
 	}
 
 	@Bean
