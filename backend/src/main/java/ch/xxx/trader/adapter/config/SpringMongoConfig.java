@@ -18,6 +18,7 @@ package ch.xxx.trader.adapter.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -40,7 +41,12 @@ public class SpringMongoConfig {
 	private String mongoDbUri;
 	@Value("${MONGODB_HOST:}")
 	private String mongoDbHost;
-	
+	private MongoProperties mongoProperties;
+
+	public SpringMongoConfig(MongoProperties mongoProperties) {
+		this.mongoProperties = mongoProperties;
+	}
+
 	@PostConstruct
 	public void init() {
 		LOGGER.info("MongoDbUri: {}", this.mongoDbUri);
@@ -54,7 +60,11 @@ public class SpringMongoConfig {
 
 	@Bean
 	public MongoClient mongoClient() {
-		return MongoClients.create(this.mongoDbUri);
+		LOGGER.info("MongoPort: {}", this.mongoProperties.getPort());
+		LOGGER.info("MongoUri: {}", this.mongoDbUri.replace("27027",
+				this.mongoProperties.getPort() == null ? "27027" : this.mongoProperties.getPort().toString()));
+		return MongoClients.create(this.mongoDbUri.replace("27027",
+				this.mongoProperties.getPort() == null ? "27027" : this.mongoProperties.getPort().toString()));
 //		return MongoClients.create(MongoClientSettings.builder()
 //				.applyToSocketSettings(builder -> builder.readTimeout(125, TimeUnit.SECONDS)).build());
 	}

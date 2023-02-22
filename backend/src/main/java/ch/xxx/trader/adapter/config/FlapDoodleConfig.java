@@ -22,18 +22,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
+import de.flapdoodle.embed.mongo.transitions.MongodStarter;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
-@Configuration
+//@Configuration
 public class FlapDoodleConfig {
+	/*
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlapDoodleConfig.class);
 	private static final int MONGO_DB_PORT = 27017;
 	private MongodExecutable mongodExecutable = null;
@@ -74,4 +71,5 @@ public class FlapDoodleConfig {
 			}
 		}
 	}
+	*/
 }
