@@ -41,7 +41,7 @@ public class SpringMongoConfig {
 	private String mongoDbUri;
 	@Value("${MONGODB_HOST:}")
 	private String mongoDbHost;
-	private MongoProperties mongoProperties;
+	private final MongoProperties mongoProperties;
 
 	public SpringMongoConfig(MongoProperties mongoProperties) {
 		this.mongoProperties = mongoProperties;
@@ -60,13 +60,11 @@ public class SpringMongoConfig {
 
 	@Bean
 	public MongoClient mongoClient() {
-		LOGGER.info("MongoPort: {}", this.mongoProperties.getPort());
-		LOGGER.info("MongoUri: {}", this.mongoDbUri.replace("27027",
-				this.mongoProperties.getPort() == null ? "27027" : this.mongoProperties.getPort().toString()));
+//		LOGGER.info("MongoPort: {}", this.mongoProperties.getPort());
+//		LOGGER.info("MongoUri: {}", this.mongoDbUri.replace("27027",
+//				this.mongoProperties.getPort() == null ? "27027" : this.mongoProperties.getPort().toString()));
 		return MongoClients.create(this.mongoDbUri.replace("27027",
 				this.mongoProperties.getPort() == null ? "27027" : this.mongoProperties.getPort().toString()));
-//		return MongoClients.create(MongoClientSettings.builder()
-//				.applyToSocketSettings(builder -> builder.readTimeout(125, TimeUnit.SECONDS)).build());
 	}
 
 	@Bean
