@@ -173,13 +173,13 @@ public class MyUserServiceBean {
 		return new MyUser();
 	}
 
-	public RefreshTokenDto refreshToken(String bearerStr) {
+	public Mono<RefreshTokenDto> refreshToken(String bearerStr) {
 		Optional<String> tokenOpt = this.jwtTokenService.resolveToken(bearerStr);
 		if (tokenOpt.isEmpty()) {
 			throw new AuthenticationException("Invalid token");
 		}
 		String newToken = this.jwtTokenService.refreshToken(tokenOpt.get());
 		LOGGER.info("Jwt Token refreshed.");
-		return new RefreshTokenDto(newToken);
+		return Mono.just(new RefreshTokenDto(newToken));
 	}
 }

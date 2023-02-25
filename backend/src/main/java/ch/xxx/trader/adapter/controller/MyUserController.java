@@ -68,7 +68,7 @@ public class MyUserController {
 	}
 	
 	@GetMapping("/refreshToken")
-	public RefreshTokenDto getRefreshToken(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
+	public Mono<RefreshTokenDto> getRefreshToken(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
 		return this.myUserService.refreshToken(bearerStr);
 	}
 }

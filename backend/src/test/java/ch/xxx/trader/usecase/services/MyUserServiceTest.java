@@ -64,9 +64,9 @@ public class MyUserServiceTest {
 		final String DUMMY_TOKEN = "ABC";
 		Mockito.when(this.jwtTokenService.resolveToken(any(String.class))).thenReturn(Optional.of(DUMMY_TOKEN));
 		Mockito.when(this.jwtTokenService.refreshToken(any(String.class))).thenReturn(DUMMY_TOKEN);
-		RefreshTokenDto result = this.myUserService.refreshToken(DUMMY_TOKEN);
+		Mono<RefreshTokenDto> result = this.myUserService.refreshToken(DUMMY_TOKEN);
 		Assertions.assertNotNull(result);
-		Assertions.assertEquals(DUMMY_TOKEN, result.getRefreshToken());
+		Assertions.assertEquals(DUMMY_TOKEN, result.block().getRefreshToken());
 	}
 	
 	@Test

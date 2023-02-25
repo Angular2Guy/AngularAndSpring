@@ -30,5 +30,5 @@ public interface MyUserService {
 	Mono<MyUser> postUserSignin(MyUser myUser);
 	Mono<Boolean> postLogout(String bearerStr);	
 	Mono<MyUser> postUserLogin(MyUser myUser) throws NoSuchAlgorithmException, InvalidKeySpecException;
-	RefreshTokenDto refreshToken(String bearerStr);
+	Mono<RefreshTokenDto> refreshToken(String bearerStr);
 }
