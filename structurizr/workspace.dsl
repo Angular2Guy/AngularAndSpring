@@ -14,7 +14,7 @@ workspace "AngularAndSpring" "This is a project to show crypto currency values a
         	   backendUserController = component "User Controller" "Provides the rest interface for Login/Signin/Logout of the users."
         	   backendStatisticsController = component "Statistics Controller" "Provides the interface for the statistics requests."
         	   backendKafkaConsumer = component "Kafka Consumer" "Consume the Kafka events." tag "Consumer"
-        	   backendKafkaProducer = component "Kafka Producer" "Produce the Kafka events."
+        	   backendKafkaProducer = component "Kafka Producer" "Produce the Kafka events." tag "Consumer"
         	   backendRepository = component "Repository" "MongoDb repository to read / write data"
         	   backendEventMapper = component "Event Mapper" "Map the Kafka Events to Entities / Dtos."
         	   backendExchangeServices = component "Exchange Services" "Services implementing the exchange logic."
@@ -31,17 +31,17 @@ workspace "AngularAndSpring" "This is a project to show crypto currency values a
         
         # relationships containers
         user -> angularAndSpring "views quotes / charts / statistics / order book"
-        angularAndSpring -> cryptoCurrencyExchanges 
+        angularAndSpring -> cryptoCurrencyExchanges "import quotes / request order book"
         angularAndSpring -> kafka
         kafka -> angularAndSpring
         angularAndSpring -> database     
         
         # relationships components
-        angularFrontend -> backendExchangeControllers        
-        angularFrontend -> backendUserController
-        angularFrontend -> backendStatisticsController
-        backendCron -> backendPrepareDataJob
-        backendCron -> backendQuoteClients
+        angularFrontend -> backendExchangeControllers "rest requests"       
+        angularFrontend -> backendUserController "rest requests"
+        angularFrontend -> backendStatisticsController "rest requests"
+        backendCron -> backendPrepareDataJob "trigger scheduled job"
+        backendCron -> backendQuoteClients "trigger scheduled job"
         backendPrepareDataJob -> backendExchangeServices
         backendQuoteClients -> backendExchangeServices
         backendExchangeControllers -> backendJwtTokenFilters
@@ -52,8 +52,8 @@ workspace "AngularAndSpring" "This is a project to show crypto currency values a
         backendStatisticsController -> backendStatisticsService
         backendKafkaProducer -> backendEventMapper
         backendKafkaConsumer -> backendEventMapper
-        backendKafkaConsumer -> backendUserService 
-        backendUserService -> backendKafkaProducer
+        backendKafkaConsumer -> backendUserService "process kafka events"
+        backendUserService -> backendKafkaProducer "send kafka events"
         backendExchangeServices -> backendRepository
         backendUserService -> backendRepository
         backendStatisticsService -> backendRepository
