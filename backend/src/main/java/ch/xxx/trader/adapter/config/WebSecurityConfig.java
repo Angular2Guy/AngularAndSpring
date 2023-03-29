@@ -40,12 +40,14 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-		HttpSecurity result = http.cors().and().csrf().disable().sessionManagement()
+		HttpSecurity httpSecurity = http.cors().and().csrf().disable().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/*/*/orderbook", "/*/*/*/orderbook")						
 						.hasAuthority(Role.USERS.toString()))
 				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/**").permitAll())				
-				.apply(new JwtTokenFilterConfigurer(jwtTokenProvider)).and();
-		return result.build();
+				.apply(new JwtTokenFilterConfigurer(jwtTokenProvider)).and()
+				.headers().contentSecurityPolicy("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';")
+				.and().xssProtection().and().and();
+		return httpSecurity.build();
 	}
 }
