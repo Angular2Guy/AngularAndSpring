@@ -17,13 +17,20 @@ package ch.xxx.trader.domain.model.entity.paxos;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PaxosQuote {	
 	private String market;
+	@JsonProperty("best_bid")
 	private PaxosPrice bestBid;
+	@JsonProperty("best_ask")
 	private PaxosPrice bestAsk;
+	@JsonProperty("last_execution")
 	private PaxosPrice lastExecution;
 	private PaxosDay today;
+	@JsonProperty("last_day")
 	private PaxosDay lastDay;
+	@JsonProperty("snapshot_at")
 	private Date snapshotAt;
 
 	public String getMarket() {

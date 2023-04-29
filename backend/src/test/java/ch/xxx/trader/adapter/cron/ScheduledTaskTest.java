@@ -17,17 +17,24 @@ package ch.xxx.trader.adapter.cron;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.xxx.trader.domain.model.entity.paxos.PaxosQuote;
+
 public class ScheduledTaskTest {
-	private static final String value = "{\"market\":\"BTCUSD\", \"best_bid\":{\"price\":\"29318.75\", \"amount\":\"0.40468933\"}, "
+	private static final String VALUE = "{\"market\":\"BTCUSD\", \"best_bid\":{\"price\":\"29318.75\", \"amount\":\"0.40468933\"}, "
 			+ "\"best_ask\":{\"price\":\"29319.00\", \"amount\":\"0.09997340\"}, \"last_execution\":{\"price\":\"29321.25\", "
 			+ "\"amount\":\"0.05090164\"}, \"last_day\":{\"high\":\"29524.75\", \"low\":\"28921.00\", \"open\":\"29451.25\", "
 			+ "\"volume\":\"146.48759230\", \"volume_weighted_average_price\":\"29270.74796455\", \"range\":{\"begin\":\"2023-04-28T06:53:17.898910Z\", "
 			+ "\"end\":\"2023-04-29T06:53:17.898910Z\"}}, \"today\":{\"high\":\"29457.75\", \"low\":\"29232.25\", \"open\":\"29340.50\", "
 			+ "\"volume\":\"24.83650853\", \"volume_weighted_average_price\":\"29361.10623022\", \"range\":{\"begin\":\"2023-04-29T00:00:00Z\", "
 			+ "\"end\":\"2023-04-29T06:53:17.898910Z\"}}, \"snapshot_at\":\"2023-04-29T06:53:17.898910Z\"}";
+	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Test
-	public void convertTest() {
-
+	public void convertTest() throws JsonMappingException, JsonProcessingException {
+		this.objectMapper.readValue(VALUE, PaxosQuote.class);
 	}
 }

@@ -15,12 +15,18 @@
  */
 package ch.xxx.trader.domain.model.entity.paxos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PaxosDay {
 	private String high;
 	private String low;
 	private String open;
 	private String volume;
+	@JsonProperty("volume_weighted_average_price")
 	private String volumeWeightedAveragePrice;
+	@JsonProperty("last_execution")
+	private String lastExecution;
+	private PaxosTimeRange range;
 
 	public String getHigh() {
 		return high;
@@ -51,5 +57,11 @@ public class PaxosDay {
 	}
 	public void setVolumeWeightedAveragePrice(String volumeWeightedAveragePrice) {
 		this.volumeWeightedAveragePrice = volumeWeightedAveragePrice;
+	}
+	public PaxosTimeRange getRange() {
+		return range;
+	}
+	public void setRange(PaxosTimeRange range) {
+		this.range = range;
 	}
 }
