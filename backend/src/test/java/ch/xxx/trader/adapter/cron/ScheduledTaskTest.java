@@ -15,12 +15,14 @@
  */
 package ch.xxx.trader.adapter.cron;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.xxx.trader.domain.model.entity.QuoteIb;
 import ch.xxx.trader.domain.model.entity.paxos.PaxosQuote;
 
 public class ScheduledTaskTest {
@@ -35,6 +37,27 @@ public class ScheduledTaskTest {
 
 	@Test
 	public void convertTest() throws JsonMappingException, JsonProcessingException {
-		this.objectMapper.readValue(VALUE, PaxosQuote.class);
+		PaxosQuote paxosQuote = this.objectMapper.readValue(VALUE, PaxosQuote.class);
+		ScheduledTask scheduledTask = new ScheduledTask(null, null, null, null, null, null, null);
+		QuoteIb quoteIb = scheduledTask.convert(paxosQuote);
+		Assertions.assertEquals("XBTUSD", quoteIb.getPair());
+		Assertions.assertEquals(paxosQuote.getBestBid().getPrice().toString(), quoteIb.getBid().toString());
+		Assertions.assertEquals(paxosQuote.getBestBid().getAmount().toString(), quoteIb.getBidAmt().toString());
+		Assertions.assertEquals(paxosQuote.getBestAsk().getPrice().toString(), quoteIb.getAsk().toString());
+		Assertions.assertEquals(paxosQuote.getBestAsk().getAmount().toString(), quoteIb.getAskAmt().toString());
+		Assertions.assertEquals(paxosQuote.getSnapshotAt(), quoteIb.getServerTimeUTC());
+		Assertions.assertEquals(paxosQuote.getLastDay().getHigh().toString(), quoteIb.getHigh24h().toString());
+		Assertions.assertEquals(paxosQuote.getLastDay().getLow().toString(), quoteIb.getLow24h().toString());
+		Assertions.assertEquals(paxosQuote.getLastDay().getLow().toString(), quoteIb.getLow24h().toString());
+		Assertions.assertEquals(paxosQuote.getToday().getHigh().toString(), quoteIb.getHighToday().toString());
+		Assertions.assertEquals(paxosQuote.getLastExecution().getPrice().toString(), quoteIb.getLastPrice().toString());
+		Assertions.assertEquals(paxosQuote.getLastDay().getLow().toString(), quoteIb.getLow24h().toString());
+		Assertions.assertEquals(paxosQuote.getToday().getLow().toString(), quoteIb.getLowToday().toString());
+		Assertions.assertEquals(paxosQuote.getToday().getOpen().toString(), quoteIb.getOpenToday().toString());
+		Assertions.assertEquals(paxosQuote.getLastExecution().getAmount().toString(), quoteIb.getStAmt().toString());
+		Assertions.assertEquals(paxosQuote.getLastDay().getVolumeWeightedAveragePrice().toString(), quoteIb.getVwap24h().toString());
+		Assertions.assertEquals(paxosQuote.getToday().getVolumeWeightedAveragePrice().toString(), quoteIb.getVwapToday().toString());
+		Assertions.assertEquals(paxosQuote.getToday().getVolume().toString(), quoteIb.getVolumeToday().toString());
+		Assertions.assertEquals(paxosQuote.getLastDay().getVolume().toString(), quoteIb.getVolume24h().toString());
 	}
 }

@@ -18,6 +18,7 @@ package ch.xxx.trader.adapter.cron;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -115,15 +116,16 @@ public class ScheduledTask {
 				}).timeout(Duration.ofSeconds(5L)).doOnError(ex -> {
 					exceptionLogged[0] = true;
 					LOG.warn("Bitstamp data request failed", ex);
-					})
-				.subscribeOn(this.mongoImportScheduler);
+				}).subscribeOn(this.mongoImportScheduler);
 		Disposable subscribe = null;
-			subscribe = request
-					.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))
-							.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler)
-							.doOnError(ex -> { if(!exceptionLogged[0]) { LOG.warn("Bitstamp data store failed", ex);}}))
-					.subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start), err -> LOG.warn("Bitstamp data import failed.", err));
-			this.disposables.put(currPair, Optional.of(subscribe));
+		subscribe = request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))
+				.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).doOnError(ex -> {
+					if (!exceptionLogged[0]) {
+						LOG.warn("Bitstamp data store failed", ex);
+					}
+				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start),
+						err -> LOG.warn("Bitstamp data import failed.", err));
+		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
 	private void logDuration(String currPair, LocalTime start) {
@@ -177,17 +179,17 @@ public class ScheduledTask {
 				}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
 					return Mono.just(resp2.getRates());
-				}).timeout(Duration.ofSeconds(5L), Mono.empty())
-				.doOnError(ex ->  {
+				}).timeout(Duration.ofSeconds(5L), Mono.empty()).doOnError(ex -> {
 					exceptionLogged[0] = true;
 					LOG.warn("Coinbase data request failed", ex);
-					})
-				.subscribeOn(this.mongoImportScheduler);
-		Disposable subscribe = request
-				.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote))
-						.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler)
-						.doOnError(ex ->  { if(!exceptionLogged[0]) { LOG.warn("Coinbase data store failed", ex);}}))
-				.subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start), err -> LOG.warn("Coinbase data import failed.", err));
+				}).subscribeOn(this.mongoImportScheduler);
+		Disposable subscribe = request.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote))
+				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler).doOnError(ex -> {
+					if (!exceptionLogged[0]) {
+						LOG.warn("Coinbase data store failed", ex);
+					}
+				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start),
+						err -> LOG.warn("Coinbase data import failed.", err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -195,7 +197,7 @@ public class ScheduledTask {
 	@Scheduled(fixedRate = 60000, initialDelay = 21000)
 	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitUsdQuote() {
-		//final String currPair = "BTCUSD";
+		// final String currPair = "BTCUSD";
 		final String currPair = "XBTUSD";
 		// LOG.info(currPair);
 		this.disposeClient(currPair);
@@ -203,29 +205,43 @@ public class ScheduledTask {
 		boolean[] exceptionLogged = new boolean[1];
 		exceptionLogged[0] = false;
 		Mono<QuoteIb> request = this.webClient.get()
-				//"%s/markets/%s/ticker"
+				// "%s/markets/%s/ticker"
 				.uri(String.format("%s/v1/markets/%s/ticker", ScheduledTask.URLIB, currPair))
-				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteIb.class))
+				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(PaxosQuote.class))
 				.map(res -> {
 //				log.info(res.toString());
 					return res;
-				}).timeout(Duration.ofSeconds(5L)).doOnError(ex -> {
-					exceptionLogged[0] = true;
-					LOG.warn("Ibit data request failed", ex);	
 				})
-				.subscribeOn(this.mongoImportScheduler);
-		Disposable subscribe = request
-				.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))
-						.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler)
-						.doOnError(ex -> { if(!exceptionLogged[0]) { LOG.warn("Itbit data store failed", ex);}}))
-				.subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start), err -> LOG.warn("Itbit data import failed.", err));
+				.map(paxosQuote -> this.convert(paxosQuote))
+				.timeout(Duration.ofSeconds(5L)).doOnError(ex -> {
+					exceptionLogged[0] = true;
+					LOG.warn("Ibit data request failed", ex);
+				}).subscribeOn(this.mongoImportScheduler);
+		Disposable subscribe = request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))
+				.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).doOnError(ex -> {
+					if (!exceptionLogged[0]) {
+						LOG.warn("Itbit data store failed", ex);
+					}
+				})).subscribeOn(this.mongoImportScheduler)
+				.subscribe(x -> this.logDuration(currPair, start), err -> LOG.warn("Itbit data import failed.", err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
 	QuoteIb convert(PaxosQuote paxosQuote) {
-		return null;
+		final String currPair = "XBTUSD";
+		QuoteIb quoteIb = new QuoteIb(currPair, new BigDecimal(paxosQuote.getBestBid().getPrice()),
+				new BigDecimal(paxosQuote.getBestBid().getAmount()), new BigDecimal(paxosQuote.getBestAsk().getPrice()),
+				new BigDecimal(paxosQuote.getBestAsk().getAmount()),
+				new BigDecimal(paxosQuote.getLastExecution().getPrice()),
+				new BigDecimal(paxosQuote.getLastExecution().getAmount()),
+				new BigDecimal(paxosQuote.getLastDay().getVolume()), new BigDecimal(paxosQuote.getToday().getVolume()),
+				new BigDecimal(paxosQuote.getLastDay().getHigh()), new BigDecimal(paxosQuote.getLastDay().getLow()),
+				new BigDecimal(paxosQuote.getToday().getOpen()), new BigDecimal(paxosQuote.getToday().getHigh()), new BigDecimal(paxosQuote.getToday().getLow()),
+				new BigDecimal(paxosQuote.getToday().getVolumeWeightedAveragePrice()),
+				new BigDecimal(paxosQuote.getLastDay().getVolumeWeightedAveragePrice()), paxosQuote.getSnapshotAt());
+		return quoteIb;
 	}
-	
+
 	private void disposeClient(final String currPair) {
 		Optional<Disposable> optional = this.disposables.getOrDefault(currPair, Optional.empty());
 		optional.ifPresent(disposable -> disposable.dispose());
@@ -287,14 +303,15 @@ public class ScheduledTask {
 					return result;
 				}).timeout(Duration.ofSeconds(5L)).doOnError(ex -> {
 					exceptionLogged[0] = true;
-					LOG.warn("Bitfinex data request failed", ex);	
-				})
-				.subscribeOn(this.mongoImportScheduler);
-		Disposable subscribe = request
-				.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote))
-						.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler)
-						.doOnError(ex -> {if(!exceptionLogged[0]) { LOG.warn("Bitfinex data store failed", ex);}}))
-				.subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start), err -> LOG.warn("Bitfinex data import failed.", err));
+					LOG.warn("Bitfinex data request failed", ex);
+				}).subscribeOn(this.mongoImportScheduler);
+		Disposable subscribe = request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote))
+				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler).doOnError(ex -> {
+					if (!exceptionLogged[0]) {
+						LOG.warn("Bitfinex data store failed", ex);
+					}
+				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start),
+						err -> LOG.warn("Bitfinex data import failed.", err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
