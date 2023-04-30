@@ -197,16 +197,14 @@ public class ScheduledTask {
 	@Scheduled(fixedRate = 60000, initialDelay = 21000)
 	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitUsdQuote() {
-		// final String currPair = "BTCUSD";
-		final String currPair = "XBTUSD";
+		final String currPair = "BTCUSD";		
 		// LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
 		boolean[] exceptionLogged = new boolean[1];
 		exceptionLogged[0] = false;
 		Mono<QuoteIb> request = this.webClient.get()
-				// "%s/markets/%s/ticker"
-				.uri(String.format("%s/v1/markets/%s/ticker", ScheduledTask.URLIB, currPair))
+				.uri(String.format("%s/markets/%s/ticker", ScheduledTask.URLPA, currPair))
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(PaxosQuote.class))
 				.map(res -> {
 //				log.info(res.toString());
