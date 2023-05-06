@@ -14,18 +14,14 @@
    limitations under the License.
  */
 import { Injectable } from "@angular/core";
-import {
-  CanActivate,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-} from "@angular/router";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { Observable } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
 import { MyuserService } from "./myuser.service";
 import { TokenService } from "ngx-simple-charts/base-service";
 
 @Injectable({ providedIn: "root" })
-export class AuthGuardService implements CanActivate {
+export class AuthGuardService  {
   constructor(private tokenService: TokenService) {}
 
   canActivate(
