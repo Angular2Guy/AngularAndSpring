@@ -23,6 +23,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter.HeaderValue;
 
 import ch.xxx.trader.domain.common.Role;
 import ch.xxx.trader.usecase.services.JwtTokenService;
@@ -40,14 +42,16 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-		HttpSecurity httpSecurity = http.cors().and().csrf().disable().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/*/*/orderbook", "/*/*/*/orderbook")						
-						.hasAuthority(Role.USERS.toString()))
-				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/**").permitAll())				
-				.apply(new JwtTokenFilterConfigurer(jwtTokenProvider)).and()
-				.headers().contentSecurityPolicy("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';")
-				.and().xssProtection().and().and();
+		JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider);
+		HttpSecurity httpSecurity = http
+				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/*/*/orderbook", "/*/*/*/orderbook")
+						.hasAuthority(Role.USERS.toString()).requestMatchers("/**").permitAll())
+				.csrf(myCsrf -> myCsrf.disable())
+				.sessionManagement(mySm -> mySm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.headers(myHeaders -> myHeaders.contentSecurityPolicy(myCsp -> myCsp.policyDirectives(
+						"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';")))
+				.headers(myHeaders -> myHeaders.xssProtection(myXss -> myXss.headerValue(HeaderValue.ENABLED)))
+				.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);				
 		return httpSecurity.build();
 	}
 }
