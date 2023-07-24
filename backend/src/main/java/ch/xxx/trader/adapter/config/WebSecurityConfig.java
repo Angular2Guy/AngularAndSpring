@@ -51,6 +51,7 @@ public class WebSecurityConfig {
 				.headers(myHeaders -> myHeaders.contentSecurityPolicy(myCsp -> myCsp.policyDirectives(
 						"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';")))
 				.headers(myHeaders -> myHeaders.xssProtection(myXss -> myXss.headerValue(HeaderValue.ENABLED)))
+				.headers(myHeaders -> myHeaders.frameOptions(myFo -> myFo.sameOrigin()))
 				.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);				
 		return httpSecurity.build();
 	}
