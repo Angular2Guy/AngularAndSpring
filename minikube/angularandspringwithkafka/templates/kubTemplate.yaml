@@ -100,7 +100,7 @@ spec:
   - port: 2181
     protocol: TCP
   selector:
-    app.kubernetes.io/name: {{ .Values.zookeeperName }}
+    {{ .Values.serviceNameLabel }}: {{ .Values.zookeeperName }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -158,7 +158,7 @@ spec:
 #    nodePort: 9092
     protocol: TCP
   selector:
-    app.kubernetes.io/name: {{ .Values.kafkaName }}
+    {{ .Values.serviceNameLabel }}: {{ .Values.kafkaName }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -207,7 +207,7 @@ spec:
   - port: 27017
     protocol: TCP
   selector:
-    app.kubernetes.io/name: {{ .Values.dbName }}
+    {{ .Values.serviceNameLabel }}: {{ .Values.dbName }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -266,4 +266,4 @@ spec:
     nodePort: 8080
     protocol: TCP
   selector:
-    app.kubernetes.io/name: {{ .Values.webAppServiceName }}                 
+    {{ .Values.serviceNameLabel }}: {{ .Values.webAppServiceName }}                 

@@ -18,6 +18,8 @@ zookeeperServiceName: zookeeperservice
 dbServiceName: mongodbservice
 webAppServiceName: angularandspringservice
 
+serviceNameLabel: "app.kubernetes.io/name"
+
 secret:
   name: app-env-secret
   nameKafka: kafka-env-secret
