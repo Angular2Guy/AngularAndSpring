@@ -165,16 +165,16 @@ kind: Deployment
 metadata:
   name: {{ .Values.dbName }}
   labels:
-    appdb: {{ .Values.dbName }}
+    app: {{ .Values.dbName }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      appdb: {{ .Values.dbName }}
+      app: {{ .Values.dbName }}
   template:
     metadata:
       labels:
-        appdb: {{ .Values.dbName }}
+        app: {{ .Values.dbName }}
     spec:
       containers:
       - name: {{ .Values.dbName }}
