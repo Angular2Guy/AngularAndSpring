@@ -50,19 +50,10 @@ public class MongoUtils {
 		Query query = new Query();
 		query.allowDiskUse(true);
 		query.limit(limit);
-		if (pair.isPresent()) {
-			query.addCriteria(Criteria.where("pair").is(pair.get()));
-		}
-		if (begin.isPresent()) {
-			query.addCriteria(Criteria.where("createdAt").gt(begin.get().getTime()));
-		} else {
-			query.addCriteria(Criteria.where("createdAt").gt(cal.getTime()));
-		}
-		if (ascending) {
-			query.with(Sort.by("createdAt").ascending());
-		} else {
-			query.with(Sort.by("createdAt").descending());
-		}
+		pair.ifPresent(myValue -> query.addCriteria(Criteria.where("pair").is(myValue)));
+		begin.ifPresentOrElse(myValue -> query.addCriteria(Criteria.where("createdAt").gt(myValue.getTime())),
+				() -> query.addCriteria(Criteria.where("createdAt").gt(cal.getTime())));
+		var myValue = ascending ? query.with(Sort.by("createdAt").ascending()) : query.with(Sort.by("createdAt").descending()); 		
 		return query;
 	}
 
