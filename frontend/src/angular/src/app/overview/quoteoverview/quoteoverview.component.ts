@@ -163,24 +163,42 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
         );
   }
 
-  private createCbRow(quote: QuoteCb, value: number, currPair: string): Myrow {	  
-	  return new Myrow(
-        "Coinbase",
-        this.utils.getCurrpairName(currPair),
-        value,        
-        quote.createdAt,
-        -1,
-        currPair,
-        -1,
-        -1
-      );
+  private createCbRow(quote: QuoteCb, value: number, currPair: string): Myrow {
+    return new Myrow(
+      "Coinbase",
+      this.utils.getCurrpairName(currPair),
+      value,
+      quote.createdAt,
+      -1,
+      currPair,
+      -1,
+      -1
+    );
   }
 
   createRowsCb(quote: QuoteCb): Myrow[] {
     const rows: Myrow[] = [];
-    rows.push(this.createCbRow(quote, !quote ? 0 : this.formatNumber(quote.usd), this.serviceCb.BTCUSD));
-    rows.push(this.createCbRow(quote, !quote ? 0 : this.formatNumber(quote.usd / quote.eth), this.serviceCb.ETHUSD));
-    rows.push(this.createCbRow(quote, !quote ? 0 : this.formatNumber(quote.usd / quote.ltc), this.serviceCb.LTCUSD));
+    rows.push(
+      this.createCbRow(
+        quote,
+        !quote ? 0 : this.formatNumber(quote.usd),
+        this.serviceCb.BTCUSD
+      )
+    );
+    rows.push(
+      this.createCbRow(
+        quote,
+        !quote ? 0 : this.formatNumber(quote.usd / quote.eth),
+        this.serviceCb.ETHUSD
+      )
+    );
+    rows.push(
+      this.createCbRow(
+        quote,
+        !quote ? 0 : this.formatNumber(quote.usd / quote.ltc),
+        this.serviceCb.LTCUSD
+      )
+    );
     return rows;
   }
 
@@ -200,7 +218,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   }
 
   private refeshBsData(currPair: string, rowId: number): void {
-	  this.serviceBs
+    this.serviceBs
       .getCurrentQuote(currPair)
       .pipe(filter((result) => !!result?.last))
       .subscribe((quote) => {
@@ -212,9 +230,9 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
         this.datasource.updateRows();
       });
   }
-  
+
   private refreshBfData(currPair: string, rowId: number): void {
-	this.serviceBf
+    this.serviceBf
       .getCurrentQuote(currPair)
       .pipe(filter((result) => !!result?.last_price))
       .subscribe((quote) => {
@@ -228,7 +246,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   }
 
   private refreshData(): void {
-	this.refeshBsData(this.serviceBs.BTCEUR, 0);
+    this.refeshBsData(this.serviceBs.BTCEUR, 0);
     this.refeshBsData(this.serviceBs.ETHEUR, 1);
     this.refeshBsData(this.serviceBs.LTCEUR, 2);
     this.refeshBsData(this.serviceBs.XRPEUR, 3);
@@ -260,7 +278,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
     this.refreshBfData(this.serviceBf.BTCUSD, 12);
     this.refreshBfData(this.serviceBf.ETHUSD, 13);
     this.refreshBfData(this.serviceBf.LTCUSD, 14);
-    this.refreshBfData(this.serviceBf.XRPUSD, 15);    
+    this.refreshBfData(this.serviceBf.XRPUSD, 15);
   }
 
   private formatNumber(x: number): number {

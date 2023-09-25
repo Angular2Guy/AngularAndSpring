@@ -15,10 +15,7 @@
  */
 import { Component, OnInit, Inject } from "@angular/core";
 import { QuoteoverviewComponent } from "../quoteoverview/quoteoverview.component";
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from "@angular/material/dialog";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MyuserService } from "../../services/myuser.service";
 import { MyUser } from "../../common/my-user";
 import {
@@ -124,7 +121,7 @@ export class LoginComponent implements OnInit {
     this.waitingForResponse = true;
     this.myuserService.postSignin(myUser).subscribe({
       next: (us) => this.signin(us),
-      error: (err) => console.log(err)
+      error: (err) => console.log(err),
     });
   }
 
@@ -136,8 +133,8 @@ export class LoginComponent implements OnInit {
     this.waitingForResponse = true;
     this.myuserService.postLogin(myUser).subscribe({
       next: (us) => this.login(us),
-      error: (err) => console.log(err)
-      });
+      error: (err) => console.log(err),
+    });
   }
 
   signin(us: MyUser): void {

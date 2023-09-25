@@ -19,17 +19,24 @@ import { ItbitService } from "../services/itbit.service";
 import { BitfinexService } from "../services/bitfinex.service";
 
 enum MyTimeFrames {
-	 Day = 1,
-	 Day7 = 7,
-	 Day30 = 30,
-	 Day90 = 90,
-	 Day180 = 180,
-	 Day365 = 365
-  }
+  Day = 1,
+  Day7 = 7,
+  Day30 = 30,
+  Day90 = 90,
+  Day180 = 180,
+  Day365 = 365,
+}
 
 export class CommonUtils {
-  public MyTimeFrames = MyTimeFrames;  
-  public timeframes = [MyTimeFrames.Day, MyTimeFrames.Day7, MyTimeFrames.Day30, MyTimeFrames.Day90, MyTimeFrames.Day180, MyTimeFrames.Day365];
+  public MyTimeFrames = MyTimeFrames;
+  public timeframes = [
+    MyTimeFrames.Day,
+    MyTimeFrames.Day7,
+    MyTimeFrames.Day30,
+    MyTimeFrames.Day90,
+    MyTimeFrames.Day180,
+    MyTimeFrames.Day365,
+  ];
   private currpairs = new Map<string, string>();
 
   constructor() {

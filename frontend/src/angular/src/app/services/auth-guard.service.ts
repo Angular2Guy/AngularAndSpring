@@ -21,7 +21,7 @@ import { MyuserService } from "./myuser.service";
 import { TokenService } from "ngx-simple-charts/base-service";
 
 @Injectable({ providedIn: "root" })
-export class AuthGuardService  {
+export class AuthGuardService {
   constructor(private tokenService: TokenService) {}
 
   canActivate(
