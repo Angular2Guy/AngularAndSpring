@@ -18,8 +18,18 @@ import { CoinbaseService } from "../services/coinbase.service";
 import { ItbitService } from "../services/itbit.service";
 import { BitfinexService } from "../services/bitfinex.service";
 
+enum MyTimeFrames {
+	 Day = 1,
+	 Day7 = 7,
+	 Day30 = 30,
+	 Day90 = 90,
+	 Day180 = 180,
+	 Day365 = 365
+  }
+
 export class CommonUtils {
-  public timeframes = [1, 7, 30, 90, 180, 365];
+  public MyTimeFrames = MyTimeFrames;  
+  public timeframes = [MyTimeFrames.Day, MyTimeFrames.Day7, MyTimeFrames.Day30, MyTimeFrames.Day90, MyTimeFrames.Day180, MyTimeFrames.Day365];
   private currpairs = new Map<string, string>();
 
   constructor() {
@@ -52,15 +62,15 @@ export class CommonUtils {
 
   createReportUrl(timeframe: number, currpair: string): string {
     let url = "/";
-    if (timeframe === this.timeframes[1]) {
+    if (timeframe === this.MyTimeFrames.Day7) {
       url = url + currpair + "/7days/pdf";
-    } else if (timeframe === this.timeframes[2]) {
+    } else if (timeframe === this.MyTimeFrames.Day30) {
       url = url + currpair + "/30days/pdf";
-    } else if (timeframe === this.timeframes[3]) {
+    } else if (timeframe === this.MyTimeFrames.Day90) {
       url = url + currpair + "/90days/pdf";
-    } else if (timeframe === this.timeframes[4]) {
+    } else if (timeframe === this.MyTimeFrames.Day180) {
       url = url + currpair + "/6month/pdf";
-    } else if (timeframe === this.timeframes[5]) {
+    } else if (timeframe === this.MyTimeFrames.Day365) {
       url = url + currpair + "/1year/pdf";
     } else {
       url = url + currpair + "/today/pdf";

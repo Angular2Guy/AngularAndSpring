@@ -11,7 +11,6 @@
    limitations under the License.
  */
 import { CommonUtils } from "./common-utils";
-import { formatDate } from "@angular/common";
 import { ChartPoint, ChartPoints } from "ngx-simple-charts/line";
 
 export class Tuple<A, B> {
@@ -31,7 +30,7 @@ export abstract class DetailBase {
   chartPoints: ChartPoints[] = [];
   utils = new CommonUtils();
   currPair = "";
-  timeframe = this.utils.timeframes[0];
+  timeframe = this.utils.MyTimeFrames.Day;
   readonly yScaleWidth = 50;
   readonly xScaleHeight = 20;
 

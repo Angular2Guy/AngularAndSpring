@@ -83,15 +83,15 @@ export class BsdetailComponent extends DetailBase implements OnInit {
     this.chartShow.next(false);
     const currpair = this.route.snapshot.paramMap.get("currpair");
     let quoteObserv: Observable<QuoteBs[]>;
-    if (this.timeframe === this.utils.timeframes[1]) {
+    if (this.timeframe === this.utils.MyTimeFrames.Day7) {
       quoteObserv = this.serviceBs.get7DayQuotes(currpair);
-    } else if (this.timeframe === this.utils.timeframes[2]) {
+    } else if (this.timeframe === this.utils.MyTimeFrames.Day30) {
       quoteObserv = this.serviceBs.get30DayQuotes(currpair);
-    } else if (this.timeframe === this.utils.timeframes[3]) {
+    } else if (this.timeframe === this.utils.MyTimeFrames.Day90) {
       quoteObserv = this.serviceBs.get90DayQuotes(currpair);
-    } else if (this.timeframe === this.utils.timeframes[4]) {
+    } else if (this.timeframe === this.utils.MyTimeFrames.Day180) {
       quoteObserv = this.serviceBs.get6MonthsQuotes(currpair);
-    } else if (this.timeframe === this.utils.timeframes[5]) {
+    } else if (this.timeframe === this.utils.MyTimeFrames.Day365) {
       quoteObserv = this.serviceBs.get1YearQuotes(currpair);
     } else {
       quoteObserv = this.serviceBs.getTodayQuotes(currpair);

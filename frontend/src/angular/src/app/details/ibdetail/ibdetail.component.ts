@@ -82,15 +82,15 @@ export class IbdetailComponent extends DetailBase implements OnInit {
     this.chartShow.next(false);
     const currpair = this.route.snapshot.paramMap.get("currpair");
     let quoteObserv: Observable<QuoteIb[]>;
-    if (this.timeframe === this.utils.timeframes[1]) {
+    if (this.timeframe === this.utils.MyTimeFrames.Day7) {
       quoteObserv = this.serviceIb.get7DayQuotes(currpair);
-    } else if (this.timeframe === this.utils.timeframes[2]) {
+    } else if (this.timeframe === this.utils.MyTimeFrames.Day30) {
       quoteObserv = this.serviceIb.get30DayQuotes(currpair);
-    } else if (this.timeframe === this.utils.timeframes[3]) {
+    } else if (this.timeframe === this.utils.MyTimeFrames.Day90) {
       quoteObserv = this.serviceIb.get90DayQuotes(currpair);
-    } else if (this.timeframe === this.utils.timeframes[4]) {
+    } else if (this.timeframe === this.utils.MyTimeFrames.Day180) {
       quoteObserv = this.serviceIb.get6MonthsQuotes(currpair);
-    } else if (this.timeframe === this.utils.timeframes[5]) {
+    } else if (this.timeframe === this.utils.MyTimeFrames.Day365) {
       quoteObserv = this.serviceIb.get1YearQuotes(currpair);
     } else {
       quoteObserv = this.serviceIb.getTodayQuotes(currpair);

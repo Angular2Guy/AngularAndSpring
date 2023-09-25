@@ -16,7 +16,6 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { QuoteoverviewComponent } from "../quoteoverview/quoteoverview.component";
 import {
-  MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
@@ -24,10 +23,9 @@ import { MyuserService } from "../../services/myuser.service";
 import { MyUser } from "../../common/my-user";
 import {
   FormGroup,
-  FormControl,
   FormBuilder,
   Validators,
-  AbstractControl,
+  AbstractControlOptions,
 } from "@angular/forms";
 import { TokenService } from "ngx-simple-charts/base-service";
 
@@ -77,8 +75,8 @@ export class LoginComponent implements OnInit {
         [FormFields.email]: ["", Validators.required],
       },
       {
-        validator: this.validate.bind(this),
-      }
+        validators: this.validate.bind(this),
+      } as AbstractControlOptions
     );
     this.loginForm = fb.group({
       [FormFields.username]: [
@@ -124,10 +122,10 @@ export class LoginComponent implements OnInit {
     //      console.log(this.signinForm);
     //      console.log(myUser);
     this.waitingForResponse = true;
-    this.myuserService.postSignin(myUser).subscribe(
-      (us) => this.signin(us),
-      (err) => console.log(err)
-    );
+    this.myuserService.postSignin(myUser).subscribe({
+      next: (us) => this.signin(us),
+      error: (err) => console.log(err)
+    });
   }
 
   onLoginClick(): void {
@@ -136,10 +134,10 @@ export class LoginComponent implements OnInit {
     myUser.password = this.loginForm.get(FormFields.password).value;
     //      console.log(myUser);
     this.waitingForResponse = true;
-    this.myuserService.postLogin(myUser).subscribe(
-      (us) => this.login(us),
-      (err) => console.log(err)
-    );
+    this.myuserService.postLogin(myUser).subscribe({
+      next: (us) => this.login(us),
+      error: (err) => console.log(err)
+      });
   }
 
   signin(us: MyUser): void {
