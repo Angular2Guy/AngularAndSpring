@@ -38,8 +38,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
+import ch.xxx.trader.domain.services.MyUserService;
 import ch.xxx.trader.usecase.services.JwtTokenService;
-import ch.xxx.trader.usecase.services.MyUserService;
 import reactor.core.publisher.Mono;
 
 @WebMvcTest(controllers = MyUserController.class

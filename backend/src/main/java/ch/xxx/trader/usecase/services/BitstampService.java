@@ -42,7 +42,9 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
+import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.domain.services.MyOrderBookClient;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;

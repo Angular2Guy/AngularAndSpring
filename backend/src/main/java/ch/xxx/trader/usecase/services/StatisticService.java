@@ -32,6 +32,7 @@ import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
 import ch.xxx.trader.domain.model.dto.RangeDto;
 import ch.xxx.trader.domain.model.dto.StatisticsCommon.CoinExchange;
 import ch.xxx.trader.domain.model.dto.StatisticsCommon.StatisticsCurrPair;
+import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;

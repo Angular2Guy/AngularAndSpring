@@ -31,6 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
 import ch.xxx.trader.domain.model.dto.RangeDto;
+import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 

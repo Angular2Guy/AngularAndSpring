@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.xxx.trader.domain.model.dto.AuthCheck;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
-import ch.xxx.trader.usecase.services.MyUserService;
+import ch.xxx.trader.domain.services.MyUserService;
 import reactor.core.publisher.Mono;
 
 @RestController

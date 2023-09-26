@@ -1,4 +1,4 @@
-package ch.xxx.trader.usecase.services;
+package ch.xxx.trader.domain.services;
 
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;

@@ -22,7 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.PasswordEncryption;
+import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
+import ch.xxx.trader.domain.services.MyUserService;
 import reactor.core.publisher.Mono;
 
 @Profile("!kafka & !prod")

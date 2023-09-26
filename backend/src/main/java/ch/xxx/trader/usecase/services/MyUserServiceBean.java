@@ -37,6 +37,7 @@ import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.model.dto.AuthCheck;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
+import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import io.jsonwebtoken.Claims;

@@ -29,8 +29,11 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
+import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
+import ch.xxx.trader.domain.services.MyEventProducer;
+import ch.xxx.trader.domain.services.MyUserService;
 import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;

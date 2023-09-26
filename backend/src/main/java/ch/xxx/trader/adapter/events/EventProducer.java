@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
+import ch.xxx.trader.domain.services.MyEventProducer;
 import ch.xxx.trader.usecase.mappers.EventMapper;
-import ch.xxx.trader.usecase.services.MyEventProducer;
 import reactor.core.publisher.Mono;
 import reactor.kafka.sender.KafkaSender;
 

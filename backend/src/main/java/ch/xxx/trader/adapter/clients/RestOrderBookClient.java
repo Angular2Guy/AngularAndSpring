@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.xxx.trader.domain.common.WebUtils;
-import ch.xxx.trader.usecase.services.MyOrderBookClient;
+import ch.xxx.trader.domain.services.MyOrderBookClient;
 import reactor.core.publisher.Mono;
 
 @Service

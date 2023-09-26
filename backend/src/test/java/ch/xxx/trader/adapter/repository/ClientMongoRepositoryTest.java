@@ -32,11 +32,10 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import ch.xxx.trader.adapter.config.FlapDoodleConfig;
 import ch.xxx.trader.domain.model.entity.MyUser;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ComponentScan(basePackages = "ch.xxx.trader", includeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = FlapDoodleConfig.class))
+@ComponentScan(basePackages = "ch.xxx.trader", includeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE))
 @TestMethodOrder(OrderAnnotation.class)
 public class ClientMongoRepositoryTest {
 	private static final String USERID = "userId";
