@@ -67,11 +67,12 @@ public class ServiceUtils {
 
 	public List<String> showThreads() {
 		List<String> logs = new LinkedList<>();
-		Set<Thread> threads = Thread.getAllStackTraces().keySet();		
-		logs.add(String.format("%-15s \t %-15s \t %-15s \t %s \t %s \t %s", "Name", "State", "Priority", "isDaemon", "TheadGroup", "ThreadGroupActive"));
+		Set<Thread> threads = Thread.getAllStackTraces().keySet();
+		logs.add(String.format("%-15s \t %-15s \t %-15s \t %s \t %s \t %s", "Name", "State", "Priority", "isDaemon",
+				"TheadGroup", "ThreadGroupActive"));
 		for (Thread t : threads) {
-			logs.add(String.format("%-15s \t %-15s \t %-15d \t %s \t %s \t %d", t.getName(), t.getState(), t.getPriority(),
-					t.isDaemon(), t.getThreadGroup().getName(), t.getThreadGroup().activeCount()));
+			logs.add(String.format("%-15s \t %-15s \t %-15d \t %s \t %s \t %d", t.getName(), t.getState(),
+					t.getPriority(), t.isDaemon(), t.getThreadGroup().getName(), t.getThreadGroup().activeCount()));
 		}
 		return logs;
 	}
@@ -88,26 +89,18 @@ public class ServiceUtils {
 		if (!this.myMongoRepository.collectionExists(colName).block()) {
 			this.myMongoRepository.createCollection(colName).block();
 		}
-		Query query = new Query();
-		query.with(Sort.by(DtoUtils.CREATEDAT).ascending());
+		Query query = new Query().with(Sort.by(DtoUtils.CREATEDAT).ascending());
 		Optional<? extends Quote> firstQuote = Optional
 				.ofNullable(this.myMongoRepository.findOne(query, colType).block());
-		query = new Query();
-		query.with(Sort.by(DtoUtils.CREATEDAT).descending());
-		Optional<? extends Quote> lastHourQuote = Optional
-				.ofNullable(this.myMongoRepository.findOne(query, colType, colName).block());
-		Calendar globalBeginn = Calendar.getInstance();
-		if (lastHourQuote.isEmpty()) {
-			globalBeginn.setTime(firstQuote.stream().map(myQuote -> myQuote.getCreatedAt()).findFirst()
-					.orElse(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())));
-		} else {
-			globalBeginn.setTime(lastHourQuote.get().getCreatedAt());
-			if (hour) {
-				globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
-			} else {
-				globalBeginn.add(Calendar.DAY_OF_YEAR, 1);
-			}
-		}
+		query = new Query().with(Sort.by(DtoUtils.CREATEDAT).descending());
+		final Calendar globalBeginn = Calendar.getInstance();
+		Optional.ofNullable(this.myMongoRepository.findOne(query, colType, colName).block())
+				.ifPresentOrElse(myQuote -> {
+					this.calcGlobalBegin(hour, globalBeginn, myQuote);
+				}, () -> {
+					globalBeginn.setTime(firstQuote.stream().map(myQuote -> myQuote.getCreatedAt()).findFirst().orElse(
+							Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())));
+				});
 
 		Calendar begin = Calendar.getInstance();
 		Calendar end = Calendar.getInstance();
@@ -117,5 +110,14 @@ public class ServiceUtils {
 		end.setTime(begin.getTime());
 		end.add(Calendar.DAY_OF_YEAR, 1);
 		return new MyTimeFrame(begin, end);
+	}
+
+	private void calcGlobalBegin(boolean hour, Calendar globalBeginn, Quote myQuote) {
+		globalBeginn.setTime(myQuote.getCreatedAt());
+		if (hour) {
+			globalBeginn.add(Calendar.HOUR_OF_DAY, 1);
+		} else {
+			globalBeginn.add(Calendar.DAY_OF_YEAR, 1);
+		}
 	}
 }
