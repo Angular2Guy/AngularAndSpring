@@ -32,9 +32,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import ch.xxx.trader.domain.common.MongoUtils;
+import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.usecase.common.DtoUtils;
+import reactor.core.publisher.Flux;
 
 @Service
 public class ServiceUtils {
@@ -85,6 +88,31 @@ public class ServiceUtils {
 		return String.format("%s %d.%d seconds.", statementStart, myDuration.toSeconds(), millis);
 	}
 
+	public <T extends Quote> Flux<T> tfQuotes(String timeFrame, String pair, Class<T> quoteClass, String hourCol, String dayCol) {
+		Flux<T> result = Flux.empty();
+		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
+			result = this.myMongoRepository.find(query, quoteClass).filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt()));
+		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
+			result = this.myMongoRepository.find(query, quoteClass, hourCol);
+		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
+			result = this.myMongoRepository.find(query, quoteClass, dayCol);
+		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
+			result = this.myMongoRepository.find(query, quoteClass, dayCol);
+		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
+			result = this.myMongoRepository.find(query, quoteClass, dayCol);
+		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
+			result = this.myMongoRepository.find(query, quoteClass, dayCol);
+		}
+
+		return result;
+	}
+	
 	public MyTimeFrame createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
 		if (!this.myMongoRepository.collectionExists(colName).block()) {
 			this.myMongoRepository.createCollection(colName).block();

@@ -91,28 +91,7 @@ public class BitfinexService {
 	}
 
 	public Flux<QuoteBf> tfQuotes(String timeFrame, String pair) {
-		Flux<QuoteBf> result = Flux.empty();
-		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, QuoteBf.class).filter(q -> filterEvenMinutes(q));
-		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, QuoteBf.class, BF_HOUR_COL);
-		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL);
-		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL);
-		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
-			result = this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL);
-		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
-			result = this.myMongoRepository.find(query, QuoteBf.class, BF_DAY_COL);
-		}
-
-		return result;
+		return this.serviceUtils.tfQuotes(timeFrame, pair, QuoteBf.class, BF_HOUR_COL, BF_DAY_COL);
 	}
 
 	public Mono<byte[]> pdfReport(String timeFrame, String pair) {
@@ -247,10 +226,6 @@ public class BitfinexService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Daily Data Time:"));
-	}
-
-	private boolean filterEvenMinutes(QuoteBf quote) {
-		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}
 
 	private boolean filter10Minutes(QuoteBf quote) {

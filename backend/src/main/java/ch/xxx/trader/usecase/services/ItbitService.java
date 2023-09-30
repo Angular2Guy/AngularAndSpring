@@ -97,29 +97,7 @@ public class ItbitService {
 	}
 
 	public Flux<QuoteIb> tfQuotes(String timeFrame, String pair) {
-		Flux<QuoteIb> result = Flux.empty();
-		final String newPair = this.currpairs.get(pair);
-		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTodayQuery(Optional.of(newPair));
-			result = this.myMongoRepository.find(query, QuoteIb.class).filter(q -> filterEvenMinutes(q));
-		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build7DayQuery(Optional.of(newPair));
-			result = this.myMongoRepository.find(query, QuoteIb.class, IB_HOUR_COL);
-		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build30DayQuery(Optional.of(newPair));
-			result = this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
-		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build90DayQuery(Optional.of(newPair));
-			result = this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
-		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(newPair), TimeFrame.Month6);
-			result = this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
-		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(newPair), TimeFrame.Year1);
-			result = this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL);
-		}
-
-		return result;
+		return this.serviceUtils.tfQuotes(timeFrame, pair, QuoteIb.class, IB_HOUR_COL, IB_DAY_COL);		
 	}
 
 	public Mono<byte[]> pdfReport(String timeFrame, String pair) {
@@ -256,10 +234,6 @@ public class ItbitService {
 		String combined = Stream.of(future5, future6).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		LOG.info(combined);
 		return "done";
-	}
-
-	private boolean filterEvenMinutes(QuoteIb quote) {
-		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}
 
 	private boolean filter10Minutes(QuoteIb quote) {

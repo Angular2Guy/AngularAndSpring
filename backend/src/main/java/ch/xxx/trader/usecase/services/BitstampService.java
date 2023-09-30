@@ -91,28 +91,7 @@ public class BitstampService {
 	}
 
 	public Flux<QuoteBs> tfQuotesBtc(String timeFrame, String pair) {
-		Flux<QuoteBs> result = Flux.empty();
-		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, QuoteBs.class).filter(q -> filterEvenMinutes(q));
-		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, QuoteBs.class, BS_HOUR_COL);
-		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, QuoteBs.class, BS_DAY_COL);
-		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, QuoteBs.class, BS_DAY_COL);
-		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
-			result = this.myMongoRepository.find(query, QuoteBs.class, BS_DAY_COL);
-		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
-			result = this.myMongoRepository.find(query, QuoteBs.class, BS_DAY_COL);
-		}
-
-		return result;
+		return this.serviceUtils.tfQuotes(timeFrame, pair, QuoteBs.class, BS_HOUR_COL, BS_DAY_COL);		
 	}
 
 	public Mono<byte[]> pdfReport(String timeFrame, String pair) {
