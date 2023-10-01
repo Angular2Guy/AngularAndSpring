@@ -94,11 +94,13 @@ public class ItbitService {
 	}
 
 	public Flux<QuoteIb> tfQuotes(String timeFrame, String pair) {
-		return this.serviceUtils.tfQuotes(timeFrame, pair, QuoteIb.class, IB_HOUR_COL, IB_DAY_COL);		
+		final String newPair = this.currpairs.get(pair);
+		return this.serviceUtils.tfQuotes(timeFrame, newPair, QuoteIb.class, IB_HOUR_COL, IB_DAY_COL);		
 	}
 
 	public Mono<byte[]> pdfReport(String timeFrame, String pair) {
-		return this.serviceUtils.pdfReport(timeFrame, pair, QuoteIb.class, IB_HOUR_COL, IB_DAY_COL, this.reportMapper::convert);		
+		final String newPair = this.currpairs.get(pair);
+		return this.serviceUtils.pdfReport(timeFrame, newPair, QuoteIb.class, IB_HOUR_COL, IB_DAY_COL, this.reportMapper::convert);		
 	}
 
 	private void createIbHourlyAvg() {
