@@ -41,7 +41,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.domain.services.MyOrderBookClient;
@@ -60,7 +59,6 @@ public class BitstampService {
 	public static final String BS_DAY_COL = "quoteBsDay";
 	public static volatile boolean singleInstanceLock = false;
 	private final MyOrderBookClient orderBookClient;
-	private final ReportGenerator reportGenerator;
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
@@ -69,9 +67,8 @@ public class BitstampService {
 	private boolean singleInstanceDeployment;
 
 	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
-			ServiceUtils serviceUtils, ReportGenerator reportGenerator, ReportMapper reportMapper) {
+			ServiceUtils serviceUtils, ReportMapper reportMapper) {
 		this.orderBookClient = orderBookClient;
-		this.reportGenerator = reportGenerator;
 		this.reportMapper = reportMapper;
 		this.myMongoRepository = myMongoRepository;
 		this.serviceUtils = serviceUtils;
@@ -95,34 +92,7 @@ public class BitstampService {
 	}
 
 	public Mono<byte[]> pdfReport(String timeFrame, String pair) {
-		Mono<byte[]> result = Mono.empty();
-		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
-			result = this.reportGenerator.generateReport(this.myMongoRepository.find(query, QuoteBs.class)
-					.filter(this::filter10Minutes).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteBs.class, BS_HOUR_COL).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteBs.class, BS_DAY_COL).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteBs.class, BS_DAY_COL).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteBs.class, BS_DAY_COL).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteBs.class, BS_DAY_COL).map(this.reportMapper::convert));
-		}
-
-		return result;
+		return this.serviceUtils.pdfReport(timeFrame, pair, QuoteBs.class, BS_HOUR_COL, BS_DAY_COL, this.reportMapper::convert);		
 	}
 
 	public Mono<String> createBsAvg() {
@@ -227,14 +197,6 @@ public class BitstampService {
 					+ (new Date().getTime() - start.getTime()) + "ms");
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Daily Data Time:"));
-	}
-
-	private boolean filterEvenMinutes(QuoteBs quote) {
-		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
-	}
-
-	private boolean filter10Minutes(QuoteBs quote) {
-		return MongoUtils.filter10Minutes(quote.getCreatedAt());
 	}
 
 	private Collection<QuoteBs> makeBsQuoteDay(String key, Map<String, Collection<QuoteBs>> multimap, Calendar begin,

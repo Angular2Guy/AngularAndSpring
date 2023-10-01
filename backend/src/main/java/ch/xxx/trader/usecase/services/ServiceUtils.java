@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
@@ -34,10 +35,12 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
+import ch.xxx.trader.domain.model.dto.QuotePdf;
 import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class ServiceUtils {
@@ -45,9 +48,11 @@ public class ServiceUtils {
 	}
 
 	private final MyMongoRepository myMongoRepository;
+	private final ReportGenerator reportGenerator;
 
-	public ServiceUtils(MyMongoRepository myMongoRepository) {
+	public ServiceUtils(MyMongoRepository myMongoRepository, ReportGenerator reportGenerator) {
 		this.myMongoRepository = myMongoRepository;
+		this.reportGenerator = reportGenerator;
 	}
 
 	public List<Calendar> createDayHours(Calendar begin) {
@@ -110,6 +115,36 @@ public class ServiceUtils {
 			result = this.myMongoRepository.find(query, quoteClass, dayCol);
 		}
 
+		return result;
+	}
+	
+	public <T extends Quote> Mono<byte[]> pdfReport(String timeFrame, String pair, Class<T> quoteClass, String hourCol, String dayCol, Function<T, QuotePdf> mapping) {
+		Mono<byte[]> result = Mono.empty();
+		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
+			result = this.reportGenerator.generateReport(this.myMongoRepository.find(query, quoteClass)
+					.filter(myQuote -> MongoUtils.filter10Minutes(myQuote.getCreatedAt())).map(mapping));
+		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
+			result = this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, quoteClass, hourCol).map(mapping));
+		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
+			result = this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
+		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
+			result = this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
+		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
+			result = this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
+		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
+			result = this.reportGenerator.generateReport(
+					this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
+		}
 		return result;
 	}
 	

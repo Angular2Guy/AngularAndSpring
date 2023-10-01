@@ -42,7 +42,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.QuoteIb;
 import ch.xxx.trader.domain.services.MyOrderBookClient;
@@ -61,7 +60,6 @@ public class ItbitService {
 	public static final String IB_DAY_COL = "quoteIbDay";
 	public static volatile boolean singleInstanceLock = false;
 	private final Map<String, String> currpairs = new HashMap<String, String>();
-	private final ReportGenerator reportGenerator;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
@@ -70,9 +68,8 @@ public class ItbitService {
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
-	public ItbitService(ReportGenerator reportGenerator, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
+	public ItbitService(MyOrderBookClient orderBookClient, ReportMapper reportMapper,
 			MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
-		this.reportGenerator = reportGenerator;
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
 		this.myMongoRepository = myMongoRepository;
@@ -101,35 +98,7 @@ public class ItbitService {
 	}
 
 	public Mono<byte[]> pdfReport(String timeFrame, String pair) {
-		final String newPair = this.currpairs.get(pair);
-		Mono<byte[]> result = Mono.empty();
-		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTodayQuery(Optional.of(newPair));
-			result = this.reportGenerator.generateReport(this.myMongoRepository.find(query, QuoteIb.class)
-					.filter(this::filter10Minutes).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build7DayQuery(Optional.of(newPair));
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteIb.class, IB_HOUR_COL).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build30DayQuery(Optional.of(newPair));
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build90DayQuery(Optional.of(newPair));
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(newPair), TimeFrame.Month6);
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
-		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(newPair), TimeFrame.Year1);
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, QuoteIb.class, IB_DAY_COL).map(this.reportMapper::convert));
-		}
-
-		return result;
+		return this.serviceUtils.pdfReport(timeFrame, pair, QuoteIb.class, IB_HOUR_COL, IB_DAY_COL, this.reportMapper::convert);		
 	}
 
 	private void createIbHourlyAvg() {
@@ -234,10 +203,6 @@ public class ItbitService {
 		String combined = Stream.of(future5, future6).map(CompletableFuture::join).collect(Collectors.joining(" "));
 		LOG.info(combined);
 		return "done";
-	}
-
-	private boolean filter10Minutes(QuoteIb quote) {
-		return MongoUtils.filter10Minutes(quote.getCreatedAt());
 	}
 
 	private Collection<QuoteIb> makeIbQuoteHour(String key, Map<String, Collection<QuoteIb>> multimap, Calendar begin,
