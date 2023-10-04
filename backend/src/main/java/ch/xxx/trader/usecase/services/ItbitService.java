@@ -64,7 +64,7 @@ public class ItbitService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 10, "mongoImport", 10);
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
@@ -181,12 +181,15 @@ public class ItbitService {
 			ItbitService.singleInstanceLock = true;
 			result = this.myMongoRepository.ensureIndex(IB_HOUR_COL, DtoUtils.CREATEDAT)
 					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-					.doOnError(ex -> LOG.info("ensureIndex(" + IB_HOUR_COL + ") failed.", ex))
+					.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + IB_HOUR_COL + ") failed.", ex))
+//					.doOnError(ex -> LOG.info("ensureIndex(" + IB_HOUR_COL + ") failed.", ex))
 					.then(this.myMongoRepository.ensureIndex(IB_DAY_COL, DtoUtils.CREATEDAT)
 							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-							.doOnError(ex -> LOG.info("ensureIndex(" + IB_DAY_COL + ") failed.", ex)))
+//							.doOnError(ex -> LOG.info("ensureIndex(" + IB_DAY_COL + ") failed.", ex))
+							.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + IB_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-					.doOnError(ex -> LOG.info("createIbAvg() failed.", ex))					
+//					.doOnError(ex -> LOG.info("createIbAvg() failed.", ex))					
+					.onErrorContinue((ex, val) -> LOG.info("createIbAvg() failed.", ex))
 					.subscribeOn(this.mongoScheduler);			
 		}
 		return result;

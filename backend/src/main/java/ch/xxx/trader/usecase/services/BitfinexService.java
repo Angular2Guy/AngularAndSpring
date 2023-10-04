@@ -62,7 +62,7 @@ public class BitfinexService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 10, "mongoImport", 10);
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
@@ -102,12 +102,17 @@ public class BitfinexService {
 			BitfinexService.singleInstanceLock = true;
 			result = this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT)
 					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-					.doOnError(ex -> LOG.info("ensureIndex(" + BF_HOUR_COL + ") failed.", ex))
+					.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + BF_HOUR_COL + ") failed.", ex))
+//					.doOnError(ex -> LOG.info("ensureIndex(" + BF_HOUR_COL + ") failed.", ex))
 					.then(this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT)
 							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-							.doOnError(ex -> LOG.info("ensureIndex(" + BF_DAY_COL + ") failed.", ex)))
+							.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + BF_DAY_COL + ") failed.", ex))
+//							.doOnError(ex -> LOG.info("ensureIndex(" + BF_DAY_COL + ") failed.", ex)))
+							.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + BF_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-					.doOnError(ex -> LOG.info("createBfAvg() failed.", ex)).subscribeOn(this.mongoScheduler);
+//					.doOnError(ex -> LOG.info("createBfAvg() failed.", ex))
+					.onErrorContinue((ex, val) -> LOG.info("createBfAvg() failed.", ex))
+					.subscribeOn(this.mongoScheduler);
 		}
 		return result;
 	}

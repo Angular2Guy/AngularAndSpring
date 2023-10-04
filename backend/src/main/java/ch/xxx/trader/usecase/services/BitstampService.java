@@ -62,7 +62,7 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 10, "mongoImport", 10);
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
@@ -101,12 +101,15 @@ public class BitstampService {
 			BitstampService.singleInstanceLock = true;
 			result = this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
 					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-					.doOnError(ex -> LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", ex))
+//					.doOnError(ex -> LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", ex))
+					.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", ex))
 					.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT)
 							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-							.doOnError(ex -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex)))
+//							.doOnError(ex -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex))
+							.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(3L))
-					.doOnError(ex -> LOG.info("createBsAvg() failed.", ex))
+					.onErrorContinue((ex, val) -> LOG.info("createBsAvg() failed.", ex))
+//					.doOnError(ex -> LOG.info("createBsAvg() failed.", ex))
 					.subscribeOn(this.mongoScheduler);
 		}
 		return result;

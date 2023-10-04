@@ -79,7 +79,7 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 10, "mongoImport", 10);
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
@@ -152,12 +152,15 @@ public class CoinbaseService {
 			CoinbaseService.singleInstanceLock = true;
 			result = this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
 					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-					.doOnError(ex -> LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", ex))
+					.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", ex))
+//					.doOnError(ex -> LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", ex))
 					.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT)
 							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-							.doOnError(ex -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex)))
+//							.doOnError(ex -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex))
+							.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex)))
 					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-					.doOnError(ex -> LOG.info("createCbAvg() failed.", ex))
+//					.doOnError(ex -> LOG.info("createCbAvg() failed.", ex))
+					.onErrorContinue((ex, val) -> LOG.info("createCbAvg() failed.", ex))
 					.subscribeOn(this.mongoScheduler);
 		}
 		return result;
