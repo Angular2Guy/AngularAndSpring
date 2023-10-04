@@ -21,6 +21,7 @@ import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,8 +103,7 @@ public class ScheduledTask {
 		// LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
-		boolean[] exceptionLogged = new boolean[1];
-		exceptionLogged[0] = false;
+		final AtomicBoolean exceptionLogged = new AtomicBoolean(false);
 		Mono<QuoteBs> request = this.webClient.get()
 				.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
@@ -112,14 +112,14 @@ public class ScheduledTask {
 //				log.info(res.toString());
 					return res;
 				}).timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
-					exceptionLogged[0] = true;
+					exceptionLogged.set(true);
 					LOG.warn("Bitstamp data request failed", ex);
 					return Mono.empty();
 				}).subscribeOn(this.mongoImportScheduler);
 		Disposable subscribe = null;
 		subscribe = request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))
 				.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
-					if (!exceptionLogged[0]) {
+					if (!exceptionLogged.get()) {
 						LOG.warn("Bitstamp data store failed", ex);
 					}
 					return Mono.empty();
@@ -167,8 +167,7 @@ public class ScheduledTask {
 		// LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
-		boolean[] exceptionLogged = new boolean[1];
-		exceptionLogged[0] = false;
+		final AtomicBoolean exceptionLogged = new AtomicBoolean(false);
 		Mono<QuoteCb> request = this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> {
 					return response.bodyToMono(WrapperCb.class);
@@ -179,14 +178,14 @@ public class ScheduledTask {
 				}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
 					return Mono.just(resp2.getRates());
-				}).timeout(Duration.ofSeconds(5L), Mono.empty()).onErrorResume(ex -> {
-					exceptionLogged[0] = true;
+				}).timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
+					exceptionLogged.set(true);
 					LOG.warn("Coinbase data request failed", ex);
 					return Mono.empty();
 				}).subscribeOn(this.mongoImportScheduler);
 		Disposable subscribe = request.flatMap(myQuote -> this.coinbaseService.insertQuote(Mono.just(myQuote))
-				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
-					if (!exceptionLogged[0]) {
+				.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
+					if (!exceptionLogged.get()) {
 						LOG.warn("Coinbase data store failed", ex);
 					}
 					return Mono.empty();
@@ -203,8 +202,7 @@ public class ScheduledTask {
 		// LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
-		boolean[] exceptionLogged = new boolean[1];
-		exceptionLogged[0] = false;
+		final AtomicBoolean exceptionLogged = new AtomicBoolean(false);
 		Mono<QuoteIb> request = this.webClient.get()
 				.uri(String.format("%s/markets/%s/ticker", ScheduledTask.URLPA, currPair))
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(PaxosQuote.class))
@@ -214,13 +212,13 @@ public class ScheduledTask {
 				})
 				.map(paxosQuote -> this.convert(paxosQuote))
 				.timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
-					exceptionLogged[0] = true;
+					exceptionLogged.set(true);
 					LOG.warn("Ibit data request failed", ex);
 					return Mono.empty();
 				}).subscribeOn(this.mongoImportScheduler);
 		Disposable subscribe = request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))
 				.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
-					if (!exceptionLogged[0]) {
+					if (!exceptionLogged.get()) {
 						LOG.warn("Itbit data store failed", ex);
 					}
 					return Mono.empty();
@@ -293,8 +291,7 @@ public class ScheduledTask {
 		// LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
-		boolean[] exceptionLogged = new boolean[1];
-		exceptionLogged[0] = false;
+		final AtomicBoolean exceptionLogged = new AtomicBoolean(false);
 		Mono<QuoteBf> request = this.webClient.get()
 				.uri(String.format("%s/v1/pubticker/%s", ScheduledTask.URLBF, currPair))
 				.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBf.class))
@@ -304,13 +301,13 @@ public class ScheduledTask {
 //				log.info(res.toString());
 					return result;
 				}).timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
-					exceptionLogged[0] = true;
+					exceptionLogged.set(true);
 					LOG.warn("Bitfinex data request failed", ex);
 					return Mono.empty();
 				}).subscribeOn(this.mongoImportScheduler);
 		Disposable subscribe = request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote))
-				.timeout(Duration.ofSeconds(6L), Mono.empty()).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
-					if (!exceptionLogged[0]) {
+				.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
+					if (!exceptionLogged.get()) {
 						LOG.warn("Bitfinex data store failed", ex);
 					}
 					return Mono.empty();
