@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, DestroyRef, inject } from "@angular/core";
 import { QuoteoverviewComponent } from "../quoteoverview/quoteoverview.component";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MyuserService } from "../../services/myuser.service";
@@ -25,6 +25,7 @@ import {
   AbstractControlOptions,
 } from "@angular/forms";
 import { TokenService } from "ngx-simple-charts/base-service";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 enum FormFields {
   username = "username",
@@ -47,6 +48,7 @@ export class LoginComponent implements OnInit {
   protected formFields = FormFields;
   protected waitingForResponse = false;
   private user = new MyUser();
+  private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
     public dialogRef: MatDialogRef<QuoteoverviewComponent>,
@@ -119,7 +121,7 @@ export class LoginComponent implements OnInit {
     //      console.log(this.signinForm);
     //      console.log(myUser);
     this.waitingForResponse = true;
-    this.myuserService.postSignin(myUser).subscribe({
+    this.myuserService.postSignin(myUser).pipe(takeUntilDestroyed(this.destroy)).subscribe({
       next: (us) => this.signin(us),
       error: (err) => console.log(err),
     });
@@ -131,7 +133,7 @@ export class LoginComponent implements OnInit {
     myUser.password = this.loginForm.get(FormFields.password).value;
     //      console.log(myUser);
     this.waitingForResponse = true;
-    this.myuserService.postLogin(myUser).subscribe({
+    this.myuserService.postLogin(myUser).pipe(takeUntilDestroyed(this.destroy)).subscribe({
       next: (us) => this.login(us),
       error: (err) => console.log(err),
     });

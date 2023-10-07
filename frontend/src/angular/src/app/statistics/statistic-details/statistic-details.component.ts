@@ -13,7 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, DestroyRef, Input, OnInit, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartBars, ChartBar } from "ngx-simple-charts/bar";
 import { tap } from "rxjs";
 import {
@@ -37,6 +38,7 @@ export class StatisticDetailsComponent implements OnInit {
   protected chartBars!: ChartBars;
   protected chartsLoading = true;
   private myTabIndex = 0;
+  private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(private statisticService: StatisticService) {}
 
@@ -53,7 +55,7 @@ export class StatisticDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.statisticService
       .getCommonStatistics(this.selCurrency, this.coinExchange)
-      .pipe(tap((result) => (this.chartBars = this.createChartBars(result))))
+      .pipe(tap((result) => (this.chartBars = this.createChartBars(result))), takeUntilDestroyed(this.destroy))
       .subscribe((result) => (this.commonStatistics = result));
   }
 
@@ -62,7 +64,7 @@ export class StatisticDetailsComponent implements OnInit {
       this.chartsLoading = true;
       this.statisticService
         .getCommonStatistics(this.selCurrency, this.coinExchange)
-        .pipe(tap((result) => (this.chartBars = this.createChartBars(result))))
+        .pipe(tap((result) => (this.chartBars = this.createChartBars(result))), takeUntilDestroyed(this.destroy))
         .subscribe((result) => (this.commonStatistics = result));
     }
   }

@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit } from "@angular/core";
+import { Component, DestroyRef, OnInit, inject } from "@angular/core";
 import { BitstampService } from "../../services/bitstamp.service";
 import { ItbitService } from "../../services/itbit.service";
 import { BitfinexService } from "../../services/bitfinex.service";
@@ -21,6 +21,7 @@ import { Router } from "@angular/router";
 import { OrderbookBs } from "../../common/orderbook-bs";
 import { OrderbookBf, OrderBf } from "../../common/orderbook-bf";
 import { OrderbookIb } from "../../common/orderbook-ib";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-orderbooks",
@@ -36,7 +37,8 @@ export class OrderbooksComponent implements OnInit {
   protected bsOrders: MyOrder[] = [];
   protected bfOrders: MyOrder[] = [];
   protected ibOrders: MyOrder[] = [];
-
+  private readonly destroy: DestroyRef = inject(DestroyRef);
+    
   constructor(
     private router: Router,
     private serviceBs: BitstampService,
@@ -56,7 +58,7 @@ export class OrderbooksComponent implements OnInit {
   onSubmit() {
     //console.log( this.model );
     if (this.model.itbitCb && this.model.currpair === this.serviceBf.BTCUSD) {
-      this.serviceIb.getOrderbook(this.serviceIb.BTCUSD).subscribe((ob) => {
+      this.serviceIb.getOrderbook(this.serviceIb.BTCUSD).pipe(takeUntilDestroyed(this.destroy)).subscribe((ob) => {
         //                this.orderbookIb = ob;
         this.ibOrders = this.filterObIb(ob);
       });
@@ -64,7 +66,7 @@ export class OrderbooksComponent implements OnInit {
       this.ibOrders = [];
     }
     if (this.model.bitstampCb) {
-      this.serviceBs.getOrderbook(this.model.currpair).subscribe((ob) => {
+      this.serviceBs.getOrderbook(this.model.currpair).pipe(takeUntilDestroyed(this.destroy)).subscribe((ob) => {
         //                this.orderbookBs = ob;
         this.bsOrders = this.filterObBs(ob);
       });
@@ -72,7 +74,7 @@ export class OrderbooksComponent implements OnInit {
       this.bsOrders = [];
     }
     if (this.model.bitfinexCb) {
-      this.serviceBf.getOrderbook(this.model.currpair).subscribe((ob) => {
+      this.serviceBf.getOrderbook(this.model.currpair).pipe(takeUntilDestroyed(this.destroy)).subscribe((ob) => {
         //                this.orderbookBf = ob;
         this.bfOrders = this.filterObBf(ob);
       });

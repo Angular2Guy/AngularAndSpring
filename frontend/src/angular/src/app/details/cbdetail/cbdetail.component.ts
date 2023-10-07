@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, LOCALE_ID, Inject } from "@angular/core";
+import { Component, OnInit, LOCALE_ID, Inject, DestroyRef, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   trigger,
@@ -26,6 +26,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { QuoteCb, QuoteCbSmall } from "../../common/quote-cb";
 import { CoinbaseService } from "../../services/coinbase.service";
 import { DetailBase, Tuple } from "src/app/common/detail-base";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-cbdetail",
@@ -52,6 +53,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
   protected chartShow = new BehaviorSubject(false);
   protected todayQuotes: QuoteCbSmall[] = [];
   protected myCurrPair = "";
+  private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -71,9 +73,9 @@ export class CbdetailComponent extends DetailBase implements OnInit {
       this.currpair = params.currpair;
       this.myCurrPair = this.utils.getCurrpairName(this.currpair);
       this.serviceCb
-        .getCurrentQuote()
+        .getCurrentQuote().pipe(takeUntilDestroyed(this.destroy))
         .subscribe((quote) => (this.currQuote = quote));
-      this.serviceCb.getTodayQuotes().subscribe((quotes) => {
+      this.serviceCb.getTodayQuotes().pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
         this.todayQuotes = quotes;
         if (this.currpair === this.serviceCb.BTCUSD) {
           this.updateChartData(
@@ -129,7 +131,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
       quoteObserv = this.serviceCb.getTodayQuotes();
     }
 
-    quoteObserv.subscribe((quotes) => {
+    quoteObserv.pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
       this.todayQuotes = quotes;
 
       if (this.currpair === this.serviceCb.BTCUSD) {

@@ -12,7 +12,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, DestroyRef, inject } from "@angular/core";
 import { BitstampService } from "../../services/bitstamp.service";
 import { CoinbaseService } from "../../services/coinbase.service";
 import { ItbitService } from "../../services/itbit.service";
@@ -22,6 +22,7 @@ import { QuoteCb } from "../../common/quote-cb";
 import { QuoteIb } from "../../common/quote-ib";
 import { QuoteBf } from "../../common/quote-bf";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DataSource, CollectionViewer } from "@angular/cdk/collections";
 import { Router } from "@angular/router";
 import { CommonUtils } from "../../common/common-utils";
@@ -42,6 +43,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   protected loggedIn = false;
   private interval: any;
   private utils = new CommonUtils();
+  private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
     private router: Router,
@@ -220,7 +222,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   private refeshBsData(currPair: string, rowId: number): void {
     this.serviceBs
       .getCurrentQuote(currPair)
-      .pipe(filter((result) => !!result?.last))
+      .pipe(filter((result) => !!result?.last), takeUntilDestroyed(this.destroy))
       .subscribe((quote) => {
         this.datasource.rows[rowId] = this.createRowBs(
           quote,
@@ -234,7 +236,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   private refreshBfData(currPair: string, rowId: number): void {
     this.serviceBf
       .getCurrentQuote(currPair)
-      .pipe(filter((result) => !!result?.last_price))
+      .pipe(filter((result) => !!result?.last_price), takeUntilDestroyed(this.destroy))
       .subscribe((quote) => {
         this.datasource.rows[rowId] = this.createRowBf(
           quote,
@@ -256,7 +258,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
     this.refeshBsData(this.serviceBs.XRPUSD, 7);
     this.serviceIb
       .getCurrentQuote(this.serviceIb.BTCUSD)
-      .pipe(filter((result) => !!result?.lastPrice))
+      .pipe(filter((result) => !!result?.lastPrice), takeUntilDestroyed(this.destroy))
       .subscribe((quote) => {
         this.datasource.rows[8] = this.createRowIb(
           quote,
@@ -267,7 +269,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
       });
     this.serviceCb
       .getCurrentQuote()
-      .pipe(filter((result) => !!result?.btc))
+      .pipe(filter((result) => !!result?.btc), takeUntilDestroyed(this.destroy))
       .subscribe((quote) => {
         const myrows = this.createRowsCb(quote);
         this.datasource.rows[9] = myrows[0];

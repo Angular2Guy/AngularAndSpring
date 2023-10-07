@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, Inject, LOCALE_ID } from "@angular/core";
+import { Component, OnInit, Inject, LOCALE_ID, DestroyRef, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   trigger,
@@ -26,6 +26,7 @@ import { BitfinexService } from "../../services/bitfinex.service";
 import { QuoteBf } from "../../common/quote-bf";
 import { BehaviorSubject, Observable } from "rxjs";
 import { DetailBase, Tuple } from "../../common/detail-base";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-bfdetail",
@@ -44,6 +45,7 @@ export class BfdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteBf;
   protected chartShow = new BehaviorSubject(false);
   protected todayQuotes: QuoteBf[] = [];
+  private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -57,12 +59,12 @@ export class BfdetailComponent extends DetailBase implements OnInit {
   ngOnInit() {
     this.chartShow.next(false);
     this.route.params.subscribe((params) => {
-      this.serviceBf.getCurrentQuote(params.currpair).subscribe((quote) => {
+      this.serviceBf.getCurrentQuote(params.currpair).pipe(takeUntilDestroyed(this.destroy)).subscribe((quote) => {
         this.currQuote = quote;
         this.currPair = this.utils.getCurrpairName(this.currQuote.pair);
       });
       this.serviceBf
-        .getTodayQuotes(this.route.snapshot.paramMap.get("currpair"))
+        .getTodayQuotes(this.route.snapshot.paramMap.get("currpair")).pipe(takeUntilDestroyed(this.destroy))
         .subscribe((quotes) => {
           this.todayQuotes = quotes;
           this.updateChartData(
@@ -98,7 +100,7 @@ export class BfdetailComponent extends DetailBase implements OnInit {
       quoteObserv = this.serviceBf.getTodayQuotes(currpair);
     }
 
-    quoteObserv.subscribe((quotes) => {
+    quoteObserv.pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
       this.todayQuotes = quotes;
       this.updateChartData(
         quotes.map(

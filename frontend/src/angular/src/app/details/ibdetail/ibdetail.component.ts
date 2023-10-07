@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, Inject, LOCALE_ID } from "@angular/core";
+import { Component, OnInit, Inject, LOCALE_ID, DestroyRef, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   trigger,
@@ -26,6 +26,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { QuoteIb } from "../../common/quote-ib";
 import { ItbitService } from "../../services/itbit.service";
 import { DetailBase, Tuple } from "src/app/common/detail-base";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-ibdetail",
@@ -44,6 +45,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteIb;
   protected chartShow = new BehaviorSubject(false);
   protected todayQuotes: QuoteIb[] = [];
+  private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -59,9 +61,9 @@ export class IbdetailComponent extends DetailBase implements OnInit {
     this.route.params.subscribe((params) => {
       this.currPair = params.currpair;
       this.serviceIb
-        .getCurrentQuote(this.currPair)
+        .getCurrentQuote(this.currPair).pipe(takeUntilDestroyed(this.destroy))
         .subscribe((quote) => (this.currQuote = quote));
-      this.serviceIb.getTodayQuotes(this.currPair).subscribe((quotes) => {
+      this.serviceIb.getTodayQuotes(this.currPair).pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
         this.todayQuotes = quotes;
         this.updateChartData(
           quotes.map(
@@ -95,7 +97,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
     } else {
       quoteObserv = this.serviceIb.getTodayQuotes(currpair);
     }
-    quoteObserv.subscribe((quotes) => {
+    quoteObserv.pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
       this.todayQuotes = quotes;
       this.updateChartData(
         quotes.map(
