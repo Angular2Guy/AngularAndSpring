@@ -24,7 +24,7 @@ import {
 } from "@angular/animations";
 import { BitfinexService } from "../../services/bitfinex.service";
 import { QuoteBf } from "../../common/quote-bf";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, repeat } from "rxjs";
 import { DetailBase, Tuple } from "../../common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
@@ -59,7 +59,7 @@ export class BfdetailComponent extends DetailBase implements OnInit {
   ngOnInit() {
     this.chartShow.next(false);
     this.route.params.subscribe((params) => {
-      this.serviceBf.getCurrentQuote(params.currpair).pipe(takeUntilDestroyed(this.destroy)).subscribe((quote) => {
+      this.serviceBf.getCurrentQuote(params.currpair).pipe(repeat({delay: 10000}), takeUntilDestroyed(this.destroy)).subscribe((quote) => {
         this.currQuote = quote;
         this.currPair = this.utils.getCurrpairName(this.currQuote.pair);
       });

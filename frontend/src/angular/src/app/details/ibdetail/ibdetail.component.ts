@@ -22,7 +22,7 @@ import {
   transition,
   style,
 } from "@angular/animations";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, repeat } from "rxjs";
 import { QuoteIb } from "../../common/quote-ib";
 import { ItbitService } from "../../services/itbit.service";
 import { DetailBase, Tuple } from "src/app/common/detail-base";
@@ -61,7 +61,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
     this.route.params.subscribe((params) => {
       this.currPair = params.currpair;
       this.serviceIb
-        .getCurrentQuote(this.currPair).pipe(takeUntilDestroyed(this.destroy))
+        .getCurrentQuote(this.currPair).pipe(repeat({delay: 10000}), takeUntilDestroyed(this.destroy))
         .subscribe((quote) => (this.currQuote = quote));
       this.serviceIb.getTodayQuotes(this.currPair).pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
         this.todayQuotes = quotes;

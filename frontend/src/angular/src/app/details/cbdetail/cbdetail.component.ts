@@ -22,7 +22,7 @@ import {
   transition,
   style,
 } from "@angular/animations";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, repeat } from "rxjs";
 import { QuoteCb, QuoteCbSmall } from "../../common/quote-cb";
 import { CoinbaseService } from "../../services/coinbase.service";
 import { DetailBase, Tuple } from "src/app/common/detail-base";
@@ -73,7 +73,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
       this.currpair = params.currpair;
       this.myCurrPair = this.utils.getCurrpairName(this.currpair);
       this.serviceCb
-        .getCurrentQuote().pipe(takeUntilDestroyed(this.destroy))
+        .getCurrentQuote().pipe(repeat({delay: 10000}), takeUntilDestroyed(this.destroy))
         .subscribe((quote) => (this.currQuote = quote));
       this.serviceCb.getTodayQuotes().pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
         this.todayQuotes = quotes;

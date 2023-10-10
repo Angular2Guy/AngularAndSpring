@@ -22,7 +22,7 @@ import {
   transition,
   style,
 } from "@angular/animations";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, repeat } from "rxjs";
 import { BitstampService } from "../../services/bitstamp.service";
 import { QuoteBs } from "../../common/quote-bs";
 import { DetailBase, Tuple } from "src/app/common/detail-base";
@@ -59,7 +59,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
   ngOnInit() {
     this.chartShow.next(false);
     this.route.params.subscribe((params) => {
-      this.serviceBs.getCurrentQuote(params.currpair).pipe(takeUntilDestroyed(this.destroy)).subscribe((quote) => {
+      this.serviceBs.getCurrentQuote(params.currpair).pipe(repeat({delay: 10000}), takeUntilDestroyed(this.destroy)).subscribe((quote) => {
         this.currQuote = quote;
         this.currPair = this.utils.getCurrpairName(this.currQuote.pair);
       });
