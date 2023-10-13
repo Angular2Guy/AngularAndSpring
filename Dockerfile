@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:21-jdk
 VOLUME /tmp
 ARG JAR_FILE
 ADD backend/target/${JAR_FILE} /app.jar
