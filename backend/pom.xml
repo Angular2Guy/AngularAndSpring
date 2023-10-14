@@ -205,7 +205,7 @@
 									<pluginExecutionFilter>
 										<artifactId>exec-maven-plugin</artifactId>
 										<groupId>org.codehaus.mojo</groupId>
-										<versionRange>[3.0.0,)</versionRange>
+										<versionRange>[3.1.0,)</versionRange>
 										<goals>
 											<goal>exec</goal>
 										</goals>
