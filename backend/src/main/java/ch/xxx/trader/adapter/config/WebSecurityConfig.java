@@ -25,6 +25,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter.HeaderValue;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import ch.xxx.trader.domain.common.Role;
 import ch.xxx.trader.usecase.services.JwtTokenService;
@@ -44,15 +45,18 @@ public class WebSecurityConfig {
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider);
 		HttpSecurity httpSecurity = http
-				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/*/*/orderbook", "/*/*/*/orderbook")
-						.hasAuthority(Role.USERS.toString()).requestMatchers("/**").permitAll())
+				.authorizeHttpRequests(authorize -> authorize
+						.requestMatchers(AntPathRequestMatcher.antMatcher("/*/*/orderbook"),
+								AntPathRequestMatcher.antMatcher("/*/*/*/orderbook"))
+						.hasAuthority(Role.USERS.toString()).requestMatchers(AntPathRequestMatcher.antMatcher("/**"))
+						.permitAll())
 				.csrf(myCsrf -> myCsrf.disable())
 				.sessionManagement(mySm -> mySm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.headers(myHeaders -> myHeaders.contentSecurityPolicy(myCsp -> myCsp.policyDirectives(
 						"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';")))
 				.headers(myHeaders -> myHeaders.xssProtection(myXss -> myXss.headerValue(HeaderValue.ENABLED)))
 				.headers(myHeaders -> myHeaders.frameOptions(myFo -> myFo.sameOrigin()))
-				.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);				
+				.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
 		return httpSecurity.build();
 	}
 }
