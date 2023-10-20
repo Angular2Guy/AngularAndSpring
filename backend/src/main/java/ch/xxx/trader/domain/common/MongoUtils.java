@@ -18,9 +18,14 @@ package ch.xxx.trader.domain.common;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -43,6 +48,9 @@ public class MongoUtils {
 		}
 	};
 
+	public static final Map<String, TimeFrame> KEY_TO_TIMEFRAME = Collections.unmodifiableMap(new ConcurrentHashMap<>(
+			Stream.of(TimeFrame.values()).collect(Collectors.toMap(TimeFrame::getValue, tf -> tf))));
+
 	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin,
 			int limit) {
 		Calendar cal = GregorianCalendar.getInstance();
@@ -53,7 +61,8 @@ public class MongoUtils {
 		pair.ifPresent(myValue -> query.addCriteria(Criteria.where("pair").is(myValue)));
 		begin.ifPresentOrElse(myValue -> query.addCriteria(Criteria.where("createdAt").gt(myValue.getTime())),
 				() -> query.addCriteria(Criteria.where("createdAt").gt(cal.getTime())));
-		var myValue = ascending ? query.with(Sort.by("createdAt").ascending()) : query.with(Sort.by("createdAt").descending()); 		
+		var myValue = ascending ? query.with(Sort.by("createdAt").ascending())
+				: query.with(Sort.by("createdAt").descending());
 		return query;
 	}
 

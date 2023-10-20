@@ -93,61 +93,79 @@ public class ServiceUtils {
 		return String.format("%s %d.%d seconds.", statementStart, myDuration.toSeconds(), millis);
 	}
 
-	public <T extends Quote> Flux<T> tfQuotes(String timeFrame, String pair, Class<T> quoteClass, String hourCol, String dayCol) {
-		Flux<T> result = Flux.empty();
-		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
+	public <T extends Quote> Flux<T> tfQuotes(String timeFrame, String pair, Class<T> quoteClass, String hourCol,
+			String dayCol) {
+		var myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+		Flux<T> result = switch (myTimeFrame) {
+		case MongoUtils.TimeFrame.TODAY -> {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, quoteClass).filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt()));
-		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, quoteClass, hourCol);
-		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, quoteClass, dayCol);
-		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
-			result = this.myMongoRepository.find(query, quoteClass, dayCol);
-		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
-			result = this.myMongoRepository.find(query, quoteClass, dayCol);
-		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
-			result = this.myMongoRepository.find(query, quoteClass, dayCol);
+			yield this.myMongoRepository.find(query, quoteClass)
+					.filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt()));
 		}
+		case MongoUtils.TimeFrame.SEVENDAYS -> {
+			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
+			yield this.myMongoRepository.find(query, quoteClass, hourCol);
+		}
+		case MongoUtils.TimeFrame.THIRTYDAYS -> {
+			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
+			yield this.myMongoRepository.find(query, quoteClass, dayCol);
+		}
+		case MongoUtils.TimeFrame.NINTYDAYS -> {
+			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
+			yield this.myMongoRepository.find(query, quoteClass, dayCol);
+		}
+		case MongoUtils.TimeFrame.Month6 -> {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), myTimeFrame);
+			yield this.myMongoRepository.find(query, quoteClass, dayCol);
+		}
+		case MongoUtils.TimeFrame.Year1 -> {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), myTimeFrame);
+			yield this.myMongoRepository.find(query, quoteClass, dayCol);
+		}
+		default -> Flux.empty();
+		};
+		return result;
+	}
 
-		return result;
-	}
-	
-	public <T extends Quote> Mono<byte[]> pdfReport(String timeFrame, String pair, Class<T> quoteClass, String hourCol, String dayCol, Function<T, QuotePdf> mapping) {
-		Mono<byte[]> result = Mono.empty();
-		if (MongoUtils.TimeFrame.TODAY.getValue().equals(timeFrame)) {
+	public <T extends Quote> Mono<byte[]> pdfReport(String timeFrame, String pair, Class<T> quoteClass, String hourCol,
+			String dayCol, Function<T, QuotePdf> mapping) {
+		var myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+		Mono<byte[]> result = switch (myTimeFrame) {
+		case MongoUtils.TimeFrame.TODAY -> {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
-			result = this.reportGenerator.generateReport(this.myMongoRepository.find(query, quoteClass)
+			yield this.reportGenerator.generateReport(this.myMongoRepository.find(query, quoteClass)
 					.filter(myQuote -> MongoUtils.filter10Minutes(myQuote.getCreatedAt())).map(mapping));
-		} else if (MongoUtils.TimeFrame.SEVENDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, quoteClass, hourCol).map(mapping));
-		} else if (MongoUtils.TimeFrame.THIRTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
-		} else if (MongoUtils.TimeFrame.NINTYDAYS.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
-		} else if (MongoUtils.TimeFrame.Month6.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Month6);
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
-		} else if (MongoUtils.TimeFrame.Year1.getValue().equals(timeFrame)) {
-			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), TimeFrame.Year1);
-			result = this.reportGenerator.generateReport(
-					this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
 		}
+		case MongoUtils.TimeFrame.SEVENDAYS -> {
+			Query query = MongoUtils.build7DayQuery(Optional.of(pair));
+			yield this.reportGenerator
+					.generateReport(this.myMongoRepository.find(query, quoteClass, hourCol).map(mapping));
+		}
+		case MongoUtils.TimeFrame.THIRTYDAYS -> {
+			Query query = MongoUtils.build30DayQuery(Optional.of(pair));
+			yield this.reportGenerator
+					.generateReport(this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
+		}
+		case MongoUtils.TimeFrame.NINTYDAYS -> {
+			Query query = MongoUtils.build90DayQuery(Optional.of(pair));
+			yield this.reportGenerator
+					.generateReport(this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
+		}
+		case MongoUtils.TimeFrame.Month6 -> {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), myTimeFrame);
+			yield this.reportGenerator
+					.generateReport(this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
+		}
+		case MongoUtils.TimeFrame.Year1 -> {
+			Query query = MongoUtils.buildTimeFrameQuery(Optional.of(pair), myTimeFrame);
+			yield this.reportGenerator
+					.generateReport(this.myMongoRepository.find(query, quoteClass, dayCol).map(mapping));
+		}
+		default -> Mono.empty();
+		};
 		return result;
 	}
-	
+
 	public MyTimeFrame createTimeFrame(String colName, Class<? extends Quote> colType, boolean hour) {
 		if (!this.myMongoRepository.collectionExists(colName).block()) {
 			this.myMongoRepository.createCollection(colName).block();
