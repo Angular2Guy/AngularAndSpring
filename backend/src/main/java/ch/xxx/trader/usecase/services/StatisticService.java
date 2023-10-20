@@ -181,7 +181,7 @@ public class StatisticService {
 
 	private Mono<CommonStatisticsDto> createBitfinexStatistics(StatisticsCurrPair currPair) {
 		Mono<CommonStatisticsDto> result = this.myMongoRepository
-				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitfinexKey()), TimeFrame.Year5),
+				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitfinexKey()), TimeFrame.Year5, 5000),
 						QuoteBf.class, BitfinexService.BF_DAY_COL)
 				.collectList().flatMap(myList -> this.calcStatistics(myList)).map(value -> {
 					value.setCurrPair(currPair);

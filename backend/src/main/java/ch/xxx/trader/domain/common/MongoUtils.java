@@ -53,6 +53,7 @@ public class MongoUtils {
 
 	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin,
 			int limit) {
+		limit = limit < 5000 ? limit : 5000;
 		Calendar cal = GregorianCalendar.getInstance();
 		cal.add(Calendar.DAY_OF_YEAR, -1);
 		Query query = new Query();
@@ -114,11 +115,11 @@ public class MongoUtils {
 		}
 		case Year2 -> {
 			cal.add(Calendar.YEAR, -2);
-			yield buildQuery(pair, true, Optional.of(cal), 5000);
+			yield buildQuery(pair, true, Optional.of(cal), limit);
 		}
 		case Year5 -> {
 			cal.add(Calendar.YEAR, -5);
-			yield buildQuery(pair, true, Optional.of(cal), 5000);
+			yield buildQuery(pair, true, Optional.of(cal), limit);
 		}
 		default -> new Query();
 		};

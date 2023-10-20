@@ -95,7 +95,7 @@ public class ServiceUtils {
 
 	public <T extends Quote> Flux<T> tfQuotes(String timeFrame, String pair, Class<T> quoteClass, String hourCol,
 			String dayCol) {
-		var myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+		TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
 		Flux<T> result = switch (myTimeFrame) {
 		case MongoUtils.TimeFrame.TODAY -> {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
@@ -129,7 +129,7 @@ public class ServiceUtils {
 
 	public <T extends Quote> Mono<byte[]> pdfReport(String timeFrame, String pair, Class<T> quoteClass, String hourCol,
 			String dayCol, Function<T, QuotePdf> mapping) {
-		var myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+		TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
 		Mono<byte[]> result = switch (myTimeFrame) {
 		case MongoUtils.TimeFrame.TODAY -> {
 			Query query = MongoUtils.buildTodayQuery(Optional.of(pair));
