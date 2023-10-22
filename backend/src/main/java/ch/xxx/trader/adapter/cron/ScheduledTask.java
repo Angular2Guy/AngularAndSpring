@@ -123,15 +123,15 @@ public class ScheduledTask {
 						LOG.warn("Bitstamp data store failed", ex);
 					}
 					return Mono.empty();
-				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start),
+				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration("Bitstamp", currPair, start),
 						err -> LOG.warn("Bitstamp data import failed.", err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
-	private void logDuration(String currPair, LocalTime start) {
+	private void logDuration(String source, String currPair, LocalTime start) {
 		long durationInMs = Duration.between(start, LocalTime.now()).toMillis();
 		if (durationInMs > 1000) {
-			LOG.info("Duration of {}: {}ms", currPair, durationInMs);
+			LOG.info("Source: {} Duration of {}: {}ms", source, currPair, durationInMs);
 		}
 	}
 
@@ -189,7 +189,7 @@ public class ScheduledTask {
 						LOG.warn("Coinbase data store failed", ex);
 					}
 					return Mono.empty();
-				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start),
+				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration("Coinbase", currPair, start),
 						err -> LOG.warn("Coinbase data import failed.", err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
@@ -198,7 +198,7 @@ public class ScheduledTask {
 	@Scheduled(fixedRate = 60000, initialDelay = 21000)
 	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
 	public void insertItbitUsdQuote() {
-		final String currPair = "BTCUSD";		
+		final String currPair = "BTCUSD";
 		// LOG.info(currPair);
 		this.disposeClient(currPair);
 		LocalTime start = LocalTime.now();
@@ -209,9 +209,7 @@ public class ScheduledTask {
 				.map(res -> {
 //				log.info(res.toString());
 					return res;
-				})
-				.map(paxosQuote -> this.convert(paxosQuote))
-				.timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
+				}).map(paxosQuote -> this.convert(paxosQuote)).timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
 					exceptionLogged.set(true);
 					LOG.warn(String.format("Ibit data request for %s failed", currPair), ex);
 					return Mono.empty();
@@ -222,8 +220,8 @@ public class ScheduledTask {
 						LOG.warn("Itbit data store failed", ex);
 					}
 					return Mono.empty();
-				})).subscribeOn(this.mongoImportScheduler)
-				.subscribe(x -> this.logDuration(currPair, start), err -> LOG.warn("Itbit data import failed.", err));
+				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration("Itbit", currPair, start),
+						err -> LOG.warn("Itbit data import failed.", err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -236,7 +234,8 @@ public class ScheduledTask {
 				new BigDecimal(paxosQuote.getLastExecution().getAmount()),
 				new BigDecimal(paxosQuote.getLastDay().getVolume()), new BigDecimal(paxosQuote.getToday().getVolume()),
 				new BigDecimal(paxosQuote.getLastDay().getHigh()), new BigDecimal(paxosQuote.getLastDay().getLow()),
-				new BigDecimal(paxosQuote.getToday().getOpen()), new BigDecimal(paxosQuote.getToday().getHigh()), new BigDecimal(paxosQuote.getToday().getLow()),
+				new BigDecimal(paxosQuote.getToday().getOpen()), new BigDecimal(paxosQuote.getToday().getHigh()),
+				new BigDecimal(paxosQuote.getToday().getLow()),
 				new BigDecimal(paxosQuote.getToday().getVolumeWeightedAveragePrice()),
 				new BigDecimal(paxosQuote.getLastDay().getVolumeWeightedAveragePrice()), paxosQuote.getSnapshotAt());
 		return quoteIb;
@@ -311,7 +310,7 @@ public class ScheduledTask {
 						LOG.warn("Bitfinex data store failed", ex);
 					}
 					return Mono.empty();
-				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration(currPair, start),
+				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration("Bitfinex", currPair, start),
 						err -> LOG.warn("Bitfinex data import failed.", err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
