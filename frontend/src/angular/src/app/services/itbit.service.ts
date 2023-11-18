@@ -39,7 +39,7 @@ export class ItbitService {
     return this.http
       .get<QuoteIb>(
         this.itbit + "/" + currencypair + "/current",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteIb>("getCurrentQuote")));
   }
@@ -48,7 +48,7 @@ export class ItbitService {
     return this.http
       .get<QuoteIb[]>(
         this.itbit + "/" + currencypair + "/today",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteIb[]>("getTodayQuotes")));
   }
@@ -57,7 +57,7 @@ export class ItbitService {
     return this.http
       .get<QuoteIb[]>(
         this.itbit + "/" + currencypair + "/7days",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteIb[]>("get7DayQuotes")));
   }
@@ -66,7 +66,7 @@ export class ItbitService {
     return this.http
       .get<QuoteIb[]>(
         this.itbit + "/" + currencypair + "/30days",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteIb[]>("get30DayQuotes")));
   }
@@ -75,7 +75,7 @@ export class ItbitService {
     return this.http
       .get<QuoteIb[]>(
         this.itbit + "/" + currencypair + "/90days",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteIb[]>("get30DayQuotes")));
   }
@@ -84,7 +84,7 @@ export class ItbitService {
     return this.http
       .get<QuoteIb[]>(
         this.itbit + "/" + currencypair + "/6month",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteIb[]>("get6MonthsQuotes")));
   }
@@ -93,7 +93,7 @@ export class ItbitService {
     return this.http
       .get<QuoteIb[]>(
         this.itbit + "/" + currencypair + "/1year",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteIb[]>("get1YearQuotes")));
   }
@@ -103,7 +103,7 @@ export class ItbitService {
     return this.http
       .get<OrderbookIb>(
         this.itbit + "/" + currencypair + "/orderbook",
-        reqOptions
+        reqOptions,
       )
       .pipe(catchError(this.utils.handleError<OrderbookIb>("getOrderbook")));
   }

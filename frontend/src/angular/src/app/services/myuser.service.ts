@@ -30,7 +30,10 @@ export class MyuserService {
   private utils = new Utils();
   private myUserUrl = "/myuser";
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {}
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService,
+  ) {}
 
   postLogin(user: MyUser): Observable<MyUser> {
     return this.http
@@ -42,7 +45,7 @@ export class MyuserService {
           this.tokenService.userId = res.userId;
           return retval;
         }),
-        catchError(this.utils.handleError<MyUser>("postLogin"))
+        catchError(this.utils.handleError<MyUser>("postLogin")),
       );
   }
 
@@ -56,7 +59,7 @@ export class MyuserService {
           retval.password = "yyy";
           return retval;
         }),
-        catchError(this.utils.handleError<MyUser>("postSignin"))
+        catchError(this.utils.handleError<MyUser>("postSignin")),
       );
   }
 
@@ -67,7 +70,7 @@ export class MyuserService {
     return this.http
       .post<AuthCheck>(this.myUserUrl + "/authorize", authcheck, reqOptions)
       .pipe(
-        catchError(this.utils.handleError<AuthCheck>("postCheckAuthorisation"))
+        catchError(this.utils.handleError<AuthCheck>("postCheckAuthorisation")),
       );
   }
 

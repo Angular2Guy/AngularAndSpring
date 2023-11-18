@@ -26,7 +26,7 @@ export class AuthGuardService {
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ): boolean | Observable<boolean> | Promise<boolean> {
     return !!this.tokenService.token && !!this.tokenService.userId;
   }

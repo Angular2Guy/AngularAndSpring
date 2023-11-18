@@ -13,7 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, Inject, LOCALE_ID, DestroyRef, inject } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Inject,
+  LOCALE_ID,
+  DestroyRef,
+  inject,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   trigger,
@@ -51,7 +58,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private serviceIb: ItbitService,
-    @Inject(LOCALE_ID) private myLocale: string
+    @Inject(LOCALE_ID) private myLocale: string,
   ) {
     super(myLocale);
   }
@@ -61,18 +68,22 @@ export class IbdetailComponent extends DetailBase implements OnInit {
     this.route.params.subscribe((params) => {
       this.currPair = params.currpair;
       this.serviceIb
-        .getCurrentQuote(this.currPair).pipe(repeat({delay: 10000}), takeUntilDestroyed(this.destroy))
+        .getCurrentQuote(this.currPair)
+        .pipe(repeat({ delay: 10000 }), takeUntilDestroyed(this.destroy))
         .subscribe((quote) => (this.currQuote = quote));
-      this.serviceIb.getTodayQuotes(this.currPair).pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
-        this.todayQuotes = quotes;
-        this.updateChartData(
-          quotes.map(
-            (quote) =>
-              new Tuple<string, number>(quote.createdAt, quote.lastPrice)
-          )
-        );
-        this.chartShow.next(true);
-      });
+      this.serviceIb
+        .getTodayQuotes(this.currPair)
+        .pipe(takeUntilDestroyed(this.destroy))
+        .subscribe((quotes) => {
+          this.todayQuotes = quotes;
+          this.updateChartData(
+            quotes.map(
+              (quote) =>
+                new Tuple<string, number>(quote.createdAt, quote.lastPrice),
+            ),
+          );
+          this.chartShow.next(true);
+        });
     });
   }
 
@@ -101,8 +112,9 @@ export class IbdetailComponent extends DetailBase implements OnInit {
       this.todayQuotes = quotes;
       this.updateChartData(
         quotes.map(
-          (quote) => new Tuple<string, number>(quote.createdAt, quote.lastPrice)
-        )
+          (quote) =>
+            new Tuple<string, number>(quote.createdAt, quote.lastPrice),
+        ),
       );
       this.chartShow.next(true);
     });

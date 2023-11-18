@@ -13,7 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, LOCALE_ID, Inject, DestroyRef, inject } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  LOCALE_ID,
+  Inject,
+  DestroyRef,
+  inject,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   trigger,
@@ -59,7 +66,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private serviceCb: CoinbaseService,
-    @Inject(LOCALE_ID) private myLocale: string
+    @Inject(LOCALE_ID) private myLocale: string,
   ) {
     super(myLocale);
     this.BTCUSD = this.serviceCb.BTCUSD;
@@ -73,39 +80,44 @@ export class CbdetailComponent extends DetailBase implements OnInit {
       this.currpair = params.currpair;
       this.myCurrPair = this.utils.getCurrpairName(this.currpair);
       this.serviceCb
-        .getCurrentQuote().pipe(repeat({delay: 10000}), takeUntilDestroyed(this.destroy))
+        .getCurrentQuote()
+        .pipe(repeat({ delay: 10000 }), takeUntilDestroyed(this.destroy))
         .subscribe((quote) => (this.currQuote = quote));
-      this.serviceCb.getTodayQuotes().pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
-        this.todayQuotes = quotes;
-        if (this.currpair === this.serviceCb.BTCUSD) {
-          this.updateChartData(
-            quotes.map(
-              (quote) => new Tuple<string, number>(quote.createdAt, quote.usd)
-            )
-          );
-        } else if (this.currpair === this.serviceCb.ETHUSD) {
-          this.updateChartData(
-            quotes.map(
-              (quote) =>
-                new Tuple<string, number>(
-                  quote.createdAt,
-                  quote.usd / quote.eth
-                )
-            )
-          );
-        } else if (this.currpair === this.serviceCb.LTCUSD) {
-          this.updateChartData(
-            quotes.map(
-              (quote) =>
-                new Tuple<string, number>(
-                  quote.createdAt,
-                  quote.usd / quote.ltc
-                )
-            )
-          );
-        }
-        this.chartShow.next(true);
-      });
+      this.serviceCb
+        .getTodayQuotes()
+        .pipe(takeUntilDestroyed(this.destroy))
+        .subscribe((quotes) => {
+          this.todayQuotes = quotes;
+          if (this.currpair === this.serviceCb.BTCUSD) {
+            this.updateChartData(
+              quotes.map(
+                (quote) =>
+                  new Tuple<string, number>(quote.createdAt, quote.usd),
+              ),
+            );
+          } else if (this.currpair === this.serviceCb.ETHUSD) {
+            this.updateChartData(
+              quotes.map(
+                (quote) =>
+                  new Tuple<string, number>(
+                    quote.createdAt,
+                    quote.usd / quote.eth,
+                  ),
+              ),
+            );
+          } else if (this.currpair === this.serviceCb.LTCUSD) {
+            this.updateChartData(
+              quotes.map(
+                (quote) =>
+                  new Tuple<string, number>(
+                    quote.createdAt,
+                    quote.usd / quote.ltc,
+                  ),
+              ),
+            );
+          }
+          this.chartShow.next(true);
+        });
     });
   }
 
@@ -137,22 +149,22 @@ export class CbdetailComponent extends DetailBase implements OnInit {
       if (this.currpair === this.serviceCb.BTCUSD) {
         this.updateChartData(
           quotes.map(
-            (quote) => new Tuple<string, number>(quote.createdAt, quote.usd)
-          )
+            (quote) => new Tuple<string, number>(quote.createdAt, quote.usd),
+          ),
         );
       } else if (this.currpair === this.serviceCb.ETHUSD) {
         this.updateChartData(
           quotes.map(
             (quote) =>
-              new Tuple<string, number>(quote.createdAt, quote.usd / quote.eth)
-          )
+              new Tuple<string, number>(quote.createdAt, quote.usd / quote.eth),
+          ),
         );
       } else if (this.currpair === this.serviceCb.LTCUSD) {
         this.updateChartData(
           quotes.map(
             (quote) =>
-              new Tuple<string, number>(quote.createdAt, quote.usd / quote.ltc)
-          )
+              new Tuple<string, number>(quote.createdAt, quote.usd / quote.ltc),
+          ),
         );
       }
       this.chartShow.next(true);

@@ -38,12 +38,12 @@ export class OrderbooksComponent implements OnInit {
   protected bfOrders: MyOrder[] = [];
   protected ibOrders: MyOrder[] = [];
   private readonly destroy: DestroyRef = inject(DestroyRef);
-    
+
   constructor(
     private router: Router,
     private serviceBs: BitstampService,
     private serviceIb: ItbitService,
-    private serviceBf: BitfinexService
+    private serviceBf: BitfinexService,
   ) {}
 
   ngOnInit() {
@@ -58,26 +58,35 @@ export class OrderbooksComponent implements OnInit {
   onSubmit() {
     //console.log( this.model );
     if (this.model.itbitCb && this.model.currpair === this.serviceBf.BTCUSD) {
-      this.serviceIb.getOrderbook(this.serviceIb.BTCUSD).pipe(takeUntilDestroyed(this.destroy)).subscribe((ob) => {
-        //                this.orderbookIb = ob;
-        this.ibOrders = this.filterObIb(ob);
-      });
+      this.serviceIb
+        .getOrderbook(this.serviceIb.BTCUSD)
+        .pipe(takeUntilDestroyed(this.destroy))
+        .subscribe((ob) => {
+          //                this.orderbookIb = ob;
+          this.ibOrders = this.filterObIb(ob);
+        });
     } else {
       this.ibOrders = [];
     }
     if (this.model.bitstampCb) {
-      this.serviceBs.getOrderbook(this.model.currpair).pipe(takeUntilDestroyed(this.destroy)).subscribe((ob) => {
-        //                this.orderbookBs = ob;
-        this.bsOrders = this.filterObBs(ob);
-      });
+      this.serviceBs
+        .getOrderbook(this.model.currpair)
+        .pipe(takeUntilDestroyed(this.destroy))
+        .subscribe((ob) => {
+          //                this.orderbookBs = ob;
+          this.bsOrders = this.filterObBs(ob);
+        });
     } else {
       this.bsOrders = [];
     }
     if (this.model.bitfinexCb) {
-      this.serviceBf.getOrderbook(this.model.currpair).pipe(takeUntilDestroyed(this.destroy)).subscribe((ob) => {
-        //                this.orderbookBf = ob;
-        this.bfOrders = this.filterObBf(ob);
-      });
+      this.serviceBf
+        .getOrderbook(this.model.currpair)
+        .pipe(takeUntilDestroyed(this.destroy))
+        .subscribe((ob) => {
+          //                this.orderbookBf = ob;
+          this.bfOrders = this.filterObBf(ob);
+        });
     } else {
       this.bfOrders = [];
     }
@@ -97,8 +106,8 @@ export class OrderbooksComponent implements OnInit {
           this.model.buysell,
           parseFloat(order[0]),
           parseFloat(order[1]),
-          sum > this.model.amount ? "black" : "blue"
-        )
+          sum > this.model.amount ? "black" : "blue",
+        ),
       );
       sum += parseFloat(order[1]);
       if (sum > this.model.amount * 1.5) {
@@ -118,8 +127,8 @@ export class OrderbooksComponent implements OnInit {
           this.model.buysell,
           parseFloat(order.price),
           parseFloat(order.amount),
-          sum > this.model.amount ? "black" : "blue"
-        )
+          sum > this.model.amount ? "black" : "blue",
+        ),
       );
       sum += parseFloat(order.amount);
       if (sum > this.model.amount * 1.5) {
@@ -139,8 +148,8 @@ export class OrderbooksComponent implements OnInit {
           this.model.buysell,
           parseFloat(order[0]),
           parseFloat(order[1]),
-          sum > this.model.amount ? "black" : "blue"
-        )
+          sum > this.model.amount ? "black" : "blue",
+        ),
       );
       sum += parseFloat(order[1]);
       if (sum > this.model.amount * 1.5) {
@@ -156,7 +165,7 @@ export class MyOrder {
     public buysell: number,
     public price: number,
     public amount: number,
-    public color: string
+    public color: string,
   ) {}
 }
 
@@ -167,10 +176,13 @@ export class MyModel {
     public itbitCb: boolean,
     public bitfinexCb: boolean,
     public buysell: number,
-    public amount: number
+    public amount: number,
   ) {}
 }
 
 export class MyCurr {
-  constructor(public value: string, public name: string) {}
+  constructor(
+    public value: string,
+    public name: string,
+  ) {}
 }

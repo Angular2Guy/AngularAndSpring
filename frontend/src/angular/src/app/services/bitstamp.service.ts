@@ -51,7 +51,7 @@ export class BitstampService {
     return this.http
       .get<QuoteBs>(
         this.bitstamp + "/" + currencypair + "/current",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBs>("getCurrentQuote")));
   }
@@ -60,7 +60,7 @@ export class BitstampService {
     return this.http
       .get<QuoteBs[]>(
         this.bitstamp + "/" + currencypair + "/today",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBs[]>("getTodayQuotes")));
   }
@@ -69,7 +69,7 @@ export class BitstampService {
     return this.http
       .get<QuoteBs[]>(
         this.bitstamp + "/" + currencypair + "/7days",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBs[]>("get7DayQuotes")));
   }
@@ -78,7 +78,7 @@ export class BitstampService {
     return this.http
       .get<QuoteBs[]>(
         this.bitstamp + "/" + currencypair + "/30days",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBs[]>("get30DayQuotes")));
   }
@@ -87,7 +87,7 @@ export class BitstampService {
     return this.http
       .get<QuoteBs[]>(
         this.bitstamp + "/" + currencypair + "/90days",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBs[]>("get90DayQuotes")));
   }
@@ -96,7 +96,7 @@ export class BitstampService {
     return this.http
       .get<QuoteBs[]>(
         this.bitstamp + "/" + currencypair + "/6month",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBs[]>("get6MonthsQuotes")));
   }
@@ -105,7 +105,7 @@ export class BitstampService {
     return this.http
       .get<QuoteBs[]>(
         this.bitstamp + "/" + currencypair + "/1year",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBs[]>("get1YearQuotes")));
   }
@@ -115,7 +115,7 @@ export class BitstampService {
     return this.http
       .get<OrderbookBs>(
         this.bitstamp + "/" + currencypair + "/orderbook",
-        reqOptions
+        reqOptions,
       )
       .pipe(catchError(this.utils.handleError<OrderbookBs>("getOrderbook")));
   }

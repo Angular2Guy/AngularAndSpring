@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
     private tokenService: TokenService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private myuserService: MyuserService,
-    fb: FormBuilder
+    fb: FormBuilder,
   ) {
     this.signinForm = fb.group(
       {
@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit {
       },
       {
         validators: this.validate.bind(this),
-      } as AbstractControlOptions
+      } as AbstractControlOptions,
     );
     this.loginForm = fb.group({
       [FormFields.username]: [
@@ -121,10 +121,13 @@ export class LoginComponent implements OnInit {
     //      console.log(this.signinForm);
     //      console.log(myUser);
     this.waitingForResponse = true;
-    this.myuserService.postSignin(myUser).pipe(takeUntilDestroyed(this.destroy)).subscribe({
-      next: (us) => this.signin(us),
-      error: (err) => console.log(err),
-    });
+    this.myuserService
+      .postSignin(myUser)
+      .pipe(takeUntilDestroyed(this.destroy))
+      .subscribe({
+        next: (us) => this.signin(us),
+        error: (err) => console.log(err),
+      });
   }
 
   onLoginClick(): void {
@@ -133,10 +136,13 @@ export class LoginComponent implements OnInit {
     myUser.password = this.loginForm.get(FormFields.password).value;
     //      console.log(myUser);
     this.waitingForResponse = true;
-    this.myuserService.postLogin(myUser).pipe(takeUntilDestroyed(this.destroy)).subscribe({
-      next: (us) => this.login(us),
-      error: (err) => console.log(err),
-    });
+    this.myuserService
+      .postLogin(myUser)
+      .pipe(takeUntilDestroyed(this.destroy))
+      .subscribe({
+        next: (us) => this.login(us),
+        error: (err) => console.log(err),
+      });
   }
 
   signin(us: MyUser): void {

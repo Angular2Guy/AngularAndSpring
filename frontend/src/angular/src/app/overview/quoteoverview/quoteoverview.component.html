@@ -76,7 +76,7 @@
             {{
               !element?.last || element?.last < 0.01
                 ? "--"
-                : (element?.last | number : "1.2")
+                : (element?.last | number: "1.2")
             }}
           </div>
           <div class="popup">
@@ -86,7 +86,7 @@
                 {{
                   !element?.last || element?.high < 0.01
                     ? "--"
-                    : (element?.high | number : "1.2")
+                    : (element?.high | number: "1.2")
                 }}
               </li>
               <li>
@@ -94,7 +94,7 @@
                 {{
                   !element?.last || element?.low < 0.01
                     ? "--"
-                    : (element?.low | number : "1.2")
+                    : (element?.low | number: "1.2")
                 }}
               </li>
             </ul>
@@ -110,7 +110,7 @@
           class="cell"
           [class.cell-outdated]="isElementOutdated(element)"
         >
-          {{ element?.volume < 1 ? "--" : (element?.volume | number : "1.2") }}
+          {{ element?.volume < 1 ? "--" : (element?.volume | number: "1.2") }}
         </mat-cell>
       </ng-container>
       <mat-header-row

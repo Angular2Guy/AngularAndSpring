@@ -35,16 +35,16 @@ export class StatisticService {
 
   getCommonStatistics(
     currencypair: StatisticCurrencyPair,
-    coinExchange: CoinExchange
+    coinExchange: CoinExchange,
   ): Observable<CommonStatistics> {
     return this.http
       .get<CommonStatistics>(
-        `${this.statistics}/overview/${coinExchange}/${currencypair}`
+        `${this.statistics}/overview/${coinExchange}/${currencypair}`,
       )
       .pipe(
         catchError(
-          this.utils.handleError<CommonStatistics>("getCommonStatistics")
-        )
+          this.utils.handleError<CommonStatistics>("getCommonStatistics"),
+        ),
       );
   }
 }

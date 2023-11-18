@@ -41,7 +41,7 @@ export class CoinbaseService {
       .get<QuoteCb>(this.coinbase + "/current", this.reqOptionsArgs)
       .pipe(
         map((res) => this.lowercaseKeys(res as QuoteCb)),
-        catchError(this.utils.handleError<QuoteCb>("getCurrentQuote"))
+        catchError(this.utils.handleError<QuoteCb>("getCurrentQuote")),
       );
   }
 
@@ -49,7 +49,7 @@ export class CoinbaseService {
     return this.http
       .get<QuoteCbSmall[]>(this.coinbase + "/today", this.reqOptionsArgs)
       .pipe(
-        catchError(this.utils.handleError<QuoteCbSmall[]>("getTodayQuotes"))
+        catchError(this.utils.handleError<QuoteCbSmall[]>("getTodayQuotes")),
       );
   }
 
@@ -57,7 +57,7 @@ export class CoinbaseService {
     return this.http
       .get<QuoteCbSmall[]>(this.coinbase + "/7days", this.reqOptionsArgs)
       .pipe(
-        catchError(this.utils.handleError<QuoteCbSmall[]>("get7DayQuotes"))
+        catchError(this.utils.handleError<QuoteCbSmall[]>("get7DayQuotes")),
       );
   }
 
@@ -65,7 +65,7 @@ export class CoinbaseService {
     return this.http
       .get<QuoteCbSmall[]>(this.coinbase + "/30days", this.reqOptionsArgs)
       .pipe(
-        catchError(this.utils.handleError<QuoteCbSmall[]>("get30DayQuotes"))
+        catchError(this.utils.handleError<QuoteCbSmall[]>("get30DayQuotes")),
       );
   }
 
@@ -73,7 +73,7 @@ export class CoinbaseService {
     return this.http
       .get<QuoteCbSmall[]>(this.coinbase + "/90days", this.reqOptionsArgs)
       .pipe(
-        catchError(this.utils.handleError<QuoteCbSmall[]>("get90DayQuotes"))
+        catchError(this.utils.handleError<QuoteCbSmall[]>("get90DayQuotes")),
       );
   }
 
@@ -81,7 +81,7 @@ export class CoinbaseService {
     return this.http
       .get<QuoteCbSmall[]>(this.coinbase + "/6month", this.reqOptionsArgs)
       .pipe(
-        catchError(this.utils.handleError<QuoteCbSmall[]>("get6MonthsQuotes"))
+        catchError(this.utils.handleError<QuoteCbSmall[]>("get6MonthsQuotes")),
       );
   }
 
@@ -89,7 +89,7 @@ export class CoinbaseService {
     return this.http
       .get<QuoteCbSmall[]>(this.coinbase + "/1year", this.reqOptionsArgs)
       .pipe(
-        catchError(this.utils.handleError<QuoteCbSmall[]>("get1YearQuotes"))
+        catchError(this.utils.handleError<QuoteCbSmall[]>("get1YearQuotes")),
       );
   }
 

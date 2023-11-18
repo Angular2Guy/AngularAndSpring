@@ -13,7 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, LOCALE_ID, Inject, DestroyRef, inject } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  LOCALE_ID,
+  Inject,
+  DestroyRef,
+  inject,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   trigger,
@@ -51,7 +58,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private serviceBs: BitstampService,
-    @Inject(LOCALE_ID) private myLocale: string
+    @Inject(LOCALE_ID) private myLocale: string,
   ) {
     super(myLocale);
   }
@@ -59,18 +66,22 @@ export class BsdetailComponent extends DetailBase implements OnInit {
   ngOnInit() {
     this.chartShow.next(false);
     this.route.params.subscribe((params) => {
-      this.serviceBs.getCurrentQuote(params.currpair).pipe(repeat({delay: 10000}), takeUntilDestroyed(this.destroy)).subscribe((quote) => {
-        this.currQuote = quote;
-        this.currPair = this.utils.getCurrpairName(this.currQuote.pair);
-      });
       this.serviceBs
-        .getTodayQuotes(this.route.snapshot.paramMap.get("currpair")).pipe(takeUntilDestroyed(this.destroy))
+        .getCurrentQuote(params.currpair)
+        .pipe(repeat({ delay: 10000 }), takeUntilDestroyed(this.destroy))
+        .subscribe((quote) => {
+          this.currQuote = quote;
+          this.currPair = this.utils.getCurrpairName(this.currQuote.pair);
+        });
+      this.serviceBs
+        .getTodayQuotes(this.route.snapshot.paramMap.get("currpair"))
+        .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((quotes) => {
           this.todayQuotes = quotes;
           this.updateChartData(
             quotes.map(
-              (quote) => new Tuple<string, number>(quote.createdAt, quote.last)
-            )
+              (quote) => new Tuple<string, number>(quote.createdAt, quote.last),
+            ),
           );
           this.chartShow.next(true);
         });
@@ -103,8 +114,8 @@ export class BsdetailComponent extends DetailBase implements OnInit {
       this.todayQuotes = quotes;
       this.updateChartData(
         quotes.map(
-          (quote) => new Tuple<string, number>(quote.createdAt, quote.last)
-        )
+          (quote) => new Tuple<string, number>(quote.createdAt, quote.last),
+        ),
       );
       this.chartShow.next(true);
     });

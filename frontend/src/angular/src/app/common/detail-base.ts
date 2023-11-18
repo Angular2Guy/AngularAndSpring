@@ -14,7 +14,10 @@ import { CommonUtils } from "./common-utils";
 import { ChartPoint, ChartPoints } from "ngx-simple-charts/line";
 
 export class Tuple<A, B> {
-  constructor(private myA: A, private myB: B) {}
+  constructor(
+    private myA: A,
+    private myB: B,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   get A() {
@@ -39,7 +42,7 @@ export abstract class DetailBase {
   protected updateChartData(values: Tuple<string, number>[]): void {
     const myChartPoint = values
       .filter((value) => value.B > 0.009)
-      .map((myCP) => ({ x: new Date(myCP.A), y: myCP.B } as ChartPoint));
+      .map((myCP) => ({ x: new Date(myCP.A), y: myCP.B }) as ChartPoint);
     this.chartPoints = [
       {
         name: this.currPair,

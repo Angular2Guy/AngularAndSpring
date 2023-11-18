@@ -44,7 +44,7 @@ export class BitfinexService {
     return this.http
       .get<QuoteBf>(
         this.bitfinex + "/" + currencypair + "/current",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBf>("getCurrentQuote")));
   }
@@ -53,7 +53,7 @@ export class BitfinexService {
     return this.http
       .get<QuoteBf[]>(
         this.bitfinex + "/" + currencypair + "/today",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBf[]>("getTodayQuotes")));
   }
@@ -62,7 +62,7 @@ export class BitfinexService {
     return this.http
       .get<QuoteBf[]>(
         this.bitfinex + "/" + currencypair + "/7days",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBf[]>("get7DayQuotes")));
   }
@@ -71,7 +71,7 @@ export class BitfinexService {
     return this.http
       .get<QuoteBf[]>(
         this.bitfinex + "/" + currencypair + "/30days",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBf[]>("get30DayQuotes")));
   }
@@ -80,7 +80,7 @@ export class BitfinexService {
     return this.http
       .get<QuoteBf[]>(
         this.bitfinex + "/" + currencypair + "/90days",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBf[]>("get90DayQuotes")));
   }
@@ -89,7 +89,7 @@ export class BitfinexService {
     return this.http
       .get<QuoteBf[]>(
         this.bitfinex + "/" + currencypair + "/6month",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBf[]>("get6MonthQuotes")));
   }
@@ -98,7 +98,7 @@ export class BitfinexService {
     return this.http
       .get<QuoteBf[]>(
         this.bitfinex + "/" + currencypair + "/1year",
-        this.reqOptionsArgs
+        this.reqOptionsArgs,
       )
       .pipe(catchError(this.utils.handleError<QuoteBf[]>("get1YearQuotes")));
   }
@@ -108,7 +108,7 @@ export class BitfinexService {
     return this.http
       .get<OrderbookBf>(
         this.bitfinex + "/" + currencypair + "/orderbook",
-        reqOptions
+        reqOptions,
       )
       .pipe(catchError(this.utils.handleError<OrderbookBf>("getOrderbook")));
   }

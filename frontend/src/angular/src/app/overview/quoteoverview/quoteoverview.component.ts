@@ -12,7 +12,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import { Component, OnInit, OnDestroy, DestroyRef, inject } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  DestroyRef,
+  inject,
+} from "@angular/core";
 import { BitstampService } from "../../services/bitstamp.service";
 import { CoinbaseService } from "../../services/coinbase.service";
 import { ItbitService } from "../../services/itbit.service";
@@ -22,7 +28,7 @@ import { QuoteCb } from "../../common/quote-cb";
 import { QuoteIb } from "../../common/quote-ib";
 import { QuoteBf } from "../../common/quote-bf";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DataSource, CollectionViewer } from "@angular/cdk/collections";
 import { Router } from "@angular/router";
 import { CommonUtils } from "../../common/common-utils";
@@ -53,7 +59,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
     private serviceBf: BitfinexService,
     private serviceMu: MyuserService,
     private tokenService: TokenService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit() {
@@ -76,8 +82,8 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
             0,
             null,
             -1,
-            -1
-          )
+            -1,
+          ),
         );
       }
       this.datasource.updateRows();
@@ -146,7 +152,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
           this.formatNumber(quote?.volume),
           quote?.pair,
           this.formatNumber(quote?.high),
-          this.formatNumber(quote?.low)
+          this.formatNumber(quote?.low),
         );
   }
 
@@ -161,7 +167,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
           this.formatNumber(quote?.volume),
           quote?.pair,
           this.formatNumber(quote?.high),
-          this.formatNumber(quote?.low)
+          this.formatNumber(quote?.low),
         );
   }
 
@@ -174,7 +180,7 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
       -1,
       currPair,
       -1,
-      -1
+      -1,
     );
   }
 
@@ -184,22 +190,22 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
       this.createCbRow(
         quote,
         !quote ? 0 : this.formatNumber(quote.usd),
-        this.serviceCb.BTCUSD
-      )
+        this.serviceCb.BTCUSD,
+      ),
     );
     rows.push(
       this.createCbRow(
         quote,
         !quote ? 0 : this.formatNumber(quote.usd / quote.eth),
-        this.serviceCb.ETHUSD
-      )
+        this.serviceCb.ETHUSD,
+      ),
     );
     rows.push(
       this.createCbRow(
         quote,
         !quote ? 0 : this.formatNumber(quote.usd / quote.ltc),
-        this.serviceCb.LTCUSD
-      )
+        this.serviceCb.LTCUSD,
+      ),
     );
     return rows;
   }
@@ -215,19 +221,22 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
           this.formatNumber(quote?.volume24h),
           quote?.pair,
           this.formatNumber(quote?.high24h),
-          this.formatNumber(quote?.low24h)
+          this.formatNumber(quote?.low24h),
         );
   }
 
   private refeshBsData(currPair: string, rowId: number): void {
     this.serviceBs
       .getCurrentQuote(currPair)
-      .pipe(filter((result) => !!result?.last), takeUntilDestroyed(this.destroy))
+      .pipe(
+        filter((result) => !!result?.last),
+        takeUntilDestroyed(this.destroy),
+      )
       .subscribe((quote) => {
         this.datasource.rows[rowId] = this.createRowBs(
           quote,
           "Bitstamp",
-          this.utils.getCurrpairName(currPair)
+          this.utils.getCurrpairName(currPair),
         );
         this.datasource.updateRows();
       });
@@ -236,12 +245,15 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   private refreshBfData(currPair: string, rowId: number): void {
     this.serviceBf
       .getCurrentQuote(currPair)
-      .pipe(filter((result) => !!result?.last_price), takeUntilDestroyed(this.destroy))
+      .pipe(
+        filter((result) => !!result?.last_price),
+        takeUntilDestroyed(this.destroy),
+      )
       .subscribe((quote) => {
         this.datasource.rows[rowId] = this.createRowBf(
           quote,
           "Bitfinex",
-          this.utils.getCurrpairName(currPair)
+          this.utils.getCurrpairName(currPair),
         );
         this.datasource.updateRows();
       });
@@ -258,18 +270,24 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
     this.refeshBsData(this.serviceBs.XRPUSD, 7);
     this.serviceIb
       .getCurrentQuote(this.serviceIb.BTCUSD)
-      .pipe(filter((result) => !!result?.lastPrice), takeUntilDestroyed(this.destroy))
+      .pipe(
+        filter((result) => !!result?.lastPrice),
+        takeUntilDestroyed(this.destroy),
+      )
       .subscribe((quote) => {
         this.datasource.rows[8] = this.createRowIb(
           quote,
           "Itbit",
-          this.utils.getCurrpairName(this.serviceIb.BTCUSD)
+          this.utils.getCurrpairName(this.serviceIb.BTCUSD),
         );
         this.datasource.updateRows();
       });
     this.serviceCb
       .getCurrentQuote()
-      .pipe(filter((result) => !!result?.btc), takeUntilDestroyed(this.destroy))
+      .pipe(
+        filter((result) => !!result?.btc),
+        takeUntilDestroyed(this.destroy),
+      )
       .subscribe((quote) => {
         const myrows = this.createRowsCb(quote);
         this.datasource.rows[9] = myrows[0];
@@ -313,6 +331,6 @@ export class Myrow {
     public volume: number = 0,
     public pair: string = "",
     public high: number = 0,
-    public low: number = 0
+    public low: number = 0,
   ) {}
 }
