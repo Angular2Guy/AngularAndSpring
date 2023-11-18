@@ -63,17 +63,6 @@
     "typescript": "~5.0.4",
     "rimraf": "^3.0.2",
     "prettier": "^2.4.1",
-    "webpack-bundle-analyzer": "^4.5.0",
-    "eslint": "^7.26.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsdoc": "^30.7.6",
-    "eslint-plugin-prefer-arrow": "^1.2.2",
-    "@angular-eslint/builder": "^17.0.1",
-    "@angular-eslint/eslint-plugin": "^17.0.1",
-    "@angular-eslint/eslint-plugin-template": "^17.0.1",
-    "@angular-eslint/schematics": "^17.0.1",
-    "@angular-eslint/template-parser": "^17.0.1",
-    "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "@typescript-eslint/parser": "^6.11.0"
+    "webpack-bundle-analyzer": "^4.5.0"
   }
 }
