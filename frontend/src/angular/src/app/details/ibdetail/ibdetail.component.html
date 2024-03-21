@@ -53,7 +53,7 @@
             class="radioButton"
             *ngFor="let tf of utils.timeframes"
             [value]="tf"
-            ><span i18n
+            ><span i18n="@@radioDays"
               >{tf, plural, =1 {today} other {{{tf}} days}}</span
             ></mat-radio-button
           >
