@@ -28,6 +28,7 @@ enum MyTimeFrames {
 }
 
 export class CommonUtils {
+  public LINEAR_REGRESSION = 'Linear-Reg';
   public MyTimeFrames = MyTimeFrames;
   public timeframes = [
     MyTimeFrames.Day,

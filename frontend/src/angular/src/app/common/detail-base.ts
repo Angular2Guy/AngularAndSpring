@@ -34,6 +34,7 @@ export abstract class DetailBase {
   utils = new CommonUtils();
   currPair = "";
   timeframe = this.utils.MyTimeFrames.Day;
+  addLinReg = false;
   readonly yScaleWidth = 50;
   readonly xScaleHeight = 20;
 
@@ -43,14 +44,33 @@ export abstract class DetailBase {
     const myChartPoint = values
       .filter((value) => value.B > 0.009)
       .map((myCP) => ({ x: new Date(myCP.A), y: myCP.B }) as ChartPoint);
+    let xSum=0, ySum=0 , xxSum=0, xySum=0;	
+	for (let i = 0; i < myChartPoint.length; i++) {
+		xSum += i;
+		ySum += myChartPoint[i].y;
+		xxSum += i * i;
+		xySum += i * myChartPoint[i].y;		
+	}
+	const slope = (myChartPoint.length * xySum - xSum * ySum) / (myChartPoint.length * xxSum - xSum * xSum);
+	const intercept = (ySum / myChartPoint.length) - (slope * xSum) / myChartPoint.length;
+	//console.log(slope, intercept);
+	const linReg = myChartPoint.map((myPoint,i) => ({x: myPoint.x, y: slope * i + intercept}) as ChartPoint);
+	//console.log(linReg);
     this.chartPoints = [
       {
         name: this.currPair,
         chartPointList: myChartPoint,
         yScaleWidth: this.yScaleWidth,
-        xScaleHeight: this.xScaleHeight,
-      } as ChartPoints,
-    ];
+        xScaleHeight: this.xScaleHeight,        
+      } as ChartPoints   
+    ];    
+    if(this.addLinReg) {
+    this.chartPoints.push({name: this.utils.LINEAR_REGRESSION,
+      chartPointList: linReg,
+      yScaleWidth: this.yScaleWidth,
+      xScaleHeight: this.xScaleHeight
+      } as ChartPoints);
+    }
     //console.log(this.chartPoints);
   }
 }

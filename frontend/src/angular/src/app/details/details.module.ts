@@ -26,6 +26,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { NgxLineChartsModule } from "ngx-simple-charts/line";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { NgxLineChartsModule } from "ngx-simple-charts/line";
     FormsModule,
     ReactiveFormsModule,
     MatToolbarModule,
+    MatCheckboxModule,
     MatRadioModule,
     MatButtonModule,
     DetailsRoutingModule,

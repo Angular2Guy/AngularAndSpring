@@ -31,6 +31,13 @@ td {
   // Every toolbar row uses a flexbox row layout.
   flex: 1 1 auto;
 }
+
+::ng-deep .line-linear-reg {
+  fill: none !important;
+  stroke: #7cfc00 !important;
+  stroke-width: 2 !important;
+}
+
 ::ng-deep .mdc-form-field > label {
   cursor: pointer;
 }

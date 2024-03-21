@@ -54,6 +54,7 @@
             ></mat-radio-button
           >
         </mat-radio-group>
+        <mat-checkbox [(ngModel)]="addLinReg" (change)="changeTf()" class="radioButton" i18n="@@linReg">add Linear Reg</mat-checkbox>
         <button
           mat-button
           class="radioButton"
@@ -72,7 +73,7 @@
       class="chart-container"
       [@showChart]="chartShow | async"
     >
-      <sc-line-chart [chartPoints]="chartPoints"></sc-line-chart>
+      <sc-line-chart [chartPoints]="chartPoints" class="line-chart"></sc-line-chart>
     </div>
     <div>{{ todayQuotes?.length }} {{ chartShow | async }}</div>
   </div>
