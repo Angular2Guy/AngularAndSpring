@@ -29,6 +29,7 @@ import { QuoteIb } from "../../common/quote-ib";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { NgxLineChartsModule } from "ngx-simple-charts/line";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 class MockService extends ItbitService {
   constructor(private http1: HttpClient) {
@@ -79,6 +80,7 @@ describe("IbdetailComponent", () => {
         BrowserAnimationsModule,
         MatToolbarModule,
         MatRadioModule,
+        MatCheckboxModule,
         NgxLineChartsModule,
       ],
       declarations: [IbdetailComponent],

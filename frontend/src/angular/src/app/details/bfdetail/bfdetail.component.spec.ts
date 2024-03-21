@@ -29,6 +29,7 @@ import { HttpClient } from "@angular/common/http";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { NgxLineChartsModule } from "ngx-simple-charts/line";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 class MockBfService extends BitfinexService {
   constructor(private http1: HttpClient) {
@@ -70,6 +71,7 @@ describe("BfdetailComponent", () => {
         ReactiveFormsModule,
         BrowserAnimationsModule,
         MatToolbarModule,
+        MatCheckboxModule,
         MatRadioModule,
         NgxLineChartsModule,
       ],

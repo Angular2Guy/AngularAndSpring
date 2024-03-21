@@ -29,6 +29,7 @@ import { QuoteBs } from "../../common/quote-bs";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { NgxLineChartsModule } from "ngx-simple-charts/line";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 class MockService extends BitstampService {
   constructor(private http1: HttpClient) {
@@ -73,6 +74,7 @@ describe("BsdetailComponent", () => {
         HttpClientModule,
         BrowserAnimationsModule,
         MatToolbarModule,
+        MatCheckboxModule,
         MatRadioModule,
         NgxLineChartsModule,
       ],
