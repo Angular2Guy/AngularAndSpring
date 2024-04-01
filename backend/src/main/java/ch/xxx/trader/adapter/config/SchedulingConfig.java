@@ -57,7 +57,7 @@ public class SchedulingConfig {
 
 	@Bean
 	public WebClient createWebClient() {
-		ConnectionProvider provider = ConnectionProvider.builder("Client").maxConnections(40)
+		ConnectionProvider provider = ConnectionProvider.builder("Client").maxConnections(20)
 				.maxIdleTime(Duration.ofSeconds(6)).maxLifeTime(Duration.ofSeconds(7))
 				.pendingAcquireTimeout(Duration.ofSeconds(9L)).evictInBackground(Duration.ofSeconds(10)).build();
 
@@ -89,7 +89,7 @@ public class SchedulingConfig {
 		executor.setMaxPoolSize(maxPoolSize);
 		executor.setQueueCapacity(1);
 		executor.setKeepAliveSeconds(1);
-		executor.setAllowCoreThreadTimeOut(true);
+		executor.setAllowCoreThreadTimeOut(true);		
 		return executor;
 	}
 }

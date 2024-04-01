@@ -115,15 +115,14 @@ public class ScheduledTask {
 					exceptionLogged.set(this.logRequestFailed("Bitstamp", currPair, start, ex));
 					return Mono.empty();
 				}).subscribeOn(this.mongoImportScheduler);
-		Disposable subscribe = null;
-		subscribe = request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))
+		Disposable subscribe = request.flatMap(myQuote -> this.bitstampService.insertQuote(Mono.just(myQuote))
 				.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
 					if (!exceptionLogged.get()) {
-						LOG.warn("Bitstamp data store failed", ex);
+						LOG.warn(String.format("Bitstamp data store failed for: %s", currPair), ex);
 					}
 					return Mono.empty();
 				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration("Bitstamp", currPair, start),
-						err -> LOG.warn("Bitstamp data import failed.", err));
+						err -> LOG.warn(String.format("Bitstamp data import failed for: %s", currPair), err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -138,7 +137,7 @@ public class ScheduledTask {
 		LOG.warn(String.format("%s data request for %s failed", source, currPair), ex);
 		return true;
 	}
-	
+
 	@Async("clientTaskExecutor")
 	@Scheduled(fixedRate = 60000, initialDelay = 6000)
 	@SchedulerLock(name = "BitstampQuoteETH_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
@@ -219,11 +218,11 @@ public class ScheduledTask {
 		Disposable subscribe = request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))
 				.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
 					if (!exceptionLogged.get()) {
-						LOG.warn("Itbit data store failed", ex);
+						LOG.warn(String.format("Itbit data store failed for: %s", currPair), ex);
 					}
 					return Mono.empty();
 				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration("Itbit", currPair, start),
-						err -> LOG.warn("Itbit data import failed.", err));
+						err -> LOG.warn(String.format("Itbit data import failed for: %s", currPair), err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
@@ -308,11 +307,11 @@ public class ScheduledTask {
 		Disposable subscribe = request.flatMap(myQuote -> this.bitfinexService.insertQuote(Mono.just(myQuote))
 				.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
 					if (!exceptionLogged.get()) {
-						LOG.warn("Bitfinex data store failed", ex);
+						LOG.warn(String.format("Bitfinex data store failed for: %s", currPair), ex);
 					}
 					return Mono.empty();
 				})).subscribeOn(this.mongoImportScheduler).subscribe(x -> this.logDuration("Bitfinex", currPair, start),
-						err -> LOG.warn("Bitfinex data import failed.", err));
+						err -> LOG.warn(String.format("Bitfinex data import failed for: %s", currPair), err));
 		this.disposables.put(currPair, Optional.of(subscribe));
 	}
 
