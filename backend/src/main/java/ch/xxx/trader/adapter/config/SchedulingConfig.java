@@ -15,32 +15,20 @@
  */
 package ch.xxx.trader.adapter.config;
 
-import java.time.Duration;
 import java.util.concurrent.Executor;
-
-import javax.net.ssl.SSLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.netty.channel.ChannelOption;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutHandler;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
-import reactor.netty.tcp.SslProvider.SslContextSpec;
 
 @Configuration
 @EnableAspectJAutoProxy
@@ -55,30 +43,6 @@ public class SchedulingConfig {
 		return new TimedAspect(registry);
 	}
 
-	@Bean
-	public WebClient createWebClient() {
-		ConnectionProvider provider = ConnectionProvider.builder("Client").maxConnections(20)
-				.maxIdleTime(Duration.ofSeconds(6)).maxLifeTime(Duration.ofSeconds(7))
-				.pendingAcquireTimeout(Duration.ofSeconds(9L)).evictInBackground(Duration.ofSeconds(10)).build();
-
-		WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient
-				.create(provider).secure(spec -> sslTimeouts(spec)).option(ChannelOption.SO_KEEPALIVE, false)
-				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
-				.doOnConnected(
-						c -> c.addHandlerLast(new ReadTimeoutHandler(6)).addHandlerLast(new WriteTimeoutHandler(7)))
-				.responseTimeout(Duration.ofSeconds(7L)))).build();
-		return webClient;
-	}
-
-	private void sslTimeouts(SslContextSpec spec) {
-		try {
-			spec.sslContext(SslContextBuilder.forClient().build()).handshakeTimeout(Duration.ofSeconds(8))
-					.closeNotifyFlushTimeout(Duration.ofSeconds(6)).closeNotifyReadTimeout(Duration.ofSeconds(6));
-		} catch (SSLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	@Bean(name = "clientTaskExecutor")
 	public Executor threadPoolTaskExecutor() {
 		return this.createThreadPoolTaskExecutor(20);
@@ -89,7 +53,7 @@ public class SchedulingConfig {
 		executor.setMaxPoolSize(maxPoolSize);
 		executor.setQueueCapacity(1);
 		executor.setKeepAliveSeconds(1);
-		executor.setAllowCoreThreadTimeOut(true);		
+		executor.setAllowCoreThreadTimeOut(true);			
 		return executor;
 	}
 }

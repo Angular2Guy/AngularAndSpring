@@ -320,6 +320,10 @@ public class CoinbaseService {
 		// log.info(propertyDescriptor.getName());
 		if (gsmf == null) {
 			synchronized (this) {
+				if (cbFunctionCache.size() > 10000) {
+					LOG.info("CbFunctionCache size: {}", cbFunctionCache.size());
+					cbFunctionCache.clear();
+				}
 				gsmf = cbFunctionCache.get(propertyDescriptor.getName());
 				if (gsmf == null) {
 					final MethodHandles.Lookup lookupGetter = MethodHandles.lookup();

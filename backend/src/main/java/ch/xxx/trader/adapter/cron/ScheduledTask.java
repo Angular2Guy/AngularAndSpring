@@ -30,8 +30,8 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
+import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.model.dto.WrapperCb;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
@@ -59,7 +59,6 @@ public class ScheduledTask {
 	private static final String URLPA = "https://api.paxos.com/v2";
 	private static final String URLBF = "https://api.bitfinex.com";
 
-	private final WebClient webClient;
 	private final BitstampService bitstampService;
 	private final BitfinexService bitfinexService;
 	private final ItbitService itbitService;
@@ -69,9 +68,7 @@ public class ScheduledTask {
 	private final Scheduler mongoImportScheduler = Schedulers.newBoundedElastic(20, 40, "mongoImport", 10);
 
 	public ScheduledTask(BitstampService bitstampService, MyUserService myUserService, EventMapper messageMapper,
-			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService,
-			WebClient webClient) {
-		this.webClient = webClient;
+			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService) {
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
 		this.itbitService = itbitService;
@@ -106,7 +103,7 @@ public class ScheduledTask {
 		final AtomicBoolean exceptionLogged = new AtomicBoolean(false);
 		Disposable subscribe = null;
 		try {
-			Mono<QuoteBs> request = this.webClient.get()
+			Mono<QuoteBs> request = WebUtils.createWebClient().get()
 					.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
 					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBs.class))
 					.map(res -> {
@@ -178,7 +175,7 @@ public class ScheduledTask {
 		final AtomicBoolean exceptionLogged = new AtomicBoolean(false);
 		Disposable subscribe = null;
 		try {
-			Mono<QuoteCb> request = this.webClient.get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
+			Mono<QuoteCb> request = WebUtils.createWebClient().get().uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC")
 					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> {
 						return response.bodyToMono(WrapperCb.class);
 //					return response.bodyToMono(String.class);
@@ -217,7 +214,7 @@ public class ScheduledTask {
 		final AtomicBoolean exceptionLogged = new AtomicBoolean(false);
 		Disposable subscribe = null;
 		try {
-			Mono<QuoteIb> request = this.webClient.get()
+			Mono<QuoteIb> request = WebUtils.createWebClient().get()
 					.uri(String.format("%s/markets/%s/ticker", ScheduledTask.URLPA, currPair))
 					.accept(MediaType.APPLICATION_JSON)
 					.exchangeToMono(response -> response.bodyToMono(PaxosQuote.class)).map(res -> {
@@ -309,7 +306,7 @@ public class ScheduledTask {
 		final AtomicBoolean exceptionLogged = new AtomicBoolean(false);
 		Disposable subscribe = null;
 		try {
-			Mono<QuoteBf> request = this.webClient.get()
+			Mono<QuoteBf> request = WebUtils.createWebClient().get()
 					.uri(String.format("%s/v1/pubticker/%s", ScheduledTask.URLBF, currPair))
 					.accept(MediaType.APPLICATION_JSON).exchangeToMono(response -> response.bodyToMono(QuoteBf.class))
 					.map(res -> {
