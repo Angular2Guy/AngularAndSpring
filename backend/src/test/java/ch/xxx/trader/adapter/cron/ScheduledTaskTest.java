@@ -38,7 +38,7 @@ public class ScheduledTaskTest {
 	@Test
 	public void convertTest() throws JsonMappingException, JsonProcessingException {
 		PaxosQuote paxosQuote = this.objectMapper.readValue(VALUE, PaxosQuote.class);
-		ScheduledTask scheduledTask = new ScheduledTask(null, null, null, null, null, null);
+		ScheduledTask scheduledTask = new ScheduledTask(null, null, null, null, null, null, null);
 		QuoteIb quoteIb = scheduledTask.convert(paxosQuote);
 		Assertions.assertEquals("XBTUSD", quoteIb.getPair());
 		Assertions.assertEquals(paxosQuote.getBestBid().getPrice().toString(), quoteIb.getBid().toString());
