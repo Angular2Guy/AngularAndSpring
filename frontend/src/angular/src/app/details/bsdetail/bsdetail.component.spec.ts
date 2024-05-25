@@ -18,7 +18,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClientModule, HttpClient } from "@angular/common/http";
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 import { of, Observable } from "rxjs";
@@ -66,21 +66,18 @@ describe("BsdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
+    declarations: [BsdetailComponent],
+    imports: [RouterTestingModule,
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpClientModule,
         BrowserAnimationsModule,
         MatToolbarModule,
         MatCheckboxModule,
         MatRadioModule,
-        NgxLineChartsModule,
-      ],
-      declarations: [BsdetailComponent],
-      providers: [{ provide: BitstampService, useValue: mockService }],
-    }).compileComponents();
+        NgxLineChartsModule],
+    providers: [{ provide: BitstampService, useValue: mockService }, provideHttpClient(withInterceptorsFromDi())]
+}).compileComponents();
   }));
 
   beforeEach(() => {

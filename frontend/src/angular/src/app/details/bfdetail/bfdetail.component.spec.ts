@@ -20,7 +20,7 @@ import { BfdetailComponent } from "./bfdetail.component";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 import { of, Observable } from "rxjs";
@@ -63,21 +63,18 @@ describe("BfdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
+    declarations: [BfdetailComponent],
+    imports: [RouterTestingModule,
         BrowserModule,
         FormsModule,
-        HttpClientModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,
         MatToolbarModule,
         MatCheckboxModule,
         MatRadioModule,
-        NgxLineChartsModule,
-      ],
-      declarations: [BfdetailComponent],
-      providers: [{ provide: BitfinexService, useValue: mockService }],
-    }).compileComponents();
+        NgxLineChartsModule],
+    providers: [{ provide: BitfinexService, useValue: mockService }, provideHttpClient(withInterceptorsFromDi())]
+}).compileComponents();
   }));
 
   beforeEach(() => {

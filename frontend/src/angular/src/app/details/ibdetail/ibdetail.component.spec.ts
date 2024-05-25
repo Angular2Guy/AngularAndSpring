@@ -18,7 +18,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClientModule, HttpClient } from "@angular/common/http";
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 import { of, Observable } from "rxjs";
@@ -71,21 +71,18 @@ describe("IbdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
+    declarations: [IbdetailComponent],
+    imports: [RouterTestingModule,
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpClientModule,
         BrowserAnimationsModule,
         MatToolbarModule,
         MatRadioModule,
         MatCheckboxModule,
-        NgxLineChartsModule,
-      ],
-      declarations: [IbdetailComponent],
-      providers: [{ provide: ItbitService, useValue: mockService }],
-    }).compileComponents();
+        NgxLineChartsModule],
+    providers: [{ provide: ItbitService, useValue: mockService }, provideHttpClient(withInterceptorsFromDi())]
+}).compileComponents();
   }));
 
   beforeEach(() => {
