@@ -102,6 +102,8 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   openLoginDialog(): void {
     const dialogRef = this.dialog.open(LoginComponent, {
       width: "600px",
+      disableClose: true,
+      hasBackdrop: true,
       data: { loggedIn: this.loggedIn },
     });
 
