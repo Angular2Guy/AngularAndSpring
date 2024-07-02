@@ -17,7 +17,6 @@ import {
   OnInit,
   OnDestroy,
   DestroyRef,
-  inject,
 } from "@angular/core";
 import { BitstampService } from "../../services/bitstamp.service";
 import { CoinbaseService } from "../../services/coinbase.service";
@@ -49,7 +48,6 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   protected loggedIn = false;
   private interval: any;
   private utils = new CommonUtils();
-  private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
     private router: Router,
@@ -59,7 +57,8 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
     private serviceBf: BitfinexService,
     private serviceMu: MyuserService,
     private tokenService: TokenService,
-    public dialog: MatDialog,
+    private destroy: DestroyRef,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit() {
