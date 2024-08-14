@@ -50,24 +50,6 @@ Create envApp values
 {{- end }}
 
 {{/*
-Create envZookeeper values
-*/}}
-{{- define "helpers.list-envZookeeperApp-variables"}}
-{{- $secretName := .Values.secret.nameZookeeper -}}
-{{- range $key, $val := .Values.envZookeeper.secret }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ $secretName }}
-      key: {{ $key }}
-{{- end}}
-{{- range $key, $val := .Values.envZookeeper.normal }}
-- name: {{ $key }}
-  value: {{ $val | quote }}
-{{- end}}
-{{- end }}
-
-{{/*
 Create envKafka values
 */}}
 {{- define "helpers.list-envKafkaApp-variables"}}
