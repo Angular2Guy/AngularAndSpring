@@ -21,7 +21,6 @@ webAppServiceName: angularandspringservice
 secret:
   name: app-env-secret
   nameKafka: kafka-env-secret
-  nameZookeeper: zookeeper-env-secret
 
 envApp:
   normal: 
