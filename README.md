@@ -7,6 +7,7 @@ Author: Sven Loesekann
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, Spring Security,  MongoDB, Maven, Docker, ArchUnit, Kafka, Kafka-Streams, Spring Actuator with Prometheus interface
 
 ## Articles
+* [Using KRaft Kafka for development and Kubernetes deployment](https://angular2guy.wordpress.com/2024/08/17/using-kraft-kafka-for-development-and-kubernetes-deployment/)
 * [Errorhandling with Spring Webclient and Reactor](https://angular2guy.wordpress.com/2022/10/05/errorhandling-with-spring-webclient-and-reactor/)
 * [Spring Boot 3 update experience](https://angular2guy.wordpress.com/2022/11/15/spring-boot-3-update-experience/)
 * [Reactive Kafka with Streaming in Spring Boot Part 1](https://angular2guy.wordpress.com/2022/05/23/reactive-kafka-with-streaming-in-spring-boot-part-1/)
