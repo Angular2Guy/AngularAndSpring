@@ -36,17 +36,18 @@ import { DetailBase, Tuple } from "../../common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
-  selector: "app-bfdetail",
-  templateUrl: "./bfdetail.component.html",
-  styleUrls: ["./bfdetail.component.scss"],
-  animations: [
-    trigger("showChart", [
-      transition("false => true", [
-        style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 })),
-      ]),
-    ]),
-  ],
+    selector: "app-bfdetail",
+    templateUrl: "./bfdetail.component.html",
+    styleUrls: ["./bfdetail.component.scss"],
+    animations: [
+        trigger("showChart", [
+            transition("false => true", [
+                style({ opacity: 0 }),
+                animate(1000, style({ opacity: 1 })),
+            ]),
+        ]),
+    ],
+    standalone: false
 })
 export class BfdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteBf;

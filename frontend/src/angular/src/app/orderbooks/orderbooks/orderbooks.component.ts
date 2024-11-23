@@ -24,9 +24,10 @@ import { OrderbookIb } from "../../common/orderbook-ib";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
-  selector: "app-orderbooks",
-  templateUrl: "./orderbooks.component.html",
-  styleUrls: ["./orderbooks.component.scss"],
+    selector: "app-orderbooks",
+    templateUrl: "./orderbooks.component.html",
+    styleUrls: ["./orderbooks.component.scss"],
+    standalone: false
 })
 export class OrderbooksComponent implements OnInit {
   public currencies: MyCurr[];

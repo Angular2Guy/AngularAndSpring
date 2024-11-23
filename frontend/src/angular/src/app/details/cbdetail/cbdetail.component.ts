@@ -36,17 +36,18 @@ import { DetailBase, Tuple } from "src/app/common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
-  selector: "app-cbdetail",
-  templateUrl: "./cbdetail.component.html",
-  styleUrls: ["./cbdetail.component.scss"],
-  animations: [
-    trigger("showChart", [
-      transition("false => true", [
-        style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 })),
-      ]),
-    ]),
-  ],
+    selector: "app-cbdetail",
+    templateUrl: "./cbdetail.component.html",
+    styleUrls: ["./cbdetail.component.scss"],
+    animations: [
+        trigger("showChart", [
+            transition("false => true", [
+                style({ opacity: 0 }),
+                animate(1000, style({ opacity: 1 })),
+            ]),
+        ]),
+    ],
+    standalone: false
 })
 export class CbdetailComponent extends DetailBase implements OnInit {
   public currpair: string;

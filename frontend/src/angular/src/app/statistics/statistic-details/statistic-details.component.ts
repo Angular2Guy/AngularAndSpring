@@ -25,9 +25,10 @@ import {
 import { StatisticService } from "src/app/services/statistic.service";
 
 @Component({
-  selector: "app-statistic-details",
-  templateUrl: "./statistic-details.component.html",
-  styleUrls: ["./statistic-details.component.scss"],
+    selector: "app-statistic-details",
+    templateUrl: "./statistic-details.component.html",
+    styleUrls: ["./statistic-details.component.scss"],
+    standalone: false
 })
 export class StatisticDetailsComponent implements OnInit {
   @Input()

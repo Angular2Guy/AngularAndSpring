@@ -18,9 +18,10 @@ import { Router } from "@angular/router";
 import { CoinExchange, CommonStatistics } from "../common/common-statistics";
 
 @Component({
-  selector: "app-statistics",
-  templateUrl: "./statistics.component.html",
-  styleUrls: ["./statistics.component.scss"],
+    selector: "app-statistics",
+    templateUrl: "./statistics.component.html",
+    styleUrls: ["./statistics.component.scss"],
+    standalone: false
 })
 export class StatisticsComponent {
   protected commonStatistics = new CommonStatistics();

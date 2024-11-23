@@ -39,9 +39,10 @@ import { TokenService } from "ngx-simple-charts/base-service";
 import { DateTime, Duration } from "luxon";
 
 @Component({
-  selector: "app-quoteoverview",
-  templateUrl: "./quoteoverview.component.html",
-  styleUrls: ["./quoteoverview.component.scss"],
+    selector: "app-quoteoverview",
+    templateUrl: "./quoteoverview.component.html",
+    styleUrls: ["./quoteoverview.component.scss"],
+    standalone: false
 })
 export class QuoteoverviewComponent implements OnInit, OnDestroy {
   protected datasource = new Myds();
