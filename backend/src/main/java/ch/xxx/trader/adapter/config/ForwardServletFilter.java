@@ -61,7 +61,7 @@ public class ForwardServletFilter implements Filter {
 		} else {
 			Iterable<Locale> iterable = () -> myRequest.getLocales().asIterator();
 			Locale userLocale = StreamSupport.stream(iterable.spliterator(), false)
-					.filter(myLocale -> SUPPORTED_LOCALES.contains(myLocale)).findFirst().orElse(Locale.ENGLISH);
+					.filter(SUPPORTED_LOCALES::contains).findFirst().orElse(Locale.ENGLISH);
 			String forwardPath = String.format("/%s/index.html", userLocale.getLanguage());
 //			LOG.info(String.format("Forward to: %s", forwardPath));
 			RequestDispatcher dispatcher = myRequest.getServletContext().getRequestDispatcher(forwardPath);

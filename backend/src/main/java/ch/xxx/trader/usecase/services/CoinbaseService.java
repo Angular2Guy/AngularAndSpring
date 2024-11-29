@@ -39,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -101,42 +102,42 @@ public class CoinbaseService {
 
 	public Flux<QuoteCbSmall> todayQuotesBc() {
 		Query query = MongoUtils.buildTodayQuery(Optional.empty());
-		return this.myMongoRepository.find(query, QuoteCb.class).filter(q -> filterEvenMinutes(q))
+		return this.myMongoRepository.find(query, QuoteCb.class).filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()));
 	}
 
 	public Flux<QuoteCbSmall> sevenDaysQuotesBc() {
 		Query query = MongoUtils.build7DayQuery(Optional.empty());
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_HOUR_COL).filter(q -> filterEvenMinutes(q))
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_HOUR_COL).filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()));
 	}
 
 	public Flux<QuoteCbSmall> thirtyDaysQuotesBc() {
 		Query query = MongoUtils.build30DayQuery(Optional.empty());
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(q -> filterEvenMinutes(q))
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()));
 	}
 
 	public Flux<QuoteCbSmall> nintyDaysQuotesBc() {
 		Query query = MongoUtils.build90DayQuery(Optional.empty());
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(q -> filterEvenMinutes(q))
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()));
 	}
 
 	public Flux<QuoteCbSmall> sixMonthsQuotesBc() {
 		Query query = MongoUtils.buildTimeFrameQuery(Optional.empty(), TimeFrame.Month6);
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(q -> filterEvenMinutes(q))
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()));
 	}
 
 	public Flux<QuoteCbSmall> oneYearQuotesBc() {
 		Query query = MongoUtils.buildTimeFrameQuery(Optional.empty(), TimeFrame.Year1);
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(q -> filterEvenMinutes(q))
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()));
 	}
@@ -207,7 +208,7 @@ public class CoinbaseService {
 					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
 					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
-			collectCb.filter(myColl -> !myColl.isEmpty())
+			collectCb.filter(Predicate.not(Collection::isEmpty))
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
@@ -239,7 +240,7 @@ public class CoinbaseService {
 					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
 					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
-			collectCb.filter(myColl -> !myColl.isEmpty())
+			collectCb.filter(Predicate.not(Collection::isEmpty))
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
@@ -370,7 +371,7 @@ public class CoinbaseService {
 		return gsmf;
 	}
 
-	private boolean filterEvenMinutes(QuoteCb quote) {
+	private static boolean filterEvenMinutes(QuoteCb quote) {
 		return MongoUtils.filterEvenMinutes(quote.getCreatedAt());
 	}
 }

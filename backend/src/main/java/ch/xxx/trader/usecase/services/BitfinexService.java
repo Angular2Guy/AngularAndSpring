@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -153,7 +154,7 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			collectBf.filter(myColl -> !myColl.isEmpty())
+			collectBf.filter(Predicate.not(Collection::isEmpty))
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_HOUR_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Bitfinex prepare hour data failed", ex))
@@ -189,7 +190,7 @@ public class BitfinexService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			collectBf.filter(myColl -> !myColl.isEmpty())
+			collectBf.filter(Predicate.not(Collection::isEmpty))
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BF_DAY_COL)
 							.subscribeOn(mongoScheduler).timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Bitfinex prepare day data failed", ex))

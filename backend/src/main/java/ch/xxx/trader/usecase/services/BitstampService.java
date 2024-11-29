@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -151,7 +152,7 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			collectBs.filter(myColl -> !myColl.isEmpty())
+			collectBs.filter(Predicate.not(Collection::isEmpty))
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BS_HOUR_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Bitstamp prepare hour data failed", ex))
@@ -187,7 +188,7 @@ public class BitstampService {
 							.collect(Collectors.toList()))
 					.flatMap(myList -> Mono
 							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			collectBs.filter(myColl -> !myColl.isEmpty())
+			collectBs.filter(Predicate.not(Collection::isEmpty))
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BS_DAY_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Bitstamp prepare hour data failed", ex))
