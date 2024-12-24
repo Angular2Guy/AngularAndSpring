@@ -329,39 +329,31 @@ public class CoinbaseService {
 				if (gsmf == null) {
 					final MethodHandles.Lookup lookupGetter = MethodHandles.lookup();
 					final MethodHandles.Lookup lookupSetter = MethodHandles.lookup();
-					Method getterMethod = null;
-					Method setterMethod = null;
-					if ("1Inch".equalsIgnoreCase(propertyDescriptor.getName())) {
-						getterMethod = Stream.of(QuoteCb.class.getMethods())
-								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("get1Inch")).findFirst()
-								.orElseThrow();
-						setterMethod = Stream.of(QuoteCb.class.getMethods())
-								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("set1Inch")).findFirst()
-								.orElseThrow();
-					} else if ("super".equalsIgnoreCase(propertyDescriptor.getName())) {
-						getterMethod = Stream.of(QuoteCb.class.getMethods())
-								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getSuper")).findFirst()
-								.orElseThrow();
-						setterMethod = Stream.of(QuoteCb.class.getMethods())
-								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setSuper")).findFirst()
-								.orElseThrow();
-					} else if ("try".equalsIgnoreCase(propertyDescriptor.getName())) {
-						getterMethod = Stream.of(QuoteCb.class.getMethods())
-								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getTry1")).findFirst()
-								.orElseThrow();
-						setterMethod = Stream.of(QuoteCb.class.getMethods())
-								.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setTry1")).findFirst()
-								.orElseThrow();
-					} else {
-						getterMethod = propertyDescriptor.getReadMethod();
-						setterMethod = propertyDescriptor.getWriteMethod();
-					}
+					record GetSetMethods(Method getterMethod, Method setterMethod) { }
+					var result = switch(propertyDescriptor.getName().toLowerCase()) { 
+					case "1inch" ->  new GetSetMethods(Stream.of(QuoteCb.class.getMethods())
+							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("get1Inch")).findFirst()
+							.orElseThrow(), Stream.of(QuoteCb.class.getMethods())
+							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("set1Inch")).findFirst()
+							.orElseThrow());
+					case "super" -> new GetSetMethods(Stream.of(QuoteCb.class.getMethods())
+							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getSuper")).findFirst()
+							.orElseThrow(),Stream.of(QuoteCb.class.getMethods())
+							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setSuper")).findFirst()
+							.orElseThrow());
+					case "try" -> new GetSetMethods(Stream.of(QuoteCb.class.getMethods())
+							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getTry1")).findFirst()
+							.orElseThrow(),Stream.of(QuoteCb.class.getMethods())
+							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setTry1")).findFirst()
+							.orElseThrow());
+					default -> new GetSetMethods(propertyDescriptor.getReadMethod(), propertyDescriptor.getWriteMethod());							
+					};					
 					@SuppressWarnings("unchecked")
 					Function<QuoteCb, BigDecimal> getterFunction = (Function<QuoteCb, BigDecimal>) DtoUtils
-							.createGetter(lookupGetter, lookupGetter.unreflect(getterMethod));
+							.createGetter(lookupGetter, lookupGetter.unreflect(result.getterMethod()));
 					@SuppressWarnings("unchecked")
 					BiConsumer<QuoteCb, BigDecimal> setterFunction = DtoUtils.createSetter(lookupSetter,
-							lookupSetter.unreflect(setterMethod));
+							lookupSetter.unreflect(result.setterMethod()));
 					cbFunctionCache.put(propertyDescriptor.getName(), new GetSetMethodFunctions(getterFunction,
 							setterFunction, propertyDescriptor.getName(), propertyDescriptor));
 					gsmf = cbFunctionCache.get(propertyDescriptor.getName());

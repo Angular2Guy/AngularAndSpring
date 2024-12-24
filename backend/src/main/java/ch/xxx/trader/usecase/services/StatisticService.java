@@ -57,14 +57,14 @@ public class StatisticService {
 		Mono<CommonStatisticsDto> result = this.myMongoRepository
 				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitStampKey()), TimeFrame.Year5, 5000),
 						QuoteBs.class, BitstampService.BS_DAY_COL)
-				.collectList().flatMap(myList -> this.calcStatistics(myList)).map(value -> {
+				.collectList().flatMap(StatisticService::calcStatistics).map(value -> {
 					value.setCurrPair(currPair);
 					return value;
 				});
 		return result;
 	}
 
-	private <T extends Quote> Mono<CommonStatisticsDto> calcStatistics(List<T> quotes) {
+	private static <T extends Quote> Mono<CommonStatisticsDto> calcStatistics(List<T> quotes) {
 		CommonStatisticsDto commonStatisticsDto = new CommonStatisticsDto();
 		calcStatistics1Month(quotes, commonStatisticsDto);		
 		calcStatistics3Months(quotes, commonStatisticsDto);			
@@ -75,7 +75,7 @@ public class StatisticService {
 		return Mono.just(commonStatisticsDto);
 	}
 
-	<T extends Quote> void calcStatistics5Years(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	static <T extends Quote> void calcStatistics5Years(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes5Year = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(StatisticService.createBeforeDate(0, 5))).toList();
 		commonStatisticsDto.setRange5Year(
@@ -85,7 +85,7 @@ public class StatisticService {
 		commonStatisticsDto.setVolatility5Year(StatisticService.calcVolatility(quotes5Year));
 	}
 
-	<T extends Quote> void calcStatistics2Years(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	static <T extends Quote> void calcStatistics2Years(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes2Year = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(StatisticService.createBeforeDate(0, 2))).toList();
 		commonStatisticsDto.setRange2Year(
@@ -95,7 +95,7 @@ public class StatisticService {
 		commonStatisticsDto.setVolatility2Year(StatisticService.calcVolatility(quotes2Year));
 	}
 
-	<T extends Quote> void calcStatistics1Year(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	static <T extends Quote> void calcStatistics1Year(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes1Year = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(StatisticService.createBeforeDate(0, 1))).toList();
 		commonStatisticsDto.setRange1Year(
@@ -105,7 +105,7 @@ public class StatisticService {
 		commonStatisticsDto.setVolatility1Year(StatisticService.calcVolatility(quotes1Year));
 	}
 
-	<T extends Quote> void calcStatistics6Months(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	static <T extends Quote> void calcStatistics6Months(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes6Month = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(StatisticService.createBeforeDate(6, 0))).toList();
 		commonStatisticsDto.setPerformance6Month(StatisticService.calcPerformance(quotes6Month));
@@ -115,7 +115,7 @@ public class StatisticService {
 				new RangeDto(StatisticService.getMinMaxValue(quotes6Month, false), StatisticService.getMinMaxValue(quotes6Month, true)));
 	}
 
-	<T extends Quote> void calcStatistics3Months(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	static <T extends Quote> void calcStatistics3Months(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		List<T> quotes3Month = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(StatisticService.createBeforeDate(3, 0))).toList();
 		commonStatisticsDto.setRange3Month(
@@ -125,7 +125,7 @@ public class StatisticService {
 		commonStatisticsDto.setVolatility3Month(StatisticService.calcVolatility(quotes3Month));
 	}
 
-	<T extends Quote> void calcStatistics1Month(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
+	static <T extends Quote> void calcStatistics1Month(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
 		Date beforeDate = StatisticService.createBeforeDate(1, 0);
 		List<T> quotes1Month = quotes.stream()
 				.filter(myQuote -> myQuote.getCreatedAt().after(beforeDate)).toList();
@@ -183,7 +183,7 @@ public class StatisticService {
 		Mono<CommonStatisticsDto> result = this.myMongoRepository
 				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitfinexKey()), TimeFrame.Year5, 5000),
 						QuoteBf.class, BitfinexService.BF_DAY_COL)
-				.collectList().flatMap(myList -> this.calcStatistics(myList)).map(value -> {
+				.collectList().flatMap(StatisticService::calcStatistics).map(value -> {
 					value.setCurrPair(currPair);
 					return value;
 				});

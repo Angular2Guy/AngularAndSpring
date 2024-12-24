@@ -26,12 +26,10 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
 import ch.xxx.trader.domain.model.dto.RangeDto;
-import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 
@@ -41,16 +39,16 @@ public class StatisticServiceTest {
 		getPerformance, getAvgVolume, getRange, getVolatility
 	}
 	
-	@Mock
-	private MyMongoRepository myMongoRepository;
+//	@Mock
+//	private MyMongoRepository myMongoRepository;
 	
 	
 	@Test
 	public void statistic5Years() {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics5Years(quotesBs, dto);
+		StatisticService.calcStatistics5Years(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance5Year().longValue(), 800L);
 		Assertions.assertEquals(dto.getAvgVolume5Year(), BigDecimal.valueOf(50L));
 		Assertions.assertEquals(dto.getRange5Year().getMin(), BigDecimal.TEN);
@@ -60,10 +58,10 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic2Years() {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = createBfQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics2Years(quotesBf, dto);
+		StatisticService.calcStatistics2Years(quotesBf, dto);
 		Assertions.assertEquals(dto.getPerformance2Year().longValue(), 350L);
 		Assertions.assertEquals(dto.getAvgVolume2Year(), BigDecimal.valueOf(55L));
 		Assertions.assertEquals(dto.getRange2Year().getMin(), BigDecimal.valueOf(20L));
@@ -73,10 +71,10 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic1Year() {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics1Year(quotesBs, dto);
+		StatisticService.calcStatistics1Year(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance1Year().longValue(), 200L);
 		Assertions.assertEquals(dto.getAvgVolume1Year(), BigDecimal.valueOf(60L));
 		Assertions.assertEquals(dto.getRange1Year().getMin(), BigDecimal.valueOf(30L));
@@ -86,10 +84,10 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic6Months() {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = createBfQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics6Months(quotesBf, dto);
+		StatisticService.calcStatistics6Months(quotesBf, dto);
 		Assertions.assertEquals(dto.getPerformance6Month().longValue(), 125L);
 		Assertions.assertEquals(dto.getAvgVolume6Month(), BigDecimal.valueOf(65L));
 		Assertions.assertEquals(dto.getRange6Month().getMin(), BigDecimal.valueOf(40L));
@@ -99,10 +97,10 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic3Months() {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics3Months(quotesBs, dto);
+		StatisticService.calcStatistics3Months(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance3Month().longValue(), 80L);
 		Assertions.assertEquals(dto.getAvgVolume3Month(), BigDecimal.valueOf(70L));
 		Assertions.assertEquals(dto.getRange3Month().getMin(), BigDecimal.valueOf(50L));
@@ -112,10 +110,10 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic1Month() {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = createBfQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics1Month(quotesBf, dto);
+		StatisticService.calcStatistics1Month(quotesBf, dto);
 		Assertions.assertEquals(dto.getPerformance1Month().longValue(), 50L);
 		Assertions.assertEquals(dto.getAvgVolume1Month(), BigDecimal.valueOf(75L));
 		Assertions.assertEquals(dto.getRange1Month().getMin(), BigDecimal.valueOf(60L));
@@ -125,10 +123,10 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic1MonthEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics1Month(quotesBf, dto);
+		StatisticService.calcStatistics1Month(quotesBf, dto);
 		String durationStr = "1Month";
 	
 		checkEmptyResult(dto, durationStr);		
@@ -136,10 +134,10 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic3MonthEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics3Months(quotesBf, dto);
+		StatisticService.calcStatistics3Months(quotesBf, dto);
 		String durationStr = "3Month";
 	
 		checkEmptyResult(dto, durationStr);		
@@ -147,10 +145,10 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic6MonthEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics6Months(quotesBf, dto);
+		StatisticService.calcStatistics6Months(quotesBf, dto);
 		String durationStr = "6Month";
 	
 		checkEmptyResult(dto, durationStr);		
@@ -158,10 +156,10 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic1YearEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics1Year(quotesBf, dto);
+		StatisticService.calcStatistics1Year(quotesBf, dto);
 		String durationStr = "1Year";
 	
 		checkEmptyResult(dto, durationStr);		
@@ -169,10 +167,10 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic2YearEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics2Years(quotesBf, dto);
+		StatisticService.calcStatistics2Years(quotesBf, dto);
 		String durationStr = "2Year";
 	
 		checkEmptyResult(dto, durationStr);		
@@ -180,10 +178,10 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic5YearEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		StatisticService statisticService = new StatisticService(this.myMongoRepository);
+//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
-		statisticService.calcStatistics5Years(quotesBf, dto);
+		StatisticService.calcStatistics5Years(quotesBf, dto);
 		String durationStr = "5Year";
 	
 		checkEmptyResult(dto, durationStr);		
