@@ -218,7 +218,8 @@ public class CoinbaseService {
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
 			LOG.info("Prepared Coinbase Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
-					+ (new Date().getTime() - start.getTime()) + "ms");
+					+ (new Date().getTime() - start.getTime()) + "ms" + " properties: " 
+					+ (cbFunctionCache.size() / 2));
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Hourly Data Time:"));
 	}
@@ -250,7 +251,8 @@ public class CoinbaseService {
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
 			LOG.info("Prepared Coinbase Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
-					+ (new Date().getTime() - start.getTime()) + "ms");
+					+ (new Date().getTime() - start.getTime()) + "ms" + " properties: "
+					+ (cbFunctionCache.size() / 2));
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Daily Data Time:"));
 	}
@@ -329,25 +331,33 @@ public class CoinbaseService {
 				if (gsmf == null) {
 					final MethodHandles.Lookup lookupGetter = MethodHandles.lookup();
 					final MethodHandles.Lookup lookupSetter = MethodHandles.lookup();
-					record GetSetMethods(Method getterMethod, Method setterMethod) { }
-					var result = switch(propertyDescriptor.getName().toLowerCase()) { 
-					case "1inch" ->  new GetSetMethods(Stream.of(QuoteCb.class.getMethods())
-							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("get1Inch")).findFirst()
-							.orElseThrow(), Stream.of(QuoteCb.class.getMethods())
-							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("set1Inch")).findFirst()
-							.orElseThrow());
-					case "super" -> new GetSetMethods(Stream.of(QuoteCb.class.getMethods())
-							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getSuper")).findFirst()
-							.orElseThrow(),Stream.of(QuoteCb.class.getMethods())
-							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setSuper")).findFirst()
-							.orElseThrow());
-					case "try" -> new GetSetMethods(Stream.of(QuoteCb.class.getMethods())
-							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getTry1")).findFirst()
-							.orElseThrow(),Stream.of(QuoteCb.class.getMethods())
-							.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setTry1")).findFirst()
-							.orElseThrow());
-					default -> new GetSetMethods(propertyDescriptor.getReadMethod(), propertyDescriptor.getWriteMethod());							
-					};					
+					record GetSetMethods(Method getterMethod, Method setterMethod) {
+					}
+					var result = switch (propertyDescriptor.getName().toLowerCase()) {
+					case "1inch" -> new GetSetMethods(
+							Stream.of(QuoteCb.class.getMethods())
+									.filter(myMethod -> myMethod.getName().equalsIgnoreCase("get1Inch")).findFirst()
+									.orElseThrow(),
+							Stream.of(QuoteCb.class.getMethods())
+									.filter(myMethod -> myMethod.getName().equalsIgnoreCase("set1Inch")).findFirst()
+									.orElseThrow());
+					case "super" -> new GetSetMethods(
+							Stream.of(QuoteCb.class.getMethods())
+									.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getSuper")).findFirst()
+									.orElseThrow(),
+							Stream.of(QuoteCb.class.getMethods())
+									.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setSuper")).findFirst()
+									.orElseThrow());
+					case "try" -> new GetSetMethods(
+							Stream.of(QuoteCb.class.getMethods())
+									.filter(myMethod -> myMethod.getName().equalsIgnoreCase("getTry1")).findFirst()
+									.orElseThrow(),
+							Stream.of(QuoteCb.class.getMethods())
+									.filter(myMethod -> myMethod.getName().equalsIgnoreCase("setTry1")).findFirst()
+									.orElseThrow());
+					default ->
+						new GetSetMethods(propertyDescriptor.getReadMethod(), propertyDescriptor.getWriteMethod());
+					};
 					@SuppressWarnings("unchecked")
 					Function<QuoteCb, BigDecimal> getterFunction = (Function<QuoteCb, BigDecimal>) DtoUtils
 							.createGetter(lookupGetter, lookupGetter.unreflect(result.getterMethod()));
