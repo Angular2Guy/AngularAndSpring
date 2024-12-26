@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -200,6 +201,7 @@ public class CoinbaseService {
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
+			final var nonZeroProperties = new AtomicInteger(0);
 			Query query = new Query();
 			query.addCriteria(
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
@@ -209,6 +211,7 @@ public class CoinbaseService {
 					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
 					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
 			collectCb.filter(Predicate.not(Collection::isEmpty))
+					.map(myColl -> countRelevantProperties(nonZeroProperties, myColl))
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
@@ -218,8 +221,8 @@ public class CoinbaseService {
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
 			LOG.info("Prepared Coinbase Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
-					+ (new Date().getTime() - start.getTime()) + "ms" + " properties: " 
-					+ (cbFunctionCache.size() / 2));
+					+ (new Date().getTime() - start.getTime()) + "ms" + " 0 < properties: "
+					+ nonZeroProperties.get());
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Hourly Data Time:"));
 	}
@@ -233,6 +236,7 @@ public class CoinbaseService {
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
+			final var nonZeroProperties = new AtomicInteger(0);
 			Query query = new Query();
 			query.addCriteria(
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
@@ -242,6 +246,7 @@ public class CoinbaseService {
 					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
 					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
 			collectCb.filter(Predicate.not(Collection::isEmpty))
+					.map(myColl -> countRelevantProperties(nonZeroProperties, myColl))
 					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL)
 							.timeout(Duration.ofSeconds(5L))
 							.doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
@@ -251,10 +256,19 @@ public class CoinbaseService {
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
 			LOG.info("Prepared Coinbase Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
-					+ (new Date().getTime() - start.getTime()) + "ms" + " properties: "
-					+ (cbFunctionCache.size() / 2));
+					+ (new Date().getTime() - start.getTime()) + "ms" + " 0 < properties: "
+					+ nonZeroProperties.get());
 		}
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Daily Data Time:"));
+	}
+
+	private Collection<QuoteCb> countRelevantProperties(final AtomicInteger nonZeroProperties,
+			Collection<QuoteCb> myColl) {
+		var relevantProperties = myColl.stream().flatMap(myQuote -> Stream.of(this.propertiesNonZero(myQuote)))
+				.mapToInt(v -> v).max().orElse(0);
+		nonZeroProperties
+				.set(nonZeroProperties.get() < relevantProperties ? relevantProperties : nonZeroProperties.get());
+		return myColl;
 	}
 
 	private Collection<QuoteCb> makeCbQuoteDay(List<QuoteCb> quotes, Calendar begin, Calendar end) {
@@ -300,12 +314,25 @@ public class CoinbaseService {
 		return result;
 	}
 
+	private Integer propertiesNonZero(QuoteCb quote) {
+		var result = new AtomicInteger(0);
+		this.propertyDescriptors.forEach(myPropertyDescriptor -> {
+			try {
+				var gsmf = this.createGetMethodFunction(myPropertyDescriptor);
+				BigDecimal num1 = gsmf.getter.apply(quote);
+				result.set(num1.compareTo(BigDecimal.ZERO) > 0 ? result.addAndGet(1) : result.get());
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result.get();
+	}
+
 	private QuoteCb avgCbQuotePeriodMF(QuoteCb q1, QuoteCb q2, long count) {
 		QuoteCb result = new QuoteCb();
 		this.propertyDescriptors.forEach(myPropertyDescriptor -> {
-			GetSetMethodFunctions gsmf;
 			try {
-				gsmf = this.createGetMethodFunction(myPropertyDescriptor);
+				var gsmf = this.createGetMethodFunction(myPropertyDescriptor);
 				BigDecimal num1 = gsmf.getter.apply(q1);
 				BigDecimal num2 = gsmf.getter.apply(q2);
 				BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
