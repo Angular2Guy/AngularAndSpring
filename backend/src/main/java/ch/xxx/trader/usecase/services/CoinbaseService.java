@@ -27,15 +27,18 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -81,7 +84,7 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 10, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
@@ -195,71 +198,104 @@ public class CoinbaseService {
 	private void createCbHourlyAvg() {
 		LOG.info("createCbHourlyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);		
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-		while (timeFrame.end().before(now)) {
-			Date start = new Date();
-			final var nonZeroProperties = new AtomicInteger(0);
-			Query query = new Query();
-			query.addCriteria(
-					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
-			// Coinbase
-			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
-					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
-					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
-					.map(quotes -> makeCbQuoteHour(quotes, timeFrame.begin(), timeFrame.end()));
-			collectCb.filter(Predicate.not(Collection::isEmpty))
-					.map(myColl -> countRelevantProperties(nonZeroProperties, myColl))
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL)
-							.timeout(Duration.ofSeconds(5L))
-							.doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
-							.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
-					.subscribeOn(this.mongoScheduler).block();
-
-			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
-			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			LOG.info("Prepared Coinbase Hour Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
-					+ (new Date().getTime() - start.getTime()) + "ms" + " 0 < properties: "
-					+ nonZeroProperties.get());
-		}
+		final var timeFrames = this.createTimeFrames(timeFrame, now);
+		if (this.cpuConstraint) {
+			timeFrames.stream().forEachOrdered(timeFrame1 -> processHourTimeFrame(timeFrame1));
+		} else {			
+			try (ForkJoinPool customThreadPool = new ForkJoinPool(2)) {
+				customThreadPool.submit(() -> timeFrames.parallelStream().forEachOrdered(timeFrame1 -> processHourTimeFrame(timeFrame1)));
+				customThreadPool.shutdown();
+			}
+		}		
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Hourly Data Time:"));
+	}
+
+	private void processHourTimeFrame(MyTimeFrame timeFrame1) {
+		Date start = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		final var nonZeroProperties = new AtomicInteger(0);
+		Query query = new Query();
+		query.addCriteria(
+				Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame1.begin().getTime()).lt(timeFrame1.end().getTime()));
+		// Coinbase
+		Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
+				.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
+				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
+				.map(quotes -> makeCbQuoteHour(quotes, timeFrame1.begin(), timeFrame1.end()));
+		collectCb.filter(Predicate.not(Collection::isEmpty))
+				.map(myColl -> countRelevantProperties(nonZeroProperties, myColl))
+				.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_HOUR_COL)
+						.timeout(Duration.ofSeconds(5L))
+						.doOnError(ex -> LOG.warn("Coinbase prepare hour data failed", ex))
+						.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
+				.subscribeOn(this.mongoScheduler).block();
+		LOG.info("Prepared Coinbase Hour Data for: " + sdf.format(timeFrame1.begin().getTime()) + " Time: "
+				+ (new Date().getTime() - start.getTime()) + "ms" + " 0 < properties: " + nonZeroProperties.get());
 	}
 
 	private void createCbDailyAvg() {
 		LOG.info("createCbDailyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-		Calendar now = Calendar.getInstance();
+		final MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);		
+		final Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-		while (timeFrame.end().before(now)) {
-			Date start = new Date();
-			final var nonZeroProperties = new AtomicInteger(0);
-			Query query = new Query();
-			query.addCriteria(
-					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
-			// Coinbase
-			Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
-					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
-					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
-					.map(quotes -> makeCbQuoteDay(quotes, timeFrame.begin(), timeFrame.end()));
-			collectCb.filter(Predicate.not(Collection::isEmpty))
-					.map(myColl -> countRelevantProperties(nonZeroProperties, myColl))
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL)
-							.timeout(Duration.ofSeconds(5L))
-							.doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
-							.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
-					.subscribeOn(this.mongoScheduler).block();
-
-			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
-			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
-			LOG.info("Prepared Coinbase Day Data for: " + sdf.format(timeFrame.begin().getTime()) + " Time: "
-					+ (new Date().getTime() - start.getTime()) + "ms" + " 0 < properties: "
-					+ nonZeroProperties.get());
-		}
+		final var timeFrames = this.createTimeFrames(timeFrame, now);
+		if (this.cpuConstraint) {
+			timeFrames.stream().forEachOrdered(timeFrame1 -> processDayTimeFrame(timeFrame1));
+		} else {
+			try (ForkJoinPool customThreadPool = new ForkJoinPool(2)) {
+				customThreadPool.submit(() -> timeFrames.parallelStream().forEachOrdered(timeFrame1 -> processDayTimeFrame(timeFrame1)));
+				customThreadPool.shutdown();
+			}				
+		}		
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Daily Data Time:"));
+	}
+
+	private List<MyTimeFrame> createTimeFrames(final MyTimeFrame timeFrame, final Calendar now) {
+		final var timeFrames = new ArrayList<MyTimeFrame>();
+		var begin = timeFrame.begin();
+		var end = timeFrame.end();
+		while (end.before(now)) {
+			var myTimeFrame = new MyTimeFrame(begin, end);
+			timeFrames.add(myTimeFrame);
+			begin = nextDay(begin);
+			end = nextDay(end);
+		}
+		return timeFrames;
+	}
+
+	private Calendar nextDay(Calendar begin) {
+		var begin1 = GregorianCalendar.getInstance();
+		begin1.setTime(begin.getTime());
+		begin1.add(Calendar.DAY_OF_YEAR, 1);
+		begin = begin1;
+		return begin;
+	}
+
+	private void processDayTimeFrame(MyTimeFrame timeFrame1) {
+		Date start = new Date();
+		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		final var nonZeroProperties = new AtomicInteger(0);
+		Query query = new Query();
+		query.addCriteria(
+				Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame1.begin().getTime()).lt(timeFrame1.end().getTime()));
+		// Coinbase
+		Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
+				.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
+				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
+				.map(quotes -> makeCbQuoteDay(quotes, timeFrame1.begin(), timeFrame1.end()));
+		collectCb.filter(Predicate.not(Collection::isEmpty))
+				.map(myColl -> countRelevantProperties(nonZeroProperties, myColl))
+				.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), CB_DAY_COL)
+						.timeout(Duration.ofSeconds(5L))
+						.doOnError(ex -> LOG.warn("Coinbase prepare day data failed", ex))
+						.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
+				.subscribeOn(this.mongoScheduler).block();
+		LOG.info("Prepared Coinbase Day Data for: " + sdf.format(timeFrame1.begin().getTime()) + " Time: "
+				+ (new Date().getTime() - start.getTime()) + "ms" + " 0 < properties: " + nonZeroProperties.get());
 	}
 
 	private Collection<QuoteCb> countRelevantProperties(final AtomicInteger nonZeroProperties,
