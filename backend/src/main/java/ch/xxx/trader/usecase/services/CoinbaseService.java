@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -84,7 +83,7 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(10, 10, "mongoImport", 10);
+	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(6, 10, "mongoImport", 10);
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
@@ -176,42 +175,23 @@ public class CoinbaseService {
 		LocalDateTime start = LocalDateTime.now();
 		LOG.info("CpuConstraint property: " + this.cpuConstraint);
 		if (this.cpuConstraint) {
-			this.createCbHourlyAvg();
-			this.createCbDailyAvg();
+			this.createCbIntervalAvg(false);
+			this.createCbIntervalAvg(true);
 			LOG.info(this.serviceUtils.createAvgLogStatement(start, "Prepared Coinbase Data Time:"));
 		} else {
 			// This can only be used on machines without cpu constraints.
 			CompletableFuture<String> future7 = CompletableFuture.supplyAsync(() -> {
-				this.createCbHourlyAvg();
+				this.createCbIntervalAvg(false);
 				return "createCbHourlyAvg() Done.";
 			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 			CompletableFuture<String> future8 = CompletableFuture.supplyAsync(() -> {
-				this.createCbDailyAvg();
+				this.createCbIntervalAvg(true);
 				return "createCbDailyAvg() Done.";
 			}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
 			String combined = Stream.of(future7, future8).map(CompletableFuture::join).collect(Collectors.joining(" "));
 			LOG.info(combined);
 		}
 		return "done.";
-	}
-
-	private void createCbHourlyAvg() {
-		LOG.info("createCbHourlyAvg()");
-		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_HOUR_COL, QuoteCb.class, true);
-		Calendar now = Calendar.getInstance();
-		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-		final var timeFrames = this.createTimeFrames(timeFrame, now);
-		if (this.cpuConstraint) {
-			timeFrames.stream().forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, false));
-		} else {
-			try (ForkJoinPool customThreadPool = new ForkJoinPool(2)) {
-				customThreadPool.submit(() -> timeFrames.parallelStream()
-						.forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, false)));
-				customThreadPool.shutdown();
-			}
-		}
-		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Hourly Data Time:"));
 	}
 
 	private void processTimeFrame(MyTimeFrame timeFrame1, boolean isDay) {
@@ -238,23 +218,15 @@ public class CoinbaseService {
 				+ (new Date().getTime() - start.getTime()) + "ms" + " 0 < properties: " + nonZeroProperties.get());
 	}
 
-	private void createCbDailyAvg() {
-		LOG.info("createCbDailyAvg()");
+	private void createCbIntervalAvg(boolean isDay) {
+		LOG.info(isDay ? "createCbDailyAvg()" : "createCbHourlyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
-		final MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(CB_DAY_COL, QuoteCb.class, false);
+		final MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(isDay ? CB_DAY_COL : CB_HOUR_COL, QuoteCb.class, false);
 		final Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-		final var timeFrames = this.createTimeFrames(timeFrame, now);
-		if (this.cpuConstraint) {
-			timeFrames.stream().forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, true));
-		} else {
-			try (ForkJoinPool customThreadPool = new ForkJoinPool(2)) {
-				customThreadPool.submit(() -> timeFrames.parallelStream()
-						.forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, true)));
-				customThreadPool.shutdown();
-			}
-		}
-		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Coinbase Daily Data Time:"));
+		this.createTimeFrames(timeFrame, now).stream().forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, isDay));
+		var logStmt = String.format("Prepared Coinbase %s Data Time:", isDay ? "Daily" : "Hourly");
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll,  logStmt));
 	}
 
 	private List<MyTimeFrame> createTimeFrames(final MyTimeFrame timeFrame, final Calendar now) {
