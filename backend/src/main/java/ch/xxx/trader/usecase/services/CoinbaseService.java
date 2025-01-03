@@ -196,7 +196,7 @@ public class CoinbaseService {
 
 	private void processTimeFrame(MyTimeFrame timeFrame1, boolean isDay) {
 		Date start = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		final var nonZeroProperties = new AtomicInteger(0);
 		Query query = new Query();
 		query.addCriteria(
@@ -206,27 +206,40 @@ public class CoinbaseService {
 		Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
 				.timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn(logFailed, ex))
 				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
-				.map(quotes -> isDay ? this.makeCbQuoteDay(quotes, timeFrame1.begin(), timeFrame1.end())
-						: this.makeCbQuoteHour(quotes, timeFrame1.begin(), timeFrame1.end()));
+				.map(quotes -> this.createCbQuoteTimeFrame(timeFrame1, isDay, quotes));
 		collectCb.filter(Predicate.not(Collection::isEmpty))
 				.map(myColl -> this.countRelevantProperties(nonZeroProperties, myColl))
 				.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), isDay ? CB_DAY_COL : CB_HOUR_COL)
 						.timeout(Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn(logFailed, ex))
 						.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
 				.subscribeOn(this.mongoScheduler).block();
-		LOG.info(String.format("Prepared Coinbase %s Data for: ", isDay ? "Day" : "Hour") + sdf.format(timeFrame1.begin().getTime()) + " Time: "
-				+ (new Date().getTime() - start.getTime()) + "ms" + " 0 < properties: " + nonZeroProperties.get());
+		LOG.info(String.format("Prepared Coinbase %s Data for: ", isDay ? "Day" : "Hour")
+				+ sdf.format(timeFrame1.begin().getTime()) + " Time: " + (new Date().getTime() - start.getTime()) + "ms"
+				+ " 0 < properties: " + nonZeroProperties.get());
+	}
+
+	private Collection<QuoteCb> createCbQuoteTimeFrame(final MyTimeFrame timeFrame1, final boolean isDay,
+			List<QuoteCb> quotes) {
+		Date start = new Date();
+		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		var result = isDay ? this.makeCbQuoteDay(quotes, timeFrame1.begin(), timeFrame1.end())
+				: this.makeCbQuoteHour(quotes, timeFrame1.begin(), timeFrame1.end());
+		LOG.info(String.format("Calculate Coinbase %s Data for: ", isDay ? "Day" : "Hour")
+				+ sdf.format(timeFrame1.begin().getTime()) + " Time: " + (new Date().getTime() - start.getTime()) + "ms");
+		return result;
 	}
 
 	private void createCbIntervalAvg(boolean isDay) {
 		LOG.info(isDay ? "createCbDailyAvg()" : "createCbHourlyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
-		final MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(isDay ? CB_DAY_COL : CB_HOUR_COL, QuoteCb.class, false);
+		final MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(isDay ? CB_DAY_COL : CB_HOUR_COL, QuoteCb.class,
+				false);
 		final Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-		this.createTimeFrames(timeFrame, now).stream().forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, isDay));
+		this.createTimeFrames(timeFrame, now).stream()
+				.forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, isDay));
 		var logStmt = String.format("Prepared Coinbase %s Data Time:", isDay ? "Daily" : "Hourly");
-		LOG.info(this.serviceUtils.createAvgLogStatement(startAll,  logStmt));
+		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, logStmt));
 	}
 
 	private List<MyTimeFrame> createTimeFrames(final MyTimeFrame timeFrame, final Calendar now) {
