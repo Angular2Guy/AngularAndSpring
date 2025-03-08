@@ -86,6 +86,8 @@ public class CoinbaseService {
 	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(6, 10, "mongoImport", 10);
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
+	@Value("${single.instance.slow-io:false}")
+	private boolean slowIo;
 
 	public CoinbaseService(MyMongoRepository myMongoRepository, ServiceUtils serviceUtils) {
 		this.myMongoRepository = myMongoRepository;
@@ -204,13 +206,13 @@ public class CoinbaseService {
 		// Coinbase
 		final var logFailed = String.format("Coinbase prepare %s data failed", isDay ? "day" : "hour");
 		Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
-				.timeout(Duration.ofSeconds(30L)).doOnError(ex -> LOG.warn(logFailed, ex))
+				.timeout(this.slowIo ? Duration.ofSeconds(30L) : Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn(logFailed, ex))
 				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
 				.map(quotes -> this.createCbQuoteTimeFrame(timeFrame1, isDay, quotes));
 		collectCb.filter(Predicate.not(Collection::isEmpty))
 				.map(myColl -> this.countRelevantProperties(nonZeroProperties, myColl))
 				.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), isDay ? CB_DAY_COL : CB_HOUR_COL)
-						.timeout(Duration.ofSeconds(30L)).doOnError(ex -> LOG.warn(logFailed, ex))
+						.timeout(this.slowIo ? Duration.ofSeconds(30L) : Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn(logFailed, ex))
 						.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
 				.subscribeOn(this.mongoScheduler).block();
 		LOG.info(String.format("Prepared Coinbase %s Data for: ", isDay ? "Day" : "Hour")
