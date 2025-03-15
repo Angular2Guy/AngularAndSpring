@@ -206,14 +206,20 @@ public class CoinbaseService {
 		// Coinbase
 		final var logFailed = String.format("Coinbase prepare %s data failed", isDay ? "day" : "hour");
 		Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
-				.timeout(this.slowIo ? Duration.ofSeconds(30L) : Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn(logFailed, ex))
-				.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList()
+				.timeout(this.slowIo ? Duration.ofSeconds(30L) : Duration.ofSeconds(10L))
+				.doOnError(ex -> LOG.warn(logFailed, ex)).onErrorResume(ex -> {
+					LOG.warn(logFailed, ex);
+					return Mono.empty();
+				}).subscribeOn(this.mongoScheduler).collectList()
 				.map(quotes -> this.createCbQuoteTimeFrame(timeFrame1, isDay, quotes));
 		collectCb.filter(Predicate.not(Collection::isEmpty))
 				.map(myColl -> this.countRelevantProperties(nonZeroProperties, myColl))
 				.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), isDay ? CB_DAY_COL : CB_HOUR_COL)
-						.timeout(this.slowIo ? Duration.ofSeconds(30L) : Duration.ofSeconds(10L)).doOnError(ex -> LOG.warn(logFailed, ex))
-						.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
+						.timeout(this.slowIo ? Duration.ofSeconds(30L) : Duration.ofSeconds(10L))
+						.doOnError(ex -> LOG.warn(logFailed, ex)).onErrorResume(ex -> {
+							LOG.warn(logFailed, ex);
+							return Mono.empty();
+						}).subscribeOn(this.mongoScheduler).collectList())
 				.subscribeOn(this.mongoScheduler).block();
 		LOG.info(String.format("Prepared Coinbase %s Data for: ", isDay ? "Day" : "Hour")
 				+ sdf.format(timeFrame1.begin().getTime()) + " Time: " + (new Date().getTime() - start.getTime()) + "ms"
@@ -227,7 +233,8 @@ public class CoinbaseService {
 		var result = isDay ? this.makeCbQuoteDay(quotes, timeFrame1.begin(), timeFrame1.end())
 				: this.makeCbQuoteHour(quotes, timeFrame1.begin(), timeFrame1.end());
 		LOG.info(String.format("Calculate Coinbase %s Data for: ", isDay ? "Day" : "Hour")
-				+ sdf.format(timeFrame1.begin().getTime()) + " Time: " + (new Date().getTime() - start.getTime()) + "ms");
+				+ sdf.format(timeFrame1.begin().getTime()) + " Time: " + (new Date().getTime() - start.getTime())
+				+ "ms");
 		return result;
 	}
 
