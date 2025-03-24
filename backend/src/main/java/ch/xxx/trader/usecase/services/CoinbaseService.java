@@ -245,6 +245,8 @@ public class CoinbaseService {
 				false);
 		final Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		LOG.info("isDay: {}, TimeFrame.Begin: {}, TimeFrame.End: {}, now: {}", isDay, sdf.format(timeFrame.begin().getTime()), sdf.format(timeFrame.end().getTime()), sdf.format(now.getTime()));
 		this.createTimeFrames(timeFrame, now).stream()
 				.forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, isDay));
 		var logStmt = String.format("Prepared Coinbase %s Data Time:", isDay ? "Daily" : "Hourly");
