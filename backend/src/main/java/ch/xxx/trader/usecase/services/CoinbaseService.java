@@ -230,9 +230,8 @@ public class CoinbaseService {
 			List<QuoteCb> quotes) {
 		Date start = new Date();
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-		var result = this.makeCbQuoteDay(quotes, timeFrame1.begin(), timeFrame1.end());
-//		var result = isDay ? this.makeCbQuoteDay(quotes, timeFrame1.begin(), timeFrame1.end())
-//				: this.makeCbQuoteHour(quotes, timeFrame1.begin(), timeFrame1.end());
+		var result = isDay ? this.makeCbQuoteDay(quotes, timeFrame1.begin(), timeFrame1.end())
+				: this.makeCbQuoteHour(quotes, timeFrame1.begin(), timeFrame1.end());
 		LOG.info(String.format("Calculate Coinbase %s Data for: ", isDay ? "Day" : "Hour")
 				+ sdf.format(timeFrame1.begin().getTime()) + " Time: " + (new Date().getTime() - start.getTime())
 				+ "ms");
@@ -248,33 +247,25 @@ public class CoinbaseService {
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		LOG.info("isDay: {}, TimeFrame.Begin: {}, TimeFrame.End: {}, now: {}", isDay, sdf.format(timeFrame.begin().getTime()), sdf.format(timeFrame.end().getTime()), sdf.format(now.getTime()));
-		this.createTimeFrames(timeFrame, now, isDay).stream()
+		this.createTimeFrames(timeFrame, now).stream()
 				.forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, isDay));
 		var logStmt = String.format("Prepared Coinbase %s Data Time:", isDay ? "Daily" : "Hourly");
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, logStmt));
 	}
 
-	private List<MyTimeFrame> createTimeFrames(final MyTimeFrame timeFrame, final Calendar now, final boolean isDay) {
+	private List<MyTimeFrame> createTimeFrames(final MyTimeFrame timeFrame, final Calendar now) {
 		final var timeFrames = new ArrayList<MyTimeFrame>();
 		var begin = timeFrame.begin();
 		var end = timeFrame.end();
 		while (end.before(now)) {
-			begin = isDay ? nextDay(begin) : nextHour(begin);
-			end = isDay ? nextDay(end) : nextHour(begin);
 			var myTimeFrame = new MyTimeFrame(begin, end);
 			timeFrames.add(myTimeFrame);
+			begin = nextDay(begin);
+			end = nextDay(end);
 		}
 		return timeFrames;
 	}
 
-	private Calendar nextHour(Calendar begin) {
-		var begin1 = GregorianCalendar.getInstance();
-		begin1.setTime(begin.getTime());
-		begin1.add(Calendar.HOUR, 1);
-		begin = begin1;
-		return begin;
-	}
-	
 	private Calendar nextDay(Calendar begin) {
 		var begin1 = GregorianCalendar.getInstance();
 		begin1.setTime(begin.getTime());
