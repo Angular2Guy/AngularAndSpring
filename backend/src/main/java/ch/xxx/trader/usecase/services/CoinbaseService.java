@@ -242,10 +242,10 @@ public class CoinbaseService {
 		LOG.info(isDay ? "createCbDailyAvg()" : "createCbHourlyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
 		final MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(isDay ? CB_DAY_COL : CB_HOUR_COL, QuoteCb.class,
-				false);
+				!isDay);
 		final Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 		LOG.info("isDay: {}, TimeFrame.Begin: {}, TimeFrame.End: {}, now: {}", isDay, sdf.format(timeFrame.begin().getTime()), sdf.format(timeFrame.end().getTime()), sdf.format(now.getTime()));
 		this.createTimeFrames(timeFrame, now).stream()
 				.forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, isDay));
