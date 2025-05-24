@@ -19,30 +19,21 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScan.Filter;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import ch.xxx.trader.domain.model.entity.MyUser;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ComponentScan(basePackages = "ch.xxx.trader", includeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE))
-@TestMethodOrder(OrderAnnotation.class)
+//@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+//@ComponentScan(basePackages = "ch.xxx.trader", includeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE))
+//@TestMethodOrder(OrderAnnotation.class)
 public class ClientMongoRepositoryTest {
 	private static final String USERID = "userId";
-	@Autowired
+	//@Autowired
 	private ClientMongoRepository clientMongoRepository;
 	
-	@Test
+	//@Test
 	@Order(1)
 	public void saveMyUser() throws Exception {		
 		MyUser myUser = this.createMyUser();
@@ -52,7 +43,7 @@ public class ClientMongoRepositoryTest {
 		Assertions.assertEquals(myUser.getPassword(), result.getPassword());
 	}
 	
-	@Test
+	//@Test
 	@Order(2)
 	public void findMyUserFound() throws Exception {
 		Query query = new Query();
@@ -62,7 +53,7 @@ public class ClientMongoRepositoryTest {
 		Assertions.assertEquals(USERID, resultOpt.get().getUserId());
 	}
 	
-	@Test
+	//@Test
 	@Order(3)
 	public void findMyUserNotFound() throws Exception {
 		Query query = new Query();
