@@ -4,98 +4,102 @@
       aria-label="Select an option"
       [(ngModel)]="selCurrency"
       (change)="updateCurrency()"
-    >
+      >
       <mat-radio-button
         value="{{ statisticCurrencyPair.bcUsd }}"
         i18n="@@bitcoin"
         >Bitcoin</mat-radio-button
-      >
-      <mat-radio-button
-        value="{{ statisticCurrencyPair.ethUsd }}"
-        i18n="@@ether"
-        >Ether</mat-radio-button
-      >
-      <mat-radio-button
-        value="{{ statisticCurrencyPair.lcUsd }}"
-        i18n="@@litecoin"
-        >Litecoin</mat-radio-button
-      >
-      <mat-radio-button
-        value="{{ statisticCurrencyPair.rpUsd }}"
-        i18n="@@ripple"
-        >Ripple</mat-radio-button
-      >
-    </mat-radio-group>
-  </div>
-  <div>
-    <table>
-      <tbody>
-        <tr>
-          <th i18n="@@statisticsDuration">Duration</th>
-          <th i18n="@@statisticsPerformance">Performance</th>
-          <th i18n="@@statisticsVolatility">Volatility</th>
-          <th i18n="@@statisticsAvgVolume">Avg. Volume</th>
-          <th i18n="@@statisticsRangeMin">Range Min</th>
-          <th i18n="@@statisticsRangeMax">Range Max</th>
-        </tr>
-        <tr>
-          <td i18n="@@Month1">1 Month</td>
-          <td>{{ commonStatistics?.performance1Month | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.volatility1Month | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.avgVolume1Month | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range1Month?.min | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range1Month?.max | number: "1.2" }}</td>
-        </tr>
-        <tr>
-          <td i18n="@@Month3">3 Months</td>
-          <td>{{ commonStatistics?.performance3Month | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.volatility3Month | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.avgVolume3Month | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range3Month?.min | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range3Month?.max | number: "1.2" }}</td>
-        </tr>
-        <tr>
-          <td i18n="@@Month6">6 Months</td>
-          <td>{{ commonStatistics?.performance6Month | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.volatility6Month | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.avgVolume6Month | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range6Month?.min | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range6Month?.max | number: "1.2" }}</td>
-        </tr>
-        <tr>
-          <td i18n="@@Year1">1 Year</td>
-          <td>{{ commonStatistics?.performance1Year | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.volatility1Year | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.avgVolume1Year | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range1Year?.min | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range1Year?.max | number: "1.2" }}</td>
-        </tr>
-        <tr>
-          <td i18n="@@Year2">2 Years</td>
-          <td>{{ commonStatistics?.performance2Year | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.volatility2Year | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.avgVolume2Year | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range2Year?.min | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range2Year?.max | number: "1.2" }}</td>
-        </tr>
-        <tr>
-          <td i18n="@@Year5">5 Years</td>
-          <td>{{ commonStatistics?.performance5Year | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.volatility5Year | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.avgVolume5Year | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range5Year?.min | number: "1.2" }}</td>
-          <td>{{ commonStatistics?.range5Year?.max | number: "1.2" }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div *ngIf="chartsLoading" class="center-div">
-    <mat-progress-spinner
-      mode="indeterminate"
-      color="primary"
-    ></mat-progress-spinner>
-  </div>
-  <div *ngIf="!chartsLoading" class="chart-container">
-    <sc-bar-chart [chartBars]="chartBars"></sc-bar-chart>
-  </div>
-</div>
+        >
+        <mat-radio-button
+          value="{{ statisticCurrencyPair.ethUsd }}"
+          i18n="@@ether"
+          >Ether</mat-radio-button
+          >
+          <mat-radio-button
+            value="{{ statisticCurrencyPair.lcUsd }}"
+            i18n="@@litecoin"
+            >Litecoin</mat-radio-button
+            >
+            <mat-radio-button
+              value="{{ statisticCurrencyPair.rpUsd }}"
+              i18n="@@ripple"
+              >Ripple</mat-radio-button
+              >
+            </mat-radio-group>
+          </div>
+          <div>
+            <table>
+              <tbody>
+                <tr>
+                  <th i18n="@@statisticsDuration">Duration</th>
+                  <th i18n="@@statisticsPerformance">Performance</th>
+                  <th i18n="@@statisticsVolatility">Volatility</th>
+                  <th i18n="@@statisticsAvgVolume">Avg. Volume</th>
+                  <th i18n="@@statisticsRangeMin">Range Min</th>
+                  <th i18n="@@statisticsRangeMax">Range Max</th>
+                </tr>
+                <tr>
+                  <td i18n="@@Month1">1 Month</td>
+                  <td>{{ commonStatistics?.performance1Month | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.volatility1Month | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.avgVolume1Month | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range1Month?.min | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range1Month?.max | number: "1.2" }}</td>
+                </tr>
+                <tr>
+                  <td i18n="@@Month3">3 Months</td>
+                  <td>{{ commonStatistics?.performance3Month | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.volatility3Month | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.avgVolume3Month | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range3Month?.min | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range3Month?.max | number: "1.2" }}</td>
+                </tr>
+                <tr>
+                  <td i18n="@@Month6">6 Months</td>
+                  <td>{{ commonStatistics?.performance6Month | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.volatility6Month | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.avgVolume6Month | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range6Month?.min | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range6Month?.max | number: "1.2" }}</td>
+                </tr>
+                <tr>
+                  <td i18n="@@Year1">1 Year</td>
+                  <td>{{ commonStatistics?.performance1Year | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.volatility1Year | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.avgVolume1Year | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range1Year?.min | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range1Year?.max | number: "1.2" }}</td>
+                </tr>
+                <tr>
+                  <td i18n="@@Year2">2 Years</td>
+                  <td>{{ commonStatistics?.performance2Year | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.volatility2Year | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.avgVolume2Year | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range2Year?.min | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range2Year?.max | number: "1.2" }}</td>
+                </tr>
+                <tr>
+                  <td i18n="@@Year5">5 Years</td>
+                  <td>{{ commonStatistics?.performance5Year | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.volatility5Year | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.avgVolume5Year | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range5Year?.min | number: "1.2" }}</td>
+                  <td>{{ commonStatistics?.range5Year?.max | number: "1.2" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          @if (chartsLoading) {
+            <div class="center-div">
+              <mat-progress-spinner
+                mode="indeterminate"
+                color="primary"
+              ></mat-progress-spinner>
+            </div>
+          }
+          @if (!chartsLoading) {
+            <div class="chart-container">
+              <sc-bar-chart [chartBars]="chartBars"></sc-bar-chart>
+            </div>
+          }
+        </div>

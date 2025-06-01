@@ -18,143 +18,150 @@
               name="bitstampCb"
               i18n="@@bitstamp"
               >Bitstamp</mat-checkbox
-            >
-          </div>
-          <div>
-            <mat-checkbox
-              [(ngModel)]="model.itbitCb"
-              name="itbitCb"
-              i18n="@@itbit"
-              >Itbit</mat-checkbox
-            >
-          </div>
-          <div>
-            <mat-checkbox
-              [(ngModel)]="model.bitfinexCb"
-              name="bitfinexCb"
-              i18n="@@bitfinex"
-              >Bitfinex</mat-checkbox
-            >
-          </div>
-          <div>
-            <div class="formatMs">
-              <mat-radio-group [(ngModel)]="model.buysell" name="buysell">
-                <mat-radio-button name="buysell" value="1" i18n="@@buy"
-                  >Buy</mat-radio-button
-                >
-                <mat-radio-button name="buysell" value="0" i18n="@@sell"
-                  >Sell</mat-radio-button
-                >
-              </mat-radio-group>
+              >
             </div>
-          </div>
-          <div>
-            <div class="formatMs">
-              <mat-form-field>
-                <mat-select
-                  [(ngModel)]="model.currpair"
-                  required
-                  name="currpair"
-                  placeholder-i18n="@@currencyPair"
-                  placeholder="currency pair"
-                >
-                  <mat-option
-                    *ngFor="let curr of currencies"
-                    [value]="curr.value"
-                  >
-                    {{ curr.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-          <div>
             <div>
-              <div class="formatMs">
-                <mat-form-field>
-                  <input
-                    matInput
-                    type="number"
-                    [(ngModel)]="model.amount"
-                    name="amount"
-                    required
-                    placeholder-i18n="@@amount"
-                    placeholder="Amount"
-                  />
-                </mat-form-field>
+              <mat-checkbox
+                [(ngModel)]="model.itbitCb"
+                name="itbitCb"
+                i18n="@@itbit"
+                >Itbit</mat-checkbox
+                >
               </div>
-            </div>
-          </div>
-          <div>
-            <button
-              mat-button
-              type="submit"
-              [disabled]="!obForm.form.valid"
-              i18n="@@search"
-            >
+              <div>
+                <mat-checkbox
+                  [(ngModel)]="model.bitfinexCb"
+                  name="bitfinexCb"
+                  i18n="@@bitfinex"
+                  >Bitfinex</mat-checkbox
+                  >
+                </div>
+                <div>
+                  <div class="formatMs">
+                    <mat-radio-group [(ngModel)]="model.buysell" name="buysell">
+                      <mat-radio-button name="buysell" value="1" i18n="@@buy"
+                        >Buy</mat-radio-button
+                        >
+                        <mat-radio-button name="buysell" value="0" i18n="@@sell"
+                          >Sell</mat-radio-button
+                          >
+                        </mat-radio-group>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="formatMs">
+                        <mat-form-field>
+                          <mat-select
+                            [(ngModel)]="model.currpair"
+                            required
+                            name="currpair"
+                            placeholder-i18n="@@currencyPair"
+                            placeholder="currency pair"
+                            >
+                            @for (curr of currencies; track curr) {
+                              <mat-option
+                                [value]="curr.value"
+                                >
+                                {{ curr.name }}
+                              </mat-option>
+                            }
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        <div class="formatMs">
+                          <mat-form-field>
+                            <input
+                              matInput
+                              type="number"
+                              [(ngModel)]="model.amount"
+                              name="amount"
+                              required
+                              placeholder-i18n="@@amount"
+                              placeholder="Amount"
+                              />
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        mat-button
+                        type="submit"
+                        [disabled]="!obForm.form.valid"
+                        i18n="@@search"
+                        >
               Search
             </button>
-            <button mat-button (click)="back()" i18n="@@back">Back</button>
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="flexchild">
-      <mat-list role="list">
-        <mat-list-item role="listitem"
-          ><span i18n="@@orderbooksBitstampOrders"
-            >Bitstamp Orders</span
-          ></mat-list-item
-        >
-        <mat-list-item role="listitem"
-          ><span i18n="@@price">Price</span>&nbsp; - &nbsp;<span i18n="@@amount"
-            >Amount</span
-          ></mat-list-item
-        >
-        <mat-list-item role="listitem" *ngFor="let order of bsOrders">
-          <span [style.color]="order.color"
-            >{{ order.price }} - {{ order.amount }}</span
-          >
-        </mat-list-item>
-      </mat-list>
-    </div>
-    <div class="flexchild">
-      <mat-list>
-        <mat-list-item
-          ><span i18n="@@orderbooksItbitOrders"
-            >Itbit Orders</span
-          ></mat-list-item
-        >
-        <mat-list-item
-          ><span i18n="@@price">Price</span>&nbsp; - &nbsp;<span i18n="@@amount"
-            >Amount</span
-          ></mat-list-item
-        >
-        <mat-list-item *ngFor="let order of ibOrders">
-          <span [style.color]="order.color"
-            >{{ order.price }} - {{ order.amount }}</span
-          >
-        </mat-list-item>
-      </mat-list>
-    </div>
-    <div class="flexchild">
-      <mat-list>
-        <mat-list-item
-          ><span i18n="@@orderbooksBitfinexOrders"
-            >Bitfinex Orders</span
-          ></mat-list-item
-        >
-        <mat-list-item
-          ><span i18n="@@price">Price</span>&nbsp; - &nbsp;<span i18n="@@amount"
-            >Amount</span
-          ></mat-list-item
-        >
-        <mat-list-item *ngFor="let order of bfOrders">
-          <span [style.color]="order.color"
-            >{{ order.price }} - {{ order.amount }}</span
-          >
-        </mat-list-item>
-      </mat-list>
-    </div>
-  </div>
-</div>
+                      <button mat-button (click)="back()" i18n="@@back">Back</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="flexchild">
+                <mat-list role="list">
+                  <mat-list-item role="listitem"
+                    ><span i18n="@@orderbooksBitstampOrders"
+                    >Bitstamp Orders</span
+                    ></mat-list-item
+                    >
+                    <mat-list-item role="listitem"
+                      ><span i18n="@@price">Price</span>&nbsp; - &nbsp;<span i18n="@@amount"
+                      >Amount</span
+                      ></mat-list-item
+                      >
+                      @for (order of bsOrders; track order) {
+                        <mat-list-item role="listitem">
+                          <span [style.color]="order.color"
+                            >{{ order.price }} - {{ order.amount }}</span
+                            >
+                          </mat-list-item>
+                        }
+                      </mat-list>
+                    </div>
+                    <div class="flexchild">
+                      <mat-list>
+                        <mat-list-item
+                          ><span i18n="@@orderbooksItbitOrders"
+                          >Itbit Orders</span
+                          ></mat-list-item
+                          >
+                          <mat-list-item
+                            ><span i18n="@@price">Price</span>&nbsp; - &nbsp;<span i18n="@@amount"
+                            >Amount</span
+                            ></mat-list-item
+                            >
+                            @for (order of ibOrders; track order) {
+                              <mat-list-item>
+                                <span [style.color]="order.color"
+                                  >{{ order.price }} - {{ order.amount }}</span
+                                  >
+                                </mat-list-item>
+                              }
+                            </mat-list>
+                          </div>
+                          <div class="flexchild">
+                            <mat-list>
+                              <mat-list-item
+                                ><span i18n="@@orderbooksBitfinexOrders"
+                                >Bitfinex Orders</span
+                                ></mat-list-item
+                                >
+                                <mat-list-item
+                                  ><span i18n="@@price">Price</span>&nbsp; - &nbsp;<span i18n="@@amount"
+                                  >Amount</span
+                                  ></mat-list-item
+                                  >
+                                  @for (order of bfOrders; track order) {
+                                    <mat-list-item>
+                                      <span [style.color]="order.color"
+                                        >{{ order.price }} - {{ order.amount }}</span
+                                        >
+                                      </mat-list-item>
+                                    }
+                                  </mat-list>
+                                </div>
+                              </div>
+                            </div>

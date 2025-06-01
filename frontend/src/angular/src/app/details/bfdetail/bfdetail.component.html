@@ -44,37 +44,38 @@
           class="radioGroup"
           [(ngModel)]="timeframe"
           (change)="changeTf()"
-        >
-          <mat-radio-button
-            class="radioButton"
-            *ngFor="let tf of utils.timeframes"
-            [value]="tf"
-            ><span i18n="@@radioDays"
-              >{tf, plural, =1 {today} other {{{tf}} days}}</span
-            ></mat-radio-button
           >
-        </mat-radio-group>
-        <mat-checkbox [(ngModel)]="addLinReg" (change)="changeTf()" class="radioButton" i18n="@@linReg">add Linear Reg</mat-checkbox>
-        <button
-          mat-button
-          class="radioButton"
-          (click)="showReport()"
+          @for (tf of utils.timeframes; track tf) {
+            <mat-radio-button
+              class="radioButton"
+              [value]="tf"
+              ><span i18n="@@radioDays"
+              >{tf, plural, =1 {today} other {{{tf}} days}}</span
+              ></mat-radio-button
+              >
+            }
+          </mat-radio-group>
+          <mat-checkbox [(ngModel)]="addLinReg" (change)="changeTf()" class="radioButton" i18n="@@linReg">add Linear Reg</mat-checkbox>
+          <button
+            mat-button
+            class="radioButton"
+            (click)="showReport()"
           [ngStyle]="{
             visibility: todayQuotes.length > 0 ? 'visible' : 'hidden'
           }"
-          i18n="@@showReport"
-        >
+            i18n="@@showReport"
+            >
           show report
         </button>
-      </span>
+        </span>
+      </div>
+      <div
+        #chartContainer
+        class="chart-container"
+        [@showChart]="chartShow | async"
+        >
+        <sc-line-chart [chartPoints]="chartPoints" class="line-chart"></sc-line-chart>
+      </div>
+      <div>{{ todayQuotes?.length }} {{ chartShow | async }}</div>
     </div>
-    <div
-      #chartContainer
-      class="chart-container"
-      [@showChart]="chartShow | async"
-    >
-      <sc-line-chart [chartPoints]="chartPoints" class="line-chart"></sc-line-chart>
-    </div>
-    <div>{{ todayQuotes?.length }} {{ chartShow | async }}</div>
   </div>
-</div>

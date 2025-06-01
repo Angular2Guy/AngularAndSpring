@@ -12,48 +12,54 @@
   <div>
     <table>
       <tbody>
-        <tr *ngIf="currpair === BTCUSD">
-          <td i18n="@@pair">Pair:</td>
-          <td>{{ myCurrPair }}</td>
-          <td i18n="@@lastUsd">Last Usd:</td>
-          <td id="usd">{{ currQuote?.usd | number : "1.2" }}</td>
-          <td i18n="@@lastEur">Last Eur:</td>
-          <td id="eur">{{ currQuote?.eur | number : "1.2" }}</td>
-          <td i18n="@@lastYen">Last Yen:</td>
-          <td id="jpy">{{ currQuote?.jpy | number : "1.2" }}</td>
-          <td i18n="@@lastGbp">Last Pound:</td>
-          <td id="gbp">{{ currQuote?.gbp | number : "1.2" }}</td>
-          <td i18n="@@timestamp">Timestamp:</td>
-          <td id="createdAt">{{ currQuote?.createdAt | date : "HH:mm:ss" }}</td>
-        </tr>
-        <tr *ngIf="currpair === ETHUSD">
-          <td i18n="@@pair">Pair:</td>
-          <td>{{ myCurrPair }}</td>
-          <td i18n="@@lastUsd">Last Usd:</td>
-          <td>{{ currQuote?.usd / currQuote?.eth | number : "1.2" }}</td>
-          <td i18n="@@lastEur">Last Eur:</td>
-          <td>{{ currQuote?.eur / currQuote?.eth | number : "1.2" }}</td>
-          <td i18n="@@lastYen">Last Yen:</td>
-          <td>{{ currQuote?.jpy / currQuote?.eth | number : "1.2" }}</td>
-          <td i18n="@@lastGbp">Last Pound:</td>
-          <td>{{ currQuote?.gbp / currQuote?.eth | number : "1.2" }}</td>
-          <td i18n="@@timestamp">Timestamp:</td>
-          <td>{{ currQuote?.createdAt | date : "HH:mm:ss" }}</td>
-        </tr>
-        <tr *ngIf="currpair === LTCUSD">
-          <td i18n="@@pair">Pair:</td>
-          <td>{{ myCurrPair }}</td>
-          <td i18n="@@lastUsd">Last Usd:</td>
-          <td>{{ currQuote?.usd / currQuote?.ltc | number : "1.2" }}</td>
-          <td i18n="@@lastEur">Last Eur:</td>
-          <td>{{ currQuote?.eur / currQuote?.ltc | number : "1.2" }}</td>
-          <td i18n="@@lastYen">Last Yen:</td>
-          <td>{{ currQuote?.jpy / currQuote?.ltc | number : "1.2" }}</td>
-          <td i18n="@@lastGbp">Last Pound:</td>
-          <td>{{ currQuote?.gbp / currQuote?.ltc | number : "1.2" }}</td>
-          <td i18n="@@timestamp">Timestamp:</td>
-          <td id="createdAt">{{ currQuote?.createdAt | date : "HH:mm:ss" }}</td>
-        </tr>
+        @if (currpair === BTCUSD) {
+          <tr>
+            <td i18n="@@pair">Pair:</td>
+            <td>{{ myCurrPair }}</td>
+            <td i18n="@@lastUsd">Last Usd:</td>
+            <td id="usd">{{ currQuote?.usd | number : "1.2" }}</td>
+            <td i18n="@@lastEur">Last Eur:</td>
+            <td id="eur">{{ currQuote?.eur | number : "1.2" }}</td>
+            <td i18n="@@lastYen">Last Yen:</td>
+            <td id="jpy">{{ currQuote?.jpy | number : "1.2" }}</td>
+            <td i18n="@@lastGbp">Last Pound:</td>
+            <td id="gbp">{{ currQuote?.gbp | number : "1.2" }}</td>
+            <td i18n="@@timestamp">Timestamp:</td>
+            <td id="createdAt">{{ currQuote?.createdAt | date : "HH:mm:ss" }}</td>
+          </tr>
+        }
+        @if (currpair === ETHUSD) {
+          <tr>
+            <td i18n="@@pair">Pair:</td>
+            <td>{{ myCurrPair }}</td>
+            <td i18n="@@lastUsd">Last Usd:</td>
+            <td>{{ currQuote?.usd / currQuote?.eth | number : "1.2" }}</td>
+            <td i18n="@@lastEur">Last Eur:</td>
+            <td>{{ currQuote?.eur / currQuote?.eth | number : "1.2" }}</td>
+            <td i18n="@@lastYen">Last Yen:</td>
+            <td>{{ currQuote?.jpy / currQuote?.eth | number : "1.2" }}</td>
+            <td i18n="@@lastGbp">Last Pound:</td>
+            <td>{{ currQuote?.gbp / currQuote?.eth | number : "1.2" }}</td>
+            <td i18n="@@timestamp">Timestamp:</td>
+            <td>{{ currQuote?.createdAt | date : "HH:mm:ss" }}</td>
+          </tr>
+        }
+        @if (currpair === LTCUSD) {
+          <tr>
+            <td i18n="@@pair">Pair:</td>
+            <td>{{ myCurrPair }}</td>
+            <td i18n="@@lastUsd">Last Usd:</td>
+            <td>{{ currQuote?.usd / currQuote?.ltc | number : "1.2" }}</td>
+            <td i18n="@@lastEur">Last Eur:</td>
+            <td>{{ currQuote?.eur / currQuote?.ltc | number : "1.2" }}</td>
+            <td i18n="@@lastYen">Last Yen:</td>
+            <td>{{ currQuote?.jpy / currQuote?.ltc | number : "1.2" }}</td>
+            <td i18n="@@lastGbp">Last Pound:</td>
+            <td>{{ currQuote?.gbp / currQuote?.ltc | number : "1.2" }}</td>
+            <td i18n="@@timestamp">Timestamp:</td>
+            <td id="createdAt">{{ currQuote?.createdAt | date : "HH:mm:ss" }}</td>
+          </tr>
+        }
       </tbody>
     </table>
     <div class="detailLinks">
@@ -62,26 +68,27 @@
           class="radioGroup"
           [(ngModel)]="timeframe"
           (change)="changeTf()"
-        >
-          <mat-radio-button
-            class="radioButton"
-            *ngFor="let tf of utils.timeframes"
-            [value]="tf"
-            ><span i18n="@@radioDays"
-              >{tf, plural, =1 {today} other {{{tf}} days}}</span
-            ></mat-radio-button
           >
-        </mat-radio-group>
-        <mat-checkbox [(ngModel)]="addLinReg" (change)="changeTf()" class="radioButton" i18n="@@linReg">add Linear Reg</mat-checkbox>
-      </span>
+          @for (tf of utils.timeframes; track tf) {
+            <mat-radio-button
+              class="radioButton"
+              [value]="tf"
+              ><span i18n="@@radioDays"
+              >{tf, plural, =1 {today} other {{{tf}} days}}</span
+              ></mat-radio-button
+              >
+            }
+          </mat-radio-group>
+          <mat-checkbox [(ngModel)]="addLinReg" (change)="changeTf()" class="radioButton" i18n="@@linReg">add Linear Reg</mat-checkbox>
+        </span>
+      </div>
+      <div
+        #chartContainer
+        class="chart-container"
+        [@showChart]="chartShow | async"
+        >
+        <sc-line-chart [chartPoints]="chartPoints"></sc-line-chart>
+      </div>
+      <div>{{ todayQuotes?.length }} {{ chartShow | async }}</div>
     </div>
-    <div
-      #chartContainer
-      class="chart-container"
-      [@showChart]="chartShow | async"
-    >
-      <sc-line-chart [chartPoints]="chartPoints"></sc-line-chart>
-    </div>
-    <div>{{ todayQuotes?.length }} {{ chartShow | async }}</div>
   </div>
-</div>
