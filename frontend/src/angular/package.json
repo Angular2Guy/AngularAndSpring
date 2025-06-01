@@ -35,7 +35,7 @@
     "@types/luxon": "^2.0.0",
     "luxon": "^3.2.1",
     "material-icons": "^1.11.11",
-    "ngx-simple-charts": "^19.0.0",
+    "ngx-simple-charts": "^20.0.0",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.1",
     "zone.js": "~0.15.0"
@@ -67,11 +67,11 @@
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "@angular-eslint/builder": "^19.0.0-alpha.1",
-    "@angular-eslint/eslint-plugin": "^19.0.0-alpha.1",
-    "@angular-eslint/eslint-plugin-template": "^19.0.0-alpha.1",
-    "@angular-eslint/schematics": "^19.0.0-alpha.1",
-    "@angular-eslint/template-parser": "^19.0.0-alpha.1",
+    "@angular-eslint/builder": "^20.0.0-alpha.1",
+    "@angular-eslint/eslint-plugin": "^20.0.0-alpha.1",
+    "@angular-eslint/eslint-plugin-template": "^20.0.0-alpha.1",
+    "@angular-eslint/schematics": "^20.0.0-alpha.1",
+    "@angular-eslint/template-parser": "^20.0.0-alpha.1",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0"
   }
