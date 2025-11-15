@@ -14,7 +14,7 @@
    limitations under the License.
  */
 import { Component, OnInit, AfterViewInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import {
   trigger,
   state,
@@ -22,9 +22,11 @@ import {
   transition,
   style,
 } from "@angular/animations";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 
 @Component({
     selector: "app-splash",
+    imports: [MatProgressSpinner, RouterModule],
     templateUrl: "./splash.component.html",
     styleUrls: ["./splash.component.scss"],
     animations: [
@@ -35,7 +37,6 @@ import {
             transition("0 => 1", animate("750ms")),
         ]),
     ],
-    standalone: false
 })
 export class SplashComponent implements OnInit, AfterViewInit {
   protected myState = false;

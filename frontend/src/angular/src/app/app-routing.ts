@@ -25,7 +25,7 @@ export const routes: Routes = [
   {
     path: "details",
     loadChildren: () =>
-      import("./details/details.module").then((m) => m.DetailsModule),
+      import("./details/details.routes").then((m) => m.routes),
   },
   {
     path: "orderbooks",
@@ -36,7 +36,7 @@ export const routes: Routes = [
   {
     path: "statistics",
     loadChildren: () =>
-      import("./statistics/statistics.module").then((m) => m.StatisticsModule),
+      import("./statistics/statistics.routes").then((m) => m.routes),
   },
   { path: "**", component: SplashComponent },
 ];

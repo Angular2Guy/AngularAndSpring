@@ -13,9 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+import { CommonModule } from "@angular/common";
 import { Component, DestroyRef, Input, OnInit, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { ChartBars, ChartBar } from "ngx-simple-charts/bar";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { ChartBars, ChartBar, NgxBarChartsModule } from "ngx-simple-charts/bar";
 import { tap } from "rxjs";
 import {
   CoinExchange,
@@ -26,9 +33,18 @@ import { StatisticService } from "src/app/services/statistic.service";
 
 @Component({
     selector: "app-statistic-details",
+    imports: [
+      CommonModule,
+    FormsModule,
+    ReactiveFormsModule,    
+    MatToolbarModule,
+    MatButtonModule,
+    MatTabsModule,
+    MatRadioModule,
+    NgxBarChartsModule,
+    MatProgressSpinnerModule],
     templateUrl: "./statistic-details.component.html",
     styleUrls: ["./statistic-details.component.scss"],
-    standalone: false
 })
 export class StatisticDetailsComponent implements OnInit {
   @Input()

@@ -34,9 +34,25 @@ import { QuoteIb } from "../../common/quote-ib";
 import { ItbitService } from "../../services/itbit.service";
 import { DetailBase, Tuple } from "src/app/common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { MatButtonModule } from "@angular/material/button";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { NgxLineChartsModule } from "ngx-simple-charts/line";
 
 @Component({
     selector: "app-ibdetail",
+    imports: [    
+      CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatButtonModule,
+    NgxLineChartsModule,],
     templateUrl: "./ibdetail.component.html",
     styleUrls: ["./ibdetail.component.scss"],
     animations: [
@@ -47,7 +63,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
             ]),
         ]),
     ],
-    standalone: false
 })
 export class IbdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteIb;

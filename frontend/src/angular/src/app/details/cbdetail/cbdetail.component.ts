@@ -34,9 +34,25 @@ import { QuoteCb, QuoteCbSmall } from "../../common/quote-cb";
 import { CoinbaseService } from "../../services/coinbase.service";
 import { DetailBase, Tuple } from "src/app/common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { MatButtonModule } from "@angular/material/button";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { NgxLineChartsModule } from "ngx-simple-charts/line";
 
 @Component({
     selector: "app-cbdetail",
+    imports: [    
+      CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatButtonModule,
+    NgxLineChartsModule],
     templateUrl: "./cbdetail.component.html",
     styleUrls: ["./cbdetail.component.scss"],
     animations: [
@@ -47,7 +63,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
             ]),
         ]),
     ],
-    standalone: false
 })
 export class CbdetailComponent extends DetailBase implements OnInit {
   public currpair: string;

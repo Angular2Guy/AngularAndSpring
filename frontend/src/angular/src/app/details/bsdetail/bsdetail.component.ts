@@ -34,9 +34,25 @@ import { BitstampService } from "../../services/bitstamp.service";
 import { QuoteBs } from "../../common/quote-bs";
 import { DetailBase, Tuple } from "src/app/common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { NgxLineChartsModule } from "ngx-simple-charts/line";
 
 @Component({
     selector: "app-bsdetail",
+    imports: [    
+      CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatButtonModule,
+    NgxLineChartsModule],
     templateUrl: "./bsdetail.component.html",
     styleUrls: ["./bsdetail.component.scss"],
     animations: [
@@ -47,7 +63,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
             ]),
         ]),
     ],
-    standalone: false
 })
 export class BsdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteBs;

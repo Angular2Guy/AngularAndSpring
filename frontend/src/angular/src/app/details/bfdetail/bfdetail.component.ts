@@ -34,9 +34,25 @@ import { QuoteBf } from "../../common/quote-bf";
 import { BehaviorSubject, Observable, repeat } from "rxjs";
 import { DetailBase, Tuple } from "../../common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { NgxLineChartsModule } from "ngx-simple-charts/line";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatToolbarModule } from "@angular/material/toolbar";
 
 @Component({
     selector: "app-bfdetail",
+    imports: [    
+      CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatButtonModule,
+    NgxLineChartsModule],
     templateUrl: "./bfdetail.component.html",
     styleUrls: ["./bfdetail.component.scss"],
     animations: [
@@ -47,7 +63,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
             ]),
         ]),
     ],
-    standalone: false
 })
 export class BfdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteBf;

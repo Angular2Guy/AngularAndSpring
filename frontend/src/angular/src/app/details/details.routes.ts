@@ -13,23 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
-import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { BsdetailComponent } from "./bsdetail/bsdetail.component";
 import { IbdetailComponent } from "./ibdetail/ibdetail.component";
 import { CbdetailComponent } from "./cbdetail/cbdetail.component";
 import { BfdetailComponent } from "./bfdetail/bfdetail.component";
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: "bsdetail/:currpair", component: BsdetailComponent },
   { path: "ibdetail/:currpair", component: IbdetailComponent },
   { path: "cbdetail/:currpair", component: CbdetailComponent },
   { path: "bfdetail/:currpair", component: BfdetailComponent },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class DetailsRoutingModule {}

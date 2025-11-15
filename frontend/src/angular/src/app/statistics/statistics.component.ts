@@ -24,6 +24,7 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { NgxBarChartsModule } from "ngx-simple-charts/bar";
+import { StatisticDetailsComponent } from "./statistic-details/statistic-details.component";
 
 @Component({
     selector: "app-statistics",
@@ -36,7 +37,8 @@ import { NgxBarChartsModule } from "ngx-simple-charts/bar";
     MatTabsModule,
     MatRadioModule,
     NgxBarChartsModule,
-    MatProgressSpinnerModule,],
+    MatProgressSpinnerModule,
+  StatisticDetailsComponent],
     templateUrl: "./statistics.component.html",
     styleUrls: ["./statistics.component.scss"],    
 })

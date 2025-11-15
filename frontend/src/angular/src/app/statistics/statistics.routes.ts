@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016 Sven Loesekann
+   Copyright 2016 Sven Loesekann
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,16 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { enableProdMode } from "@angular/core";
-import { environment } from "./environments/environment";
-import { bootstrapApplication } from "@angular/platform-browser";
-import { AppComponent } from "./app/app.component";
-import { appConfig } from "./app/app.config";
+import { Routes, RouterModule } from "@angular/router";
+import { StatisticsComponent } from "./statistics.component";
 
-if (environment.production) {
-  enableProdMode();
-}
-
-bootstrapApplication(AppComponent, appConfig).catch((err) =>
-  console.error(err)
-);
+export const routes: Routes = [
+  {
+    path: "",
+    component: StatisticsComponent,
+  },
+];
