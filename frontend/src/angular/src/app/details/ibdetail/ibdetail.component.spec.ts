@@ -70,8 +70,7 @@ describe("IbdetailComponent", () => {
   const mockService = new MockService(null);
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-    declarations: [IbdetailComponent],
+    TestBed.configureTestingModule({    
     imports: [RouterTestingModule,
         BrowserModule,
         FormsModule,

@@ -233,7 +233,6 @@ describe("CbdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [CbdetailComponent],
     imports: [RouterTestingModule,
         BrowserModule,
         FormsModule,

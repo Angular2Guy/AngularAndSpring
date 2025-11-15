@@ -66,7 +66,6 @@ describe("BsdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [BsdetailComponent],
     imports: [RouterTestingModule,
         BrowserModule,
         FormsModule,

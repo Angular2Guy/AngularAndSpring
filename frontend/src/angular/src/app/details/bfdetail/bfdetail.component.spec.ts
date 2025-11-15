@@ -62,8 +62,7 @@ describe("BfdetailComponent", () => {
   const mockService = new MockBfService(null);
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-    declarations: [BfdetailComponent],
+    TestBed.configureTestingModule({    
     imports: [RouterTestingModule,
         BrowserModule,
         FormsModule,
