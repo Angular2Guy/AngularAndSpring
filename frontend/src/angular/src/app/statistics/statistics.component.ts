@@ -16,12 +16,29 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { CoinExchange, CommonStatistics } from "../common/common-statistics";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { NgxBarChartsModule } from "ngx-simple-charts/bar";
 
 @Component({
     selector: "app-statistics",
+    imports: [    
+      CommonModule,
+    FormsModule,
+    ReactiveFormsModule,    
+    MatToolbarModule,
+    MatButtonModule,
+    MatTabsModule,
+    MatRadioModule,
+    NgxBarChartsModule,
+    MatProgressSpinnerModule,],
     templateUrl: "./statistics.component.html",
-    styleUrls: ["./statistics.component.scss"],
-    standalone: false
+    styleUrls: ["./statistics.component.scss"],    
 })
 export class StatisticsComponent {
   protected commonStatistics = new CommonStatistics();

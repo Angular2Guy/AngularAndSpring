@@ -12,16 +12,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule, PreloadAllModules } from "@angular/router";
+import { Routes } from "@angular/router";
 import { AuthGuardService } from "./services/auth-guard.service";
 import { SplashComponent } from "./splash/splash.component";
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: "overview",
     loadChildren: () =>
-      import("./overview/overview.module").then((m) => m.OverviewModule),
+      import("./overview/overview.routes").then((m) => m.routes),
   },
   {
     path: "details",
@@ -31,7 +30,7 @@ const routes: Routes = [
   {
     path: "orderbooks",
     loadChildren: () =>
-      import("./orderbooks/orderbooks.module").then((m) => m.OrderbooksModule),
+      import("./orderbooks/orderbooks.routes").then((m) => m.routes),
     canActivate: [AuthGuardService],
   },
   {
@@ -41,14 +40,3 @@ const routes: Routes = [
   },
   { path: "**", component: SplashComponent },
 ];
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      enableTracing: false,
-      preloadingStrategy: PreloadAllModules,
-    }),
-  ],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}

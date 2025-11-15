@@ -13,20 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { SplashComponent } from "./splash/splash.component";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { ApplicationConfig, importProvidersFrom } from "@angular/core";
+import { provideAnimations } from "@angular/platform-browser/animations";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import  { routes } from "./app-routing";
 import {
-  NgxServiceModule,
-  SimpleChartsConfig,
+  NgxServiceModule,  
 } from "ngx-simple-charts/base-service";
+import { provideRouter } from "@angular/router";
 
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideAnimations(), provideHttpClient(withInterceptorsFromDi()), importProvidersFrom(NgxServiceModule.forRoot({
+            tokenRefreshPath: "/rest/auth/refreshToken",
+            logoutPath: "/rest/auth/logout",
+            loginRoute: "/",
+        }))],
+};
+
+/*
 @NgModule({ declarations: [AppComponent, SplashComponent],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
@@ -38,3 +42,4 @@ import {
             loginRoute: "/login",
         })], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {}
+*/

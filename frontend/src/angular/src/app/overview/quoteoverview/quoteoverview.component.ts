@@ -31,18 +31,40 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DataSource, CollectionViewer } from "@angular/cdk/collections";
 import { Router } from "@angular/router";
 import { CommonUtils } from "../../common/common-utils";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { LoginComponent } from "../login/login.component";
 import { MyuserService } from "../../services/myuser.service";
 import { filter } from "rxjs/operators";
 import { TokenService } from "ngx-simple-charts/base-service";
 import { DateTime, Duration } from "luxon";
+import { CommonModule } from "@angular/common";
+import { MatTableModule } from "@angular/material/table";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { LuxonDateModule } from "@angular/material-luxon-adapter";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatToolbarModule } from "@angular/material/toolbar";
 
 @Component({
     selector: "app-quoteoverview",
+    imports: [    
+      CommonModule,
+    MatTableModule,
+    MatToolbarModule,
+    MatTabsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatInputModule,
+    LuxonDateModule,
+    FormsModule,
+    ReactiveFormsModule],
     templateUrl: "./quoteoverview.component.html",
-    styleUrls: ["./quoteoverview.component.scss"],
-    standalone: false
+    styleUrls: ["./quoteoverview.component.scss"],    
 })
 export class QuoteoverviewComponent implements OnInit, OnDestroy {
   protected datasource = new Myds();

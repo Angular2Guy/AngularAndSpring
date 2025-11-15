@@ -15,7 +15,7 @@
  */
 import { Component, OnInit, Inject, DestroyRef, inject } from "@angular/core";
 import { QuoteoverviewComponent } from "../quoteoverview/quoteoverview.component";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { MyuserService } from "../../services/myuser.service";
 import { MyUser } from "../../common/my-user";
 import {
@@ -23,9 +23,20 @@ import {
   FormBuilder,
   Validators,
   AbstractControlOptions,
+  ReactiveFormsModule,
+  FormsModule,
 } from "@angular/forms";
 import { TokenService } from "ngx-simple-charts/base-service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { CommonModule } from "@angular/common";
+import { LuxonDateModule } from "@angular/material-luxon-adapter";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatTableModule } from "@angular/material/table";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatToolbarModule } from "@angular/material/toolbar";
 
 enum FormFields {
   username = "username",
@@ -36,9 +47,21 @@ enum FormFields {
 
 @Component({
     selector: "app-login",
+    imports: [    
+      CommonModule,
+    MatTableModule,
+    MatToolbarModule,
+    MatTabsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatInputModule,
+    LuxonDateModule,
+    FormsModule,
+    ReactiveFormsModule],
     templateUrl: "./login.component.html",
-    styleUrls: ["./login.component.scss"],
-    standalone: false
+    styleUrls: ["./login.component.scss"],    
 })
 export class LoginComponent implements OnInit {
   protected signinForm: FormGroup;
