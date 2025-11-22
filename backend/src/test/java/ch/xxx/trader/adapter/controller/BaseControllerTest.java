@@ -15,17 +15,17 @@
  */
 package ch.xxx.trader.adapter.controller;
 
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.mongodb.autoconfigure.MongoProperties;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import io.micrometer.core.instrument.MeterRegistry;
 
 public class BaseControllerTest {
-	@MockBean
+	@MockitoBean
 	protected MongoProperties mongoProperties;
-	@MockBean
+	@MockitoBean
 	protected ReactiveMongoOperations reactiveMongoOperations;
-	@MockBean
+	@MockitoBean
 	protected MeterRegistry meterRegistry;
 }

@@ -15,24 +15,21 @@
  */
 package ch.xxx.trader.adapter.config;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter.HeaderValue;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import ch.xxx.trader.domain.common.Role;
 import ch.xxx.trader.usecase.services.JwtTokenService;
 
 @EnableWebSecurity
 @Configuration
-@Order(SecurityProperties.DEFAULT_FILTER_ORDER)
 public class WebSecurityConfig {
 
 	private final JwtTokenService jwtTokenProvider;
@@ -46,9 +43,9 @@ public class WebSecurityConfig {
 		JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider);
 		HttpSecurity httpSecurity = http
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(AntPathRequestMatcher.antMatcher("/*/*/orderbook"),
-								AntPathRequestMatcher.antMatcher("/*/*/*/orderbook"))
-						.hasAuthority(Role.USERS.toString()).requestMatchers(AntPathRequestMatcher.antMatcher("/**"))
+						.requestMatchers(PathPatternRequestMatcher.withDefaults().matcher("/*/*/orderbook"),
+								PathPatternRequestMatcher.withDefaults().matcher("/*/*/*/orderbook"))
+						.hasAuthority(Role.USERS.toString()).requestMatchers(PathPatternRequestMatcher.withDefaults().matcher("/**"))
 						.permitAll())
 				.csrf(myCsrf -> myCsrf.disable())
 				.sessionManagement(mySm -> mySm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
