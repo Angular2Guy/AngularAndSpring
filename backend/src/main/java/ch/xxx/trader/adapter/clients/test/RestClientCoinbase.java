@@ -15,22 +15,19 @@
  */
 package ch.xxx.trader.adapter.clients.test;
 
+import ch.xxx.trader.domain.model.dto.WrapperCb;
+import ch.xxx.trader.domain.model.entity.QuoteCb;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ch.xxx.trader.domain.model.dto.WrapperCb;
-import ch.xxx.trader.domain.model.entity.QuoteCb;
-import reactor.core.publisher.Mono;
 
 public class RestClientCoinbase {
 	private static final String URL = "https://api.coinbase.com/v2";
@@ -69,7 +66,7 @@ public class RestClientCoinbase {
 		   }
 	   
 	   private void print_content(HttpsURLConnection con){
-		   ObjectMapper mapper = new ObjectMapper();
+		   var mapper = new JsonMapper();
 		   if(con!=null){
 
 			try {

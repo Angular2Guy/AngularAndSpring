@@ -15,34 +15,24 @@
  */
 package ch.xxx.trader.adapter.config;
 
-import java.time.Duration;
-
-import javax.net.ssl.SSLException;
-
+import io.netty.channel.ChannelOption;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ch.xxx.trader.usecase.common.DtoUtils;
-import io.netty.channel.ChannelOption;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutHandler;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 import reactor.netty.tcp.SslProvider.SslContextSpec;
 
+import javax.net.ssl.SSLException;
+import java.time.Duration;
+
 @Configuration
 public class ApplicationConfig {
-
-	@Bean
-	public ObjectMapper createObjectMapper() {
-		return DtoUtils.produceObjectMapper();
-	}
 	
     @Bean
     public WebProperties.Resources resources() {

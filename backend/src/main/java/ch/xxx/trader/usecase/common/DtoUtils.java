@@ -15,26 +15,17 @@
  */
 package ch.xxx.trader.usecase.common;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.LambdaMetafactory;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import tools.jackson.databind.json.JsonMapper;
+
+import java.lang.invoke.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class DtoUtils {
 	public static final String CREATEDAT = "createdAt";
 	
-	public static ObjectMapper produceObjectMapper() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.registerModule(new JavaTimeModule());
-		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		return objectMapper;
+	public static JsonMapper produceJsonMapper() {
+        return new JsonMapper();
 	}
 
 	// source: https://dzone.com/articles/setters-method-handles-and-java-11

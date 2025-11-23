@@ -15,32 +15,25 @@
  */
 package ch.xxx.trader.usecase.mappers;
 
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.json.JsonMapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Optional;
 
 @Service
 public class EventMapper {
 	private static final Logger LOG = LoggerFactory.getLogger(EventMapper.class);
-	private final ObjectMapper objectMapper;
+	private final JsonMapper objectMapper;
 
-	public EventMapper(ObjectMapper objectMapper) {
+	public EventMapper(JsonMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
 	public String mapDtoToString(Object dto) {
-		String dtoJson;
-		try {
-			dtoJson = this.objectMapper.writeValueAsString(dto);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
-		return dtoJson;
+        String dtoJson = this.objectMapper.writeValueAsString(dto);
+        return dtoJson;
 	}
 
 	public <T> Optional<T> mapJsonToObject(String jsonString, Class<T> myClass) {

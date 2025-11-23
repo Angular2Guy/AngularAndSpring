@@ -26,7 +26,7 @@ public class LastlogoutTimestampExtractor implements TimestampExtractor {
 	
 	@Override
 	public long extract(ConsumerRecord<Object, Object> record, long partitionTime) {
-		RevokedToken revokedToken = DtoUtils.produceObjectMapper().convertValue(record.value(), RevokedToken.class);
+		RevokedToken revokedToken = DtoUtils.produceJsonMapper().convertValue(record.value(), RevokedToken.class);
 //		LOGGER.info(revokedToken.toString());
 		return Timestamp.valueOf(revokedToken.getLastLogout()).getTime();
 	}

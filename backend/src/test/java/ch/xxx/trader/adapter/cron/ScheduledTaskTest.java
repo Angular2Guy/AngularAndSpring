@@ -15,15 +15,13 @@
  */
 package ch.xxx.trader.adapter.cron;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.xxx.trader.domain.model.entity.QuoteIb;
 import ch.xxx.trader.domain.model.entity.paxos.PaxosQuote;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 public class ScheduledTaskTest {
 	private static final String VALUE = "{\"market\":\"BTCUSD\", \"best_bid\":{\"price\":\"29318.75\", \"amount\":\"0.40468933\"}, "
@@ -33,7 +31,7 @@ public class ScheduledTaskTest {
 			+ "\"end\":\"2023-04-29T06:53:17.898910Z\"}}, \"today\":{\"high\":\"29457.75\", \"low\":\"29232.25\", \"open\":\"29340.50\", "
 			+ "\"volume\":\"24.83650853\", \"volume_weighted_average_price\":\"29361.10623022\", \"range\":{\"begin\":\"2023-04-29T00:00:00Z\", "
 			+ "\"end\":\"2023-04-29T06:53:17.898910Z\"}}, \"snapshot_at\":\"2023-04-29T06:53:17.898910Z\"}";
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private JsonMapper objectMapper = new JsonMapper();
 
 	@Test
 	public void convertTest() throws JsonMappingException, JsonProcessingException {

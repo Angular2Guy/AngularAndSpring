@@ -30,13 +30,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.xxx.trader.adapter.config.KafkaConfig;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import ch.xxx.trader.usecase.common.LastlogoutTimestampExtractor;
+import tools.jackson.databind.json.JsonMapper;
 
 @Profile("kafka | prod")
 @Component
@@ -45,9 +43,9 @@ public class KafkaStreams {
 	private static final long LOGOUT_TIMEOUT = 120L;
 	private static final long GRACE_TIMEOUT = 5L;
 	private static final String UNPARSEABLE_JSON = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod";
-	private ObjectMapper objectMapper;
+	private final JsonMapper objectMapper;
 
-	public KafkaStreams(ObjectMapper objectMapper) {
+	public KafkaStreams(JsonMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
@@ -73,22 +71,18 @@ public class KafkaStreams {
 		return builder.build(streamsConfiguration);
 	}
 
-	private String convertToRevokedTokens(List<String> value) {
-		try {
+	private String convertToRevokedTokens(List<String> value) {		
 			List<RevokedToken> revokedTokenList = value.stream().map(myValue -> {
 				RevokedToken result;
 				try {
 					result = this.objectMapper.readValue(myValue, RevokedToken.class);
-				} catch (Exception e) {
+				} catch (RuntimeException e) {
 					LOGGER.warn(String.format("Failed to deserialize %s", myValue), e);
 					result = new RevokedToken(null, UNPARSEABLE_JSON, UNPARSEABLE_JSON, null);
 				}
 				return result;
 			}).filter(myRevokedToken -> !UNPARSEABLE_JSON.equalsIgnoreCase(myRevokedToken.getName())
 					&& !UNPARSEABLE_JSON.equalsIgnoreCase(myRevokedToken.getUuid())).toList();
-			return this.objectMapper.writeValueAsString(new RevokedTokensDto(revokedTokenList));
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+			return this.objectMapper.writeValueAsString(new RevokedTokensDto(revokedTokenList));		
 	}
 }
