@@ -14,7 +14,6 @@
    limitations under the License.
  */
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -30,6 +29,7 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { NgxLineChartsModule } from "ngx-simple-charts/line";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { Router, RouterModule } from "@angular/router";
 
 class MockService extends ItbitService {
   constructor(private http1: HttpClient) {
@@ -71,15 +71,15 @@ describe("IbdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({    
-    imports: [RouterTestingModule,
-        BrowserModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatRadioModule,
-        MatCheckboxModule,
-        NgxLineChartsModule],
+    imports: [
+      RouterTestingModule,
+      FormsModule,
+      ReactiveFormsModule,
+      BrowserAnimationsModule,
+      MatToolbarModule,
+      MatRadioModule,
+      MatCheckboxModule,
+      NgxLineChartsModule],     
     providers: [{ provide: ItbitService, useValue: mockService }, provideHttpClient(withInterceptorsFromDi())]
 }).compileComponents();
   }));
@@ -97,41 +97,49 @@ describe("IbdetailComponent", () => {
   it("should have value", () => {
     expect(component.currQuote.ask).toBe(3);
   });
+  
   it("should show lastPrice", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#lastPrice")).nativeElement;
     expect(el.textContent).toEqual("5.00");
   });
+  
   it("should show high24h", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#high24h")).nativeElement;
     expect(el.textContent).toEqual("9.00");
   });
+  
   it("should show low24h", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#low24h")).nativeElement;
     expect(el.textContent).toEqual("10.00");
   });
+  
   it("should show bid", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#bid")).nativeElement;
     expect(el.textContent).toEqual("1.00");
   });
+  
   it("should show ask", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#ask")).nativeElement;
     expect(el.textContent).toEqual("3.00");
   });
+  
   it("should show openToday", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#openToday")).nativeElement;
     expect(el.textContent).toEqual("11.00");
   });
+  
   it("should show vwap24h", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#vwap24h")).nativeElement;
     expect(el.textContent).toEqual("13.00");
   });
+  
   it("should show createdAt", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#createdAt")).nativeElement;
@@ -146,9 +154,11 @@ describe("IbdetailComponent", () => {
         : myDate.getSeconds());
     expect(el.textContent.substr(3, el.textContent.length)).toEqual(dateStr);
   });
+  
   it("should show volume24", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#volume24")).nativeElement;
     expect(el.textContent).toEqual("7.00");
   });
+  
 });

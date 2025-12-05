@@ -66,15 +66,15 @@ describe("BsdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule,
-        BrowserModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatCheckboxModule,
-        MatRadioModule,
-        NgxLineChartsModule],
+    imports: [
+        RouterTestingModule,
+      FormsModule,
+      ReactiveFormsModule,
+      BrowserAnimationsModule,
+      MatToolbarModule,
+      MatRadioModule,
+      MatCheckboxModule,
+      NgxLineChartsModule],
     providers: [{ provide: BitstampService, useValue: mockService }, provideHttpClient(withInterceptorsFromDi())]
 }).compileComponents();
   }));
@@ -88,6 +88,7 @@ describe("BsdetailComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+  
   it("should have value", () => {
     expect(component.currQuote.ask).toBe(7);
   });
@@ -145,4 +146,5 @@ describe("BsdetailComponent", () => {
     const el: HTMLElement = de.query(By.css("#volume")).nativeElement;
     expect(el.textContent).toEqual("5.00");
   });
+  
 });

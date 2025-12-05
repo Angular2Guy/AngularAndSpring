@@ -63,15 +63,15 @@ describe("BfdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({    
-    imports: [RouterTestingModule,
-        BrowserModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatCheckboxModule,
-        MatRadioModule,
-        NgxLineChartsModule],
+    imports: [
+        RouterTestingModule,
+      FormsModule,
+      ReactiveFormsModule,
+      BrowserAnimationsModule,
+      MatToolbarModule,
+      MatRadioModule,
+      MatCheckboxModule,
+      NgxLineChartsModule],
     providers: [{ provide: BitfinexService, useValue: mockService }, provideHttpClient(withInterceptorsFromDi())]
 }).compileComponents();
   }));
@@ -89,6 +89,7 @@ describe("BfdetailComponent", () => {
   it("should have value", () => {
     expect(component.currQuote.mid).toBe(1);
   });
+  
   it("should show last_price", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#last_price")).nativeElement;
@@ -138,4 +139,5 @@ describe("BfdetailComponent", () => {
     const el: HTMLElement = de.query(By.css("#volume")).nativeElement;
     expect(el.textContent).toEqual("7.00");
   });
+  
 });
