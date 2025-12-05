@@ -72,7 +72,7 @@
     "@angular-eslint/eslint-plugin-template": "^21.0.1",
     "@angular-eslint/schematics": "^21.0.1",
     "@angular-eslint/template-parser": "^21.0.1",
-    "@typescript-eslint/eslint-plugin": "^8.15.0",
-    "@typescript-eslint/parser": "^8.15.0"
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1"
   }
 }
