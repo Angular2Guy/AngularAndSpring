@@ -17,7 +17,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { CoinExchange, CommonStatistics } from "../common/common-statistics";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { CommonModule } from "@angular/common";
+
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatRadioModule } from "@angular/material/radio";
@@ -28,17 +28,17 @@ import { StatisticDetailsComponent } from "./statistic-details/statistic-details
 
 @Component({
     selector: "app-statistics",
-    imports: [    
-      CommonModule,
+    imports: [
     FormsModule,
-    ReactiveFormsModule,    
+    ReactiveFormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatTabsModule,
     MatRadioModule,
     NgxBarChartsModule,
     MatProgressSpinnerModule,
-  StatisticDetailsComponent],
+    StatisticDetailsComponent
+],
     templateUrl: "./statistics.component.html",
     styleUrls: ["./statistics.component.scss"],    
 })

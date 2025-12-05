@@ -23,7 +23,7 @@ import { OrderbookBf, OrderBf } from "../../common/orderbook-bf";
 import { OrderbookIb } from "../../common/orderbook-ib";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatButtonModule } from "@angular/material/button";
-import { CommonModule } from "@angular/common";
+
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatInputModule } from "@angular/material/input";
@@ -34,8 +34,7 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 
 @Component({
     selector: "app-orderbooks",
-    imports: [    
-      CommonModule,
+    imports: [
     FormsModule,
     ReactiveFormsModule,
     MatToolbarModule,
@@ -44,7 +43,8 @@ import { MatToolbarModule } from "@angular/material/toolbar";
     MatInputModule,
     MatCheckboxModule,
     MatButtonModule,
-    MatListModule    ],
+    MatListModule
+],
     templateUrl: "./orderbooks.component.html",
     styleUrls: ["./orderbooks.component.scss"],    
 })
