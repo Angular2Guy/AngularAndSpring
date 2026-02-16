@@ -85,7 +85,7 @@ spec:
         - containerPort: 9092
 #        volumeMounts:
 #        - name: hostvol
-#          mountPath: /bitnami/kafka
+#          mountPath: /soldevelo/kafka
 #      volumes:
 #      - name: hostvol
 #        persistentVolumeClaim:
