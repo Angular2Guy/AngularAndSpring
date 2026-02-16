@@ -1,6 +1,6 @@
 kafkaName: kafkaapp
 zookeeperName: zookeeperserver
-kafkaImageName: bitnami/kafka
+kafkaImageName: soldevelo/kafka
 kafkaImageVersion: latest
 zookeeperImageName: bitnami/zookeeper
 zookeeperImageVersion: latest
