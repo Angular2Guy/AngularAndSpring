@@ -15,7 +15,10 @@
  */
 package ch.xxx.trader.adapter.cron;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Map;
@@ -113,7 +116,9 @@ public class ScheduledTask {
 						res.setPair(currPair);
 //				log.info(res.toString());
 						return res;
-					}).timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
+					})
+                    .map(this::limitPrecision)
+                    .timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
 						exceptionLogged.set(this.logRequestFailed("Bitstamp", currPair, start, ex));
 						return Mono.empty();
 					}).subscribeOn(this.mongoImportScheduler);
@@ -188,7 +193,9 @@ public class ScheduledTask {
 					}).flatMap(resp -> Mono.just(resp.getData())).flatMap(resp2 -> {
 //				log.info(resp2.getRates().toString());
 						return Mono.just(resp2.getRates());
-					}).timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
+					})
+                    .map(this::limitPrecision)
+                    .timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
 						exceptionLogged.set(this.logRequestFailed("Coinbase", currPair, start, ex));
 						return Mono.empty();
 					}).subscribeOn(this.mongoImportScheduler);
@@ -223,7 +230,9 @@ public class ScheduledTask {
 					.exchangeToMono(response -> response.bodyToMono(PaxosQuote.class)).map(res -> {
 //				log.info(res.toString());
 						return res;
-					}).map(paxosQuote -> this.convert(paxosQuote)).timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
+					}).map(this::convert)
+                    .map(this::limitPrecision)
+                    .timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
 						exceptionLogged.set(this.logRequestFailed("Ibit", currPair, start, ex));
 						return Mono.empty();
 					}).subscribeOn(this.mongoImportScheduler);
@@ -317,7 +326,9 @@ public class ScheduledTask {
 						QuoteBf result = checkBfTimestamp(res);
 //				log.info(res.toString());
 						return result;
-					}).timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
+					})
+                    .map(this::limitPrecision)
+                    .timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
 						exceptionLogged.set(this.logRequestFailed("Bitfinex", currPair, start, ex));
 						return Mono.empty();
 					}).subscribeOn(this.mongoImportScheduler);
@@ -371,4 +382,21 @@ public class ScheduledTask {
 		String currPair = "xrpusd";
 		this.insertBfQuote(currPair);
 	}
+
+    private <T> T limitPrecision(T quote) {
+        var fields = quote.getClass().getDeclaredFields();
+        for(Field field : fields) {
+            if(field.getType().isAssignableFrom(BigDecimal.class)) {
+                field.setAccessible(true);
+                try {
+                    var value = (BigDecimal) field.get(quote);
+                    value = value.round(new MathContext(30, RoundingMode.HALF_UP));
+                    field.set(quote, value);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return quote;
+    }
 }
