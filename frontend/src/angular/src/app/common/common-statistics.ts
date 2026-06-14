@@ -25,7 +25,7 @@ export enum CoinExchange {
   bitstamp = "Bitstamp",
 }
 
-export class CommonStatistics {
+export interface CommonStatistics {
   currPair: StatisticCurrencyPair;
   performance1Month: number;
   performance3Month: number;
@@ -53,7 +53,7 @@ export class CommonStatistics {
   range5Year: RangeValues;
 }
 
-export class RangeValues {
+export interface RangeValues {
   min: number;
   max: number;
 }

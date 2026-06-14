@@ -33,7 +33,7 @@ import {
 import { BehaviorSubject, Observable, repeat } from "rxjs";
 import { BitstampService } from "../../services/bitstamp.service";
 import { QuoteBs } from "../../common/quote-bs";
-import { DetailBase, Tuple } from "src/app/common/detail-base";
+import { DetailBase, Tuple } from "../../common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -68,7 +68,7 @@ import { NgxLineChartsModule } from "ngx-simple-charts/line";
   ],
 })
 export class BsdetailComponent extends DetailBase implements OnInit {
-  public currQuote: QuoteBs;
+  public currQuote: QuoteBs = {} as QuoteBs;
   protected chartShow = new BehaviorSubject(false);
   protected todayQuotes: QuoteBs[] = [];
   private readonly destroy: DestroyRef = inject(DestroyRef);
@@ -90,10 +90,10 @@ export class BsdetailComponent extends DetailBase implements OnInit {
         .pipe(repeat({ delay: 10000 }), takeUntilDestroyed(this.destroy))
         .subscribe((quote) => {
           this.currQuote = quote;
-          this.currPair = this.utils.getCurrpairName(this.currQuote.pair);
+          this.currPair = this.utils.getCurrpairName(this.currQuote.pair) ?? "";
         });
       this.serviceBs
-        .getTodayQuotes(this.route.snapshot.paramMap.get("currpair"))
+        .getTodayQuotes(this.route.snapshot.paramMap.get("currpair") ?? "")
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((quotes) => {
           this.todayQuotes = quotes;
@@ -113,7 +113,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
 
   changeTf() {
     this.chartShow.next(false);
-    const currpair = this.route.snapshot.paramMap.get("currpair");
+    const currpair = this.route.snapshot.paramMap.get("currpair") ?? "";
     let quoteObserv: Observable<QuoteBs[]>;
     if (this.timeframe === this.utils.MyTimeFrames.Day7) {
       quoteObserv = this.serviceBs.get7DayQuotes(currpair);
@@ -141,7 +141,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
   }
 
   showReport() {
-    const currpair = this.route.snapshot.paramMap.get("currpair");
+    const currpair = this.route.snapshot.paramMap.get("currpair") ?? "";
     const url =
       "/bitstamp" + this.utils.createReportUrl(this.timeframe, currpair);
     window.open(url);

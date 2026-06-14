@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-export class MyUser {
+export interface MyUser {
   _id: string;
   userId: string;
   password: string;

@@ -21,12 +21,15 @@ import { QuoteIb } from "../common/quote-ib";
 import { Utils } from "./utils";
 import { OrderbookIb } from "../common/orderbook-ib";
 
-@Injectable({ providedIn: "root" })
-export class ItbitService {
+export class ItbitCurrPairs {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   BTCEUR = "btceur";
   // eslint-disable-next-line @typescript-eslint/naming-convention
   BTCUSD = "btcusd";
+}
+
+@Injectable({ providedIn: "root" })
+export class ItbitService {
   private reqOptionsArgs = {
     headers: new HttpHeaders().set("Content-Type", "application/json"),
   };

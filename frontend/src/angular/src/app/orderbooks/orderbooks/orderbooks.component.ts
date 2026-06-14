@@ -20,9 +20,9 @@ import {
   inject,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { BitstampService } from "../../services/bitstamp.service";
-import { ItbitService } from "../../services/itbit.service";
-import { BitfinexService } from "../../services/bitfinex.service";
+import { BitstampCurrPairs, BitstampService } from "../../services/bitstamp.service";
+import { ItbitCurrPairs, ItbitService } from "../../services/itbit.service";
+import { BitfinexCurrPairs, BitfinexService } from "../../services/bitfinex.service";
 import { Router } from "@angular/router";
 import { OrderbookBs } from "../../common/orderbook-bs";
 import { OrderbookBf, OrderBf } from "../../common/orderbook-bf";
@@ -55,12 +55,11 @@ import { MatToolbarModule } from "@angular/material/toolbar";
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./orderbooks.component.scss"],
 })
-export class OrderbooksComponent implements OnInit {
-  public currencies: MyCurr[];
-  protected orderbookBs: OrderbookBs;
-  protected orderbookBf: OrderbookBf;
-  protected orderbookIb: OrderbookIb;
-  protected model = new MyModel(null, false, false, false, 1, null);
+export class OrderbooksComponent implements OnInit {  
+  private itbitCurrPairs = new ItbitCurrPairs();
+  private bitfinexCurrPairs = new BitfinexCurrPairs();
+  public currencies: MyCurr[] = [];  
+  protected model = new MyModel("", false, false, false, 1, 0);
   protected bsOrders: MyOrder[] = [];
   protected bfOrders: MyOrder[] = [];
   protected ibOrders: MyOrder[] = [];
@@ -75,17 +74,17 @@ export class OrderbooksComponent implements OnInit {
 
   ngOnInit() {
     this.currencies = [
-      new MyCurr(this.serviceBf.BTCUSD, "Btc - Usd"),
-      new MyCurr(this.serviceBf.ETHUSD, "Eth - Usd"),
-      new MyCurr(this.serviceBf.LTCUSD, "Ltc - Usd"),
-      new MyCurr(this.serviceBf.XRPUSD, "Xrp - Usd"),
+      new MyCurr(this.bitfinexCurrPairs.BTCUSD, "Btc - Usd"),
+      new MyCurr(this.bitfinexCurrPairs.ETHUSD, "Eth - Usd"),
+      new MyCurr(this.bitfinexCurrPairs.LTCUSD, "Ltc - Usd"),
+      new MyCurr(this.bitfinexCurrPairs.XRPUSD, "Xrp - Usd"),
     ];
   }
   onSubmit() {
     //console.log( this.model );
-    if (this.model.itbitCb && this.model.currpair === this.serviceBf.BTCUSD) {
+    if (this.model.itbitCb && this.model.currpair === this.bitfinexCurrPairs.BTCUSD) {
       this.serviceIb
-        .getOrderbook(this.serviceIb.BTCUSD)
+        .getOrderbook(this.itbitCurrPairs.BTCUSD)
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((ob) => {
           //                this.orderbookIb = ob;

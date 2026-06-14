@@ -44,7 +44,7 @@ import { StatisticDetailsComponent } from "./statistic-details/statistic-details
   styleUrls: ["./statistics.component.scss"],
 })
 export class StatisticsComponent {
-  protected commonStatistics = new CommonStatistics();
+  //protected commonStatistics = new CommonStatistics();
   protected coinExchange = CoinExchange;
   protected tabIndex = 0;
 

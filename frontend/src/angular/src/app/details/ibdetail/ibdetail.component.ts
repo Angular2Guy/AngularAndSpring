@@ -33,7 +33,7 @@ import {
 import { BehaviorSubject, Observable, repeat } from "rxjs";
 import { QuoteIb } from "../../common/quote-ib";
 import { ItbitService } from "../../services/itbit.service";
-import { DetailBase, Tuple } from "src/app/common/detail-base";
+import { DetailBase, Tuple } from "../../common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatButtonModule } from "@angular/material/button";
 import { CommonModule } from "@angular/common";
@@ -68,7 +68,7 @@ import { NgxLineChartsModule } from "ngx-simple-charts/line";
   ],
 })
 export class IbdetailComponent extends DetailBase implements OnInit {
-  public currQuote: QuoteIb;
+  public currQuote: QuoteIb = {} as QuoteIb;
   protected chartShow = new BehaviorSubject(false);
   protected todayQuotes: QuoteIb[] = [];
   private readonly destroy: DestroyRef = inject(DestroyRef);
@@ -115,17 +115,17 @@ export class IbdetailComponent extends DetailBase implements OnInit {
     const currpair = this.route.snapshot.paramMap.get("currpair");
     let quoteObserv: Observable<QuoteIb[]>;
     if (this.timeframe === this.utils.MyTimeFrames.Day7) {
-      quoteObserv = this.serviceIb.get7DayQuotes(currpair);
+      quoteObserv = this.serviceIb.get7DayQuotes(currpair ?? "");
     } else if (this.timeframe === this.utils.MyTimeFrames.Day30) {
-      quoteObserv = this.serviceIb.get30DayQuotes(currpair);
+      quoteObserv = this.serviceIb.get30DayQuotes(currpair ?? "");
     } else if (this.timeframe === this.utils.MyTimeFrames.Day90) {
-      quoteObserv = this.serviceIb.get90DayQuotes(currpair);
+      quoteObserv = this.serviceIb.get90DayQuotes(currpair ?? "");
     } else if (this.timeframe === this.utils.MyTimeFrames.Day180) {
-      quoteObserv = this.serviceIb.get6MonthsQuotes(currpair);
+      quoteObserv = this.serviceIb.get6MonthsQuotes(currpair ?? "");
     } else if (this.timeframe === this.utils.MyTimeFrames.Day365) {
-      quoteObserv = this.serviceIb.get1YearQuotes(currpair);
+      quoteObserv = this.serviceIb.get1YearQuotes(currpair ?? "");
     } else {
-      quoteObserv = this.serviceIb.getTodayQuotes(currpair);
+      quoteObserv = this.serviceIb.getTodayQuotes(currpair ?? "");
     }
     quoteObserv.pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
       this.todayQuotes = quotes;
@@ -141,7 +141,7 @@ export class IbdetailComponent extends DetailBase implements OnInit {
 
   showReport() {
     const currpair = this.route.snapshot.paramMap.get("currpair");
-    const url = "/itbit" + this.utils.createReportUrl(this.timeframe, currpair);
+    const url = "/itbit" + this.utils.createReportUrl(this.timeframe, currpair ?? "");
     window.open(url);
   }
 }

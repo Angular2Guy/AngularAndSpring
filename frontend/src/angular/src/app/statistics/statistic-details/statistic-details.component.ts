@@ -35,8 +35,8 @@ import {
   CoinExchange,
   CommonStatistics,
   StatisticCurrencyPair,
-} from "src/app/common/common-statistics";
-import { StatisticService } from "src/app/services/statistic.service";
+} from "../../common/common-statistics";
+import { StatisticService } from "../../services/statistic.service";
 
 @Component({
   selector: "app-statistic-details",
@@ -57,10 +57,10 @@ import { StatisticService } from "src/app/services/statistic.service";
 })
 export class StatisticDetailsComponent implements OnInit {
   @Input()
-  coinExchange: CoinExchange;
+  coinExchange: CoinExchange = CoinExchange.bitfinex;
   protected statisticCurrencyPair = StatisticCurrencyPair;
   protected selCurrency = StatisticCurrencyPair.bcUsd;
-  protected commonStatistics = new CommonStatistics();
+  protected commonStatistics = {} as CommonStatistics;
   protected chartBars!: ChartBars;
   protected chartsLoading = true;
   private myTabIndex = 0;

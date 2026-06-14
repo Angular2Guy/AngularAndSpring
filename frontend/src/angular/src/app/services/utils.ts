@@ -19,8 +19,8 @@ import { HttpHeaders } from "@angular/common/http";
 export class Utils {
   get token(): string {
     return !localStorage.getItem("token")
-      ? null
-      : localStorage.getItem("token");
+      ? ""
+      : localStorage.getItem("token") ?? "";
   }
 
   public createTokenHeader(): HttpHeaders {

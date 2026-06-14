@@ -68,7 +68,7 @@ import { MatToolbarModule } from "@angular/material/toolbar";
   ],
 })
 export class BfdetailComponent extends DetailBase implements OnInit {
-  public currQuote: QuoteBf;
+  public currQuote: QuoteBf | null = null;
   protected chartShow = new BehaviorSubject(false);
   protected todayQuotes: QuoteBf[] = [];
   private readonly destroy: DestroyRef = inject(DestroyRef);
@@ -90,10 +90,10 @@ export class BfdetailComponent extends DetailBase implements OnInit {
         .pipe(repeat({ delay: 10000 }), takeUntilDestroyed(this.destroy))
         .subscribe((quote) => {
           this.currQuote = quote;
-          this.currPair = this.utils.getCurrpairName(this.currQuote.pair);
+          this.currPair = this.utils.getCurrpairName(this.currQuote.pair) ?? "";
         });
       this.serviceBf
-        .getTodayQuotes(this.route.snapshot.paramMap.get("currpair"))
+        .getTodayQuotes(this.route.snapshot.paramMap.get("currpair") ?? "")
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((quotes) => {
           this.todayQuotes = quotes;
@@ -117,17 +117,17 @@ export class BfdetailComponent extends DetailBase implements OnInit {
     const currpair = this.route.snapshot.paramMap.get("currpair");
     let quoteObserv: Observable<QuoteBf[]>;
     if (this.timeframe === this.utils.MyTimeFrames.Day7) {
-      quoteObserv = this.serviceBf.get7DayQuotes(currpair);
+      quoteObserv = this.serviceBf.get7DayQuotes(currpair ?? "");
     } else if (this.timeframe === this.utils.MyTimeFrames.Day30) {
-      quoteObserv = this.serviceBf.get30DayQuotes(currpair);
+      quoteObserv = this.serviceBf.get30DayQuotes(currpair ?? "");
     } else if (this.timeframe === this.utils.MyTimeFrames.Day90) {
-      quoteObserv = this.serviceBf.get90DayQuotes(currpair);
+      quoteObserv = this.serviceBf.get90DayQuotes(currpair ?? "");
     } else if (this.timeframe === this.utils.MyTimeFrames.Day180) {
-      quoteObserv = this.serviceBf.get6MonthsQuotes(currpair);
+      quoteObserv = this.serviceBf.get6MonthsQuotes(currpair ?? "");
     } else if (this.timeframe === this.utils.MyTimeFrames.Day365) {
-      quoteObserv = this.serviceBf.get1YearQuotes(currpair);
+      quoteObserv = this.serviceBf.get1YearQuotes(currpair ?? "");
     } else {
-      quoteObserv = this.serviceBf.getTodayQuotes(currpair);
+      quoteObserv = this.serviceBf.getTodayQuotes(currpair ?? "");
     }
 
     quoteObserv.pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
@@ -145,7 +145,7 @@ export class BfdetailComponent extends DetailBase implements OnInit {
   showReport() {
     const currpair = this.route.snapshot.paramMap.get("currpair");
     const url =
-      "/bitfinex" + this.utils.createReportUrl(this.timeframe, currpair);
+      "/bitfinex" + this.utils.createReportUrl(this.timeframe, currpair ?? "");
     window.open(url);
   }
 }

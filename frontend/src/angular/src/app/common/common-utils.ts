@@ -13,10 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { BitstampService } from "../services/bitstamp.service";
-import { CoinbaseService } from "../services/coinbase.service";
-import { ItbitService } from "../services/itbit.service";
-import { BitfinexService } from "../services/bitfinex.service";
+import { BitstampCurrPairs} from "../services/bitstamp.service";
+import { CoinbaseCurrPairs, CoinbaseService } from "../services/coinbase.service";
+import { ItbitCurrPairs, ItbitService } from "../services/itbit.service";
+import { BitfinexCurrPairs, BitfinexService } from "../services/bitfinex.service";
 
 enum MyTimeFrames {
   Day = 1,
@@ -41,10 +41,11 @@ export class CommonUtils {
   private currpairs = new Map<string, string>();
 
   constructor() {
-    const serviceBs = new BitstampService(null);
-    const serviceCb = new CoinbaseService(null);
-    const serviceIb = new ItbitService(null);
-    const serviceBf = new BitfinexService(null);
+    const serviceBs = new BitstampCurrPairs();
+    const serviceCb = new CoinbaseCurrPairs();
+    const serviceIb = new ItbitCurrPairs();
+    const serviceBf = new BitfinexCurrPairs();
+    
     this.currpairs.set(serviceBs.BTCEUR, "Bitcoin Eur");
     this.currpairs.set(serviceBs.ETHEUR, "Ether Eur");
     this.currpairs.set(serviceBs.LTCEUR, "Litecoin Eur");

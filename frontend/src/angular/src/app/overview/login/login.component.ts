@@ -84,7 +84,7 @@ export class LoginComponent implements OnInit {
   protected pwMatching = true;
   protected formFields = FormFields;
   protected waitingForResponse = false;
-  private user = new MyUser();
+  private user = {} as MyUser;
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
@@ -112,7 +112,7 @@ export class LoginComponent implements OnInit {
       },
       {
         validators: this.validate.bind(this),
-      } as AbstractControlOptions,
+      } as unknown as AbstractControlOptions,
     );
     this.loginForm = fb.group({
       [FormFields.username]: [
@@ -130,31 +130,31 @@ export class LoginComponent implements OnInit {
 
   validate(group: FormGroup) {
     if (
-      group.get(FormFields.password).touched ||
-      group.get(FormFields.password2).touched
+      group.get(FormFields.password)?.touched ||
+      group.get(FormFields.password2)?.touched
     ) {
       this.pwMatching =
-        group.get(FormFields.password).value ===
-          group.get(FormFields.password2).value &&
-        group.get(FormFields.password).value !== "";
+        group.get(FormFields.password)?.value ===
+          group.get(FormFields.password2)?.value &&
+        group.get(FormFields.password)?.value !== "";
       if (!this.pwMatching) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        group.get(FormFields.password).setErrors({ MatchPassword: true });
+        group.get(FormFields.password)?.setErrors({ MatchPassword: true });
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        group.get(FormFields.password2).setErrors({ MatchPassword: true });
+        group.get(FormFields.password2)?.setErrors({ MatchPassword: true });
       } else {
-        group.get(FormFields.password).setErrors(null);
-        group.get(FormFields.password2).setErrors(null);
+        group.get(FormFields.password)?.setErrors(null);
+        group.get(FormFields.password2)?.setErrors(null);
       }
     }
     return this.pwMatching;
   }
 
   onSigninClick(): void {
-    const myUser = new MyUser();
-    myUser.userId = this.signinForm.get(FormFields.username).value;
-    myUser.password = this.signinForm.get(FormFields.password).value;
-    myUser.email = this.signinForm.get(FormFields.email).value;
+    const myUser = {} as MyUser;
+    myUser.userId = this.signinForm.get(FormFields.username)?.value;
+    myUser.password = this.signinForm.get(FormFields.password)?.value;
+    myUser.email = this.signinForm.get(FormFields.email)?.value;
     //      console.log(this.signinForm);
     //      console.log(myUser);
     this.waitingForResponse = true;
@@ -168,9 +168,9 @@ export class LoginComponent implements OnInit {
   }
 
   onLoginClick(): void {
-    const myUser = new MyUser();
-    myUser.userId = this.loginForm.get(FormFields.username).value;
-    myUser.password = this.loginForm.get(FormFields.password).value;
+    const myUser = {} as MyUser;
+    myUser.userId = this.loginForm.get(FormFields.username)?.value;
+    myUser.password = this.loginForm.get(FormFields.password)?.value;
     //      console.log(myUser);
     this.waitingForResponse = true;
     this.myuserService

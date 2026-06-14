@@ -21,8 +21,7 @@ import { QuoteBf } from "../common/quote-bf";
 import { Utils } from "./utils";
 import { OrderbookBf } from "../common/orderbook-bf";
 
-@Injectable({ providedIn: "root" })
-export class BitfinexService {
+export class BitfinexCurrPairs {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   BTCUSD = "btcusd";
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -31,6 +30,10 @@ export class BitfinexService {
   LTCUSD = "ltcusd";
   // eslint-disable-next-line @typescript-eslint/naming-convention
   XRPUSD = "xrpusd";
+}
+
+@Injectable({ providedIn: "root" })
+export class BitfinexService {
   private reqOptionsArgs = {
     headers: new HttpHeaders().set("Content-Type", "application/json"),
   };

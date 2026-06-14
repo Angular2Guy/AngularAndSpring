@@ -20,14 +20,17 @@ import { catchError, map, tap } from "rxjs/operators";
 import { QuoteCbSmall, QuoteCb } from "../common/quote-cb";
 import { Utils } from "./utils";
 
-@Injectable({ providedIn: "root" })
-export class CoinbaseService {
+export class CoinbaseCurrPairs {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   BTCUSD = "btcusd";
   // eslint-disable-next-line @typescript-eslint/naming-convention
   ETHUSD = "ethusd";
   // eslint-disable-next-line @typescript-eslint/naming-convention
   LTCUSD = "ltcusd";
+}
+
+@Injectable({ providedIn: "root" })
+export class CoinbaseService {
   private reqOptionsArgs = {
     headers: new HttpHeaders().set("Content-Type", "application/json"),
   };

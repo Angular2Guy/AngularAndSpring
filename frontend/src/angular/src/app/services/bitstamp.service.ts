@@ -21,8 +21,7 @@ import { QuoteBs } from "../common/quote-bs";
 import { Utils } from "./utils";
 import { OrderbookBs } from "../common/orderbook-bs";
 
-@Injectable({ providedIn: "root" })
-export class BitstampService {
+export class BitstampCurrPairs {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   BTCEUR = "btceur";
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -39,6 +38,10 @@ export class BitstampService {
   LTCUSD = "ltcusd";
   // eslint-disable-next-line @typescript-eslint/naming-convention
   XRPUSD = "xrpusd";
+}
+
+@Injectable({ providedIn: "root" })
+export class BitstampService {  
   private reqOptionsArgs = {
     headers: new HttpHeaders().set("Content-Type", "application/json"),
   };
