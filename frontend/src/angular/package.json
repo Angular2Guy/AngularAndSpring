@@ -68,10 +68,10 @@
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "@angular-eslint/builder": "^21.0.1",
-    "@angular-eslint/eslint-plugin": "^21.0.1",
-    "@angular-eslint/eslint-plugin-template": "^21.0.1",
-    "@angular-eslint/schematics": "^21.0.1",
-    "@angular-eslint/template-parser": "^21.0.1",
+    "@angular-eslint/eslint-plugin": "^22.0.1-alpha.8",
+    "@angular-eslint/eslint-plugin-template": "^22.0.1-alpha.8",
+    "@angular-eslint/schematics": "^22.0.1-alpha.8",
+    "@angular-eslint/template-parser": "^22.0.1-alpha.8",
     "@typescript-eslint/eslint-plugin": "^8.48.1",
     "@typescript-eslint/parser": "^8.48.1"
   }
