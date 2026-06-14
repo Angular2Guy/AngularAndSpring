@@ -13,15 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, Inject, LOCALE_ID, OnInit } from "@angular/core";
+import {
+  Component,
+  Inject,
+  LOCALE_ID,
+  OnInit,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { environment } from "./../environments/environment";
 import { RouterModule } from "@angular/router";
 
 @Component({
-    selector: "app-root",
-    imports: [RouterModule],
-    templateUrl: "./app.component.html",
-    styleUrls: ["./app.component.scss"],    
+  selector: "app-root",
+  imports: [RouterModule],
+  templateUrl: "./app.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
   protected title = "app";

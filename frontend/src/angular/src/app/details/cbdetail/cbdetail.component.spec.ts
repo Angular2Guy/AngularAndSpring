@@ -18,7 +18,12 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from "@angular/common/http";
 import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 import { of, Observable } from "rxjs";
@@ -233,17 +238,21 @@ describe("CbdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         RouterTestingModule,
-      FormsModule,
-      ReactiveFormsModule,
-      BrowserAnimationsModule,
-      MatToolbarModule,
-      MatRadioModule,
-      MatCheckboxModule,
-      NgxLineChartsModule],
-    providers: [{ provide: CoinbaseService, useValue: mockService }, provideHttpClient(withInterceptorsFromDi())]
-}).compileComponents();
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatRadioModule,
+        MatCheckboxModule,
+        NgxLineChartsModule,
+      ],
+      providers: [
+        { provide: CoinbaseService, useValue: mockService },
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -255,7 +264,7 @@ describe("CbdetailComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
- 
+
   it("should have value", () => {
     expect(component.currQuote.aed).toBe(30446.14);
   });

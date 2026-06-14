@@ -14,7 +14,14 @@
    limitations under the License.
  */
 import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, Input, OnInit, inject } from "@angular/core";
+import {
+  Component,
+  DestroyRef,
+  Input,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -32,19 +39,21 @@ import {
 import { StatisticService } from "src/app/services/statistic.service";
 
 @Component({
-    selector: "app-statistic-details",
-    imports: [
-      CommonModule,
+  selector: "app-statistic-details",
+  imports: [
+    CommonModule,
     FormsModule,
-    ReactiveFormsModule,    
+    ReactiveFormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatTabsModule,
     MatRadioModule,
     NgxBarChartsModule,
-    MatProgressSpinnerModule],
-    templateUrl: "./statistic-details.component.html",
-    styleUrls: ["./statistic-details.component.scss"],
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: "./statistic-details.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ["./statistic-details.component.scss"],
 })
 export class StatisticDetailsComponent implements OnInit {
   @Input()

@@ -13,7 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, DestroyRef, OnInit, inject } from "@angular/core";
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { BitstampService } from "../../services/bitstamp.service";
 import { ItbitService } from "../../services/itbit.service";
 import { BitfinexService } from "../../services/bitfinex.service";
@@ -33,8 +39,8 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatToolbarModule } from "@angular/material/toolbar";
 
 @Component({
-    selector: "app-orderbooks",
-    imports: [
+  selector: "app-orderbooks",
+  imports: [
     FormsModule,
     ReactiveFormsModule,
     MatToolbarModule,
@@ -43,10 +49,11 @@ import { MatToolbarModule } from "@angular/material/toolbar";
     MatInputModule,
     MatCheckboxModule,
     MatButtonModule,
-    MatListModule
-],
-    templateUrl: "./orderbooks.component.html",
-    styleUrls: ["./orderbooks.component.scss"],    
+    MatListModule,
+  ],
+  templateUrl: "./orderbooks.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ["./orderbooks.component.scss"],
 })
 export class OrderbooksComponent implements OnInit {
   public currencies: MyCurr[];
@@ -72,7 +79,7 @@ export class OrderbooksComponent implements OnInit {
       new MyCurr(this.serviceBf.ETHUSD, "Eth - Usd"),
       new MyCurr(this.serviceBf.LTCUSD, "Ltc - Usd"),
       new MyCurr(this.serviceBf.XRPUSD, "Xrp - Usd"),
-    ];    
+    ];
   }
   onSubmit() {
     //console.log( this.model );

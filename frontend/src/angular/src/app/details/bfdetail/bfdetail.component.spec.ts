@@ -20,7 +20,11 @@ import { BfdetailComponent } from "./bfdetail.component";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from "@angular/common/http";
 import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 import { of, Observable } from "rxjs";
@@ -62,18 +66,22 @@ describe("BfdetailComponent", () => {
   const mockService = new MockBfService(null);
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({    
-    imports: [
+    TestBed.configureTestingModule({
+      imports: [
         RouterTestingModule,
-      FormsModule,
-      ReactiveFormsModule,
-      BrowserAnimationsModule,
-      MatToolbarModule,
-      MatRadioModule,
-      MatCheckboxModule,
-      NgxLineChartsModule],
-    providers: [{ provide: BitfinexService, useValue: mockService }, provideHttpClient(withInterceptorsFromDi())]
-}).compileComponents();
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatRadioModule,
+        MatCheckboxModule,
+        NgxLineChartsModule,
+      ],
+      providers: [
+        { provide: BitfinexService, useValue: mockService },
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -89,7 +97,7 @@ describe("BfdetailComponent", () => {
   it("should have value", () => {
     expect(component.currQuote.mid).toBe(1);
   });
-  
+
   it("should show last_price", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#last_price")).nativeElement;
@@ -139,5 +147,4 @@ describe("BfdetailComponent", () => {
     const el: HTMLElement = de.query(By.css("#volume")).nativeElement;
     expect(el.textContent).toEqual("7.00");
   });
-  
 });

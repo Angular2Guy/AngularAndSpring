@@ -15,19 +15,28 @@
  */
 import { ApplicationConfig, importProvidersFrom } from "@angular/core";
 import { provideAnimations } from "@angular/platform-browser/animations";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import  { routes } from "./app-routing";
 import {
-  NgxServiceModule,  
-} from "ngx-simple-charts/base-service";
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from "@angular/common/http";
+import { routes } from "./app-routing";
+import { NgxServiceModule } from "ngx-simple-charts/base-service";
 import { provideRouter } from "@angular/router";
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideAnimations(), provideHttpClient(withInterceptorsFromDi()), importProvidersFrom(NgxServiceModule.forRoot({
-            tokenRefreshPath: "/rest/auth/refreshToken",
-            logoutPath: "/rest/auth/logout",
-            loginRoute: "/",
-        }))],
+  providers: [
+    provideRouter(routes),
+    provideAnimations(),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
+    importProvidersFrom(
+      NgxServiceModule.forRoot({
+        tokenRefreshPath: "/rest/auth/refreshToken",
+        logoutPath: "/rest/auth/logout",
+        loginRoute: "/",
+      }),
+    ),
+  ],
 };
 
 /*

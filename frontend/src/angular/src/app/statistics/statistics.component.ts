@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Router } from "@angular/router";
 import { CoinExchange, CommonStatistics } from "../common/common-statistics";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
@@ -27,8 +27,8 @@ import { NgxBarChartsModule } from "ngx-simple-charts/bar";
 import { StatisticDetailsComponent } from "./statistic-details/statistic-details.component";
 
 @Component({
-    selector: "app-statistics",
-    imports: [
+  selector: "app-statistics",
+  imports: [
     FormsModule,
     ReactiveFormsModule,
     MatToolbarModule,
@@ -37,10 +37,11 @@ import { StatisticDetailsComponent } from "./statistic-details/statistic-details
     MatRadioModule,
     NgxBarChartsModule,
     MatProgressSpinnerModule,
-    StatisticDetailsComponent
-],
-    templateUrl: "./statistics.component.html",
-    styleUrls: ["./statistics.component.scss"],    
+    StatisticDetailsComponent,
+  ],
+  templateUrl: "./statistics.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ["./statistics.component.scss"],
 })
 export class StatisticsComponent {
   protected commonStatistics = new CommonStatistics();

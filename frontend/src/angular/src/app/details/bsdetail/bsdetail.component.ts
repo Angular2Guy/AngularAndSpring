@@ -20,6 +20,7 @@ import {
   Inject,
   DestroyRef,
   inject,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
@@ -43,26 +44,28 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { NgxLineChartsModule } from "ngx-simple-charts/line";
 
 @Component({
-    selector: "app-bsdetail",
-    imports: [    
-      CommonModule,
+  selector: "app-bsdetail",
+  imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatToolbarModule,
     MatCheckboxModule,
     MatRadioModule,
     MatButtonModule,
-    NgxLineChartsModule],
-    templateUrl: "./bsdetail.component.html",
-    styleUrls: ["./bsdetail.component.scss"],
-    animations: [
-        trigger("showChart", [
-            transition("false => true", [
-                style({ opacity: 0 }),
-                animate(1000, style({ opacity: 1 })),
-            ]),
-        ]),
-    ],
+    NgxLineChartsModule,
+  ],
+  templateUrl: "./bsdetail.component.html",
+  styleUrls: ["./bsdetail.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  animations: [
+    trigger("showChart", [
+      transition("false => true", [
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class BsdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteBs;

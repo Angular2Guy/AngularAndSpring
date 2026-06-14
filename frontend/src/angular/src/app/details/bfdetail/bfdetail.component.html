@@ -14,27 +14,47 @@
       <tbody>
         <tr>
           <td i18n="@@last">Last:</td>
-          <td id="last_price">{{ currQuote?.last_price | number : "1.2" }}</td>
+          <td id="last_price">
+            {{
+              $safeNavigationMigration(currQuote?.last_price) | number: "1.2"
+            }}
+          </td>
           <td i18n="@@high">High:</td>
-          <td id="high">{{ currQuote?.high | number : "1.2" }}</td>
+          <td id="high">
+            {{ $safeNavigationMigration(currQuote?.high) | number: "1.2" }}
+          </td>
           <td i18n="@@low">Low:</td>
-          <td id="low">{{ currQuote?.low | number : "1.2" }}</td>
+          <td id="low">
+            {{ $safeNavigationMigration(currQuote?.low) | number: "1.2" }}
+          </td>
         </tr>
         <tr>
           <td i18n="@@bid">Bid:</td>
-          <td id="bid">{{ currQuote?.bid | number : "1.2" }}</td>
+          <td id="bid">
+            {{ $safeNavigationMigration(currQuote?.bid) | number: "1.2" }}
+          </td>
           <td i18n="@@ask">Ask:</td>
-          <td id="ask">{{ currQuote?.ask | number : "1.2" }}</td>
+          <td id="ask">
+            {{ $safeNavigationMigration(currQuote?.ask) | number: "1.2" }}
+          </td>
           <td i18n="@@mid">Mid:</td>
-          <td id="mid">{{ currQuote?.mid | number : "1.2" }}</td>
+          <td id="mid">
+            {{ $safeNavigationMigration(currQuote?.mid) | number: "1.2" }}
+          </td>
         </tr>
         <tr>
           <td i18n="@@pair">Pair:</td>
           <td id="currPair">{{ currPair }}</td>
           <td i18n="@@timestamp">Timestamp:</td>
-          <td id="createdAt">{{ currQuote?.createdAt | date : "HH:mm:ss" }}</td>
+          <td id="createdAt">
+            {{
+              $safeNavigationMigration(currQuote?.createdAt) | date: "HH:mm:ss"
+            }}
+          </td>
           <td i18n="@@volume">Volume:</td>
-          <td id="volume">{{ currQuote?.volume | number : "1.2" }}</td>
+          <td id="volume">
+            {{ $safeNavigationMigration(currQuote?.volume) | number: "1.2" }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -44,38 +64,46 @@
           class="radioGroup"
           [(ngModel)]="timeframe"
           (change)="changeTf()"
-          >
+        >
           @for (tf of utils.timeframes; track tf) {
-            <mat-radio-button
-              class="radioButton"
-              [value]="tf"
-              ><span i18n="@@radioDays"
-              >{tf, plural, =1 {today} other {{{tf}} days}}</span
-              ></mat-radio-button
-              >
-            }
-          </mat-radio-group>
-          <mat-checkbox [(ngModel)]="addLinReg" (change)="changeTf()" class="radioButton" i18n="@@linReg">add Linear Reg</mat-checkbox>
-          <button
-            mat-button
-            class="radioButton"
-            (click)="showReport()"
-          [ngStyle]="{
-            visibility: todayQuotes.length > 0 ? 'visible' : 'hidden'
-          }"
-            i18n="@@showReport"
+            <mat-radio-button class="radioButton" [value]="tf"
+              ><span i18n="@@radioDays">{tf, plural,
+                =1 {today}
+                other {{{tf}} days}
+              }</span></mat-radio-button
             >
+          }
+        </mat-radio-group>
+        <mat-checkbox
+          [(ngModel)]="addLinReg"
+          (change)="changeTf()"
+          class="radioButton"
+          i18n="@@linReg"
+          >add Linear Reg</mat-checkbox
+        >
+        <button
+          mat-button
+          class="radioButton"
+          (click)="showReport()"
+          [ngStyle]="{
+            visibility: todayQuotes.length > 0 ? 'visible' : 'hidden',
+          }"
+          i18n="@@showReport"
+        >
           show report
         </button>
-        </span>
-      </div>
-      <div
-        #chartContainer
-        class="chart-container"
-        [@showChart]="chartShow | async"
-        >
-        <sc-line-chart [chartPoints]="chartPoints" class="line-chart"></sc-line-chart>
-      </div>
-      <div>{{ todayQuotes?.length }} {{ chartShow | async }}</div>
+      </span>
     </div>
+    <div
+      #chartContainer
+      class="chart-container"
+      [@showChart]="chartShow | async"
+    >
+      <sc-line-chart
+        [chartPoints]="chartPoints"
+        class="line-chart"
+      ></sc-line-chart>
+    </div>
+    <div>{{ todayQuotes?.length }} {{ chartShow | async }}</div>
   </div>
+</div>

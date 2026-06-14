@@ -18,7 +18,12 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from "@angular/common/http";
 import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 import { of, Observable } from "rxjs";
@@ -66,17 +71,21 @@ describe("BsdetailComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         RouterTestingModule,
-      FormsModule,
-      ReactiveFormsModule,
-      BrowserAnimationsModule,
-      MatToolbarModule,
-      MatRadioModule,
-      MatCheckboxModule,
-      NgxLineChartsModule],
-    providers: [{ provide: BitstampService, useValue: mockService }, provideHttpClient(withInterceptorsFromDi())]
-}).compileComponents();
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatRadioModule,
+        MatCheckboxModule,
+        NgxLineChartsModule,
+      ],
+      providers: [
+        { provide: BitstampService, useValue: mockService },
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -88,7 +97,7 @@ describe("BsdetailComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
-  
+
   it("should have value", () => {
     expect(component.currQuote.ask).toBe(7);
   });
@@ -146,5 +155,4 @@ describe("BsdetailComponent", () => {
     const el: HTMLElement = de.query(By.css("#volume")).nativeElement;
     expect(el.textContent).toEqual("5.00");
   });
-  
 });

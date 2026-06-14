@@ -20,6 +20,7 @@ import {
   LOCALE_ID,
   DestroyRef,
   inject,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
@@ -43,26 +44,28 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { NgxLineChartsModule } from "ngx-simple-charts/line";
 
 @Component({
-    selector: "app-ibdetail",
-    imports: [    
-      CommonModule,
+  selector: "app-ibdetail",
+  imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatToolbarModule,
     MatCheckboxModule,
     MatRadioModule,
     MatButtonModule,
-    NgxLineChartsModule,],
-    templateUrl: "./ibdetail.component.html",
-    styleUrls: ["./ibdetail.component.scss"],
-    animations: [
-        trigger("showChart", [
-            transition("false => true", [
-                style({ opacity: 0 }),
-                animate(1000, style({ opacity: 1 })),
-            ]),
-        ]),
-    ],
+    NgxLineChartsModule,
+  ],
+  templateUrl: "./ibdetail.component.html",
+  styleUrls: ["./ibdetail.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  animations: [
+    trigger("showChart", [
+      transition("false => true", [
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class IbdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteIb;

@@ -13,9 +13,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, Inject, DestroyRef, inject } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Inject,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { QuoteoverviewComponent } from "../quoteoverview/quoteoverview.component";
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+} from "@angular/material/dialog";
 import { MyuserService } from "../../services/myuser.service";
 import { MyUser } from "../../common/my-user";
 import {
@@ -46,9 +57,9 @@ enum FormFields {
 }
 
 @Component({
-    selector: "app-login",
-    imports: [    
-      CommonModule,
+  selector: "app-login",
+  imports: [
+    CommonModule,
     MatTableModule,
     MatToolbarModule,
     MatTabsModule,
@@ -59,9 +70,11 @@ enum FormFields {
     MatInputModule,
     LuxonDateModule,
     FormsModule,
-    ReactiveFormsModule],
-    templateUrl: "./login.component.html",
-    styleUrls: ["./login.component.scss"],    
+    ReactiveFormsModule,
+  ],
+  templateUrl: "./login.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
   protected signinForm: FormGroup;

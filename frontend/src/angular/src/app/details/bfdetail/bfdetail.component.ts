@@ -20,6 +20,7 @@ import {
   LOCALE_ID,
   DestroyRef,
   inject,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
@@ -43,26 +44,28 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatToolbarModule } from "@angular/material/toolbar";
 
 @Component({
-    selector: "app-bfdetail",
-    imports: [    
-      CommonModule,
+  selector: "app-bfdetail",
+  imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatToolbarModule,
     MatCheckboxModule,
     MatRadioModule,
     MatButtonModule,
-    NgxLineChartsModule],
-    templateUrl: "./bfdetail.component.html",
-    styleUrls: ["./bfdetail.component.scss"],
-    animations: [
-        trigger("showChart", [
-            transition("false => true", [
-                style({ opacity: 0 }),
-                animate(1000, style({ opacity: 1 })),
-            ]),
-        ]),
-    ],
+    NgxLineChartsModule,
+  ],
+  templateUrl: "./bfdetail.component.html",
+  styleUrls: ["./bfdetail.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  animations: [
+    trigger("showChart", [
+      transition("false => true", [
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class BfdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteBf;

@@ -17,6 +17,7 @@ import {
   OnInit,
   OnDestroy,
   DestroyRef,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { BitstampService } from "../../services/bitstamp.service";
 import { CoinbaseService } from "../../services/coinbase.service";
@@ -49,9 +50,9 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
 
 @Component({
-    selector: "app-quoteoverview",
-    imports: [    
-      CommonModule,
+  selector: "app-quoteoverview",
+  imports: [
+    CommonModule,
     MatTableModule,
     MatToolbarModule,
     MatTabsModule,
@@ -62,9 +63,11 @@ import { MatToolbarModule } from "@angular/material/toolbar";
     MatInputModule,
     LuxonDateModule,
     FormsModule,
-    ReactiveFormsModule],
-    templateUrl: "./quoteoverview.component.html",
-    styleUrls: ["./quoteoverview.component.scss"],    
+    ReactiveFormsModule,
+  ],
+  templateUrl: "./quoteoverview.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ["./quoteoverview.component.scss"],
 })
 export class QuoteoverviewComponent implements OnInit, OnDestroy {
   protected datasource = new Myds();
