@@ -67,7 +67,7 @@ class MockService extends BitstampService {
 describe("BsdetailComponent", () => {
   let component: BsdetailComponent;
   let fixture: ComponentFixture<BsdetailComponent>;
-  const mockService = new MockService(null);
+  const mockService = new MockService(null as unknown as HttpClient);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -104,37 +104,37 @@ describe("BsdetailComponent", () => {
   it("should show last", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#last")).nativeElement;
-    expect(el.textContent).toEqual("2.00");
+    expect(el.textContent.trim()).toEqual("2.00");
   });
   it("should show high", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#high")).nativeElement;
-    expect(el.textContent).toEqual("1.00");
+    expect(el.textContent.trim()).toEqual("1.00");
   });
   it("should show low", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#low")).nativeElement;
-    expect(el.textContent).toEqual("6.00");
+    expect(el.textContent.trim()).toEqual("6.00");
   });
   it("should show bid", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#bid")).nativeElement;
-    expect(el.textContent).toEqual("3.00");
+    expect(el.textContent.trim()).toEqual("3.00");
   });
   it("should show ask", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#ask")).nativeElement;
-    expect(el.textContent).toEqual("7.00");
+    expect(el.textContent.trim()).toEqual("7.00");
   });
   it("should show open", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#open")).nativeElement;
-    expect(el.textContent).toEqual("8.00");
+    expect(el.textContent.trim()).toEqual("8.00");
   });
   it("should show vwap", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#vwap")).nativeElement;
-    expect(el.textContent).toEqual("4.00");
+    expect(el.textContent.trim()).toEqual("4.00");
   });
   it("should show createdAt", () => {
     const de: DebugElement = fixture.debugElement;
@@ -148,11 +148,11 @@ describe("BsdetailComponent", () => {
       (myDate.getSeconds().toString().length === 1
         ? "0" + myDate.getSeconds()
         : myDate.getSeconds());
-    expect(el.textContent.substr(3, el.textContent.length)).toEqual(dateStr);
+    expect(el.textContent.substr(4, el.textContent.length).trim()).toEqual(dateStr.trim());
   });
   it("should show volume", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#volume")).nativeElement;
-    expect(el.textContent).toEqual("5.00");
+    expect(el.textContent.trim()).toEqual("5.00");
   });
 });

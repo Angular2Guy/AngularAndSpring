@@ -234,7 +234,7 @@ class MockService extends CoinbaseService {
 describe("CbdetailComponent", () => {
   let component: CbdetailComponent;
   let fixture: ComponentFixture<CbdetailComponent>;
-  const mockService = new MockService(null);
+  const mockService = new MockService(null as unknown as HttpClient);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -275,10 +275,10 @@ describe("CbdetailComponent", () => {
     console.log(fixture);
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#usd")).nativeElement;
-    
+
     expect(el.textContent).toEqual("8,288.78");
   });
-  
+
   it("should show eur", () => {
     component.currpair = "btcusd";
     fixture.autoDetectChanges();
