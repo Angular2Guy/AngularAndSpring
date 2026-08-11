@@ -35,19 +35,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.model.dto.WrapperCb;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.domain.model.entity.QuoteCb;
-import ch.xxx.trader.domain.model.entity.QuoteIb;
-import ch.xxx.trader.domain.model.entity.paxos.PaxosQuote;
 import ch.xxx.trader.domain.services.MyUserService;
 import ch.xxx.trader.usecase.mappers.EventMapper;
 import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
-import ch.xxx.trader.usecase.services.ItbitService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -60,12 +56,10 @@ public class ScheduledTask {
 
 	private static final String URLBS = "https://www.bitstamp.net/api";
 	private static final String URLCB = "https://api.coinbase.com/v2";
-	private static final String URLPA = "https://api.paxos.com/v2";
 	private static final String URLBF = "https://api.bitfinex.com";
 
 	private final BitstampService bitstampService;
 	private final BitfinexService bitfinexService;
-	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 	private final MyUserService myUserService;
 	private final WebClient.Builder webClientBuilder;
@@ -73,10 +67,9 @@ public class ScheduledTask {
 	private final Scheduler mongoImportScheduler = Schedulers.newBoundedElastic(20, 40, "mongoImport", 10);
 
 	public ScheduledTask(BitstampService bitstampService, MyUserService myUserService, EventMapper messageMapper,
-			BitfinexService bitfinexService, ItbitService itbitService, CoinbaseService coinbaseService, WebClient.Builder webClientBuilder) {
+			BitfinexService bitfinexService, CoinbaseService coinbaseService, WebClient.Builder webClientBuilder) {
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
-		this.itbitService = itbitService;
 		this.coinbaseService = coinbaseService;
 		this.myUserService = myUserService;
 		this.webClientBuilder = webClientBuilder;
@@ -213,62 +206,9 @@ public class ScheduledTask {
 		}
 	}
 
-	@Async("clientTaskExecutor")
-	@Scheduled(fixedRate = 60000, initialDelay = 21000)
-	@SchedulerLock(name = "ItbitUsdQuote_scheduledTask", lockAtLeastFor = "PT50S", lockAtMostFor = "PT55S")
-	public void insertItbitUsdQuote() {
-		final String currPair = "BTCUSD";
-		// LOG.info(currPair);
-		this.disposeClient(currPair);
-		LocalTime start = LocalTime.now();
-		final AtomicBoolean exceptionLogged = new AtomicBoolean(false);
-		Disposable subscribe = null;
-		try {
-			Mono<QuoteIb> request = this.webClientBuilder.build().get()
-					.uri(String.format("%s/markets/%s/ticker", ScheduledTask.URLPA, currPair))
-					.accept(MediaType.APPLICATION_JSON)
-					.exchangeToMono(response -> response.bodyToMono(PaxosQuote.class)).map(res -> {
-//				log.info(res.toString());
-						return res;
-					}).map(this::convert)
-                    .map(this::limitPrecision)
-                    .timeout(Duration.ofSeconds(5L)).onErrorResume(ex -> {
-						exceptionLogged.set(this.logRequestFailed("Ibit", currPair, start, ex));
-						return Mono.empty();
-					}).subscribeOn(this.mongoImportScheduler);
-			subscribe = request.flatMap(myQuote -> this.itbitService.insertQuote(Mono.just(myQuote))
-					.timeout(Duration.ofSeconds(6L)).subscribeOn(this.mongoImportScheduler).onErrorResume(ex -> {
-						if (!exceptionLogged.get()) {
-							LOG.warn(String.format("Itbit data store failed for: %s", currPair), ex);
-						}
-						return Mono.empty();
-					})).subscribeOn(this.mongoImportScheduler)
-					.subscribe(x -> this.logDuration("Itbit", currPair, start),
-							err -> LOG.warn(String.format("Itbit data import failed for: %s", currPair), err));
-		} finally {
-			this.disposables.put(currPair, Optional.ofNullable(subscribe));
-		}
-	}
-
-	QuoteIb convert(PaxosQuote paxosQuote) {
-		final String currPair = "XBTUSD";
-		QuoteIb quoteIb = new QuoteIb(currPair, new BigDecimal(paxosQuote.getBestBid().getPrice()),
-				new BigDecimal(paxosQuote.getBestBid().getAmount()), new BigDecimal(paxosQuote.getBestAsk().getPrice()),
-				new BigDecimal(paxosQuote.getBestAsk().getAmount()),
-				new BigDecimal(paxosQuote.getLastExecution().getPrice()),
-				new BigDecimal(paxosQuote.getLastExecution().getAmount()),
-				new BigDecimal(paxosQuote.getLastDay().getVolume()), new BigDecimal(paxosQuote.getToday().getVolume()),
-				new BigDecimal(paxosQuote.getLastDay().getHigh()), new BigDecimal(paxosQuote.getLastDay().getLow()),
-				new BigDecimal(paxosQuote.getToday().getOpen()), new BigDecimal(paxosQuote.getToday().getHigh()),
-				new BigDecimal(paxosQuote.getToday().getLow()),
-				new BigDecimal(paxosQuote.getToday().getVolumeWeightedAveragePrice()),
-				new BigDecimal(paxosQuote.getLastDay().getVolumeWeightedAveragePrice()), paxosQuote.getSnapshotAt());
-		return quoteIb;
-	}
-
 	private void disposeClient(final String currPair) {
 		Optional<Disposable> optional = this.disposables.getOrDefault(currPair, Optional.empty());
-		optional.ifPresent(disposable -> disposable.dispose());
+		optional.ifPresent(Disposable::dispose);
 	}
 
 	@Async("clientTaskExecutor")

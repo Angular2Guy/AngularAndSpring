@@ -15,7 +15,6 @@
  */
 import { BitstampCurrPairs} from "../services/bitstamp.service";
 import { CoinbaseCurrPairs, CoinbaseService } from "../services/coinbase.service";
-import { ItbitCurrPairs, ItbitService } from "../services/itbit.service";
 import { BitfinexCurrPairs, BitfinexService } from "../services/bitfinex.service";
 
 enum MyTimeFrames {
@@ -43,9 +42,8 @@ export class CommonUtils {
   constructor() {
     const serviceBs = new BitstampCurrPairs();
     const serviceCb = new CoinbaseCurrPairs();
-    const serviceIb = new ItbitCurrPairs();
     const serviceBf = new BitfinexCurrPairs();
-    
+
     this.currpairs.set(serviceBs.BTCEUR, "Bitcoin Eur");
     this.currpairs.set(serviceBs.ETHEUR, "Ether Eur");
     this.currpairs.set(serviceBs.LTCEUR, "Litecoin Eur");
@@ -54,8 +52,6 @@ export class CommonUtils {
     this.currpairs.set(serviceBs.ETHUSD, "Ether Usd");
     this.currpairs.set(serviceBs.LTCUSD, "Litecoin Usd");
     this.currpairs.set(serviceBs.XRPUSD, "Ripple Usd");
-    this.currpairs.set(serviceIb.BTCEUR, "Bitcoin Eur");
-    this.currpairs.set(serviceIb.BTCUSD, "Bitcoin Usd");
     this.currpairs.set(serviceCb.BTCUSD, "Bitcoin Usd");
     this.currpairs.set(serviceCb.ETHUSD, "Ether Usd");
     this.currpairs.set(serviceCb.LTCUSD, "Litecoin Usd");

@@ -13,15 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes, RouterModule } from "@angular/router";
-import { BsdetailComponent } from "./bsdetail/bsdetail.component";
-import { IbdetailComponent } from "./ibdetail/ibdetail.component";
-import { CbdetailComponent } from "./cbdetail/cbdetail.component";
-import { BfdetailComponent } from "./bfdetail/bfdetail.component";
+import {Routes} from "@angular/router";
+import {BsdetailComponent} from "./bsdetail/bsdetail.component";
+import {CbdetailComponent} from "./cbdetail/cbdetail.component";
+import {BfdetailComponent} from "./bfdetail/bfdetail.component";
 
 export const routes: Routes = [
   { path: "bsdetail/:currpair", component: BsdetailComponent },
-  { path: "ibdetail/:currpair", component: IbdetailComponent },
   { path: "cbdetail/:currpair", component: CbdetailComponent },
   { path: "bfdetail/:currpair", component: BfdetailComponent },
 ];

@@ -27,6 +27,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class RestClientCoinbase {
@@ -51,19 +53,16 @@ public class RestClientCoinbase {
 		      URL url;
 		      try {
 
-			     url = new URL(https_url);
+			     url = new URI(https_url).toURL();
 			     HttpsURLConnection con = (HttpsURLConnection)url.openConnection();			     
 
 			     //dump all the content
 			     print_content(con);
 
-		      } catch (MalformedURLException e) {
-			     e.printStackTrace();
-		      } catch (IOException e) {
+		      } catch (IOException | URISyntaxException e) {
 			     e.printStackTrace();
 		      }
-
-		   }
+       }
 	   
 	   private void print_content(HttpsURLConnection con){
 		   var mapper = new JsonMapper();

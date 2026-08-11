@@ -21,7 +21,6 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { BitstampCurrPairs, BitstampService } from "../../services/bitstamp.service";
-import { ItbitCurrPairs, ItbitService } from "../../services/itbit.service";
 import { BitfinexCurrPairs, BitfinexService } from "../../services/bitfinex.service";
 import { Router } from "@angular/router";
 import { OrderbookBs } from "../../common/orderbook-bs";
@@ -55,10 +54,9 @@ import { MatToolbarModule } from "@angular/material/toolbar";
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./orderbooks.component.scss"],
 })
-export class OrderbooksComponent implements OnInit {  
-  private itbitCurrPairs = new ItbitCurrPairs();
+export class OrderbooksComponent implements OnInit {
   private bitfinexCurrPairs = new BitfinexCurrPairs();
-  public currencies: MyCurr[] = [];  
+  public currencies: MyCurr[] = [];
   protected model = new MyModel("", false, false, false, 1, 0);
   protected bsOrders: MyOrder[] = [];
   protected bfOrders: MyOrder[] = [];
@@ -68,7 +66,6 @@ export class OrderbooksComponent implements OnInit {
   constructor(
     private router: Router,
     private serviceBs: BitstampService,
-    private serviceIb: ItbitService,
     private serviceBf: BitfinexService,
   ) {}
 
@@ -82,17 +79,6 @@ export class OrderbooksComponent implements OnInit {
   }
   onSubmit() {
     //console.log( this.model );
-    if (this.model.itbitCb && this.model.currpair === this.bitfinexCurrPairs.BTCUSD) {
-      this.serviceIb
-        .getOrderbook(this.itbitCurrPairs.BTCUSD)
-        .pipe(takeUntilDestroyed(this.destroy))
-        .subscribe((ob) => {
-          //                this.orderbookIb = ob;
-          this.ibOrders = this.filterObIb(ob);
-        });
-    } else {
-      this.ibOrders = [];
-    }
     if (this.model.bitstampCb) {
       this.serviceBs
         .getOrderbook(this.model.currpair)

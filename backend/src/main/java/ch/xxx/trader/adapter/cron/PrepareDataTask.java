@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
-import ch.xxx.trader.usecase.services.ItbitService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import reactor.core.Disposable;
 
@@ -35,18 +34,16 @@ public class PrepareDataTask {
 	private static final Logger LOG = LoggerFactory.getLogger(PrepareDataTask.class);
 	private final BitstampService bitstampService;
 	private final BitfinexService bitfinexService;
-	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 	private Optional<Disposable> bitstampDisposableOpt = Optional.empty();
 	private Optional<Disposable> bitfinexDisposableOpt = Optional.empty();
 	private Optional<Disposable> itbitDisposableOpt = Optional.empty();
 	private Optional<Disposable> coinbaseDisposableOpt = Optional.empty();
 
-	public PrepareDataTask(BitstampService bitstampService, BitfinexService bitfinexService, ItbitService itbitService,
+	public PrepareDataTask(BitstampService bitstampService, BitfinexService bitfinexService,
 			CoinbaseService coinbaseService) {
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
-		this.itbitService = itbitService;
 		this.coinbaseService = coinbaseService;
 	}
 
@@ -68,16 +65,6 @@ public class PrepareDataTask {
 		this.bitfinexDisposableOpt = Optional.of(this.bitfinexService.createBfAvg()
 				.doFinally(value -> BitfinexService.singleInstanceLock = false).subscribe(result -> {
 				}, error -> LOG.warn("createBfAvg() failed.", error)));
-	}
-
-	@Async
-	@Scheduled(cron = "0 25 1,13 ? * ?")
-	@SchedulerLock(name = "itbit_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
-	public void createIbAvg() {
-		this.itbitDisposableOpt.ifPresent(myDisposable -> myDisposable.dispose());
-		this.itbitDisposableOpt = Optional.of(this.itbitService.createIbAvg()
-				.doFinally(value -> ItbitService.singleInstanceLock = false).subscribe(result -> {
-				}, error -> LOG.warn("createIbAvg() failed.", error)));
 	}
 
 	@Async

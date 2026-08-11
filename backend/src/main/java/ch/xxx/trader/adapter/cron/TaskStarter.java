@@ -26,23 +26,20 @@ import org.springframework.stereotype.Component;
 import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
-import ch.xxx.trader.usecase.services.ItbitService;
 
 @Component
 public class TaskStarter {
 	private static final Logger log = LoggerFactory.getLogger(TaskStarter.class);
 	private final BitstampService bitstampService;
 	private final BitfinexService bitfinexService;
-	private final ItbitService itbitService;
 	private final CoinbaseService coinbaseService;
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
-	public TaskStarter(BitstampService bitstampService, BitfinexService bitfinexService, ItbitService itbitService,
+	public TaskStarter(BitstampService bitstampService, BitfinexService bitfinexService,
 			CoinbaseService coinbaseService) {
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
-		this.itbitService = itbitService;
 		this.coinbaseService = coinbaseService;
 	}
 
@@ -53,11 +50,9 @@ public class TaskStarter {
 			log.info("ApplicationReady");
 			this.bitstampService.createBsAvg().block();
 			this.bitfinexService.createBfAvg().block();
-			this.itbitService.createIbAvg().block();
 			this.coinbaseService.createCbAvg().block();
 			BitstampService.singleInstanceLock = false;
 			BitfinexService.singleInstanceLock = false;
-			ItbitService.singleInstanceLock = false;
 			CoinbaseService.singleInstanceLock = false;
 		}
 	}

@@ -21,7 +21,6 @@ import {
 } from "@angular/core";
 import { BitstampCurrPairs, BitstampService } from "../../services/bitstamp.service";
 import { CoinbaseCurrPairs, CoinbaseService } from "../../services/coinbase.service";
-import { ItbitCurrPairs, ItbitService } from "../../services/itbit.service";
 import { BitfinexCurrPairs, BitfinexService } from "../../services/bitfinex.service";
 import { QuoteBs } from "../../common/quote-bs";
 import { QuoteCb } from "../../common/quote-cb";
@@ -76,14 +75,12 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   private utils = new CommonUtils();
   private bitstampCurrPairs= new BitstampCurrPairs();
   private coinbaseCurrPairs= new CoinbaseCurrPairs();
-  private itbitCurrPairs= new ItbitCurrPairs();
   private bitfinexCurrPairs= new BitfinexCurrPairs();
 
   constructor(
     private router: Router,
     private serviceBs: BitstampService,
     private serviceCb: CoinbaseService,
-    private serviceIb: ItbitService,
     private serviceBf: BitfinexService,
     private serviceMu: MyuserService,
     private tokenService: TokenService,
@@ -98,8 +95,8 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       this.refreshData();
     }, 15000);
-    if (this.datasource.rows.length < 16) {
-      for (let i = 0; i < 16; i++) {
+    if (this.datasource.rows.length < 15) {
+      for (let i = 0; i < 15; i++) {
         this.datasource.rows.push(
           new Myrow(
             "",
@@ -163,8 +160,6 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
     //console.log(row);
     if (row.exchange === "Bitstamp") {
       this.router.navigateByUrl("details/bsdetail/" + row.pair);
-    } else if (row.exchange === "Itbit" && row.pair === "XBTUSD") {
-      this.router.navigateByUrl("details/ibdetail/" + this.itbitCurrPairs.BTCUSD);
     } else if (row.exchange === "Coinbase") {
       this.router.navigateByUrl("details/cbdetail/" + row.pair);
     } else if (row.exchange === "Bitfinex") {
@@ -299,20 +294,6 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
     this.refeshBsData(this.bitstampCurrPairs.ETHUSD, 5);
     this.refeshBsData(this.bitstampCurrPairs.LTCUSD, 6);
     this.refeshBsData(this.bitstampCurrPairs.XRPUSD, 7);
-    this.serviceIb
-      .getCurrentQuote(this.itbitCurrPairs.BTCUSD)
-      .pipe(
-        filter((result) => !!result?.lastPrice),
-        takeUntilDestroyed(this.destroy),
-      )
-      .subscribe((quote) => {
-        this.datasource.rows[8] = this.createRowIb(
-          quote,
-          "Itbit",
-          this.utils.getCurrpairName(this.itbitCurrPairs.BTCUSD) ?? "",
-        );
-        this.datasource.updateRows();
-      });
     this.serviceCb
       .getCurrentQuote()
       .pipe(
@@ -321,15 +302,15 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
       )
       .subscribe((quote) => {
         const myrows = this.createRowsCb(quote);
-        this.datasource.rows[9] = myrows[0];
-        this.datasource.rows[10] = myrows[1];
-        this.datasource.rows[11] = myrows[2];
+        this.datasource.rows[8] = myrows[0];
+        this.datasource.rows[9] = myrows[1];
+        this.datasource.rows[10] = myrows[2];
         this.datasource.updateRows();
       });
-    this.refreshBfData(this.bitfinexCurrPairs.BTCUSD, 12);
-    this.refreshBfData(this.bitfinexCurrPairs.ETHUSD, 13);
-    this.refreshBfData(this.bitfinexCurrPairs.LTCUSD, 14);
-    this.refreshBfData(this.bitfinexCurrPairs.XRPUSD, 15);
+    this.refreshBfData(this.bitfinexCurrPairs.BTCUSD, 11);
+    this.refreshBfData(this.bitfinexCurrPairs.ETHUSD, 12);
+    this.refreshBfData(this.bitfinexCurrPairs.LTCUSD, 13);
+    this.refreshBfData(this.bitfinexCurrPairs.XRPUSD, 14);
   }
 
   private formatNumber(x: number): number {

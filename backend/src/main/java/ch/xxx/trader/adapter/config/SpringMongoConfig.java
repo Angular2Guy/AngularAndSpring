@@ -37,7 +37,7 @@ import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMon
 public class SpringMongoConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringMongoConfig.class);
 	private static final String SCHED_LOCK_DB = "schedLock";
-	@Value("${spring.data.mongodb.uri:}")
+	@Value("${spring.mongodb.uri:}")
 	private String mongoDbUri;
 	@Value("${MONGODB_HOST:}")
 	private String mongoDbHost;

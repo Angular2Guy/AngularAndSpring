@@ -20,17 +20,10 @@ import org.springframework.stereotype.Service;
 import ch.xxx.trader.domain.model.dto.QuotePdf;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
-import ch.xxx.trader.domain.model.entity.QuoteIb;
 
 @Service
 public class ReportMapper {
 
-	public QuotePdf convert(QuoteIb quote) {
-		QuotePdf quotePdf = new QuotePdf(quote.getLastPrice(), quote.getPair(), quote.getVolume24h(),
-				quote.getCreatedAt(), quote.getBid(), quote.getAsk());
-		return quotePdf;
-	}
-	
 	public QuotePdf convert(QuoteBs quote) {
 		QuotePdf quotePdf = new QuotePdf(quote.getLast(), quote.getPair(), quote.getVolume(), quote.getCreatedAt(),
 				quote.getBid(), quote.getAsk());
