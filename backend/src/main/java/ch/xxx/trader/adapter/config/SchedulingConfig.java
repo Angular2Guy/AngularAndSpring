@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.config;
 
 import java.util.concurrent.Executor;
@@ -45,15 +45,9 @@ public class SchedulingConfig {
 
 	@Bean(name = "clientTaskExecutor")
 	public Executor threadPoolTaskExecutor() {
-		return this.createThreadPoolTaskExecutor(20);
-	}
-
-	private Executor createThreadPoolTaskExecutor(int maxPoolSize) {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setMaxPoolSize(maxPoolSize);
-		executor.setQueueCapacity(1);
-		executor.setKeepAliveSeconds(1);
-		executor.setAllowCoreThreadTimeOut(true);			
+		executor.setVirtualThreads(true);
+		executor.setThreadNamePrefix("clientTask-");
 		return executor;
 	}
 }

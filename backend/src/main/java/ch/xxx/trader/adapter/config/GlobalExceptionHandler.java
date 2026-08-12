@@ -28,7 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.mongodb.MongoTimeoutException;
 
 import ch.xxx.trader.domain.exceptions.AuthenticationException;
-import io.netty.handler.timeout.TimeoutException;
+import java.util.concurrent.TimeoutException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {

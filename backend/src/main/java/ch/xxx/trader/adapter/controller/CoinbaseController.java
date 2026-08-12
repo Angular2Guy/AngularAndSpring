@@ -12,8 +12,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.controller;
+
+import java.util.Collection;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.domain.model.entity.QuoteCbSmall;
 import ch.xxx.trader.usecase.services.CoinbaseService;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/coinbase")
@@ -35,37 +35,37 @@ public class CoinbaseController {
 	}
 
 	@GetMapping("/today")
-	public Flux<QuoteCbSmall> todayQuotesBc() {
+	public Collection<QuoteCbSmall> todayQuotesBc() {
 		return this.coinbaseService.todayQuotesBc();
 	}
 	
 	@GetMapping("/7days")
-	public Flux<QuoteCbSmall> sevenDaysQuotesBc() {
+	public Collection<QuoteCbSmall> sevenDaysQuotesBc() {
 		return this.coinbaseService.sevenDaysQuotesBc();
 	}
 	
 	@GetMapping("/30days")
-	public Flux<QuoteCbSmall> thirtyDaysQuotesBc() {
+	public Collection<QuoteCbSmall> thirtyDaysQuotesBc() {
 		return this.coinbaseService.thirtyDaysQuotesBc();
 	}
 	
 	@GetMapping("/90days")
-	public Flux<QuoteCbSmall> nintyDaysQuotesBc() {
+	public Collection<QuoteCbSmall> nintyDaysQuotesBc() {
 		return this.coinbaseService.nintyDaysQuotesBc();
 	}
 
 	@GetMapping("/6month")
-	public Flux<QuoteCbSmall> sixMonthsQuotesBc() {
+	public Collection<QuoteCbSmall> sixMonthsQuotesBc() {
 		return this.coinbaseService.sixMonthsQuotesBc();
 	}
 	
 	@GetMapping("/1year")
-	public Flux<QuoteCbSmall> oneYearQuotesBc() {
+	public Collection<QuoteCbSmall> oneYearQuotesBc() {
 		return this.coinbaseService.oneYearQuotesBc();
 	}
 	
 	@GetMapping("/current")
-	public Mono<QuoteCb> currentQuoteBc() {
-		return this.coinbaseService.currentQuoteBc();
+	public QuoteCb currentQuoteBc() {
+		return this.coinbaseService.currentQuoteBc().orElse(null);
 	}	
 }

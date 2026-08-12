@@ -5,9 +5,6 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 public class WebUtils {
@@ -30,11 +27,6 @@ public class WebUtils {
 		return false;
 	}
 
-	public static WebClient buildWebClient(String url) {
-		ReactorClientHttpConnector connector = new ReactorClientHttpConnector();
-		return WebClient.builder().clientConnector(connector).baseUrl(url).build();
-	}
-	
 	public static Optional<String> extractToken(Map<String,String> headers) {
 		String authStr = headers.get(AUTHORIZATION);
 		return extractToken(Optional.ofNullable(authStr));

@@ -12,8 +12,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.controller;
+
+import java.util.Collection;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.usecase.services.BitstampService;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/bitstamp")
@@ -36,22 +36,22 @@ public class BitstampController {
 	}
 	
 	@GetMapping("/{currpair}/orderbook")
-	public Mono<String> getOrderbook(@PathVariable String currpair) {				
+	public String getOrderbook(@PathVariable String currpair) {				
 		return this.bitstampService.getOrderbook(currpair);
 	}
 
 	@GetMapping("/{pair}/current")
-	public Mono<QuoteBs> currentQuoteBtc(@PathVariable String pair) {
-		return this.bitstampService.currentQuoteBtc(pair);
+	public QuoteBs currentQuoteBtc(@PathVariable String pair) {
+		return this.bitstampService.currentQuoteBtc(pair).orElse(null);
 	}
 	
 	@GetMapping("/{pair}/{timeFrame}")
-	public Flux<QuoteBs> tfQuotesBtc(@PathVariable String timeFrame, @PathVariable String pair) {
+	public Collection<QuoteBs> tfQuotesBtc(@PathVariable String timeFrame, @PathVariable String pair) {
 		return this.bitstampService.tfQuotesBtc(timeFrame, pair);
 	}
 	
 	@GetMapping(path="/{pair}/{timeFrame}/pdf", produces=MediaType.APPLICATION_PDF_VALUE)
-	public Mono<byte[]> pdfReport(@PathVariable String timeFrame, @PathVariable String pair) {
+	public byte[] pdfReport(@PathVariable String timeFrame, @PathVariable String pair) {
 		return this.bitstampService.pdfReport(timeFrame, pair);		
 	}
 }

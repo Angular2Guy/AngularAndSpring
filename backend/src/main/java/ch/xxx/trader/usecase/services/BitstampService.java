@@ -12,12 +12,11 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,11 +27,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,10 +44,6 @@ import ch.xxx.trader.domain.services.MyOrderBookClient;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 @Service
 public class BitstampService {
@@ -63,7 +55,6 @@ public class BitstampService {
 	private final ReportMapper reportMapper;
 	private final MyMongoRepository myMongoRepository;
 	private final ServiceUtils serviceUtils;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(5, 10, "mongoImport", 10);
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
@@ -75,59 +66,68 @@ public class BitstampService {
 		this.serviceUtils = serviceUtils;
 	}
 
-	public Mono<QuoteBs> insertQuote(Mono<QuoteBs> quote) {
+	public QuoteBs insertQuote(QuoteBs quote) {
 		return this.myMongoRepository.insert(quote);
 	}
 
-	public Mono<String> getOrderbook(String currpair) {
+	public String getOrderbook(String currpair) {
 		return this.orderBookClient.getOrderbookBitstamp(currpair);
 	}
 
-	public Mono<QuoteBs> currentQuoteBtc(String pair) {
+	public Optional<QuoteBs> currentQuoteBtc(String pair) {
 		Query query = MongoUtils.buildCurrentQuery(Optional.of(pair));
 		return this.myMongoRepository.findOne(query, QuoteBs.class);
 	}
 
-	public Flux<QuoteBs> tfQuotesBtc(String timeFrame, String pair) {
-		return this.serviceUtils.tfQuotes(timeFrame, pair, QuoteBs.class, BS_HOUR_COL, BS_DAY_COL);		
+	public List<QuoteBs> tfQuotesBtc(String timeFrame, String pair) {
+		return this.serviceUtils.tfQuotes(timeFrame, pair, QuoteBs.class, BS_HOUR_COL, BS_DAY_COL);
 	}
 
-	public Mono<byte[]> pdfReport(String timeFrame, String pair) {
-		return this.serviceUtils.pdfReport(timeFrame, pair, QuoteBs.class, BS_HOUR_COL, BS_DAY_COL, this.reportMapper::convert);		
+	public byte[] pdfReport(String timeFrame, String pair) {
+		return this.serviceUtils.pdfReport(timeFrame, pair, QuoteBs.class, BS_HOUR_COL, BS_DAY_COL,
+				this.reportMapper::convert);
 	}
 
-	public Mono<String> createBsAvg() {
-		Mono<String> result = Mono.empty();
+	public void createBsAvg() {
 		if ((this.singleInstanceDeployment && !BitstampService.singleInstanceLock) || !this.singleInstanceDeployment) {
 			BitstampService.singleInstanceLock = true;
-			result = this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT)
-					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-//					.doOnError(ex -> LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", ex))
-					.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", ex))
-					.then(this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT)
-							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-//							.doOnError(ex -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex))
-							.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", ex)))
-					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(3L))
-					.onErrorContinue((ex, val) -> LOG.info("createBsAvg() failed.", ex))
-//					.doOnError(ex -> LOG.info("createBsAvg() failed.", ex))
-					.subscribeOn(this.mongoScheduler);
+			try {
+				this.ensureIndexes();
+				this.createHourDayAvg();
+			} catch (Exception e) {
+				LOG.info("createBsAvg() failed.", e);
+			}
 		}
-		return result;
+	}
+
+	private void ensureIndexes() {
+		try {
+			this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT);
+		} catch (Exception e) {
+			LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", e);
+		}
+		try {
+			this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT);
+		} catch (Exception e) {
+			LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", e);
+		}
 	}
 
 	private String createHourDayAvg() {
 		LOG.info("createHourDayAvg()");
-		CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
-			this.createBsHourlyAvg();
-			return "createBsHourlyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> {
-			this.createBsDailyAvg();
-			return "createBsDailyAvg() Done.";
-		}, CompletableFuture.delayedExecutor(10, TimeUnit.SECONDS));
-		String combined = Stream.of(future1, future2).map(CompletableFuture::join).collect(Collectors.joining(" "));
-		LOG.info(combined);
+		Thread task1 = Thread.ofVirtual().name("createBsHourlyAvg").unstarted(this::createBsHourlyAvg);
+		Thread task2 = Thread.ofVirtual().name("createBsDailyAvg").unstarted(this::createBsDailyAvg);
+		task1.start();
+		task2.start();
+		try {
+			Thread.sleep(10_000L);
+			task1.join();
+			Thread.sleep(10_000L);
+			task2.join();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+		LOG.info("createBsHourlyAvg() and createBsDailyAvg() done.");
 		return "done";
 	}
 
@@ -143,21 +143,14 @@ public class BitstampService {
 			query.addCriteria(
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
-			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
-					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitstamp prepare hour data failed", ex))
-					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler)
-					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream()
-							.map(key -> makeBsQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
-							.collect(Collectors.toList()))
-					.flatMap(myList -> Mono
-							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			collectBs.filter(Predicate.not(Collection::isEmpty))
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BS_HOUR_COL)
-							.timeout(Duration.ofSeconds(5L))
-							.doOnError(ex -> LOG.warn("Bitstamp prepare hour data failed", ex))
-							.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
-					.subscribeOn(this.mongoScheduler).block();
+			Collection<QuoteBs> collectBs = this.collectBsQuotes(query, timeFrame, false);
+			if (!collectBs.isEmpty()) {
+				try {
+					this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL);
+				} catch (Exception e) {
+					LOG.warn("Bitstamp prepare hour data failed", e);
+				}
+			}
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -179,21 +172,14 @@ public class BitstampService {
 			query.addCriteria(
 					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
-			Mono<Collection<QuoteBs>> collectBs = this.myMongoRepository.find(query, QuoteBs.class)
-					.timeout(Duration.ofSeconds(5L)).doOnError(ex -> LOG.warn("Bitstamp prepare day data failed", ex))
-					.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler)
-					.collectMultimap(quote -> quote.getPair(), quote -> quote)
-					.map(multimap -> multimap.keySet().stream()
-							.map(key -> makeBsQuoteDay(key, multimap, timeFrame.begin(), timeFrame.end()))
-							.collect(Collectors.toList()))
-					.flatMap(myList -> Mono
-							.just(myList.stream().flatMap(Collection::stream).collect(Collectors.toList())));
-			collectBs.filter(Predicate.not(Collection::isEmpty))
-					.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), BS_DAY_COL)
-							.timeout(Duration.ofSeconds(5L))
-							.doOnError(ex -> LOG.warn("Bitstamp prepare hour data failed", ex))
-							.onErrorResume(ex -> Mono.empty()).subscribeOn(this.mongoScheduler).collectList())
-					.subscribeOn(this.mongoScheduler).block();
+			Collection<QuoteBs> collectBs = this.collectBsQuotes(query, timeFrame, true);
+			if (!collectBs.isEmpty()) {
+				try {
+					this.myMongoRepository.insertAll(collectBs, BS_DAY_COL);
+				} catch (Exception e) {
+					LOG.warn("Bitstamp prepare day data failed", e);
+				}
+			}
 
 			timeFrame.begin().add(Calendar.DAY_OF_YEAR, 1);
 			timeFrame.end().add(Calendar.DAY_OF_YEAR, 1);
@@ -203,7 +189,21 @@ public class BitstampService {
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Daily Data Time:"));
 	}
 
-	private Collection<QuoteBs> makeBsQuoteDay(String key, Map<String, Collection<QuoteBs>> multimap, Calendar begin,
+	private Collection<QuoteBs> collectBsQuotes(Query query, MyTimeFrame timeFrame, boolean day) {
+		Map<String, List<QuoteBs>> multimap;
+		try {
+			multimap = this.myMongoRepository.find(query, QuoteBs.class).stream()
+					.collect(Collectors.groupingBy(QuoteBs::getPair));
+		} catch (Exception e) {
+			LOG.warn(day ? "Bitstamp prepare day data failed" : "Bitstamp prepare hour data failed", e);
+			return List.of();
+		}
+		return multimap.keySet().stream().map(key -> day ? this.makeBsQuoteDay(key, multimap, timeFrame.begin(),
+				timeFrame.end()) : this.makeBsQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
+				.filter(Predicate.not(Collection::isEmpty)).flatMap(Collection::stream).toList();
+	}
+
+	private Collection<QuoteBs> makeBsQuoteDay(String key, Map<String, List<QuoteBs>> multimap, Calendar begin,
 			Calendar end) {
 		List<QuoteBs> hourQuotes = new LinkedList<QuoteBs>();
 
@@ -223,7 +223,7 @@ public class BitstampService {
 		return hourQuotes;
 	}
 
-	private Collection<QuoteBs> makeBsQuoteHour(String key, Map<String, Collection<QuoteBs>> multimap, Calendar begin,
+	private Collection<QuoteBs> makeBsQuoteHour(String key, Map<String, List<QuoteBs>> multimap, Calendar begin,
 			Calendar end) {
 		List<Calendar> hours = this.serviceUtils.createDayHours(begin);
 		List<QuoteBs> hourQuotes = new LinkedList<QuoteBs>();

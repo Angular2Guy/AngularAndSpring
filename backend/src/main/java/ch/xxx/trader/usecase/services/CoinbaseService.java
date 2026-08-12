@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.usecase.services;
 
 import java.beans.BeanInfo;
@@ -23,7 +23,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -42,7 +41,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,10 +58,6 @@ import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.domain.model.entity.QuoteCbSmall;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 @Service
 public class CoinbaseService {
@@ -83,7 +77,6 @@ public class CoinbaseService {
 	private boolean cpuConstraint;
 	private final List<String> nonValueFieldNames = List.of("_id", "createdAt", "class");
 	private final List<PropertyDescriptor> propertyDescriptors;
-	private final Scheduler mongoScheduler = Schedulers.newBoundedElastic(6, 10, "mongoImport", 10);
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 	@Value("${single.instance.slow-io:false}")
@@ -101,75 +94,91 @@ public class CoinbaseService {
 		}
 	}
 
-	public Mono<QuoteCb> insertQuote(Mono<QuoteCb> quote) {
+	public QuoteCb insertQuote(QuoteCb quote) {
 		return this.myMongoRepository.insert(quote);
 	}
 
-	public Flux<QuoteCbSmall> todayQuotesBc() {
+	public List<QuoteCbSmall> todayQuotesBc() {
 		Query query = MongoUtils.buildTodayQuery(Optional.empty());
-		return this.myMongoRepository.find(query, QuoteCb.class).filter(CoinbaseService::filterEvenMinutes)
+		return this.myMongoRepository.find(query, QuoteCb.class).stream().filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
-						quote.getLtc()));
+						quote.getLtc()))
+				.toList();
 	}
 
-	public Flux<QuoteCbSmall> sevenDaysQuotesBc() {
+	public List<QuoteCbSmall> sevenDaysQuotesBc() {
 		Query query = MongoUtils.build7DayQuery(Optional.empty());
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_HOUR_COL).filter(CoinbaseService::filterEvenMinutes)
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_HOUR_COL).stream()
+				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
-						quote.getLtc()));
+						quote.getLtc()))
+				.toList();
 	}
 
-	public Flux<QuoteCbSmall> thirtyDaysQuotesBc() {
+	public List<QuoteCbSmall> thirtyDaysQuotesBc() {
 		Query query = MongoUtils.build30DayQuery(Optional.empty());
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(CoinbaseService::filterEvenMinutes)
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).stream()
+				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
-						quote.getLtc()));
+						quote.getLtc()))
+				.toList();
 	}
 
-	public Flux<QuoteCbSmall> nintyDaysQuotesBc() {
+	public List<QuoteCbSmall> nintyDaysQuotesBc() {
 		Query query = MongoUtils.build90DayQuery(Optional.empty());
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(CoinbaseService::filterEvenMinutes)
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).stream()
+				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
-						quote.getLtc()));
+						quote.getLtc()))
+				.toList();
 	}
 
-	public Flux<QuoteCbSmall> sixMonthsQuotesBc() {
+	public List<QuoteCbSmall> sixMonthsQuotesBc() {
 		Query query = MongoUtils.buildTimeFrameQuery(Optional.empty(), TimeFrame.Month6);
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(CoinbaseService::filterEvenMinutes)
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).stream()
+				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
-						quote.getLtc()));
+						quote.getLtc()))
+				.toList();
 	}
 
-	public Flux<QuoteCbSmall> oneYearQuotesBc() {
+	public List<QuoteCbSmall> oneYearQuotesBc() {
 		Query query = MongoUtils.buildTimeFrameQuery(Optional.empty(), TimeFrame.Year1);
-		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).filter(CoinbaseService::filterEvenMinutes)
+		return this.myMongoRepository.find(query, QuoteCb.class, CB_DAY_COL).stream()
+				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
-						quote.getLtc()));
+						quote.getLtc()))
+				.toList();
 	}
 
-	public Mono<QuoteCb> currentQuoteBc() {
+	public Optional<QuoteCb> currentQuoteBc() {
 		Query query = MongoUtils.buildCurrentQuery(Optional.empty());
 		return this.myMongoRepository.findOne(query, QuoteCb.class);
 	}
 
-	public Mono<String> createCbAvg() {
-		Mono<String> result = Mono.empty();
+	public void createCbAvg() {
 		if ((this.singleInstanceDeployment && !CoinbaseService.singleInstanceLock) || !this.singleInstanceDeployment) {
 			CoinbaseService.singleInstanceLock = true;
-			result = this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT)
-					.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-					.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", ex))
-//					.doOnError(ex -> LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", ex))
-					.then(this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT)
-							.subscribeOn(this.mongoScheduler).timeout(Duration.ofMinutes(5L))
-//							.doOnError(ex -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex))
-							.onErrorContinue((ex, val) -> LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", ex)))
-					.map(value -> this.createHourDayAvg()).timeout(Duration.ofHours(2L))
-//					.doOnError(ex -> LOG.info("createCbAvg() failed.", ex))
-					.onErrorContinue((ex, val) -> LOG.info("createCbAvg() failed.", ex))
-					.subscribeOn(this.mongoScheduler);
+			try {
+				this.ensureIndexes();
+				this.createHourDayAvg();
+			} catch (Exception e) {
+				LOG.info("createCbAvg() failed.", e);
+			}
 		}
-		return result;
+	}
+
+	private void ensureIndexes() {
+		try {
+			this.myMongoRepository.ensureIndex(CB_HOUR_COL, DtoUtils.CREATEDAT);
+		} catch (Exception e) {
+			LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", e);
+		}
+		try {
+			this.myMongoRepository.ensureIndex(CB_DAY_COL, DtoUtils.CREATEDAT);
+		} catch (Exception e) {
+			LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", e);
+		}
 	}
 
 	private String createHourDayAvg() {
@@ -182,11 +191,11 @@ public class CoinbaseService {
 			LOG.info(this.serviceUtils.createAvgLogStatement(start, "Prepared Coinbase Data Time:"));
 		} else {
 			// This can only be used on machines without cpu constraints.
-			CompletableFuture<String> future7 = CompletableFuture.supplyAsync(() -> {
+			final CompletableFuture<String> future7 = CompletableFuture.supplyAsync(() -> {
 				this.createCbIntervalAvg(false);
 				return "createCbHourlyAvg() Done.";
 			}, CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS));
-			CompletableFuture<String> future8 = CompletableFuture.supplyAsync(() -> {
+			final CompletableFuture<String> future8 = CompletableFuture.supplyAsync(() -> {
 				this.createCbIntervalAvg(true);
 				return "createCbDailyAvg() Done.";
 			}, CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS));
@@ -198,29 +207,33 @@ public class CoinbaseService {
 
 	private void processTimeFrame(MyTimeFrame timeFrame1, boolean isDay) {
 		Date start = new Date();
-		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 		final var nonZeroProperties = new AtomicInteger(0);
 		Query query = new Query();
 		query.addCriteria(
 				Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame1.begin().getTime()).lt(timeFrame1.end().getTime()));
 		// Coinbase
 		final var logFailed = String.format("Coinbase prepare %s data failed", isDay ? "day" : "hour");
-		Mono<Collection<QuoteCb>> collectCb = this.myMongoRepository.find(query, QuoteCb.class)
-				.timeout(this.slowIo ? Duration.ofSeconds(30L) : Duration.ofSeconds(10L))
-				.doOnError(ex -> LOG.warn(logFailed, ex)).onErrorResume(ex -> {
-					LOG.warn(logFailed, ex);
-					return Mono.empty();
-				}).subscribeOn(this.mongoScheduler).collectList()
-				.map(quotes -> this.createCbQuoteTimeFrame(timeFrame1, isDay, quotes));
-		collectCb.filter(Predicate.not(Collection::isEmpty))
-				.map(myColl -> this.countRelevantProperties(nonZeroProperties, myColl))
-				.flatMap(myColl -> this.myMongoRepository.insertAll(Mono.just(myColl), isDay ? CB_DAY_COL : CB_HOUR_COL)
-						.timeout(this.slowIo ? Duration.ofSeconds(30L) : Duration.ofSeconds(10L))
-						.doOnError(ex -> LOG.warn(logFailed, ex)).onErrorResume(ex -> {
-							LOG.warn(logFailed, ex);
-							return Mono.empty();
-						}).subscribeOn(this.mongoScheduler).collectList())
-				.subscribeOn(this.mongoScheduler).block();
+		try {
+			List<QuoteCb> quotes;
+			try {
+				quotes = this.myMongoRepository.find(query, QuoteCb.class).stream().toList();
+			} catch (Exception e) {
+				LOG.warn(logFailed, e);
+				quotes = List.of();
+			}
+			Collection<QuoteCb> myColl = this.createCbQuoteTimeFrame(timeFrame1, isDay, quotes);
+			this.countRelevantProperties(nonZeroProperties, myColl);
+			if (!myColl.isEmpty()) {
+				try {
+					this.myMongoRepository.insertAll(myColl, isDay ? CB_DAY_COL : CB_HOUR_COL);
+				} catch (Exception e) {
+					LOG.warn(logFailed, e);
+				}
+			}
+		} catch (Exception e) {
+			LOG.warn(logFailed, e);
+		}
 		LOG.info(String.format("Prepared Coinbase %s Data for: ", isDay ? "Day" : "Hour")
 				+ sdf.format(timeFrame1.begin().getTime()) + " Time: " + (new Date().getTime() - start.getTime()) + "ms"
 				+ " 0 < properties: " + nonZeroProperties.get());
@@ -229,7 +242,7 @@ public class CoinbaseService {
 	private Collection<QuoteCb> createCbQuoteTimeFrame(final MyTimeFrame timeFrame1, final boolean isDay,
 			List<QuoteCb> quotes) {
 		Date start = new Date();
-		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 		var result = isDay ? this.makeCbQuoteDay(quotes, timeFrame1.begin(), timeFrame1.end())
 				: this.makeCbQuoteHour(quotes, timeFrame1.begin(), timeFrame1.end());
 		LOG.info(String.format("Calculate Coinbase %s Data for: ", isDay ? "Day" : "Hour")
@@ -246,7 +259,9 @@ public class CoinbaseService {
 		final Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-		LOG.info("isDay: {}, TimeFrame.Begin: {}, TimeFrame.End: {}, now: {}", isDay, sdf.format(timeFrame.begin().getTime()), sdf.format(timeFrame.end().getTime()), sdf.format(now.getTime()));
+		LOG.info("isDay: {}, TimeFrame.Begin: {}, TimeFrame.End: {}, now: {}", isDay,
+				sdf.format(timeFrame.begin().getTime()), sdf.format(timeFrame.end().getTime()),
+				sdf.format(now.getTime()));
 		this.createTimeFrames(timeFrame, now).stream()
 				.forEachOrdered(timeFrame1 -> this.processTimeFrame(timeFrame1, isDay));
 		var logStmt = String.format("Prepared Coinbase %s Data Time:", isDay ? "Daily" : "Hourly");

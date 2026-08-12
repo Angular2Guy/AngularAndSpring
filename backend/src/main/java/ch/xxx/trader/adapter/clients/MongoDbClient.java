@@ -23,18 +23,5 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @ComponentScan
 public class MongoDbClient {
-		
-//    @Autowired
-//    private ReactiveMongoOperations operations;
-//	public static void main(String[] args) {
-//		SpringApplication.run(TraderApplication.class, args);		
-	
-//		mdbc.operations.collectionExists(QuoteBs.class)
-//		.flatMap(col -> col ? mdbc.operations.dropCollection(QuoteBs.class) : Mono.just(col))
-//		.flatMap(o -> mdbc.operations.createCollection(QuoteBs.class))
-//		.then()
-//		.block();
-		
-//	}
 
 }

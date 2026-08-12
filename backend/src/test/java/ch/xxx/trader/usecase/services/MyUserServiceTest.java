@@ -33,7 +33,6 @@ import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
-import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
 public class MyUserServiceTest {
@@ -54,10 +53,11 @@ public class MyUserServiceTest {
 		MyUser myUser = new MyUser();
 		myUser.setUserId("XXX");
 		myUser.setPassword("ABCDEFG123");
-		Mockito.when(this.myMongoRepository.findOne(isA(Query.class), isA(Class.class))).thenReturn(Mono.just(myUser));
-		Mockito.when(this.myMongoRepository.save(any(MyUser.class))).thenReturn(Mono.just(myUser));
-		Optional<MyUser> result = this.myUserService.postUserSignin(myUser).blockOptional();
-		Assertions.assertTrue(result.isPresent());		
+		Mockito.when(this.myMongoRepository.findOne(isA(Query.class), isA(Class.class))).thenReturn(Optional.of(myUser));
+		Mockito.when(this.myMongoRepository.save(any(MyUser.class))).thenReturn(myUser);
+		MyUser result = this.myUserService.postUserSignin(myUser);
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals("XXX", result.getUserId());
 	}
 	
 	@Test
@@ -65,9 +65,9 @@ public class MyUserServiceTest {
 		final String DUMMY_TOKEN = "ABC";
 		Mockito.when(this.jwtTokenService.resolveToken(any(String.class))).thenReturn(Optional.of(DUMMY_TOKEN));
 		Mockito.when(this.jwtTokenService.refreshToken(any(String.class))).thenReturn(DUMMY_TOKEN);
-		Mono<RefreshTokenDto> result = this.myUserService.refreshToken(DUMMY_TOKEN);
+		RefreshTokenDto result = this.myUserService.refreshToken(DUMMY_TOKEN);
 		Assertions.assertNotNull(result);
-		Assertions.assertEquals(DUMMY_TOKEN, result.block().getRefreshToken());
+		Assertions.assertEquals(DUMMY_TOKEN, result.getRefreshToken());
 	}
 	
 	@Test

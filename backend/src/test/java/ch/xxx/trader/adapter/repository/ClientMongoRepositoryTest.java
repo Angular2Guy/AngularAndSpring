@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.repository;
 
 import java.util.Date;
@@ -37,7 +37,7 @@ public class ClientMongoRepositoryTest {
 	@Order(1)
 	public void saveMyUser() throws Exception {		
 		MyUser myUser = this.createMyUser();
-		MyUser result = this.clientMongoRepository.save(myUser).block();
+		MyUser result = this.clientMongoRepository.save(myUser);
 		Assertions.assertNotNull(result);
 		Assertions.assertEquals(myUser.getUserId(), result.getUserId());
 		Assertions.assertEquals(myUser.getPassword(), result.getPassword());
@@ -48,7 +48,7 @@ public class ClientMongoRepositoryTest {
 	public void findMyUserFound() throws Exception {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(USERID));
-		Optional<MyUser> resultOpt = this.clientMongoRepository.findOne(query, MyUser.class).blockOptional();
+		Optional<MyUser> resultOpt = this.clientMongoRepository.findOne(query, MyUser.class);
 		Assertions.assertTrue(resultOpt.isPresent());
 		Assertions.assertEquals(USERID, resultOpt.get().getUserId());
 	}
@@ -58,7 +58,7 @@ public class ClientMongoRepositoryTest {
 	public void findMyUserNotFound() throws Exception {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is("XXX123"));
-		Optional<MyUser> resultOpt = this.clientMongoRepository.findOne(query, MyUser.class).blockOptional();
+		Optional<MyUser> resultOpt = this.clientMongoRepository.findOne(query, MyUser.class);
 		Assertions.assertFalse(resultOpt.isPresent());
 	}
 	

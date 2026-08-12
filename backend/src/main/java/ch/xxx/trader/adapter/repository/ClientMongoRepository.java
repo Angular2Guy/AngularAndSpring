@@ -12,89 +12,88 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.repository;
 
 import java.util.Collection;
-
-import jakarta.validation.Valid;
+import java.util.Optional;
 
 import org.bson.Document;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.reactivestreams.client.MongoCollection;
-
 import ch.xxx.trader.domain.model.entity.MyMongoRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Service
 public class ClientMongoRepository implements MyMongoRepository {
-	private final ReactiveMongoOperations operations;
+	private final MongoOperations operations;
 
-	public ClientMongoRepository(ReactiveMongoOperations operations) {
+	public ClientMongoRepository(MongoOperations operations) {
 		this.operations = operations;
 	}
 
 	@Override
-	public <T> Mono<T> save(@Valid T objectToSave) {
+	public <T> T save(T objectToSave) {
 		return this.operations.save(objectToSave);
 	}
 
 	@Override
-	public <T> Mono<T> findOne(Query query, Class<T> entityClass) {
-		return this.operations.findOne(query, entityClass);
+	public <T> Optional<T> findOne(Query query, Class<T> entityClass) {
+		return Optional.ofNullable(this.operations.findOne(query, entityClass));
 	}
 
 	@Override
-	public <T> Mono<T> findOne(Query query, Class<T> entityClass, String name) {
-		return this.operations.findOne(query, entityClass, name);
+	public <T> Optional<T> findOne(Query query, Class<T> entityClass, String name) {
+		return Optional.ofNullable(this.operations.findOne(query, entityClass, name));
 	}
 
 	@Override
-	public <T> Flux<T> find(Query query, Class<T> entityClass) {
+	public <T> Collection<T> find(Query query, Class<T> entityClass) {
 		return this.operations.find(query, entityClass);
 	}
 
 	@Override
-	public <T> Flux<T> find(Query query, Class<T> entityClass, String collectionName) {
+	public <T> Collection<T> find(Query query, Class<T> entityClass, String collectionName) {
 		return this.operations.find(query, entityClass, collectionName);
 	}
 
 	@Override
-	public <T> Flux<T> insertAll(@Valid Mono<? extends Collection<? extends T>> batchToSave, String collectionName) {
-		return this.operations.insertAll(batchToSave, collectionName);
+	public <T> Collection<T> insertAll(Collection<? extends T> batchToSave, String collectionName) {
+		return this.operations.insert(batchToSave, collectionName);
 	}
 
 	@Override
-	public Mono<String> ensureIndex(String collectionName, String propertyName) {
-		Index myIndex = new Index(propertyName, Direction.DESC);
-		myIndex.named(collectionName + "-" + propertyName);			
-		return this.operations.indexOps(collectionName).ensureIndex(myIndex);
-	}
-
-	@Override
-	public Mono<Boolean> collectionExists(String collectionName) {
-		return this.operations.collectionExists(collectionName);
-	}
-
-	@Override
-	public Mono<MongoCollection<Document>> createCollection(String collectionName) {
-		return this.operations.createCollection(collectionName);
-	}
-
-	@Override
-	public <T> Mono<T> insert(@Valid Mono<T> quote) {
+	public <T> T insert(T quote) {
 		return this.operations.insert(quote);
 	}
 
 	@Override
-	public <T> Mono<DeleteResult> remove(Mono<T> quote) {
-		return this.operations.remove(quote);
+	public <T> Optional<T> insertOptional(Optional<T> quote) {
+		return quote.isPresent() ? Optional.of(this.operations.insert(quote.get())) : Optional.empty();
+	}
+
+	@Override
+	public boolean collectionExists(String collectionName) {
+		return this.operations.collectionExists(collectionName);
+	}
+
+	@Override
+	public void createCollection(String collectionName) {
+		this.operations.createCollection(collectionName);
+	}
+
+	@Override
+	public void remove(Object quote) {
+		this.operations.remove(quote);
+	}
+
+	@Override
+	public String ensureIndex(String collectionName, String propertyName) {
+		Index myIndex = new Index(propertyName, Direction.DESC);
+		myIndex.named(collectionName + "-" + propertyName);
+		return this.operations.indexOps(collectionName).ensureIndex(myIndex);
 	}
 }

@@ -37,7 +37,6 @@ import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.services.MyUserService;
 import ch.xxx.trader.usecase.services.JwtTokenService;
-import reactor.core.publisher.Mono;
 import tools.jackson.databind.json.JsonMapper;
 
 @WebMvcTest(controllers = MyUserController.class
@@ -58,15 +57,15 @@ public class MyUserControllerTest extends BaseControllerTest {
 
 	@BeforeEach
 	public void init() {
-		Mockito.when(this.myUserService.refreshToken(any(String.class))).thenReturn(Mono.just(new RefreshTokenDto("abc")));
-		Mockito.when(this.myUserService.postUserSignin(any(MyUser.class))).thenReturn(Mono.just(this.createMyUser()));
+		Mockito.when(this.myUserService.refreshToken(any(String.class))).thenReturn(new RefreshTokenDto("abc"));
+		Mockito.when(this.myUserService.postUserSignin(any(MyUser.class))).thenReturn(this.createMyUser());
 		ReflectionTestUtils.setField(this.jwtTokenService, "validityInMilliseconds", 60000);
 		ReflectionTestUtils.setField(this.jwtTokenService, "secretKey", TOKEN_KEY);
 	}
 
 //	@Test
 	public void postUserSigninTest() throws Exception {		
-		Mockito.when(this.myUserService.postUserSignin(any(MyUser.class))).thenReturn(Mono.just(this.createMyUser()));
+		Mockito.when(this.myUserService.postUserSignin(any(MyUser.class))).thenReturn(this.createMyUser());
 		this.mockMvc.perform(post("/myuser/signin").header(WebUtils.AUTHORIZATION, String.format("Bearer %s", TOKEN_KEY))
 				.servletPath("/myuser/signin")
 				.contentType(MediaType.APPLICATION_JSON)

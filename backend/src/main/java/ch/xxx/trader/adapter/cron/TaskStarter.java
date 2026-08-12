@@ -12,12 +12,11 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.cron;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -33,14 +32,14 @@ public class TaskStarter {
 	private final BitstampService bitstampService;
 	private final BitfinexService bitfinexService;
 	private final CoinbaseService coinbaseService;
-	@Value("${single.instance.deployment:false}")
-	private boolean singleInstanceDeployment;
+	private final boolean singleInstanceDeployment;
 
 	public TaskStarter(BitstampService bitstampService, BitfinexService bitfinexService,
-			CoinbaseService coinbaseService) {
+			CoinbaseService coinbaseService, @org.springframework.beans.factory.annotation.Value("${single.instance.deployment:false}") boolean singleInstanceDeployment) {
 		this.bitstampService = bitstampService;
 		this.bitfinexService = bitfinexService;
 		this.coinbaseService = coinbaseService;
+		this.singleInstanceDeployment = singleInstanceDeployment;
 	}
 
 	@Async
@@ -48,9 +47,9 @@ public class TaskStarter {
 	public void initAvgs() {
 		if (this.singleInstanceDeployment) {
 			log.info("ApplicationReady");
-			this.bitstampService.createBsAvg().block();
-			this.bitfinexService.createBfAvg().block();
-			this.coinbaseService.createCbAvg().block();
+			this.bitstampService.createBsAvg();
+			this.bitfinexService.createBfAvg();
+			this.coinbaseService.createCbAvg();
 			BitstampService.singleInstanceLock = false;
 			BitfinexService.singleInstanceLock = false;
 			CoinbaseService.singleInstanceLock = false;

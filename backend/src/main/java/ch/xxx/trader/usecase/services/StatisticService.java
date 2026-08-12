@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.usecase.services;
 
 import java.math.BigDecimal;
@@ -36,7 +36,6 @@ import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
-import reactor.core.publisher.Mono;
 
 @Service
 public class StatisticService {
@@ -46,25 +45,22 @@ public class StatisticService {
 		this.myMongoRepository = myMongoRepository;
 	}
 
-	public Mono<CommonStatisticsDto> getCommonStatistics(StatisticsCurrPair currPair, CoinExchange coinExchange) {
-		Mono<CommonStatisticsDto> result = CoinExchange.Bitfinex.equals(coinExchange)
+	public CommonStatisticsDto getCommonStatistics(StatisticsCurrPair currPair, CoinExchange coinExchange) {
+		CommonStatisticsDto result = CoinExchange.Bitfinex.equals(coinExchange)
 				? this.createBitfinexStatistics(currPair)
 				: this.createBitStampStatistics(currPair);
 		return result;
 	}
 
-	private Mono<CommonStatisticsDto> createBitStampStatistics(StatisticsCurrPair currPair) {
-		Mono<CommonStatisticsDto> result = this.myMongoRepository
+	private CommonStatisticsDto createBitStampStatistics(StatisticsCurrPair currPair) {
+		CommonStatisticsDto result = calcStatistics(this.myMongoRepository
 				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitStampKey()), TimeFrame.Year5, 5000),
-						QuoteBs.class, BitstampService.BS_DAY_COL)
-				.collectList().flatMap(StatisticService::calcStatistics).map(value -> {
-					value.setCurrPair(currPair);
-					return value;
-				});
+						QuoteBs.class, BitstampService.BS_DAY_COL).stream().toList());
+		result.setCurrPair(currPair);
 		return result;
 	}
 
-	private static <T extends Quote> Mono<CommonStatisticsDto> calcStatistics(List<T> quotes) {
+	private static <T extends Quote> CommonStatisticsDto calcStatistics(List<T> quotes) {
 		CommonStatisticsDto commonStatisticsDto = new CommonStatisticsDto();
 		calcStatistics1Month(quotes, commonStatisticsDto);		
 		calcStatistics3Months(quotes, commonStatisticsDto);			
@@ -72,7 +68,7 @@ public class StatisticService {
 		calcStatistics1Year(quotes, commonStatisticsDto);
 		calcStatistics2Years(quotes, commonStatisticsDto);
 		calcStatistics5Years(quotes, commonStatisticsDto);
-		return Mono.just(commonStatisticsDto);
+		return commonStatisticsDto;
 	}
 
 	static <T extends Quote> void calcStatistics5Years(List<T> quotes, CommonStatisticsDto commonStatisticsDto) {
@@ -179,14 +175,11 @@ public class StatisticService {
 				.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
-	private Mono<CommonStatisticsDto> createBitfinexStatistics(StatisticsCurrPair currPair) {
-		Mono<CommonStatisticsDto> result = this.myMongoRepository
+	private CommonStatisticsDto createBitfinexStatistics(StatisticsCurrPair currPair) {
+		CommonStatisticsDto result = calcStatistics(this.myMongoRepository
 				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitfinexKey()), TimeFrame.Year5, 5000),
-						QuoteBf.class, BitfinexService.BF_DAY_COL)
-				.collectList().flatMap(StatisticService::calcStatistics).map(value -> {
-					value.setCurrPair(currPair);
-					return value;
-				});
+						QuoteBf.class, BitfinexService.BF_DAY_COL).stream().toList());
+		result.setCurrPair(currPair);
 		return result;
 	}
 }

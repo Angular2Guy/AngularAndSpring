@@ -12,44 +12,45 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.clients;
 
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 
-import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.services.MyOrderBookClient;
-import reactor.core.publisher.Mono;
 
 @Service
 public class RestOrderBookClient implements MyOrderBookClient {
 	private static final String URLBF = "https://api.bitfinex.com";
 	private static final String URLBS = "https://www.bitstamp.net/api";
 	private static final String URLIB = "https://api.itbit.com";
+	private final RestClient.Builder restClientBuilder;
 
-	public Mono<String> getOrderbookBitfinex(String currpair) {
-		WebClient wc = this.buildWebClient(URLBF);
-		return wc.get().uri("/v1/book/" + currpair + "/").accept(MediaType.APPLICATION_JSON)
-				.exchangeToMono(res -> res.bodyToMono(String.class));
+	public RestOrderBookClient(RestClient.Builder restClientBuilder) {
+		this.restClientBuilder = restClientBuilder;
 	}
 
-	public Mono<String> getOrderbookBitstamp(String currpair) {
-		WebClient wc = this.buildWebClient(URLBS);
-		return wc.get().uri("/v2/order_book/" + currpair + "/").accept(MediaType.APPLICATION_JSON)
-				.exchangeToMono(res -> res.bodyToMono(String.class));
+	public String getOrderbookBitfinex(String currpair) {
+		RestClient rc = this.buildRestClient(URLBF);
+		return rc.get().uri("/v1/book/" + currpair + "/").accept(MediaType.APPLICATION_JSON).retrieve()
+				.body(String.class);
 	}
 
-	public Mono<String> getOrderbookItbit(String currpair) {
-		WebClient wc = WebUtils.buildWebClient(URLIB);
-		return wc.get().uri("/v1/markets/" + currpair + "/order_book").accept(MediaType.APPLICATION_JSON)
-				.exchangeToMono(res -> res.bodyToMono(String.class));
+	public String getOrderbookBitstamp(String currpair) {
+		RestClient rc = this.buildRestClient(URLBS);
+		return rc.get().uri("/v2/order_book/" + currpair + "/").accept(MediaType.APPLICATION_JSON).retrieve()
+				.body(String.class);
 	}
 
-	private WebClient buildWebClient(String url) {
-		ReactorClientHttpConnector connector = new ReactorClientHttpConnector();
-		return WebClient.builder().clientConnector(connector).baseUrl(url).build();
+	public String getOrderbookItbit(String currpair) {
+		RestClient rc = this.buildRestClient(URLIB);
+		return rc.get().uri("/v1/markets/" + currpair + "/order_book").accept(MediaType.APPLICATION_JSON).retrieve()
+				.body(String.class);
+	}
+
+	private RestClient buildRestClient(String url) {
+		return this.restClientBuilder.clone().baseUrl(url).build();
 	}
 }

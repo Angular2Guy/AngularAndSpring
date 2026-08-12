@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.config;
 
 import org.slf4j.Logger;
@@ -21,17 +21,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.mongodb.autoconfigure.MongoProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.mongodb.reactivestreams.client.MongoClient;
-import com.mongodb.reactivestreams.client.MongoClients;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 import jakarta.annotation.PostConstruct;
 import net.javacrumbs.shedlock.core.LockProvider;
-import net.javacrumbs.shedlock.provider.mongo.reactivestreams.ReactiveStreamsMongoLockProvider;
+import net.javacrumbs.shedlock.provider.mongo.MongoLockProvider;
 
 @Configuration
 public class SpringMongoConfig {
@@ -72,12 +70,7 @@ public class SpringMongoConfig {
 	}
 
 	@Bean
-	public ServerCodecConfigurer serverCodecConfigurer() {
-		return new DefaultServerCodecConfigurer();
-	}
-
-	@Bean
 	public LockProvider lockProvider(MongoClient mongo) {
-		return new ReactiveStreamsMongoLockProvider(mongo.getDatabase(SCHED_LOCK_DB));
+		return new MongoLockProvider(mongo.getDatabase(SCHED_LOCK_DB));
 	}
 }

@@ -48,11 +48,12 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 		String password = Optional.ofNullable(authentication.getCredentials()).map(pwd -> pwd.toString()).orElse(null);		
 		Query query = new Query();
 		query.addCriteria(Criteria.where("userId").is(name));
-		MyUser user = this.myMongoRepository.findOne(query, MyUser.class).block();
-		if(user == null) {
+		Optional<MyUser> userOpt = this.myMongoRepository.findOne(query, MyUser.class);
+		if(userOpt.isEmpty()) {
 			return new UsernamePasswordAuthenticationToken(null, null); 
 			//throw new BadCredentialsException("User not found");
 		}
+		MyUser user = userOpt.get();
 		if(!this.passwordEncoder.matches(password, user.getPassword())) {
 			return new UsernamePasswordAuthenticationToken(null, null); 
 			//throw new AuthenticationCredentialsNotFoundException("User: "+name+" not found.");

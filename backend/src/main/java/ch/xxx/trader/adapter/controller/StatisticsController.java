@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.controller;
 
 import org.slf4j.Logger;
@@ -26,7 +26,6 @@ import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
 import ch.xxx.trader.domain.model.dto.StatisticsCommon.CoinExchange;
 import ch.xxx.trader.domain.model.dto.StatisticsCommon.StatisticsCurrPair;
 import ch.xxx.trader.usecase.services.StatisticService;
-import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/statistics")
@@ -39,7 +38,7 @@ public class StatisticsController {
 	}
 
 	@GetMapping("/overview/{coinExchange}/{currPair}")
-	public Mono<CommonStatisticsDto> getOverview(@PathVariable StatisticsCurrPair currPair, @PathVariable CoinExchange coinExchange) {		
+	public CommonStatisticsDto getOverview(@PathVariable StatisticsCurrPair currPair, @PathVariable CoinExchange coinExchange) {		
 		return this.statisticService.getCommonStatistics(currPair, coinExchange);
 	}
 }

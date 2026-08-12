@@ -12,41 +12,38 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.domain.model.entity;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.bson.Document;
 import org.springframework.data.mongodb.core.query.Query;
 
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.reactivestreams.client.MongoCollection;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 public interface MyMongoRepository {
 	
-	<T> Mono<T> findOne(Query query, Class<T> entityClass);
+	<T> Optional<T> findOne(Query query, Class<T> entityClass);
 	
-	<T> Mono<T> findOne(Query query, Class<T> entityClass, String name);
+	<T> Optional<T> findOne(Query query, Class<T> entityClass, String name);
 	
-	<T> Flux<T> find(Query query, Class<T> entityClass);
+	<T> Collection<T> find(Query query, Class<T> entityClass);
 	
-	<T> Flux<T> find(Query query, Class<T> entityClass, String collectionName);
+	<T> Collection<T> find(Query query, Class<T> entityClass, String collectionName);
 	
-	<T> Flux<T> insertAll(Mono<? extends Collection<? extends T>> batchToSave, String collectionName);
+	<T> Collection<T> insertAll(Collection<? extends T> batchToSave, String collectionName);
 	
-	<T> Mono<T> insert(Mono<T> quote);
+	<T> T insert(T quote);
 	
-	Mono<Boolean> collectionExists(String collectionName);
+	<T> Optional<T> insertOptional(Optional<T> quote);
 	
-	Mono<MongoCollection<Document>> createCollection(String collectionName);
+	boolean collectionExists(String collectionName);
 	
-	<T> Mono<T> save(T objectToSave);
+	void createCollection(String collectionName);
 	
-	<T> Mono<DeleteResult> remove(Mono<T> quote);
+	<T> T save(T objectToSave);
 	
-	Mono<String> ensureIndex(String collectionName, String propertyName);
+	void remove(Object quote);
+	
+	String ensureIndex(String collectionName, String propertyName);
 }

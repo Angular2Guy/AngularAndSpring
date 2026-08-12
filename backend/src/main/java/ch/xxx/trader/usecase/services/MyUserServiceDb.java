@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.usecase.services;
 
 import org.slf4j.Logger;
@@ -25,7 +25,6 @@ import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.services.MyUserService;
-import reactor.core.publisher.Mono;
 
 @Profile("!kafka & !prod")
 @Service
@@ -38,7 +37,7 @@ public class MyUserServiceDb extends MyUserServiceBean implements MyUserService 
 	}
 
 	@Override
-	public Mono<MyUser> postUserSignin(MyUser myUser) {
+	public MyUser postUserSignin(MyUser myUser) {
 		return super.postUserSignin(myUser, true, true);
 	}
 }

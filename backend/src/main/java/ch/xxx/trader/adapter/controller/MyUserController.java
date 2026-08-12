@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.adapter.controller;
 
 import java.security.NoSuchAlgorithmException;
@@ -34,7 +34,6 @@ import ch.xxx.trader.domain.model.dto.AuthCheck;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.services.MyUserService;
-import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/myuser")
@@ -46,29 +45,29 @@ public class MyUserController {
 	}
 	
 	@PostMapping("/authorize")
-	public Mono<AuthCheck> postAuthorize(@RequestBody AuthCheck authcheck, @RequestHeader Map<String,String> header) {
+	public AuthCheck postAuthorize(@RequestBody AuthCheck authcheck, @RequestHeader Map<String,String> header) {
 		return this.myUserService.postAuthorize(authcheck, header);
 	}	
 
 	@PostMapping("/signin")
-	public Mono<MyUser> postUserSignin(@RequestBody MyUser myUser)
+	public MyUser postUserSignin(@RequestBody MyUser myUser)
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		return this.myUserService.postUserSignin(myUser);
 	}
 
 	@PutMapping("/logout")
-	public Mono<Boolean> postLogout(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
+	public Boolean postLogout(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
 		return this.myUserService.postLogout(bearerStr);
 	}
 
 	@PostMapping("/login")
-	public Mono<MyUser> postUserLogin(@RequestBody MyUser myUser,HttpServletRequest request)
+	public MyUser postUserLogin(@RequestBody MyUser myUser,HttpServletRequest request)
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		return this.myUserService.postUserLogin(myUser);		
 	}
 	
 	@GetMapping("/refreshToken")
-	public Mono<RefreshTokenDto> getRefreshToken(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
+	public RefreshTokenDto getRefreshToken(@RequestHeader(value =  HttpHeaders.AUTHORIZATION) String bearerStr) {
 		return this.myUserService.refreshToken(bearerStr);
 	}
 }

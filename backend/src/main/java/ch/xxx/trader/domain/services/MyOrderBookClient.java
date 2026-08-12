@@ -12,13 +12,11 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.domain.services;
 
-import reactor.core.publisher.Mono;
-
 public interface MyOrderBookClient {
-	Mono<String> getOrderbookBitfinex(String currpair);
-	Mono<String> getOrderbookBitstamp(String currpair);
-	Mono<String> getOrderbookItbit(String currpair);
+	String getOrderbookBitfinex(String currpair);
+	String getOrderbookBitstamp(String currpair);
+	String getOrderbookItbit(String currpair);
 }

@@ -12,17 +12,13 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+  */
 package ch.xxx.trader.usecase.services;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,18 +30,11 @@ import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import ch.xxx.trader.domain.services.MyEventProducer;
 import ch.xxx.trader.domain.services.MyUserService;
-import reactor.core.publisher.ConnectableFlux;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
 
 @Profile("kafka | prod")
 @Service
 public class MyUserServiceEvents extends MyUserServiceBean implements MyUserService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceEvents.class);
-//	private static final long LOGOUT_TIMEOUT = 95L;
 	private final MyEventProducer myEventProducer;
-	private final Sinks.Many<MyUser> myUserSink = Sinks.many().multicast().onBackpressureBuffer();
-	private final ConnectableFlux<MyUser> myUserFlux = this.myUserSink.asFlux().publish();
 
 	public MyUserServiceEvents(JwtTokenService jwtTokenProvider, PasswordEncoder passwordEncoder,
 			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
@@ -65,43 +54,29 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 	}
 
 	@Override
-	public Mono<MyUser> postUserSignin(MyUser myUser) {
-		Mono<MyUser> myUserResult = this.myUserFlux.autoConnect()
-				.filter(myUser1 -> myUser.getUserId().equalsIgnoreCase(myUser1.getUserId())).shareNext();
-		return super.postUserSignin(myUser, false, true).flatMap(dto -> this.myEventProducer.sendNewUser(dto))
-				.zipWith(myUserResult, (myUser1, msgMyUser1) -> msgMyUser1).flatMap(myUser1 -> {
-					// LOGGER.info("MyUser signin result: {}",myUser1);
-					return Mono.just(myUser1);
-				});
+	public MyUser postUserSignin(MyUser myUser) {
+		MyUser myUserResult = super.postUserSignin(myUser, false, true);
+		if (myUserResult.getUserId() == null) {
+			return myUserResult;
+		}
+		return this.myEventProducer.sendNewUser(myUserResult);
 	}
 
-	public Mono<MyUser> userSigninEvent(Optional<MyUser> myUserOpt) {
-		return myUserOpt.stream()
-				.flatMap(myUser -> Stream.of(super.postUserSignin(myUser, true, false).flatMap(myUser1 -> {
-					if (this.myUserSink.tryEmitNext(myUser1).isFailure()) {
-						LOGGER.info("Emit to myUserSink failed. {}", myUser1);
-					}
-					return Mono.just(myUser1);
-				}))).findFirst().orElse(Mono.empty());
+	public MyUser userSigninEvent(Optional<MyUser> myUserOpt) {
+		return myUserOpt.map(myUser -> super.postUserSignin(myUser, true, false)).orElse(null);
 	}
 
 	@Override
-	public Mono<Boolean> postLogout(String token) {
+	public Boolean postLogout(String token) {
 		String username = this.getTokenUsername(token);
 		String uuid = this.getTokenUuid(token);
-		List<RevokedToken> revokedTokens = new ArrayList<>();
-		revokedTokens.add(new RevokedToken(null, username, uuid, LocalDateTime.now()));
-		return revokedTokens.stream()
-				.map(myRevokedToken -> this.myEventProducer.sendUserLogout(myRevokedToken)
-						.flatMap(value -> Mono.just(value != null)))
-				.reduce((result1, result2) -> Mono.just(result1.block() == true && result2.block() == true))
-				.orElse(Mono.just(Boolean.FALSE));
+		RevokedToken revokedToken = new RevokedToken(null, username, uuid, LocalDateTime.now());
+		return this.myEventProducer.sendUserLogout(revokedToken) != null;
 	}
 
-	public Mono<Boolean> logoutEvent(Optional<RevokedTokensDto> revokedTokensDtoOpt) {
-		return revokedTokensDtoOpt.stream()
-				.flatMap(revokedTokensDto -> Stream
-						.of(Mono.just(this.updateLoggedOutUsers(revokedTokensDto.getRevokedTokens()))))
-				.findFirst().orElse(Mono.empty());
+	public Boolean logoutEvent(Optional<RevokedTokensDto> revokedTokensDtoOpt) {
+		return revokedTokensDtoOpt
+				.map(revokedTokensDto -> this.updateLoggedOutUsers(revokedTokensDto.getRevokedTokens()))
+				.orElse(Boolean.FALSE);
 	}
 }
