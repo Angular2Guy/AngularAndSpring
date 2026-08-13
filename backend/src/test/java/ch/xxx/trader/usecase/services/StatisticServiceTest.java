@@ -39,13 +39,10 @@ public class StatisticServiceTest {
 		getPerformance, getAvgVolume, getRange, getVolatility
 	}
 	
-//	@Mock
-//	private MyMongoRepository myMongoRepository;
 	
 	
 	@Test
 	public void statistic5Years() {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics5Years(quotesBs, dto);
@@ -58,7 +55,6 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic2Years() {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = createBfQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics2Years(quotesBf, dto);
@@ -71,7 +67,6 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic1Year() {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics1Year(quotesBs, dto);
@@ -84,7 +79,6 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic6Months() {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = createBfQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics6Months(quotesBf, dto);
@@ -97,7 +91,6 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic3Months() {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics3Months(quotesBs, dto);
@@ -110,7 +103,6 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic1Month() {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = createBfQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics1Month(quotesBf, dto);
@@ -123,7 +115,6 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic1MonthEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics1Month(quotesBf, dto);
@@ -134,7 +125,6 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic3MonthEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics3Months(quotesBf, dto);
@@ -145,7 +135,6 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic6MonthEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics6Months(quotesBf, dto);
@@ -156,7 +145,6 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic1YearEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics1Year(quotesBf, dto);
@@ -167,7 +155,6 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic2YearEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics2Years(quotesBf, dto);
@@ -178,7 +165,6 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic5YearEmpty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		StatisticService statisticService = new StatisticService(this.myMongoRepository);
 		List<QuoteBf> quotesBf = List.of();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics5Years(quotesBf, dto);

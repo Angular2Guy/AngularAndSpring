@@ -22,14 +22,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 
 public class MongoUtils {
 
@@ -51,91 +46,51 @@ public class MongoUtils {
 	public static final Map<String, TimeFrame> KEY_TO_TIMEFRAME = Collections.unmodifiableMap(new ConcurrentHashMap<>(
 			Stream.of(TimeFrame.values()).collect(Collectors.toMap(TimeFrame::getValue, tf -> tf))));
 
-	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin,
-			int limit) {
-		limit = limit < 5000 ? limit : 5000;
+	public static final Date buildStartDate(TimeFrame timeFrame) {
 		Calendar cal = GregorianCalendar.getInstance();
-		cal.add(Calendar.DAY_OF_YEAR, -1);
-		Query query = new Query();
-		query.allowDiskUse(true);
-		query.limit(limit);
-		pair.ifPresent(myValue -> query.addCriteria(Criteria.where("pair").is(myValue)));
-		begin.ifPresentOrElse(myValue -> query.addCriteria(Criteria.where("createdAt").gt(myValue.getTime())),
-				() -> query.addCriteria(Criteria.where("createdAt").gt(cal.getTime())));
-		var myValue = ascending ? query.with(Sort.by("createdAt").ascending())
-				: query.with(Sort.by("createdAt").descending());
-		return query;
-	}
-
-	private static final Query buildQuery(Optional<String> pair, boolean ascending, Optional<Calendar> begin) {
-		return buildQuery(pair, ascending, begin, 1000);
-	}
-
-	public static final Query build90DayQuery(Optional<String> pair) {
-		Calendar cal = GregorianCalendar.getInstance();
-		cal.add(Calendar.DAY_OF_YEAR, -90);
-		return buildQuery(pair, true, Optional.of(cal));
-	}
-
-	public static final Query build30DayQuery(Optional<String> pair) {
-		Calendar cal = GregorianCalendar.getInstance();
-		cal.add(Calendar.DAY_OF_YEAR, -30);
-		return buildQuery(pair, true, Optional.of(cal));
-	}
-
-	public static final Query build7DayQuery(Optional<String> pair) {
-		Calendar cal = GregorianCalendar.getInstance();
-		cal.add(Calendar.DAY_OF_YEAR, -7);
-		return buildQuery(pair, true, Optional.of(cal));
-	}
-
-	public static final Query buildTimeFrameQuery(Optional<String> pair, TimeFrame timeFrame, int limit) {
-		Calendar cal = GregorianCalendar.getInstance();
-		Query query = switch (timeFrame) {
-		case CURRENT -> buildCurrentQuery(pair);
-		case TODAY -> buildTodayQuery(pair);
-		case SEVENDAYS -> build7DayQuery(pair);
-		case THIRTYDAYS -> build30DayQuery(pair);
-		case NINTYDAYS -> build90DayQuery(pair);
+		return switch (timeFrame) {
+		case CURRENT, TODAY -> {
+			cal.add(Calendar.DAY_OF_YEAR, -1);
+			yield cal.getTime();
+		}
+		case SEVENDAYS -> {
+			cal.add(Calendar.DAY_OF_YEAR, -7);
+			yield cal.getTime();
+		}
+		case THIRTYDAYS -> {
+			cal.add(Calendar.DAY_OF_YEAR, -30);
+			yield cal.getTime();
+		}
+		case NINTYDAYS -> {
+			cal.add(Calendar.DAY_OF_YEAR, -90);
+			yield cal.getTime();
+		}
 		case Month1 -> {
 			cal.add(Calendar.MONTH, -1);
-			yield buildQuery(pair, true, Optional.of(cal));
+			yield cal.getTime();
 		}
 		case Month3 -> {
 			cal.add(Calendar.MONTH, -3);
-			yield buildQuery(pair, true, Optional.of(cal));
+			yield cal.getTime();
 		}
 		case Month6 -> {
 			cal.add(Calendar.MONTH, -6);
-			yield buildQuery(pair, true, Optional.of(cal));
+			yield cal.getTime();
 		}
 		case Year1 -> {
 			cal.add(Calendar.YEAR, -1);
-			yield buildQuery(pair, true, Optional.of(cal));
+			yield cal.getTime();
 		}
 		case Year2 -> {
 			cal.add(Calendar.YEAR, -2);
-			yield buildQuery(pair, true, Optional.of(cal), limit);
+			yield cal.getTime();
 		}
 		case Year5 -> {
 			cal.add(Calendar.YEAR, -5);
-			yield buildQuery(pair, true, Optional.of(cal), limit);
+			yield cal.getTime();
 		}
-		default -> new Query();
+		default -> throw new IllegalArgumentException("Unsupported time frame: " + timeFrame);
 		};
-		return query;
-	}
-
-	public static final Query buildTimeFrameQuery(Optional<String> pair, TimeFrame timeFrame) {
-		return buildTimeFrameQuery(pair, timeFrame, 1000);
-	}
-
-	public static final Query buildTodayQuery(Optional<String> pair) {
-		return buildQuery(pair, true, Optional.empty());
-	}
-
-	public static final Query buildCurrentQuery(Optional<String> pair) {
-		return buildQuery(pair, false, Optional.empty());
 	}
 
 	public static final boolean filterEvenMinutes(Date date) {

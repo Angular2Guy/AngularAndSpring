@@ -33,15 +33,13 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import ch.xxx.trader.adapter.repository.QuoteBsRepository;
 import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.model.entity.MyMongoRepository;
+import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.domain.services.MyOrderBookClient;
-import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 
@@ -53,21 +51,21 @@ public class BitstampService {
 	public static volatile boolean singleInstanceLock = false;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
-	private final MyMongoRepository myMongoRepository;
+	private final QuoteBsRepository quoteRepository;
 	private final ServiceUtils serviceUtils;
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
-	public BitstampService(MyOrderBookClient orderBookClient, MyMongoRepository myMongoRepository,
+	public BitstampService(MyOrderBookClient orderBookClient, QuoteBsRepository quoteRepository,
 			ServiceUtils serviceUtils, ReportMapper reportMapper) {
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
-		this.myMongoRepository = myMongoRepository;
+		this.quoteRepository = quoteRepository;
 		this.serviceUtils = serviceUtils;
 	}
 
 	public QuoteBs insertQuote(QuoteBs quote) {
-		return this.myMongoRepository.insert(quote);
+		return this.quoteRepository.insert(quote);
 	}
 
 	public String getOrderbook(String currpair) {
@@ -75,17 +73,48 @@ public class BitstampService {
 	}
 
 	public Optional<QuoteBs> currentQuoteBtc(String pair) {
-		Query query = MongoUtils.buildCurrentQuery(Optional.of(pair));
-		return this.myMongoRepository.findOne(query, QuoteBs.class);
+		return this.quoteRepository.findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(pair,
+				MongoUtils.buildStartDate(TimeFrame.CURRENT));
 	}
 
 	public List<QuoteBs> tfQuotesBtc(String timeFrame, String pair) {
-		return this.serviceUtils.tfQuotes(timeFrame, pair, QuoteBs.class, BS_HOUR_COL, BS_DAY_COL);
+		TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+		return switch (myTimeFrame) {
+		case TODAY -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.TODAY)).stream()
+				.filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
+		case SEVENDAYS -> this.quoteRepository.findQuotesSince(BS_HOUR_COL, MongoUtils.buildStartDate(TimeFrame.SEVENDAYS),
+				pair, 1000);
+		case THIRTYDAYS -> this.quoteRepository.findQuotesSince(BS_DAY_COL, MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS),
+				pair, 1000);
+		case NINTYDAYS -> this.quoteRepository.findQuotesSince(BS_DAY_COL, MongoUtils.buildStartDate(TimeFrame.NINTYDAYS),
+				pair, 1000);
+		case Month6 -> this.quoteRepository.findQuotesSince(BS_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Month6),
+				pair, 1000);
+		case Year1 -> this.quoteRepository.findQuotesSince(BS_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Year1),
+				pair, 1000);
+		default -> List.of();
+		};
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
-		return this.serviceUtils.pdfReport(timeFrame, pair, QuoteBs.class, BS_HOUR_COL, BS_DAY_COL,
-				this.reportMapper::convert);
+		TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+		List<QuoteBs> quotes = switch (myTimeFrame) {
+		case TODAY -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.TODAY));
+		case SEVENDAYS -> this.quoteRepository.findQuotesSince(BS_HOUR_COL, MongoUtils.buildStartDate(TimeFrame.SEVENDAYS),
+				pair, 1000);
+		case THIRTYDAYS -> this.quoteRepository.findQuotesSince(BS_DAY_COL, MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS),
+				pair, 1000);
+		case NINTYDAYS -> this.quoteRepository.findQuotesSince(BS_DAY_COL, MongoUtils.buildStartDate(TimeFrame.NINTYDAYS),
+				pair, 1000);
+		case Month6 -> this.quoteRepository.findQuotesSince(BS_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Month6),
+				pair, 1000);
+		case Year1 -> this.quoteRepository.findQuotesSince(BS_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Year1),
+				pair, 1000);
+		default -> List.of();
+		};
+		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 
 	public void createBsAvg() {
@@ -102,12 +131,12 @@ public class BitstampService {
 
 	private void ensureIndexes() {
 		try {
-			this.myMongoRepository.ensureIndex(BS_HOUR_COL, DtoUtils.CREATEDAT);
+			this.quoteRepository.ensureIndex(BS_HOUR_COL);
 		} catch (Exception e) {
 			LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", e);
 		}
 		try {
-			this.myMongoRepository.ensureIndex(BS_DAY_COL, DtoUtils.CREATEDAT);
+			this.quoteRepository.ensureIndex(BS_DAY_COL);
 		} catch (Exception e) {
 			LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", e);
 		}
@@ -133,20 +162,17 @@ public class BitstampService {
 
 	private void createBsHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_HOUR_COL, QuoteBs.class, true);
+		MyTimeFrame timeFrame = this.quoteRepository.createTimeFrame(BS_HOUR_COL, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
-			Query query = new Query();
-			query.addCriteria(
-					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
-			Collection<QuoteBs> collectBs = this.collectBsQuotes(query, timeFrame, false);
+			Collection<QuoteBs> collectBs = this.collectBsQuotes(timeFrame, false);
 			if (!collectBs.isEmpty()) {
 				try {
-					this.myMongoRepository.insertAll(collectBs, BS_HOUR_COL);
+					this.quoteRepository.insertAll(BS_HOUR_COL, collectBs);
 				} catch (Exception e) {
 					LOG.warn("Bitstamp prepare hour data failed", e);
 				}
@@ -162,20 +188,17 @@ public class BitstampService {
 
 	private void createBsDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BS_DAY_COL, QuoteBs.class, false);
+		MyTimeFrame timeFrame = this.quoteRepository.createTimeFrame(BS_DAY_COL, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
-			Query query = new Query();
-			query.addCriteria(
-					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitstamp
-			Collection<QuoteBs> collectBs = this.collectBsQuotes(query, timeFrame, true);
+			Collection<QuoteBs> collectBs = this.collectBsQuotes(timeFrame, true);
 			if (!collectBs.isEmpty()) {
 				try {
-					this.myMongoRepository.insertAll(collectBs, BS_DAY_COL);
+					this.quoteRepository.insertAll(BS_DAY_COL, collectBs);
 				} catch (Exception e) {
 					LOG.warn("Bitstamp prepare day data failed", e);
 				}
@@ -189,11 +212,12 @@ public class BitstampService {
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Daily Data Time:"));
 	}
 
-	private Collection<QuoteBs> collectBsQuotes(Query query, MyTimeFrame timeFrame, boolean day) {
+	private Collection<QuoteBs> collectBsQuotes(MyTimeFrame timeFrame, boolean day) {
 		Map<String, List<QuoteBs>> multimap;
 		try {
-			multimap = this.myMongoRepository.find(query, QuoteBs.class).stream()
-					.collect(Collectors.groupingBy(QuoteBs::getPair));
+			multimap = this.quoteRepository
+					.findByCreatedAtGreaterThanAndCreatedAtLessThan(timeFrame.begin().getTime(), timeFrame.end().getTime())
+					.stream().collect(Collectors.groupingBy(QuoteBs::getPair));
 		} catch (Exception e) {
 			LOG.warn(day ? "Bitstamp prepare day data failed" : "Bitstamp prepare hour data failed", e);
 			return List.of();

@@ -33,15 +33,13 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import ch.xxx.trader.adapter.repository.QuoteBfRepository;
 import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.model.entity.MyMongoRepository;
+import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.services.MyOrderBookClient;
-import ch.xxx.trader.usecase.common.DtoUtils;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 
@@ -53,16 +51,16 @@ public class BitfinexService {
 	public static volatile boolean singleInstanceLock = false;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
-	private final MyMongoRepository myMongoRepository;
+	private final QuoteBfRepository quoteRepository;
 	private final ServiceUtils serviceUtils;
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
 	public BitfinexService(ServiceUtils serviceUtils, MyOrderBookClient orderBookClient, ReportMapper reportMapper,
-			MyMongoRepository myMongoRepository) {
+			QuoteBfRepository quoteRepository) {
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
-		this.myMongoRepository = myMongoRepository;
+		this.quoteRepository = quoteRepository;
 		this.serviceUtils = serviceUtils;
 	}
 
@@ -71,21 +69,52 @@ public class BitfinexService {
 	}
 
 	public QuoteBf insertQuote(QuoteBf quote) {
-		return this.myMongoRepository.insert(quote);
+		return this.quoteRepository.insert(quote);
 	}
 
 	public Optional<QuoteBf> currentQuote(String pair) {
-		Query query = MongoUtils.buildCurrentQuery(Optional.of(pair));
-		return this.myMongoRepository.findOne(query, QuoteBf.class);
+		return this.quoteRepository.findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(pair,
+				MongoUtils.buildStartDate(TimeFrame.CURRENT));
 	}
 
 	public List<QuoteBf> tfQuotes(String timeFrame, String pair) {
-		return this.serviceUtils.tfQuotes(timeFrame, pair, QuoteBf.class, BF_HOUR_COL, BF_DAY_COL);
+		TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+		return switch (myTimeFrame) {
+		case TODAY -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.TODAY)).stream()
+				.filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
+		case SEVENDAYS -> this.quoteRepository.findQuotesSince(BF_HOUR_COL, MongoUtils.buildStartDate(TimeFrame.SEVENDAYS),
+				pair, 1000);
+		case THIRTYDAYS -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS),
+				pair, 1000);
+		case NINTYDAYS -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.NINTYDAYS),
+				pair, 1000);
+		case Month6 -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Month6),
+				pair, 1000);
+		case Year1 -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Year1),
+				pair, 1000);
+		default -> List.of();
+		};
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
-		return this.serviceUtils.pdfReport(timeFrame, pair, QuoteBf.class, BF_HOUR_COL, BF_DAY_COL,
-				this.reportMapper::convert);
+		TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+		List<QuoteBf> quotes = switch (myTimeFrame) {
+		case TODAY -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.TODAY));
+		case SEVENDAYS -> this.quoteRepository.findQuotesSince(BF_HOUR_COL, MongoUtils.buildStartDate(TimeFrame.SEVENDAYS),
+				pair, 1000);
+		case THIRTYDAYS -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS),
+				pair, 1000);
+		case NINTYDAYS -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.NINTYDAYS),
+				pair, 1000);
+		case Month6 -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Month6),
+				pair, 1000);
+		case Year1 -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Year1),
+				pair, 1000);
+		default -> List.of();
+		};
+		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 
 	public void createBfAvg() {
@@ -102,12 +131,12 @@ public class BitfinexService {
 
 	private void ensureIndexes() {
 		try {
-			this.myMongoRepository.ensureIndex(BF_HOUR_COL, DtoUtils.CREATEDAT);
+			this.quoteRepository.ensureIndex(BF_HOUR_COL);
 		} catch (Exception e) {
 			LOG.info("ensureIndex(" + BF_HOUR_COL + ") failed.", e);
 		}
 		try {
-			this.myMongoRepository.ensureIndex(BF_DAY_COL, DtoUtils.CREATEDAT);
+			this.quoteRepository.ensureIndex(BF_DAY_COL);
 		} catch (Exception e) {
 			LOG.info("ensureIndex(" + BF_DAY_COL + ") failed.", e);
 		}
@@ -133,20 +162,17 @@ public class BitfinexService {
 
 	private void createBfHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_HOUR_COL, QuoteBf.class, true);
+		MyTimeFrame timeFrame = this.quoteRepository.createTimeFrame(BF_HOUR_COL, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
-			Query query = new Query();
-			query.addCriteria(
-					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
-			Collection<QuoteBf> collectBf = this.collectBfQuotes(query, timeFrame, false);
+			Collection<QuoteBf> collectBf = this.collectBfQuotes(timeFrame, false);
 			if (!collectBf.isEmpty()) {
 				try {
-					this.myMongoRepository.insertAll(collectBf, BF_HOUR_COL);
+					this.quoteRepository.insertAll(BF_HOUR_COL, collectBf);
 				} catch (Exception e) {
 					LOG.warn("Bitfinex prepare hour data failed", e);
 				}
@@ -162,20 +188,17 @@ public class BitfinexService {
 
 	private void createBfDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.serviceUtils.createTimeFrame(BF_DAY_COL, QuoteBf.class, false);
+		MyTimeFrame timeFrame = this.quoteRepository.createTimeFrame(BF_DAY_COL, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
-			Query query = new Query();
-			query.addCriteria(
-					Criteria.where(DtoUtils.CREATEDAT).gt(timeFrame.begin().getTime()).lt(timeFrame.end().getTime()));
 			// Bitfinex
-			Collection<QuoteBf> collectBf = this.collectBfQuotes(query, timeFrame, true);
+			Collection<QuoteBf> collectBf = this.collectBfQuotes(timeFrame, true);
 			if (!collectBf.isEmpty()) {
 				try {
-					this.myMongoRepository.insertAll(collectBf, BF_DAY_COL);
+					this.quoteRepository.insertAll(BF_DAY_COL, collectBf);
 				} catch (Exception e) {
 					LOG.warn("Bitfinex prepare day data failed", e);
 				}
@@ -189,11 +212,12 @@ public class BitfinexService {
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Daily Data Time:"));
 	}
 
-	private Collection<QuoteBf> collectBfQuotes(Query query, MyTimeFrame timeFrame, boolean day) {
+	private Collection<QuoteBf> collectBfQuotes(MyTimeFrame timeFrame, boolean day) {
 		Map<String, List<QuoteBf>> multimap;
 		try {
-			multimap = this.myMongoRepository.find(query, QuoteBf.class).stream()
-					.collect(Collectors.groupingBy(QuoteBf::getPair));
+			multimap = this.quoteRepository
+					.findByCreatedAtGreaterThanAndCreatedAtLessThan(timeFrame.begin().getTime(), timeFrame.end().getTime())
+					.stream().collect(Collectors.groupingBy(QuoteBf::getPair));
 		} catch (Exception e) {
 			LOG.warn(day ? "Bitfinex prepare day data failed" : "Bitfinex prepare hour data failed", e);
 			return List.of();

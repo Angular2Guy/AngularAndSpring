@@ -23,9 +23,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import ch.xxx.trader.adapter.repository.MyUserRepository;
+import ch.xxx.trader.adapter.repository.RevokedTokenRepository;
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.dto.RevokedTokensDto;
-import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import ch.xxx.trader.domain.services.MyEventProducer;
@@ -37,9 +38,9 @@ public class MyUserServiceEvents extends MyUserServiceBean implements MyUserServ
 	private final MyEventProducer myEventProducer;
 
 	public MyUserServiceEvents(JwtTokenService jwtTokenProvider, PasswordEncoder passwordEncoder,
-			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository,
-			MyEventProducer myEventProducer) {
-		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
+			PasswordEncryption passwordEncryption, MyUserRepository myUserRepository,
+			RevokedTokenRepository revokedTokenRepository, MyEventProducer myEventProducer) {
+		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myUserRepository, revokedTokenRepository);
 		this.myEventProducer = myEventProducer;
 	}
 

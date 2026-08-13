@@ -21,28 +21,30 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
+import ch.xxx.trader.adapter.repository.QuoteBfRepository;
+import ch.xxx.trader.adapter.repository.QuoteBsRepository;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
 import ch.xxx.trader.domain.model.dto.RangeDto;
 import ch.xxx.trader.domain.model.dto.StatisticsCommon.CoinExchange;
 import ch.xxx.trader.domain.model.dto.StatisticsCommon.StatisticsCurrPair;
-import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 
 @Service
 public class StatisticService {
-	private final MyMongoRepository myMongoRepository;
+	private final QuoteBsRepository quoteBsRepository;
+	private final QuoteBfRepository quoteBfRepository;
 
-	public StatisticService(MyMongoRepository myMongoRepository) {
-		this.myMongoRepository = myMongoRepository;
+	public StatisticService(QuoteBsRepository quoteBsRepository, QuoteBfRepository quoteBfRepository) {
+		this.quoteBsRepository = quoteBsRepository;
+		this.quoteBfRepository = quoteBfRepository;
 	}
 
 	public CommonStatisticsDto getCommonStatistics(StatisticsCurrPair currPair, CoinExchange coinExchange) {
@@ -53,9 +55,8 @@ public class StatisticService {
 	}
 
 	private CommonStatisticsDto createBitStampStatistics(StatisticsCurrPair currPair) {
-		CommonStatisticsDto result = calcStatistics(this.myMongoRepository
-				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitStampKey()), TimeFrame.Year5, 5000),
-						QuoteBs.class, BitstampService.BS_DAY_COL).stream().toList());
+		CommonStatisticsDto result = calcStatistics(this.quoteBsRepository.findQuotesSince(BitstampService.BS_DAY_COL,
+				MongoUtils.buildStartDate(TimeFrame.Year5), currPair.getBitStampKey(), 5000));
 		result.setCurrPair(currPair);
 		return result;
 	}
@@ -176,9 +177,8 @@ public class StatisticService {
 	}
 
 	private CommonStatisticsDto createBitfinexStatistics(StatisticsCurrPair currPair) {
-		CommonStatisticsDto result = calcStatistics(this.myMongoRepository
-				.find(MongoUtils.buildTimeFrameQuery(Optional.of(currPair.getBitfinexKey()), TimeFrame.Year5, 5000),
-						QuoteBf.class, BitfinexService.BF_DAY_COL).stream().toList());
+		CommonStatisticsDto result = calcStatistics(this.quoteBfRepository.findQuotesSince(BitfinexService.BF_DAY_COL,
+				MongoUtils.buildStartDate(TimeFrame.Year5), currPair.getBitfinexKey(), 5000));
 		result.setCurrPair(currPair);
 		return result;
 	}

@@ -21,8 +21,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import ch.xxx.trader.adapter.repository.MyUserRepository;
+import ch.xxx.trader.adapter.repository.RevokedTokenRepository;
 import ch.xxx.trader.domain.common.PasswordEncryption;
-import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.services.MyUserService;
 
@@ -32,8 +33,9 @@ public class MyUserServiceDb extends MyUserServiceBean implements MyUserService 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyUserServiceDb.class);
 	
 	public MyUserServiceDb(JwtTokenService jwtTokenProvider, PasswordEncoder passwordEncoder,
-			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository) {
-		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myMongoRepository);
+			PasswordEncryption passwordEncryption, MyUserRepository myUserRepository,
+			RevokedTokenRepository revokedTokenRepository) {
+		super(jwtTokenProvider, passwordEncoder, passwordEncryption, myUserRepository, revokedTokenRepository);
 	}
 
 	@Override

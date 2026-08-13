@@ -19,8 +19,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,17 +26,17 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import ch.xxx.trader.domain.model.entity.MyMongoRepository;
+import ch.xxx.trader.adapter.repository.MyUserRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
 
 @Component
 public class MyAuthenticationProvider implements AuthenticationProvider {
 	private static final Logger log = LoggerFactory.getLogger(MyAuthenticationProvider.class);
-	private final MyMongoRepository myMongoRepository;
+	private final MyUserRepository myUserRepository;
 	private final PasswordEncoder passwordEncoder;
 	
-	public MyAuthenticationProvider(MyMongoRepository myMongoRepository, PasswordEncoder passwordEncoder) {
-		this.myMongoRepository = myMongoRepository;
+	public MyAuthenticationProvider(MyUserRepository myUserRepository, PasswordEncoder passwordEncoder) {
+		this.myUserRepository = myUserRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
 	
@@ -46,9 +44,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String name = authentication.getName();
 		String password = Optional.ofNullable(authentication.getCredentials()).map(pwd -> pwd.toString()).orElse(null);		
-		Query query = new Query();
-		query.addCriteria(Criteria.where("userId").is(name));
-		Optional<MyUser> userOpt = this.myMongoRepository.findOne(query, MyUser.class);
+		Optional<MyUser> userOpt = this.myUserRepository.findByUserId(name);
 		if(userOpt.isEmpty()) {
 			return new UsernamePasswordAuthenticationToken(null, null); 
 			//throw new BadCredentialsException("User not found");

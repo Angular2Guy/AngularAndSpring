@@ -15,7 +15,6 @@
  */
 package ch.xxx.trader.usecase.services;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isA;
 
 import java.util.Optional;
 
@@ -26,12 +25,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import ch.xxx.trader.adapter.repository.MyUserRepository;
+import ch.xxx.trader.adapter.repository.RevokedTokenRepository;
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
-import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,20 +40,21 @@ public class MyUserServiceTest {
 	@Mock
 	private PasswordEncryption passwordEncryption;
 	@Mock
-	private MyMongoRepository myMongoRepository;
+	private MyUserRepository myUserRepository;
+	@Mock
+	private RevokedTokenRepository revokedTokenRepository;
 	@Mock
 	private PasswordEncoder passwordEncoder;
 	@InjectMocks
 	private MyUserServiceDb myUserService;
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void postUserSigninTest() throws Exception {
 		MyUser myUser = new MyUser();
 		myUser.setUserId("XXX");
 		myUser.setPassword("ABCDEFG123");
-		Mockito.when(this.myMongoRepository.findOne(isA(Query.class), isA(Class.class))).thenReturn(Optional.of(myUser));
-		Mockito.when(this.myMongoRepository.save(any(MyUser.class))).thenReturn(myUser);
+		Mockito.when(this.myUserRepository.findByUserId("XXX")).thenReturn(Optional.of(myUser));
+		Mockito.when(this.myUserRepository.save(any(MyUser.class))).thenReturn(myUser);
 		MyUser result = this.myUserService.postUserSignin(myUser);
 		Assertions.assertNotNull(result);
 		Assertions.assertEquals("XXX", result.getUserId());

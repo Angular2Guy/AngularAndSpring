@@ -26,10 +26,10 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import ch.xxx.trader.adapter.repository.MyUserRepository;
+import ch.xxx.trader.adapter.repository.RevokedTokenRepository;
 import ch.xxx.trader.domain.common.JwtUtils;
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.common.Role;
@@ -37,7 +37,6 @@ import ch.xxx.trader.domain.common.WebUtils;
 import ch.xxx.trader.domain.exceptions.AuthenticationException;
 import ch.xxx.trader.domain.model.dto.AuthCheck;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
-import ch.xxx.trader.domain.model.entity.MyMongoRepository;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 import io.jsonwebtoken.Claims;
@@ -48,19 +47,22 @@ public class MyUserServiceBean {
 	private static final long LOGOUT_TIMEOUT = 185L;
 	protected final JwtTokenService jwtTokenService;
 	private final PasswordEncryption passwordEncryption;
-	protected final MyMongoRepository myMongoRepository;
+	protected final MyUserRepository myUserRepository;
+	private final RevokedTokenRepository revokedTokenRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	public MyUserServiceBean(JwtTokenService jwtTokenProvider, PasswordEncoder passwordEncoder,
-			PasswordEncryption passwordEncryption, MyMongoRepository myMongoRepository) {
+			PasswordEncryption passwordEncryption, MyUserRepository myUserRepository,
+			RevokedTokenRepository revokedTokenRepository) {
 		this.jwtTokenService = jwtTokenProvider;
 		this.passwordEncryption = passwordEncryption;
-		this.myMongoRepository = myMongoRepository;
+		this.myUserRepository = myUserRepository;
+		this.revokedTokenRepository = revokedTokenRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
 
 	public void updateLoggedOutUsers() {
-		List<RevokedToken> revokedTokens = this.myMongoRepository.find(new Query(), RevokedToken.class).stream()
+		List<RevokedToken> revokedTokens = this.revokedTokenRepository.findAll().stream()
 				.filter(myRevokedToken -> myRevokedToken.getLastLogout() == null || !myRevokedToken.getLastLogout()
 						.isBefore(LocalDateTime.now().minusSeconds(LOGOUT_TIMEOUT)))
 				.toList();
@@ -68,14 +70,12 @@ public class MyUserServiceBean {
 		revokedTokens.stream()
 				.filter(myRevokedToken -> myRevokedToken.getLastLogout() != null
 						&& myRevokedToken.getLastLogout().isBefore(LocalDateTime.now().minusSeconds(LOGOUT_TIMEOUT)))
-				.forEach(myRevokedToken -> this.myMongoRepository.remove(myRevokedToken));
+				.forEach(myRevokedToken -> this.revokedTokenRepository.delete(myRevokedToken));
 	}
 
 	public AuthCheck postAuthorize(AuthCheck authcheck, Map<String, String> header) {
 		Optional<String> token = WebUtils.extractToken(header);
-		Query query = new Query();
-		query.addCriteria(Criteria.where("salt").is(authcheck.getHash()));
-		MyUser user = this.myMongoRepository.findOne(query, MyUser.class).orElseGet(MyUser::new);
+		MyUser user = this.myUserRepository.findBySalt(authcheck.getHash()).orElseGet(MyUser::new);
 		return mapMyUser(user, authcheck, token);
 	}
 
@@ -90,9 +90,8 @@ public class MyUserServiceBean {
 	}
 
 	public MyUser postUserSignin(MyUser myUser, boolean persist, boolean check) {
-		Query query = new Query(Criteria.where("userId").is(myUser.getUserId()));
 		return check
-				? signinHelp(this.myMongoRepository.findOne(query, MyUser.class).orElse(myUser), persist)
+				? signinHelp(this.myUserRepository.findByUserId(myUser.getUserId()).orElse(myUser), persist)
 				: this.saveSignin(myUser);
 	}
 
@@ -113,7 +112,7 @@ public class MyUserServiceBean {
 	}
 
 	private MyUser saveSignin(MyUser myUser1) {
-		MyUser myUser2 = this.myMongoRepository.save(myUser1);
+		MyUser myUser2 = this.myUserRepository.save(myUser1);
 		myUser2.setPassword("XXX");
 		myUser2.setSalt("YYY");
 		return myUser2;
@@ -122,14 +121,12 @@ public class MyUserServiceBean {
 	public Boolean postLogout(String bearerStr) {
 		String username = getTokenUsername(bearerStr);
 		String uuid = getTokenUuid(bearerStr);
-		Query query = new Query(Criteria.where("uuid").is(uuid));
-		List<RevokedToken> revokedTokens = this.myMongoRepository.find(query, RevokedToken.class).stream()
-				.filter(myRevokedToken -> myRevokedToken.getUuid().equals(uuid)).toList();
-		if (!revokedTokens.isEmpty()) {
+		Optional<RevokedToken> revokedTokenOpt = this.revokedTokenRepository.findByUuid(uuid);
+		if (revokedTokenOpt.isPresent()) {
 			LOGGER.warn("Duplicate logout for user {}", username);
 			return Boolean.TRUE;
 		}
-		this.myMongoRepository.insert(new RevokedToken(null, username, uuid, LocalDateTime.now()));
+		this.revokedTokenRepository.insert(new RevokedToken(null, username, uuid, LocalDateTime.now()));
 		return Boolean.TRUE;
 	}
 
@@ -144,9 +141,7 @@ public class MyUserServiceBean {
 	}
 
 	public MyUser postUserLogin(MyUser myUser) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("userId").is(myUser.getUserId()));
-		MyUser user1 = this.myMongoRepository.findOne(query, MyUser.class).orElseGet(MyUser::new);
+		MyUser user1 = this.myUserRepository.findByUserId(myUser.getUserId()).orElseGet(MyUser::new);
 		this.delayElement();
 		return loginHelp(user1, myUser.getPassword());
 	}
