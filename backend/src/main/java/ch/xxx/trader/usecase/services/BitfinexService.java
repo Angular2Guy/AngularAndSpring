@@ -35,13 +35,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.adapter.repository.QuoteBfRepository;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.services.MyOrderBookClient;
+import ch.xxx.trader.domain.services.MyTimeFrame;
+import ch.xxx.trader.domain.services.QuoteBfRepository;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
-import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 
 @Service
 public class BitfinexService {

@@ -33,9 +33,6 @@ import ch.xxx.trader.domain.model.entity.Quote;
 
 @Service
 public class ServiceUtils {
-	public record MyTimeFrame(Calendar begin, Calendar end) {
-	}
-
 	private final ReportGenerator reportGenerator;
 
 	public ServiceUtils(ReportGenerator reportGenerator) {

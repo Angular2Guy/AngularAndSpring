@@ -29,8 +29,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import ch.xxx.trader.domain.model.entity.Quote;
+import ch.xxx.trader.domain.services.MyTimeFrame;
+import ch.xxx.trader.domain.services.QuoteRepository;
 import ch.xxx.trader.usecase.common.DtoUtils;
-import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 
 public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements QuoteRepository<T> {
 	protected final MongoOperations operations;

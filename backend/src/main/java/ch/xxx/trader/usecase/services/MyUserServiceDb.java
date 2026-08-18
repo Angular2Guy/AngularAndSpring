@@ -21,11 +21,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.adapter.repository.MyUserRepository;
-import ch.xxx.trader.adapter.repository.RevokedTokenRepository;
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.entity.MyUser;
+import ch.xxx.trader.domain.services.MyUserRepository;
 import ch.xxx.trader.domain.services.MyUserService;
+import ch.xxx.trader.domain.services.RevokedTokenRepository;
 
 @Profile("!kafka & !prod")
 @Service

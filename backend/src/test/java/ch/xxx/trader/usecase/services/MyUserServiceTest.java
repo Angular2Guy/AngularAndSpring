@@ -27,11 +27,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import ch.xxx.trader.adapter.repository.MyUserRepository;
-import ch.xxx.trader.adapter.repository.RevokedTokenRepository;
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
+import ch.xxx.trader.domain.services.MyUserRepository;
+import ch.xxx.trader.domain.services.RevokedTokenRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class MyUserServiceTest {

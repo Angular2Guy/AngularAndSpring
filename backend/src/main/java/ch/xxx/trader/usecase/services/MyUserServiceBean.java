@@ -28,8 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import ch.xxx.trader.adapter.repository.MyUserRepository;
-import ch.xxx.trader.adapter.repository.RevokedTokenRepository;
 import ch.xxx.trader.domain.common.JwtUtils;
 import ch.xxx.trader.domain.common.PasswordEncryption;
 import ch.xxx.trader.domain.common.Role;
@@ -39,6 +37,8 @@ import ch.xxx.trader.domain.model.dto.AuthCheck;
 import ch.xxx.trader.domain.model.dto.RefreshTokenDto;
 import ch.xxx.trader.domain.model.entity.MyUser;
 import ch.xxx.trader.domain.model.entity.RevokedToken;
+import ch.xxx.trader.domain.services.MyUserRepository;
+import ch.xxx.trader.domain.services.RevokedTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 

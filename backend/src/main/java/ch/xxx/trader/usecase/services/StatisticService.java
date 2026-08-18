@@ -25,8 +25,6 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.adapter.repository.QuoteBfRepository;
-import ch.xxx.trader.adapter.repository.QuoteBsRepository;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
@@ -36,6 +34,8 @@ import ch.xxx.trader.domain.model.dto.StatisticsCommon.StatisticsCurrPair;
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.domain.services.QuoteBfRepository;
+import ch.xxx.trader.domain.services.QuoteBsRepository;
 
 @Service
 public class StatisticService {

@@ -49,13 +49,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.adapter.repository.QuoteCbRepository;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.domain.model.entity.QuoteCbSmall;
+import ch.xxx.trader.domain.services.MyTimeFrame;
+import ch.xxx.trader.domain.services.QuoteCbRepository;
 import ch.xxx.trader.usecase.common.DtoUtils;
-import ch.xxx.trader.usecase.services.ServiceUtils.MyTimeFrame;
 
 @Service
 public class CoinbaseService {
