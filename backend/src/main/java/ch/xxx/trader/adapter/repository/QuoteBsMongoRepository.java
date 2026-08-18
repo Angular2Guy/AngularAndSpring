@@ -15,6 +15,8 @@
    */
 package ch.xxx.trader.adapter.repository;
 
+import java.util.Optional;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -22,4 +24,8 @@ import ch.xxx.trader.domain.model.entity.QuoteBs;
 
 public interface QuoteBsMongoRepository extends MongoRepository<QuoteBs, ObjectId>,
 		ch.xxx.trader.domain.services.QuoteBsRepository {
+
+	Optional<QuoteBs> findFirstByOrderByCreatedAtDesc();
+
+	Optional<QuoteBs> findFirstByOrderByCreatedAtAsc();
 }

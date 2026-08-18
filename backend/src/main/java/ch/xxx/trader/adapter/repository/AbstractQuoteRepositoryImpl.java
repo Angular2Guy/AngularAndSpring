@@ -42,6 +42,10 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 		this.entityClass = entityClass;
 	}
 
+	protected abstract Optional<T> findLastQuote();
+
+	protected abstract Optional<T> findFirstQuote();
+
 	@Override
 	public List<T> findQuotesSince(String collectionName, Date since) {
 		return findQuotesSince(collectionName, since, null, 1000);
@@ -56,14 +60,6 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 		Optional.ofNullable(pair).ifPresent(myPair -> query.addCriteria(Criteria.where("pair").is(myPair)));
 		query.with(Sort.by(Direction.ASC, DtoUtils.CREATEDAT));
 		return this.operations.find(query, this.entityClass, collectionName);
-	}
-
-	@Override
-	public Optional<T> findFirst(String collectionName, Direction direction) {
-		Query query = new Query();
-		query.limit(1);
-		query.with(Sort.by(direction, DtoUtils.CREATEDAT));
-		return Optional.ofNullable(this.operations.findOne(query, this.entityClass, collectionName));
 	}
 
 	@Override
@@ -93,9 +89,9 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 			this.operations.createCollection(collectionName);
 		}
 		final Calendar globalBeginn = Calendar.getInstance();
-		Optional<T> lastAggregate = this.findFirst(collectionName, Direction.DESC);
+		Optional<T> lastAggregate = this.findLastQuote();
 		lastAggregate.ifPresentOrElse(myQuote -> this.calcGlobalBegin(hour, globalBeginn, myQuote), () -> {
-			Optional<T> firstQuote = this.findFirst(null, Direction.ASC);
+			Optional<T> firstQuote = this.findFirstQuote();
 			globalBeginn.setTime(firstQuote.map(Quote::getCreatedAt).orElse(
 					Date.from(java.time.LocalDate.now().atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant())));
 		});

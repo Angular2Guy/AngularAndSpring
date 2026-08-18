@@ -15,6 +15,9 @@
    */
 package ch.xxx.trader.adapter.repository;
 
+import java.util.Optional;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 import ch.xxx.trader.domain.model.entity.QuoteBf;
@@ -22,7 +25,20 @@ import ch.xxx.trader.domain.model.entity.QuoteBf;
 public class QuoteBfMongoRepositoryImpl extends AbstractQuoteRepositoryImpl<QuoteBf>
 		implements ch.xxx.trader.domain.services.QuoteRepository<QuoteBf> {
 
-	public QuoteBfMongoRepositoryImpl(MongoOperations operations) {
+	private final QuoteBfMongoRepository mongoRepository;
+
+	public QuoteBfMongoRepositoryImpl(MongoOperations operations, @Lazy QuoteBfMongoRepository mongoRepository) {
 		super(operations, QuoteBf.class);
+		this.mongoRepository = mongoRepository;
+	}
+
+	@Override
+	protected Optional<QuoteBf> findLastQuote() {
+		return this.mongoRepository.findFirstByOrderByCreatedAtDesc();
+	}
+
+	@Override
+	protected Optional<QuoteBf> findFirstQuote() {
+		return this.mongoRepository.findFirstByOrderByCreatedAtAsc();
 	}
 }
