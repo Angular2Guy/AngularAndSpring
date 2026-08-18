@@ -1,10 +1,10 @@
-# This is an example application to show howto use Spring Boot, Angular and Mongodb with the reactive Webflux features of Spring.
+# This is an example application to show howto use Spring Boot, Angular and Mongodb with the virtual threads features of Spring.
 
 [![CodeQL](https://github.com/Angular2Guy/AngularAndSpring/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Angular2Guy/AngularAndSpring/actions/workflows/codeql-analysis.yml)
 
 Author: Sven Loesekann
 
-Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Webflux, Spring Security,  MongoDB, Maven, Docker, ArchUnit, Kafka, Kafka-Streams, Spring Actuator with Prometheus interface
+Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring Security,  MongoDB, Maven, Docker, ArchUnit, Kafka, Kafka-Streams, Spring Actuator with Prometheus interface
 
 Updated to Spring Boot 4
 
@@ -27,7 +27,7 @@ Updated to Spring Boot 4
 
 ## What is the goal?
 
-The goal is to be reactive from top to bottom. To do that the project uses Angular in the frontend and Spring Boot with Reactive Web as server. Mongodb is the database connected with the reactive MongoDB driver. That enables a reactive chain from the browser to the DB. The security is done with Jwt Tokens and the logged out tokens are invalidated. The project uses an in memory MongoDB to be just cloned build and ready to run. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test. The health and performance of the application can be monitored with Spring Actuator with Prometheus interface. With the 'kafka' and 'prod' profiles the Kafka support can be used for Jwt token revokation(Minikube setups(development/system) available). 
+The goal is to show a simple MongoDb based application using virtual threads. To do that the project uses Angular in the frontend and Spring Boot with Tomcat server. The scalability is provided by the virtual threads of the Jdk 25. The security is done with Jwt Tokens and the logged out tokens are invalidated. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test. The health and performance of the application can be monitored with Spring Actuator with Prometheus interface. With the 'kafka' and 'prod' profiles the Kafka support can be used for Jwt token revokation(Minikube setups(development/system) available). 
 
 ## What is it?
 
@@ -61,15 +61,15 @@ jstat -gcutil -h 10 insert_process_id 1000
 
 ## Setup
 
-MongoDB 4.4.x or newer.
+MongoDB 8.2.x or newer.
 
 Eclipse IDE for Enterprise Java and Web Developers newest version.
 
-Java 21 or newer
+Java 25 or newer
 
 Maven 3.9.5 or newer
 
-Nodejs 18.19.x or newer
+Nodejs 24.18.x or newer
 
 Npm 10.2.x or newer
 
