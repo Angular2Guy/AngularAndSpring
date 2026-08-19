@@ -24,6 +24,8 @@ import ch.xxx.trader.domain.model.entity.QuoteCb;
 public interface QuoteCbRepository extends QuoteRepository<QuoteCb> {
 	QuoteCb insert(QuoteCb quote);
 
+	<S extends QuoteCb> List<S> insert(Iterable<S> quotes);
+
 	Optional<QuoteCb> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
 
 	List<QuoteCb> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);

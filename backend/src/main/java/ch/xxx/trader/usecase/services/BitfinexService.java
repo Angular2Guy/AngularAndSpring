@@ -172,7 +172,7 @@ public class BitfinexService {
 			Collection<QuoteBf> collectBf = this.collectBfQuotes(timeFrame, false);
 			if (!collectBf.isEmpty()) {
 				try {
-					this.quoteRepository.insertAll(BF_HOUR_COL, collectBf);
+					this.quoteRepository.insert(collectBf);
 				} catch (Exception e) {
 					LOG.warn("Bitfinex prepare hour data failed", e);
 				}
@@ -198,7 +198,7 @@ public class BitfinexService {
 			Collection<QuoteBf> collectBf = this.collectBfQuotes(timeFrame, true);
 			if (!collectBf.isEmpty()) {
 				try {
-					this.quoteRepository.insertAll(BF_DAY_COL, collectBf);
+					this.quoteRepository.insert(collectBf);
 				} catch (Exception e) {
 					LOG.warn("Bitfinex prepare day data failed", e);
 				}

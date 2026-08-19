@@ -16,7 +16,6 @@
 package ch.xxx.trader.adapter.repository;
 
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -63,11 +62,6 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 	}
 
 	@Override
-	public void insertAll(String collectionName, Collection<? extends T> quotes) {
-		this.operations.insert(quotes, collectionName);
-	}
-
-	@Override
 	public boolean collectionExists(String collectionName) {
 		return this.operations.collectionExists(collectionName);
 	}
@@ -80,7 +74,7 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 	@Override
 	public void ensureIndex(String collectionName) {
 		Index myIndex = new Index(DtoUtils.CREATEDAT, Direction.DESC).named(collectionName + "-" + DtoUtils.CREATEDAT);
-		this.operations.indexOps(collectionName).ensureIndex(myIndex);
+		this.operations.indexOps(collectionName).createIndex(myIndex);
 	}
 
 	@Override

@@ -15,7 +15,6 @@
    */
 package ch.xxx.trader.domain.services;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -25,8 +24,6 @@ public interface QuoteRepository<T extends Quote> {
 	List<T> findQuotesSince(String collectionName, Date since);
 
 	List<T> findQuotesSince(String collectionName, Date since, String pair, int limit);
-
-	void insertAll(String collectionName, Collection<? extends T> quotes);
 
 	boolean collectionExists(String collectionName);
 
