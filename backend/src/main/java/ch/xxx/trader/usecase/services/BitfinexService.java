@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
@@ -83,16 +84,16 @@ public class BitfinexService {
 		case TODAY -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
 				MongoUtils.buildStartDate(TimeFrame.TODAY)).stream()
 				.filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
-		case SEVENDAYS -> this.quoteRepository.findQuotesSince(BF_HOUR_COL, MongoUtils.buildStartDate(TimeFrame.SEVENDAYS),
-				pair, 1000);
-		case THIRTYDAYS -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS),
-				pair, 1000);
-		case NINTYDAYS -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.NINTYDAYS),
-				pair, 1000);
-		case Month6 -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Month6),
-				pair, 1000);
-		case Year1 -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Year1),
-				pair, 1000);
+		case SEVENDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.SEVENDAYS), Limit.of(1000));
+		case THIRTYDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS), Limit.of(1000));
+		case NINTYDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.NINTYDAYS), Limit.of(1000));
+		case Month6 -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.Month6), Limit.of(1000));
+		case Year1 -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.Year1), Limit.of(1000));
 		default -> List.of();
 		};
 	}
@@ -102,16 +103,16 @@ public class BitfinexService {
 		List<QuoteBf> quotes = switch (myTimeFrame) {
 		case TODAY -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
 				MongoUtils.buildStartDate(TimeFrame.TODAY));
-		case SEVENDAYS -> this.quoteRepository.findQuotesSince(BF_HOUR_COL, MongoUtils.buildStartDate(TimeFrame.SEVENDAYS),
-				pair, 1000);
-		case THIRTYDAYS -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS),
-				pair, 1000);
-		case NINTYDAYS -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.NINTYDAYS),
-				pair, 1000);
-		case Month6 -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Month6),
-				pair, 1000);
-		case Year1 -> this.quoteRepository.findQuotesSince(BF_DAY_COL, MongoUtils.buildStartDate(TimeFrame.Year1),
-				pair, 1000);
+		case SEVENDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.SEVENDAYS), Limit.of(1000));
+		case THIRTYDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS), Limit.of(1000));
+		case NINTYDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.NINTYDAYS), Limit.of(1000));
+		case Month6 -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.Month6), Limit.of(1000));
+		case Year1 -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+				MongoUtils.buildStartDate(TimeFrame.Year1), Limit.of(1000));
 		default -> List.of();
 		};
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);

@@ -17,15 +17,11 @@ package ch.xxx.trader.adapter.repository;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.domain.services.MyTimeFrame;
@@ -44,22 +40,6 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 	protected abstract Optional<T> findLastQuote();
 
 	protected abstract Optional<T> findFirstQuote();
-
-	@Override
-	public List<T> findQuotesSince(String collectionName, Date since) {
-		return findQuotesSince(collectionName, since, null, 1000);
-	}
-
-	@Override
-	public List<T> findQuotesSince(String collectionName, Date since, String pair, int limit) {
-		Query query = new Query();
-		query.allowDiskUse(true);
-		query.limit(Math.min(limit, 5000));
-		query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(since));
-		Optional.ofNullable(pair).ifPresent(myPair -> query.addCriteria(Criteria.where("pair").is(myPair)));
-		query.with(Sort.by(Direction.ASC, DtoUtils.CREATEDAT));
-		return this.operations.find(query, this.entityClass, collectionName);
-	}
 
 	@Override
 	public boolean collectionExists(String collectionName) {

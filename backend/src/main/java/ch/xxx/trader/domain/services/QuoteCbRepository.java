@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Limit;
+
 import ch.xxx.trader.domain.model.entity.QuoteCb;
 
 public interface QuoteCbRepository extends QuoteRepository<QuoteCb> {
@@ -29,6 +31,8 @@ public interface QuoteCbRepository extends QuoteRepository<QuoteCb> {
 	Optional<QuoteCb> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
 
 	List<QuoteCb> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
+
+	List<QuoteCb> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
 
 	List<QuoteCb> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
 }

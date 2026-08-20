@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
@@ -55,8 +56,9 @@ public class StatisticService {
 	}
 
 	private CommonStatisticsDto createBitStampStatistics(StatisticsCurrPair currPair) {
-		CommonStatisticsDto result = calcStatistics(this.quoteBsRepository.findQuotesSince(BitstampService.BS_DAY_COL,
-				MongoUtils.buildStartDate(TimeFrame.Year5), currPair.getBitStampKey(), 5000));
+		CommonStatisticsDto result = calcStatistics(
+				this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(currPair.getBitStampKey(),
+						MongoUtils.buildStartDate(TimeFrame.Year5), Limit.of(5000)));
 		result.setCurrPair(currPair);
 		return result;
 	}
@@ -177,8 +179,9 @@ public class StatisticService {
 	}
 
 	private CommonStatisticsDto createBitfinexStatistics(StatisticsCurrPair currPair) {
-		CommonStatisticsDto result = calcStatistics(this.quoteBfRepository.findQuotesSince(BitfinexService.BF_DAY_COL,
-				MongoUtils.buildStartDate(TimeFrame.Year5), currPair.getBitfinexKey(), 5000));
+		CommonStatisticsDto result = calcStatistics(
+				this.quoteBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(currPair.getBitfinexKey(),
+						MongoUtils.buildStartDate(TimeFrame.Year5), Limit.of(5000)));
 		result.setCurrPair(currPair);
 		return result;
 	}

@@ -15,16 +15,9 @@
    */
 package ch.xxx.trader.domain.services;
 
-import java.util.Date;
-import java.util.List;
-
 import ch.xxx.trader.domain.model.entity.Quote;
 
 public interface QuoteRepository<T extends Quote> {
-	List<T> findQuotesSince(String collectionName, Date since);
-
-	List<T> findQuotesSince(String collectionName, Date since, String pair, int limit);
-
 	boolean collectionExists(String collectionName);
 
 	void createCollection(String collectionName);
