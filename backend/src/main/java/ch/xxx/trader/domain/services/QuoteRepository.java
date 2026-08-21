@@ -31,7 +31,11 @@ public interface QuoteRepository<T extends Quote> {
 
 	MyTimeFrame createTimeFrame(String collectionName, boolean hour);
 
+	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date date);
+
 	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date);
 
 	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date, Limit limit);
+
+	List<T> findByCreatedAtAfterOrderByCreatedAtAsc(String collectionName, Date date, Limit limit);
 }

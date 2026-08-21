@@ -81,11 +81,11 @@ public class BitfinexService {
 	}
 
 	public List<QuoteBf> tfQuotes(String timeFrame, String pair) {
-		return DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, QuoteBf.class);
+		return DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, BF_HOUR_COL, BF_DAY_COL);
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
-		List<QuoteBf> quotes = DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, QuoteBf.class);
+		List<QuoteBf> quotes = DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, BF_HOUR_COL, BF_DAY_COL);
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 

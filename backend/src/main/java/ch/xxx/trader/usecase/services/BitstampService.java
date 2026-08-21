@@ -80,11 +80,11 @@ public class BitstampService {
 	}
 
 	public List<QuoteBs> tfQuotes(String timeFrame, String pair) {
-		return DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, QuoteBs.class);
+		return DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, BS_HOUR_COL, BS_DAY_COL);
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
-		List<QuoteBs> quotes = DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, QuoteBs.class);
+		List<QuoteBs> quotes = DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, BS_HOUR_COL, BS_DAY_COL);
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 

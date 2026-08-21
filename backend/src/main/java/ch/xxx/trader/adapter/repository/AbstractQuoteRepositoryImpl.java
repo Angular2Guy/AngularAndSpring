@@ -34,13 +34,22 @@ import ch.xxx.trader.domain.services.QuoteRepository;
 import ch.xxx.trader.usecase.common.DtoUtils;
 
 public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements QuoteRepository<T> {
-	private static final String PAIR = "pair";
 	protected final MongoOperations operations;
 	protected final Class<T> entityClass;
 
 	protected AbstractQuoteRepositoryImpl(MongoOperations operations, Class<T> entityClass) {
 		this.operations = operations;
 		this.entityClass = entityClass;
+	}
+
+	@Override
+	public List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date date) {
+		Query query = new Query();
+		query.allowDiskUse(true);
+		query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(date));
+		query.addCriteria(Criteria.where(DtoUtils.PAIR).is(pair));
+		query.with(Sort.by(Direction.ASC, DtoUtils.CREATEDAT));
+		return this.operations.find(query, this.entityClass);
 	}
 
 	@Override
@@ -57,7 +66,19 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 			query.limit(limit.max());
 		}
 		query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(date));
-		query.addCriteria(Criteria.where(PAIR).is(pair));
+		query.addCriteria(Criteria.where(DtoUtils.PAIR).is(pair));
+		query.with(Sort.by(Direction.ASC, DtoUtils.CREATEDAT));
+		return this.operations.find(query, this.entityClass, collectionName);
+	}
+
+	@Override
+	public List<T> findByCreatedAtAfterOrderByCreatedAtAsc(String collectionName, Date date, Limit limit) {
+		Query query = new Query();
+		query.allowDiskUse(true);
+		if (limit != null && limit.isLimited()) {
+			query.limit(limit.max());
+		}
+		query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(date));
 		query.with(Sort.by(Direction.ASC, DtoUtils.CREATEDAT));
 		return this.operations.find(query, this.entityClass, collectionName);
 	}
