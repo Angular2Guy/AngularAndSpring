@@ -27,7 +27,7 @@ Updated to Spring Boot 4
 
 ## What is the goal?
 
-The goal is to show a simple MongoDb based application using virtual threads. To do that the project uses Angular in the frontend and Spring Boot with Tomcat server. The scalability is provided by the virtual threads of the Jdk 25. The security is done with Jwt Tokens and the logged out tokens are invalidated. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test. The health and performance of the application can be monitored with Spring Actuator with Prometheus interface. With the 'kafka' and 'prod' profiles the Kafka support can be used for Jwt token revokation(Minikube setups(development/system) available). 
+The goal is to show a simple MongoDb based application that uses virtual threads. To do that the project uses Angular in the frontend and Spring Boot with Tomcat server. The scalability is provided by the virtual threads of the Jdk 25 which means the application can handle a very large amount of requests at the same time due to the efficient thread handling for each request. The security is done with Jwt Tokens and the logged out tokens are invalidated. It serves as an example for clean architecture. The architecture is checked with ArchUnit in a test. The health and performance of the application can be monitored with Spring Actuator with Prometheus interface. With the 'kafka' and 'prod' profiles the Kafka support can be used for Jwt token revokation(Minikube setups(development/system) available). 
 
 ## What is it?
 
