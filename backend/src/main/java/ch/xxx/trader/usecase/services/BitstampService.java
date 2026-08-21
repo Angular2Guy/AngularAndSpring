@@ -143,7 +143,7 @@ public class BitstampService {
 			Collection<QuoteBs> collectBs = this.collectBsQuotes(timeFrame, false);
 			if (!collectBs.isEmpty()) {
 				try {
-					this.quoteRepository.insert(collectBs);
+					this.quoteRepository.insert(BS_HOUR_COL, collectBs);
 				} catch (Exception e) {
 					LOG.warn("Bitstamp prepare hour data failed", e);
 				}
@@ -169,7 +169,7 @@ public class BitstampService {
 			Collection<QuoteBs> collectBs = this.collectBsQuotes(timeFrame, true);
 			if (!collectBs.isEmpty()) {
 				try {
-					this.quoteRepository.insert(collectBs);
+					this.quoteRepository.insert(BS_DAY_COL, collectBs);
 				} catch (Exception e) {
 					LOG.warn("Bitstamp prepare day data failed", e);
 				}

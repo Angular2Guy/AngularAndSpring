@@ -16,6 +16,7 @@
 package ch.xxx.trader.adapter.repository;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,11 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 	protected AbstractQuoteRepositoryImpl(MongoOperations operations, Class<T> entityClass) {
 		this.operations = operations;
 		this.entityClass = entityClass;
+	}
+
+	@Override
+	public void insert(String collectionName, Collection<? extends T> quotes) {
+		this.operations.insert(quotes, collectionName);
 	}
 
 	@Override

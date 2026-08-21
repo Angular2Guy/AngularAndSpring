@@ -15,6 +15,7 @@
    */
 package ch.xxx.trader.domain.services;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public interface QuoteRepository<T extends Quote> {
 	void ensureIndex(String collectionName);
 
 	MyTimeFrame createTimeFrame(String collectionName, boolean hour);
+
+	void insert(String collectionName, Collection<? extends T> quotes);
 
 	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date date);
 

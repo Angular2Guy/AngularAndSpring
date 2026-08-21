@@ -234,7 +234,7 @@ public class CoinbaseService {
 			this.countRelevantProperties(nonZeroProperties, myColl);
 			if (!myColl.isEmpty()) {
 				try {
-					this.quoteRepository.insert(myColl);
+					this.quoteRepository.insert(isDay ? CB_DAY_COL : CB_HOUR_COL, myColl);
 				} catch (Exception e) {
 					LOG.warn(logFailed, e);
 				}
