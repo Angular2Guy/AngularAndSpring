@@ -15,9 +15,14 @@
  */
 package ch.xxx.trader.usecase.common;
 
+import ch.xxx.trader.domain.services.QuoteMongoRepository;
+import ch.xxx.trader.domain.common.MongoUtils;
+import ch.xxx.trader.domain.model.entity.Quote;
+import org.springframework.data.domain.Limit;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.invoke.*;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -59,5 +64,25 @@ public class DtoUtils {
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
+	}
+
+	public static <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, QuoteMongoRepository<T> quoteRepository, Class<T> myClass) {
+		MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+		return switch (myTimeFrame) {
+			case TODAY -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+							MongoUtils.buildStartDate(MongoUtils.TimeFrame.TODAY)).stream()
+					.filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
+			case SEVENDAYS -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+					MongoUtils.buildStartDate(MongoUtils.TimeFrame.SEVENDAYS), Limit.of(1000));
+			case THIRTYDAYS -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+					MongoUtils.buildStartDate(MongoUtils.TimeFrame.THIRTYDAYS), Limit.of(1000));
+			case NINTYDAYS -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+					MongoUtils.buildStartDate(MongoUtils.TimeFrame.NINTYDAYS), Limit.of(1000));
+			case Month6 -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+					MongoUtils.buildStartDate(MongoUtils.TimeFrame.Month6), Limit.of(1000));
+			case Year1 -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+					MongoUtils.buildStartDate(MongoUtils.TimeFrame.Year1), Limit.of(1000));
+			default -> List.of();
+		};
 	}
 }

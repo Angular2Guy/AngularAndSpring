@@ -47,7 +47,7 @@ public class BitstampController {
 	
 	@GetMapping("/{pair}/{timeFrame}")
 	public Collection<QuoteBs> tfQuotesBtc(@PathVariable String timeFrame, @PathVariable String pair) {
-		return this.bitstampService.tfQuotesBtc(timeFrame, pair);
+		return this.bitstampService.tfQuotes(timeFrame, pair);
 	}
 	
 	@GetMapping(path="/{pair}/{timeFrame}/pdf", produces=MediaType.APPLICATION_PDF_VALUE)

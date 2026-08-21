@@ -137,10 +137,10 @@ public class StatisticService {
 
 	private static <T extends Quote> BigDecimal calcVolatility(List<T> quotes) {
 		final BigDecimal average = quotes.size() < 3 ? BigDecimal.ZERO
-				: quotes.stream().map(myQuote -> StatisticService.getLastValue(myQuote))
+				: quotes.stream().map(StatisticService::getLastValue)
 						.reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value))
 						.divide(BigDecimal.valueOf(quotes.size()), MathContext.DECIMAL128);
-		BigDecimal variance = quotes.size() < 3 ? BigDecimal.ZERO : quotes.stream().map(myQuote -> StatisticService.getLastValue(myQuote)).map(lastValue -> lastValue.subtract(average))
+		BigDecimal variance = quotes.size() < 3 ? BigDecimal.ZERO : quotes.stream().map(StatisticService::getLastValue).map(lastValue -> lastValue.subtract(average))
 				.map(avgDifference -> avgDifference.multiply(avgDifference))
 				.reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value)).divide(BigDecimal.valueOf(quotes.size()), MathContext.DECIMAL128);
 		BigDecimal volatility = variance.sqrt(MathContext.DECIMAL128);
@@ -149,7 +149,7 @@ public class StatisticService {
 
 	private static <T extends Quote> BigDecimal calcAvgVolume(List<T> quotes) {
 		return quotes.size() < 3 ? BigDecimal.ZERO
-				: quotes.stream().map(myQuote -> StatisticService.getVolume(myQuote))
+				: quotes.stream().map(StatisticService::getVolume)
 						.reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value))
 						.divide(BigDecimal.valueOf(quotes.size()), MathContext.DECIMAL128);
 	}
@@ -160,11 +160,11 @@ public class StatisticService {
 
 	private static <T extends Quote> Double calcPerformance(List<T> quotes) {
 		return quotes.size() < 3 ? 0.0
-				: ((StatisticService.getLastValue(quotes.get(quotes.size()-1)).doubleValue() / StatisticService.getLastValue(quotes.get(0)).doubleValue()) - 1) * 100;
+				: ((StatisticService.getLastValue(quotes.getLast()).doubleValue() / StatisticService.getLastValue(quotes.getFirst()).doubleValue()) - 1) * 100;
 	}
 
 	private static <T extends Quote> BigDecimal getMinMaxValue(List<T> quotes, boolean max) {
-		Stream<BigDecimal> valueStream = quotes.stream().map(myQuote -> StatisticService.getLastValue(myQuote));
+		Stream<BigDecimal> valueStream = quotes.stream().map(StatisticService::getLastValue);
 		return max ? valueStream.max(BigDecimal::compareTo).orElse(BigDecimal.ZERO)
 				: valueStream.min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
 	}

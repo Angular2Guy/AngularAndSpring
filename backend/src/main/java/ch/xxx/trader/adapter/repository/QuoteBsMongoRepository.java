@@ -17,6 +17,7 @@ package ch.xxx.trader.adapter.repository;
 
 import java.util.Optional;
 
+import ch.xxx.trader.domain.services.QuoteMongoRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

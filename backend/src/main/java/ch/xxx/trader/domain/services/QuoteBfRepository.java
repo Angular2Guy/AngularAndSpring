@@ -23,7 +23,7 @@ import org.springframework.data.domain.Limit;
 
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 
-public interface QuoteBfRepository extends QuoteRepository<QuoteBf> {
+public interface QuoteBfRepository extends QuoteRepository<QuoteBf>, QuoteMongoRepository<QuoteBf> {
 	QuoteBf insert(QuoteBf quote);
 
 	<S extends QuoteBf> List<S> insert(Iterable<S> quotes);

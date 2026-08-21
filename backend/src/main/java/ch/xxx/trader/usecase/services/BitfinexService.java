@@ -30,6 +30,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.usecase.common.DtoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -79,42 +81,11 @@ public class BitfinexService {
 	}
 
 	public List<QuoteBf> tfQuotes(String timeFrame, String pair) {
-		TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
-		return switch (myTimeFrame) {
-		case TODAY -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.TODAY)).stream()
-				.filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
-		case SEVENDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.SEVENDAYS), Limit.of(1000));
-		case THIRTYDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS), Limit.of(1000));
-		case NINTYDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.NINTYDAYS), Limit.of(1000));
-		case Month6 -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.Month6), Limit.of(1000));
-		case Year1 -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.Year1), Limit.of(1000));
-		default -> List.of();
-		};
+		return DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, QuoteBf.class);
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
-		TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
-		List<QuoteBf> quotes = switch (myTimeFrame) {
-		case TODAY -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.TODAY));
-		case SEVENDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.SEVENDAYS), Limit.of(1000));
-		case THIRTYDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS), Limit.of(1000));
-		case NINTYDAYS -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.NINTYDAYS), Limit.of(1000));
-		case Month6 -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.Month6), Limit.of(1000));
-		case Year1 -> this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-				MongoUtils.buildStartDate(TimeFrame.Year1), Limit.of(1000));
-		default -> List.of();
-		};
+		List<QuoteBf> quotes = DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, QuoteBf.class);
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 

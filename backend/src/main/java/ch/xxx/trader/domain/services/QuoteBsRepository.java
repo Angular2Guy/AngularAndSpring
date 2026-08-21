@@ -19,11 +19,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import ch.xxx.trader.domain.model.entity.QuoteBf;
 import org.springframework.data.domain.Limit;
 
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 
-public interface QuoteBsRepository extends QuoteRepository<QuoteBs> {
+public interface QuoteBsRepository extends QuoteRepository<QuoteBs>, QuoteMongoRepository<QuoteBs> {
 	QuoteBs insert(QuoteBs quote);
 
 	<S extends QuoteBs> List<S> insert(Iterable<S> quotes);
