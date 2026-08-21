@@ -26,12 +26,18 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
 import ch.xxx.trader.domain.model.dto.RangeDto;
+import ch.xxx.trader.domain.model.dto.StatisticsCommon.CoinExchange;
+import ch.xxx.trader.domain.model.dto.StatisticsCommon.StatisticsCurrPair;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.domain.services.QuoteBfRepository;
+import ch.xxx.trader.domain.services.QuoteBsRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class StatisticServiceTest {
@@ -39,6 +45,11 @@ public class StatisticServiceTest {
 		getPerformance, getAvgVolume, getRange, getVolatility
 	}
 	
+	@Mock
+	private QuoteBsRepository quoteBsRepository;
+
+	@Mock
+	private QuoteBfRepository quoteBfRepository;
 	
 	
 	@Test
@@ -173,6 +184,28 @@ public class StatisticServiceTest {
 		checkEmptyResult(dto, durationStr);		
 	}
 	
+	@Test
+	public void statisticBitstampDayCollectionQuotes() {
+		Mockito.when(this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(
+				Mockito.eq(BitstampService.BS_DAY_COL), Mockito.eq("btcusd"), Mockito.any(), Mockito.any()))
+				.thenReturn(createBsQuotes());
+		StatisticService service = new StatisticService(this.quoteBsRepository, this.quoteBfRepository);
+		CommonStatisticsDto dto = service.getCommonStatistics(StatisticsCurrPair.BcUsd, CoinExchange.Bitstamp);
+		Assertions.assertEquals(800L, dto.getPerformance5Year().longValue());
+		Assertions.assertEquals(50L, dto.getPerformance1Month().longValue());
+	}
+
+	@Test
+	public void statisticBitfinexDayCollectionQuotes() {
+		Mockito.when(this.quoteBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(
+				Mockito.eq(BitfinexService.BF_DAY_COL), Mockito.eq("btcusd"), Mockito.any(), Mockito.any()))
+				.thenReturn(createBfQuotes());
+		StatisticService service = new StatisticService(this.quoteBsRepository, this.quoteBfRepository);
+		CommonStatisticsDto dto = service.getCommonStatistics(StatisticsCurrPair.BcUsd, CoinExchange.Bitfinex);
+		Assertions.assertEquals(800L, dto.getPerformance5Year().longValue());
+		Assertions.assertEquals(50L, dto.getPerformance1Month().longValue());
+	}
+
 	private void checkEmptyResult(CommonStatisticsDto dto, String durationStr)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Method declaredMethod = CommonStatisticsDto.class.getDeclaredMethod(StatisticKeys.getPerformance + durationStr);

@@ -17,11 +17,16 @@ package ch.xxx.trader.adapter.repository;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Limit;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.domain.services.MyTimeFrame;
@@ -29,12 +34,32 @@ import ch.xxx.trader.domain.services.QuoteRepository;
 import ch.xxx.trader.usecase.common.DtoUtils;
 
 public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements QuoteRepository<T> {
+	private static final String PAIR = "pair";
 	protected final MongoOperations operations;
 	protected final Class<T> entityClass;
 
 	protected AbstractQuoteRepositoryImpl(MongoOperations operations, Class<T> entityClass) {
 		this.operations = operations;
 		this.entityClass = entityClass;
+	}
+
+	@Override
+	public List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date) {
+		return this.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(collectionName, pair, date, Limit.unlimited());
+	}
+
+	@Override
+	public List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date,
+			Limit limit) {
+		Query query = new Query();
+		query.allowDiskUse(true);
+		if (limit != null && limit.isLimited()) {
+			query.limit(limit.max());
+		}
+		query.addCriteria(Criteria.where(DtoUtils.CREATEDAT).gt(date));
+		query.addCriteria(Criteria.where(PAIR).is(pair));
+		query.with(Sort.by(Direction.ASC, DtoUtils.CREATEDAT));
+		return this.operations.find(query, this.entityClass, collectionName);
 	}
 
 	protected abstract Optional<T> findLastQuote();

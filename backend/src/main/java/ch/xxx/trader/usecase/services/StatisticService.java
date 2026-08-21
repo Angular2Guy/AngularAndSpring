@@ -49,16 +49,17 @@ public class StatisticService {
 	}
 
 	public CommonStatisticsDto getCommonStatistics(StatisticsCurrPair currPair, CoinExchange coinExchange) {
-		CommonStatisticsDto result = CoinExchange.Bitfinex.equals(coinExchange)
-				? this.createBitfinexStatistics(currPair)
-				: this.createBitStampStatistics(currPair);
+		CommonStatisticsDto result = switch (coinExchange) {
+			case CoinExchange.Bitfinex -> this.createBitfinexStatistics(currPair);
+			case CoinExchange.Bitstamp -> this.createBitStampStatistics(currPair);
+		};
 		return result;
 	}
 
 	private CommonStatisticsDto createBitStampStatistics(StatisticsCurrPair currPair) {
 		CommonStatisticsDto result = calcStatistics(
-				this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(currPair.getBitStampKey(),
-						MongoUtils.buildStartDate(TimeFrame.Year5), Limit.of(5000)));
+				this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(BitstampService.BS_DAY_COL,
+						currPair.getBitStampKey(), MongoUtils.buildStartDate(TimeFrame.Year5), Limit.of(5000)));
 		result.setCurrPair(currPair);
 		return result;
 	}
@@ -180,8 +181,8 @@ public class StatisticService {
 
 	private CommonStatisticsDto createBitfinexStatistics(StatisticsCurrPair currPair) {
 		CommonStatisticsDto result = calcStatistics(
-				this.quoteBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(currPair.getBitfinexKey(),
-						MongoUtils.buildStartDate(TimeFrame.Year5), Limit.of(5000)));
+				this.quoteBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(BitfinexService.BF_DAY_COL,
+						currPair.getBitfinexKey(), MongoUtils.buildStartDate(TimeFrame.Year5), Limit.of(5000)));
 		result.setCurrPair(currPair);
 		return result;
 	}

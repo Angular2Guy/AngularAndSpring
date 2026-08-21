@@ -15,6 +15,11 @@
    */
 package ch.xxx.trader.domain.services;
 
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.data.domain.Limit;
+
 import ch.xxx.trader.domain.model.entity.Quote;
 
 public interface QuoteRepository<T extends Quote> {
@@ -25,4 +30,8 @@ public interface QuoteRepository<T extends Quote> {
 	void ensureIndex(String collectionName);
 
 	MyTimeFrame createTimeFrame(String collectionName, boolean hour);
+
+	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date);
+
+	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date, Limit limit);
 }
