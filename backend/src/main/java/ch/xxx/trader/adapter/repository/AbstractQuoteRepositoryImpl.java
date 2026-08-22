@@ -96,7 +96,7 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 	public Optional<T> getLastQuote(String collectionName) {
 		Query query = new Query();
 		query.limit(1);
-		query.with(Sort.by(Direction.ASC, DtoUtils.CREATEDAT));
+		query.with(Sort.by(Direction.DESC, DtoUtils.CREATEDAT));
 		return Optional.ofNullable(this.operations.findOne(query,this.entityClass, collectionName));
 	}
 
