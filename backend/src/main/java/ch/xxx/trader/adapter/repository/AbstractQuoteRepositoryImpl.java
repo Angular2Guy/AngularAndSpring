@@ -93,6 +93,13 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 
 	protected abstract Optional<T> findFirstQuote();
 
+	public Optional<T> getLastQuote(String collectionName) {
+		Query query = new Query();
+		query.limit(1);
+		query.with(Sort.by(Direction.ASC, DtoUtils.CREATEDAT));
+		return Optional.ofNullable(this.operations.findOne(query,this.entityClass, collectionName));
+	}
+
 	@Override
 	public boolean collectionExists(String collectionName) {
 		return this.operations.collectionExists(collectionName);
@@ -115,7 +122,7 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 			this.operations.createCollection(collectionName);
 		}
 		final Calendar globalBeginn = Calendar.getInstance();
-		Optional<T> lastAggregate = this.findLastQuote();
+		Optional<T> lastAggregate = this.getLastQuote(collectionName);
 		lastAggregate.ifPresentOrElse(myQuote -> this.calcGlobalBegin(hour, globalBeginn, myQuote), () -> {
 			Optional<T> firstQuote = this.findFirstQuote();
 			globalBeginn.setTime(firstQuote.map(Quote::getCreatedAt).orElse(

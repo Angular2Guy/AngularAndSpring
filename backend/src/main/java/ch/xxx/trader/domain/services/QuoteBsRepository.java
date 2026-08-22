@@ -19,9 +19,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import ch.xxx.trader.domain.model.entity.QuoteBf;
 import org.springframework.data.domain.Limit;
+import org.springframework.data.mongodb.repository.Query;
 
+import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 
 public interface QuoteBsRepository extends QuoteRepository<QuoteBs>, QuoteMongoRepository<QuoteBs> {
@@ -35,5 +36,6 @@ public interface QuoteBsRepository extends QuoteRepository<QuoteBs>, QuoteMongoR
 
 	List<QuoteBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date date, Limit limit);
 
+	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteBs> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
 }

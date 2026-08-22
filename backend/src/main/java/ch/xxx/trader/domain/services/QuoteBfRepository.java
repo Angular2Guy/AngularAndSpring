@@ -21,6 +21,8 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Limit;
 
+import org.springframework.data.mongodb.repository.Query;
+
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 
 public interface QuoteBfRepository extends QuoteRepository<QuoteBf>, QuoteMongoRepository<QuoteBf> {
@@ -34,5 +36,6 @@ public interface QuoteBfRepository extends QuoteRepository<QuoteBf>, QuoteMongoR
 
 	List<QuoteBf> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date date, Limit limit);
 
+	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteBf> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
 }
