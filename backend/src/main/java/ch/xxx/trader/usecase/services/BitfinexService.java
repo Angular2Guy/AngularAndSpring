@@ -189,7 +189,7 @@ public class BitfinexService {
 		try {
 			multimap = this.quoteRepository
 					.findByCreatedAtGreaterThanAndCreatedAtLessThan(timeFrame.begin().getTime(), timeFrame.end().getTime())
-					.stream().collect(Collectors.groupingBy(QuoteBf::getPair));
+					.stream().filter(value -> Optional.ofNullable(value.getPair()).stream().anyMatch(Predicate.not(String::isBlank))).collect(Collectors.groupingBy(QuoteBf::getPair));
 		} catch (Exception e) {
 			LOG.warn(day ? "Bitfinex prepare day data failed" : "Bitfinex prepare hour data failed", e);
 			return List.of();
