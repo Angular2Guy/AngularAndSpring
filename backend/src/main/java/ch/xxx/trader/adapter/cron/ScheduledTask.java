@@ -15,22 +15,6 @@
   */
 package ch.xxx.trader.adapter.cron;
 
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.time.Duration;
-import java.time.LocalTime;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
-
 import ch.xxx.trader.domain.model.dto.WrapperCb;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
@@ -40,6 +24,24 @@ import ch.xxx.trader.usecase.services.BitfinexService;
 import ch.xxx.trader.usecase.services.BitstampService;
 import ch.xxx.trader.usecase.services.CoinbaseService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
+import org.springframework.boot.http.client.HttpClientSettings;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalTime;
 
 @Component
 public class ScheduledTask {
@@ -84,10 +86,17 @@ public class ScheduledTask {
 		insertBsQuote(currPair);
 	}
 
+	private ClientHttpRequestFactory customRequestFactory() {
+		HttpClientSettings settings = HttpClientSettings.defaults()
+				.withConnectTimeout(Duration.ofSeconds(4))
+				.withReadTimeout(Duration.ofSeconds(5));
+		return ClientHttpRequestFactoryBuilder.detect().build(settings);
+	}
+
 	private void insertBsQuote(String currPair) {
 		LocalTime start = LocalTime.now();
 		try {
-			QuoteBs quote = this.restClientBuilder.build().get()
+			QuoteBs quote = this.restClientBuilder.requestFactory(this.customRequestFactory()).build().get()
 					.uri(String.format("%s/v2/ticker/%s/", ScheduledTask.URLBS, currPair))
 					.accept(MediaType.APPLICATION_JSON).retrieve().body(QuoteBs.class);
 			quote.setPair(currPair);
@@ -137,7 +146,7 @@ public class ScheduledTask {
 		final String currPair = "ALLUSD";
 		LocalTime start = LocalTime.now();
 		try {
-			WrapperCb wrapperCb = this.restClientBuilder.build().get()
+			WrapperCb wrapperCb = this.restClientBuilder.requestFactory(this.customRequestFactory()).build().get()
 					.uri(ScheduledTask.URLCB + "/exchange-rates?currency=BTC").accept(MediaType.APPLICATION_JSON)
 					.retrieve().body(WrapperCb.class);
 			QuoteCb quote = wrapperCb.getData().getRates();
@@ -192,9 +201,10 @@ public class ScheduledTask {
 	private void insertBfQuote(String currPair) {
 		LocalTime start = LocalTime.now();
 		try {
-			QuoteBf quote = this.restClientBuilder.build().get()
+			QuoteBf quote = this.restClientBuilder.requestFactory(this.customRequestFactory()).build().get()
 					.uri(String.format("%s/v1/pubticker/%s", ScheduledTask.URLBF, currPair))
-					.accept(MediaType.APPLICATION_JSON).retrieve().body(QuoteBf.class);
+					.accept(MediaType.APPLICATION_JSON)
+					.retrieve().body(QuoteBf.class);
 			quote.setPair(currPair);
 			QuoteBf result = checkBfTimestamp(quote);
 			result = this.limitPrecision(result);
