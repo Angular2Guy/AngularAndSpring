@@ -112,7 +112,7 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 
 	@Override
 	public void ensureIndex(String collectionName) {
-		Index myIndex = new Index(DtoUtils.CREATEDAT, Direction.DESC).named(collectionName + "-" + DtoUtils.CREATEDAT);
+		Index myIndex = new Index(DtoUtils.CREATEDAT, Direction.DESC).named(this.entityClass.getSimpleName() + "-" + DtoUtils.CREATEDAT);
 		this.operations.indexOps(collectionName).createIndex(myIndex);
 	}
 
