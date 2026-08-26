@@ -30,19 +30,19 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import ch.xxx.trader.domain.model.entity.QuoteDayBf;
+import ch.xxx.trader.domain.model.entity.QuoteDayBs;
+import ch.xxx.trader.domain.model.entity.QuoteHourBs;
+import ch.xxx.trader.domain.services.*;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
-import ch.xxx.trader.domain.services.MyOrderBookClient;
-import ch.xxx.trader.domain.services.MyTimeFrame;
-import ch.xxx.trader.domain.services.QuoteBsRepository;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 
 @Service
@@ -53,21 +53,28 @@ public class BitstampService {
 	public static volatile boolean singleInstanceLock = false;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
-	private final QuoteBsRepository quoteRepository;
+	private final QuoteBsRepository quoteBsRepository;
+	private final MongoQuoteRepository mongoQuoteRepository;
+	private final QuoteDayBsRepository quoteDayBsRepository;
+	private final QuoteHourBsRepository quoteHourBsRepository;
 	private final ServiceUtils serviceUtils;
 	@Value("${single.instance.deployment:false}")
 	private boolean singleInstanceDeployment;
 
-	public BitstampService(MyOrderBookClient orderBookClient, QuoteBsRepository quoteRepository,
-			ServiceUtils serviceUtils, ReportMapper reportMapper) {
+	public BitstampService(MyOrderBookClient orderBookClient, QuoteBsRepository quoteBsRepository, MongoQuoteRepository mongoQuoteRepository,
+						   ServiceUtils serviceUtils, ReportMapper reportMapper,
+						   QuoteDayBsRepository quoteDayBsRepository, QuoteHourBsRepository quoteHourBsRepository) {
 		this.orderBookClient = orderBookClient;
 		this.reportMapper = reportMapper;
-		this.quoteRepository = quoteRepository;
+		this.quoteBsRepository = quoteBsRepository;
 		this.serviceUtils = serviceUtils;
+		this.mongoQuoteRepository = mongoQuoteRepository;
+		this.quoteDayBsRepository = quoteDayBsRepository;
+		this.quoteHourBsRepository = quoteHourBsRepository;
 	}
 
 	public QuoteBs insertQuote(QuoteBs quote) {
-		return this.quoteRepository.insert(quote);
+		return this.quoteBsRepository.insert(quote);
 	}
 
 	public String getOrderbook(String currpair) {
@@ -75,16 +82,16 @@ public class BitstampService {
 	}
 
 	public Optional<QuoteBs> currentQuoteBtc(String pair) {
-		return this.quoteRepository.findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(pair,
+		return this.quoteBsRepository.findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(pair,
 				MongoUtils.buildStartDate(TimeFrame.CURRENT));
 	}
 
 	public List<QuoteBs> tfQuotes(String timeFrame, String pair) {
-		return DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, BS_HOUR_COL, BS_DAY_COL);
+		return DtoUtils.tfQuotes(timeFrame, pair, this.quoteBsRepository, BS_HOUR_COL, BS_DAY_COL);
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
-		List<QuoteBs> quotes = DtoUtils.tfQuotes(timeFrame, pair, this.quoteRepository, BS_HOUR_COL, BS_DAY_COL);
+		List<QuoteBs> quotes = DtoUtils.tfQuotes(timeFrame, pair, this.quoteBsRepository, BS_HOUR_COL, BS_DAY_COL);
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 
@@ -102,14 +109,14 @@ public class BitstampService {
 
 	private void ensureIndexes() {
 		try {
-			this.quoteRepository.ensureIndex(BS_HOUR_COL);
+			this.mongoQuoteRepository.ensureIndex(QuoteHourBs.class);
 		} catch (Exception e) {
-			LOG.info("ensureIndex(" + BS_HOUR_COL + ") failed.", e);
+			LOG.info("ensureIndex(" + QuoteHourBs.class.getSimpleName() + ") failed.", e);
 		}
 		try {
-			this.quoteRepository.ensureIndex(BS_DAY_COL);
+			this.mongoQuoteRepository.ensureIndex(QuoteDayBf.class);
 		} catch (Exception e) {
-			LOG.info("ensureIndex(" + BS_DAY_COL + ") failed.", e);
+			LOG.info("ensureIndex(" + QuoteDayBs.class.getSimpleName() + ") failed.", e);
 		}
 	}
 
@@ -133,7 +140,7 @@ public class BitstampService {
 
 	private void createBsHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.quoteRepository.createTimeFrame(BS_HOUR_COL, true);
+		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteHourBs.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
@@ -143,7 +150,7 @@ public class BitstampService {
 			Collection<QuoteBs> collectBs = this.collectBsQuotes(timeFrame, false);
 			if (!collectBs.isEmpty()) {
 				try {
-					this.quoteRepository.insert(BS_HOUR_COL, collectBs);
+					this.quoteHourBsRepository.insert(collectBs);
 				} catch (Exception e) {
 					LOG.warn("Bitstamp prepare hour data failed", e);
 				}
@@ -159,7 +166,7 @@ public class BitstampService {
 
 	private void createBsDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.quoteRepository.createTimeFrame(BS_DAY_COL, false);
+		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteHourBs.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
@@ -169,7 +176,7 @@ public class BitstampService {
 			Collection<QuoteBs> collectBs = this.collectBsQuotes(timeFrame, true);
 			if (!collectBs.isEmpty()) {
 				try {
-					this.quoteRepository.insert(BS_DAY_COL, collectBs);
+					this.quoteDayBsRepository.insert(collectBs);
 				} catch (Exception e) {
 					LOG.warn("Bitstamp prepare day data failed", e);
 				}
@@ -186,7 +193,7 @@ public class BitstampService {
 	private Collection<QuoteBs> collectBsQuotes(MyTimeFrame timeFrame, boolean day) {
 		Map<String, List<QuoteBs>> multimap;
 		try {
-			multimap = this.quoteRepository
+			multimap = this.quoteBsRepository
 					.findByCreatedAtGreaterThanAndCreatedAtLessThan(timeFrame.begin().getTime(), timeFrame.end().getTime())
 					.stream().collect(Collectors.groupingBy(QuoteBs::getPair));
 		} catch (Exception e) {

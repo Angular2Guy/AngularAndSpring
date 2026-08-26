@@ -44,6 +44,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import ch.xxx.trader.domain.model.entity.QuoteDayCb;
+import ch.xxx.trader.domain.model.entity.QuoteHourCb;
+import ch.xxx.trader.domain.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,8 +57,6 @@ import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
 import ch.xxx.trader.domain.model.entity.QuoteCb;
 import ch.xxx.trader.domain.model.entity.QuoteCbSmall;
-import ch.xxx.trader.domain.services.MyTimeFrame;
-import ch.xxx.trader.domain.services.QuoteCbRepository;
 import ch.xxx.trader.usecase.common.DtoUtils;
 
 @Service
@@ -70,7 +71,10 @@ public class CoinbaseService {
 	public static final String CB_HOUR_COL = "quoteCbHour";
 	public static final String CB_DAY_COL = "quoteCbDay";
 	public static volatile boolean singleInstanceLock = false;
-	private final QuoteCbRepository quoteRepository;
+	private final QuoteCbRepository quoteCbRepository;
+	private final MongoQuoteRepository mongoQuoteRepository;
+	private final QuoteHourCbRepository quoteHourCbRepository;
+	private final QuoteDayCbRepository quoteDayCbRepository;
 	private final ServiceUtils serviceUtils;
 	@Value("${kubernetes.pod.cpu.constraint}")
 	private boolean cpuConstraint;
@@ -81,8 +85,12 @@ public class CoinbaseService {
 	@Value("${single.instance.slow-io:false}")
 	private boolean slowIo;
 
-	public CoinbaseService(QuoteCbRepository quoteRepository, ServiceUtils serviceUtils) {
-		this.quoteRepository = quoteRepository;
+	public CoinbaseService(QuoteCbRepository quoteCbRepository, ServiceUtils serviceUtils, MongoQuoteRepository mongoQuoteRepository,
+						   QuoteHourCbRepository quoteHourCbRepository, QuoteDayCbRepository quoteDayCbRepository) {
+		this.quoteCbRepository = quoteCbRepository;
+		this.mongoQuoteRepository = mongoQuoteRepository;
+		this.quoteHourCbRepository = quoteHourCbRepository;
+		this.quoteDayCbRepository = quoteDayCbRepository;
 		this.serviceUtils = serviceUtils;
 		try {
 			BeanInfo beanInfo = Introspector.getBeanInfo(QuoteCb.class);
@@ -94,11 +102,11 @@ public class CoinbaseService {
 	}
 
 	public QuoteCb insertQuote(QuoteCb quote) {
-		return this.quoteRepository.insert(quote);
+		return this.quoteCbRepository.insert(quote);
 	}
 
 	public List<QuoteCbSmall> todayQuotesBc() {
-		return this.quoteRepository.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.TODAY))
+		return this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.TODAY))
 				.stream().filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()))
@@ -106,9 +114,8 @@ public class CoinbaseService {
 	}
 
 	public List<QuoteCbSmall> sevenDaysQuotesBc() {
-		return this.quoteRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(CB_HOUR_COL,
-						MongoUtils.buildStartDate(TimeFrame.SEVENDAYS), Limit.of(1000))
+		return this.quoteCbRepository
+				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.SEVENDAYS), Limit.of(1000))
 				.stream()
 				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
@@ -117,9 +124,8 @@ public class CoinbaseService {
 	}
 
 	public List<QuoteCbSmall> thirtyDaysQuotesBc() {
-		return this.quoteRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(CB_DAY_COL,
-						MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS), Limit.of(1000))
+		return this.quoteCbRepository
+				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS), Limit.of(1000))
 				.stream()
 				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
@@ -128,9 +134,8 @@ public class CoinbaseService {
 	}
 
 	public List<QuoteCbSmall> nintyDaysQuotesBc() {
-		return this.quoteRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(CB_DAY_COL,
-						MongoUtils.buildStartDate(TimeFrame.NINTYDAYS), Limit.of(1000))
+		return this.quoteCbRepository
+				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.NINTYDAYS), Limit.of(1000))
 				.stream()
 				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
@@ -139,9 +144,8 @@ public class CoinbaseService {
 	}
 
 	public List<QuoteCbSmall> sixMonthsQuotesBc() {
-		return this.quoteRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(CB_DAY_COL,
-						MongoUtils.buildStartDate(TimeFrame.Month6), Limit.of(1000))
+		return this.quoteCbRepository
+				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.Month6), Limit.of(1000))
 				.stream()
 				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
@@ -150,9 +154,8 @@ public class CoinbaseService {
 	}
 
 	public List<QuoteCbSmall> oneYearQuotesBc() {
-		return this.quoteRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(CB_DAY_COL,
-						MongoUtils.buildStartDate(TimeFrame.Year1), Limit.of(1000))
+		return this.quoteCbRepository
+				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.Year1), Limit.of(1000))
 				.stream()
 				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
@@ -161,7 +164,7 @@ public class CoinbaseService {
 	}
 
 	public Optional<QuoteCb> currentQuoteBc() {
-		return this.quoteRepository.findFirstByCreatedAtAfterOrderByCreatedAtDesc(MongoUtils.buildStartDate(TimeFrame.CURRENT));
+		return this.quoteCbRepository.findFirstByCreatedAtAfterOrderByCreatedAtDesc(MongoUtils.buildStartDate(TimeFrame.CURRENT));
 	}
 
 	public void createCbAvg() {
@@ -178,14 +181,14 @@ public class CoinbaseService {
 
 	private void ensureIndexes() {
 		try {
-			this.quoteRepository.ensureIndex(CB_HOUR_COL);
+			this.mongoQuoteRepository.ensureIndex(QuoteHourCb.class);
 		} catch (Exception e) {
-			LOG.info("ensureIndex(" + CB_HOUR_COL + ") failed.", e);
+			LOG.info("ensureIndex(" + QuoteHourCb.class.getSimpleName() + ") failed.", e);
 		}
 		try {
-			this.quoteRepository.ensureIndex(CB_DAY_COL);
+			this.mongoQuoteRepository.ensureIndex(QuoteDayCb.class);
 		} catch (Exception e) {
-			LOG.info("ensureIndex(" + CB_DAY_COL + ") failed.", e);
+			LOG.info("ensureIndex(" + QuoteDayCb.class.getSimpleName() + ") failed.", e);
 		}
 	}
 
@@ -222,7 +225,7 @@ public class CoinbaseService {
 		try {
 			List<QuoteCb> quotes;
 			try {
-				quotes = this.quoteRepository
+				quotes = this.quoteCbRepository
 						.findByCreatedAtGreaterThanAndCreatedAtLessThan(timeFrame1.begin().getTime(),
 								timeFrame1.end().getTime())
 						.stream().toList();
@@ -234,7 +237,11 @@ public class CoinbaseService {
 			this.countRelevantProperties(nonZeroProperties, myColl);
 			if (!myColl.isEmpty()) {
 				try {
-					this.quoteRepository.insert(isDay ? CB_DAY_COL : CB_HOUR_COL, myColl);
+					if(isDay) {
+						this.quoteDayCbRepository.insert(myColl);
+					} else {
+						this.quoteHourCbRepository.insert(myColl);
+					}
 				} catch (Exception e) {
 					LOG.warn(logFailed, e);
 				}
@@ -262,7 +269,8 @@ public class CoinbaseService {
 	private void createCbIntervalAvg(boolean isDay) {
 		LOG.info(isDay ? "createCbDailyAvg()" : "createCbHourlyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
-		final MyTimeFrame timeFrame = this.quoteRepository.createTimeFrame(isDay ? CB_DAY_COL : CB_HOUR_COL, !isDay);
+		var aggregateQuoteClass = isDay ? QuoteDayCb.class : QuoteHourCb.class;
+		final MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteCb.class, aggregateQuoteClass, !isDay);
 		final Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

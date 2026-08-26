@@ -43,12 +43,12 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 		this.entityClass = entityClass;
 	}
 
-	@Override
+
 	public void insert(String collectionName, Collection<? extends T> quotes) {
 		this.operations.insert(quotes, collectionName);
 	}
 
-	@Override
+
 	public List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date date) {
 		Query query = new Query();
 		query.allowDiskUse(true);
@@ -58,12 +58,12 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 		return this.operations.find(query, this.entityClass);
 	}
 
-	@Override
+
 	public List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date) {
 		return this.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(collectionName, pair, date, Limit.unlimited());
 	}
 
-	@Override
+
 	public List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date,
 			Limit limit) {
 		Query query = new Query();
@@ -77,7 +77,7 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 		return this.operations.find(query, this.entityClass, collectionName);
 	}
 
-	@Override
+
 	public List<T> findByCreatedAtAfterOrderByCreatedAtAsc(String collectionName, Date date, Limit limit) {
 		Query query = new Query();
 		query.allowDiskUse(true);
@@ -100,23 +100,23 @@ public abstract class AbstractQuoteRepositoryImpl<T extends Quote> implements Qu
 		return Optional.ofNullable(this.operations.findOne(query,this.entityClass, collectionName));
 	}
 
-	@Override
+
 	public boolean collectionExists(String collectionName) {
 		return this.operations.collectionExists(collectionName);
 	}
 
-	@Override
+
 	public void createCollection(String collectionName) {
 		this.operations.createCollection(collectionName);
 	}
 
-	@Override
+
 	public void ensureIndex(String collectionName) {
 		Index myIndex = new Index(DtoUtils.CREATEDAT, Direction.DESC).named(this.entityClass.getSimpleName() + "-" + DtoUtils.CREATEDAT);
 		this.operations.indexOps(collectionName).createIndex(myIndex);
 	}
 
-	@Override
+
 	public MyTimeFrame createTimeFrame(String collectionName, boolean hour) {
 		if (!this.operations.collectionExists(collectionName)) {
 			this.operations.createCollection(collectionName);
