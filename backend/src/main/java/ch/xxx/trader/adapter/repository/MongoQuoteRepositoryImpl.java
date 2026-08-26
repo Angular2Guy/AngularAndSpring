@@ -56,9 +56,9 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
 			this.operations.createCollection(entityClass);
 		}
 		final Calendar globalBeginn = Calendar.getInstance();
-		Optional<T> lastAggregate = this.findFirstLastQuote(aggreateEntityClass, false);
+		Optional<B> lastAggregate = this.findFirstLastQuote(aggreateEntityClass, false);
 		lastAggregate.ifPresentOrElse(myQuote -> this.calcGlobalBegin(hour, globalBeginn, myQuote), () -> {
-			Optional<T> firstQuote = this.findFirstLastQuote(entityClass, true);
+			Optional<A> firstQuote = this.findFirstLastQuote(entityClass, true);
 			globalBeginn.setTime(firstQuote.map(Quote::getCreatedAt).orElse(
 					Date.from(java.time.LocalDate.now().atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant())));
 		});
