@@ -15,14 +15,11 @@
  */
 package ch.xxx.trader.usecase.services;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-
+import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
+import ch.xxx.trader.domain.model.dto.RangeDto;
+import ch.xxx.trader.domain.model.dto.StatisticsCommon.CoinExchange;
+import ch.xxx.trader.domain.model.dto.StatisticsCommon.StatisticsCurrPair;
+import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteDayBf;
 import ch.xxx.trader.domain.model.entity.QuoteDayBs;
 import ch.xxx.trader.domain.services.QuoteDayBfRepository;
@@ -34,14 +31,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ch.xxx.trader.domain.model.dto.CommonStatisticsDto;
-import ch.xxx.trader.domain.model.dto.RangeDto;
-import ch.xxx.trader.domain.model.dto.StatisticsCommon.CoinExchange;
-import ch.xxx.trader.domain.model.dto.StatisticsCommon.StatisticsCurrPair;
-import ch.xxx.trader.domain.model.entity.QuoteBf;
-import ch.xxx.trader.domain.model.entity.QuoteBs;
-import ch.xxx.trader.domain.services.QuoteBfRepository;
-import ch.xxx.trader.domain.services.QuoteBsRepository;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class StatisticServiceTest {
@@ -58,7 +54,7 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic5Years() {
-		List<QuoteBs> quotesBs = createBsQuotes();
+		List<QuoteDayBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics5Years(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance5Year().longValue(), 800L);
@@ -70,7 +66,7 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic2Years() {
-		List<QuoteBf> quotesBf = createBfQuotes();
+		List<QuoteDayBf> quotesBf = createBfQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics2Years(quotesBf, dto);
 		Assertions.assertEquals(dto.getPerformance2Year().longValue(), 350L);
@@ -82,7 +78,7 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic1Year() {
-		List<QuoteBs> quotesBs = createBsQuotes();
+		List<QuoteDayBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics1Year(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance1Year().longValue(), 200L);
@@ -94,7 +90,7 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic6Months() {
-		List<QuoteBf> quotesBf = createBfQuotes();
+		List<QuoteDayBf> quotesBf = createBfQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics6Months(quotesBf, dto);
 		Assertions.assertEquals(dto.getPerformance6Month().longValue(), 125L);
@@ -106,7 +102,7 @@ public class StatisticServiceTest {
 	
 	@Test
 	public void statistic3Months() {
-		List<QuoteBs> quotesBs = createBsQuotes();
+		List<QuoteDayBs> quotesBs = createBsQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics3Months(quotesBs, dto);
 		Assertions.assertEquals(dto.getPerformance3Month().longValue(), 80L);
@@ -118,7 +114,7 @@ public class StatisticServiceTest {
 
 	@Test
 	public void statistic1Month() {
-		List<QuoteBf> quotesBf = createBfQuotes();
+		List<QuoteDayBf> quotesBf = createBfQuotes();
 		CommonStatisticsDto dto = new CommonStatisticsDto();
 		StatisticService.calcStatistics1Month(quotesBf, dto);
 		Assertions.assertEquals(dto.getPerformance1Month().longValue(), 50L);

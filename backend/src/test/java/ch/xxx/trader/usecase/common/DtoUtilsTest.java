@@ -15,9 +15,8 @@
  */
 package ch.xxx.trader.usecase.common;
 
-import java.util.Date;
-import java.util.List;
-
+import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.domain.services.QuoteRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +24,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ch.xxx.trader.domain.model.entity.QuoteBs;
-import ch.xxx.trader.domain.services.QuoteRepository;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class DtoUtilsTest {
@@ -49,51 +47,51 @@ public class DtoUtilsTest {
 
 	@Test
 	public void tfQuotesSevenDaysReadsHourCollection() {
-		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(HOUR_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any())).thenReturn(List.of());
+		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any())).thenReturn(List.of());
 		List<QuoteBs> result = DtoUtils.tfQuotes("7days", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
 		Assertions.assertTrue(result.isEmpty());
-		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(HOUR_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any());
+		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void tfQuotesThirtyDaysReadsDayCollection() {
-		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(DAY_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any())).thenReturn(List.of());
+		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any())).thenReturn(List.of());
 		List<QuoteBs> result = DtoUtils.tfQuotes("30days", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
 		Assertions.assertTrue(result.isEmpty());
-		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(DAY_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any());
+		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void tfQuotesNintyDaysReadsDayCollection() {
-		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(DAY_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any())).thenReturn(List.of());
+		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any())).thenReturn(List.of());
 		List<QuoteBs> result = DtoUtils.tfQuotes("90days", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
 		Assertions.assertTrue(result.isEmpty());
-		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(DAY_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any());
+		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void tfQuotesSixMonthsReadsDayCollection() {
-		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(DAY_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any())).thenReturn(List.of());
+		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any())).thenReturn(List.of());
 		List<QuoteBs> result = DtoUtils.tfQuotes("6month", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
 		Assertions.assertTrue(result.isEmpty());
-		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(DAY_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any());
+		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void tfQuotesOneYearReadsDayCollection() {
-		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(DAY_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any())).thenReturn(List.of());
+		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any())).thenReturn(List.of());
 		List<QuoteBs> result = DtoUtils.tfQuotes("1year", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
 		Assertions.assertTrue(result.isEmpty());
-		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(DAY_COL),
-				Mockito.eq(PAIR), Mockito.any(), Mockito.any());
+		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
+				Mockito.any(), Mockito.any());
 	}
 }

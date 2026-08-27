@@ -37,6 +37,10 @@ import ch.xxx.trader.domain.model.dto.StatisticsCommon.StatisticsCurrPair;
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.domain.model.entity.QuoteDayBf;
+import ch.xxx.trader.domain.model.entity.QuoteDayBs;
+import ch.xxx.trader.domain.model.entity.QuoteHourBf;
+import ch.xxx.trader.domain.model.entity.QuoteHourBs;
 
 @Service
 public class StatisticService {
@@ -156,7 +160,7 @@ public class StatisticService {
 	}
 
 	private static <T extends Quote> BigDecimal getVolume(T myQuote) {
-		return myQuote instanceof QuoteBs ? ((QuoteBs) myQuote).getLast() : ((QuoteBf) myQuote).getLast_price();
+		return getQuoteValue(myQuote);
 	}
 
 	private static <T extends Quote> Double calcPerformance(List<T> quotes) {
@@ -171,7 +175,23 @@ public class StatisticService {
 	}
 
 	private static <T extends Quote> BigDecimal getLastValue(T myQuote) {
-		return myQuote instanceof QuoteBs ? ((QuoteBs) myQuote).getLast() : ((QuoteBf) myQuote).getLast_price();
+		return getQuoteValue(myQuote);
+	}
+
+	private static <T extends Quote> BigDecimal getQuoteValue(T myQuote) {
+		if (myQuote instanceof QuoteBs quote) {
+			return quote.getLast();
+		} else if (myQuote instanceof QuoteDayBs quote) {
+			return quote.getLast();
+		} else if (myQuote instanceof QuoteHourBs quote) {
+			return quote.getLast();
+		} else if (myQuote instanceof QuoteBf quote) {
+			return quote.getLast_price();
+		} else if (myQuote instanceof QuoteDayBf quote) {
+			return quote.getLast_price();
+		} else {
+			return ((QuoteHourBf) myQuote).getLast_price();
+		}
 	}
 
 	private static Date createBeforeDate(int months, int years) {

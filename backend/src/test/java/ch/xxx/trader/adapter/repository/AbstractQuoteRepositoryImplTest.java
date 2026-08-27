@@ -53,6 +53,32 @@ public class AbstractQuoteRepositoryImplTest {
 			protected Optional<QuoteBs> findFirstQuote() {
 				return Optional.empty();
 			}
+
+			@Override
+			public java.util.List<QuoteBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date) {
+				return java.util.List.of();
+			}
+
+			@Override
+			public java.util.List<QuoteBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit) {
+				return java.util.List.of();
+			}
+
+			@Override
+			public java.util.List<QuoteBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date date,
+					Limit limit) {
+				return java.util.List.of();
+			}
+
+			@Override
+			public Optional<QuoteBs> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date) {
+				return Optional.empty();
+			}
+
+			@Override
+			public Optional<QuoteBs> findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(String pair, Date date) {
+				return Optional.empty();
+			}
 		};
 	}
 

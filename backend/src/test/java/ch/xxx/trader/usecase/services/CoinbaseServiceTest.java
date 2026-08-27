@@ -15,8 +15,10 @@
  */
 package ch.xxx.trader.usecase.services;
 
-import java.util.List;
-
+import ch.xxx.trader.domain.services.MongoQuoteRepository;
+import ch.xxx.trader.domain.services.QuoteCbRepository;
+import ch.xxx.trader.domain.services.QuoteDayCbRepository;
+import ch.xxx.trader.domain.services.QuoteHourCbRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ch.xxx.trader.domain.services.QuoteCbRepository;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class CoinbaseServiceTest {
@@ -34,11 +36,21 @@ public class CoinbaseServiceTest {
 	@Mock
 	private ServiceUtils serviceUtils;
 
+	@Mock
+	private MongoQuoteRepository mongoQuoteRepository;
+
+	@Mock
+	private QuoteHourCbRepository quoteHourCbRepository;
+
+	@Mock
+	private QuoteDayCbRepository quoteDayCbRepository;
+
 	@Test
 	public void sevenDaysQuotesReadHourCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
 				 Mockito.any(), Mockito.any())).thenReturn(List.of());
-		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
+		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils, this.mongoQuoteRepository,
+				this.quoteHourCbRepository, this.quoteDayCbRepository);
 		Assertions.assertTrue(service.sevenDaysQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
 				Mockito.any(), Mockito.any());
@@ -48,7 +60,8 @@ public class CoinbaseServiceTest {
 	public void thirtyDaysQuotesReadDayCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
 				 Mockito.any(), Mockito.any())).thenReturn(List.of());
-		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
+		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils, this.mongoQuoteRepository,
+				this.quoteHourCbRepository, this.quoteDayCbRepository);
 		Assertions.assertTrue(service.thirtyDaysQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
 				 Mockito.any(), Mockito.any());
@@ -58,7 +71,8 @@ public class CoinbaseServiceTest {
 	public void nintyDaysQuotesReadDayCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
 				 Mockito.any(), Mockito.any())).thenReturn(List.of());
-		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
+		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils, this.mongoQuoteRepository,
+				this.quoteHourCbRepository, this.quoteDayCbRepository);
 		Assertions.assertTrue(service.nintyDaysQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
 				 Mockito.any(), Mockito.any());
@@ -68,7 +82,8 @@ public class CoinbaseServiceTest {
 	public void sixMonthsQuotesReadDayCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
 				 Mockito.any(), Mockito.any())).thenReturn(List.of());
-		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
+		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils, this.mongoQuoteRepository,
+				this.quoteHourCbRepository, this.quoteDayCbRepository);
 		Assertions.assertTrue(service.sixMonthsQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
 				 Mockito.any(), Mockito.any());
@@ -78,7 +93,8 @@ public class CoinbaseServiceTest {
 	public void oneYearQuotesReadDayCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
 				 Mockito.any(), Mockito.any())).thenReturn(List.of());
-		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
+		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils, this.mongoQuoteRepository,
+				this.quoteHourCbRepository, this.quoteDayCbRepository);
 		Assertions.assertTrue(service.oneYearQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
 				 Mockito.any(), Mockito.any());
