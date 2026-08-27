@@ -15,6 +15,7 @@
   */
 package ch.xxx.trader.usecase.services;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -35,8 +36,10 @@ import ch.xxx.trader.domain.model.entity.QuoteDayBs;
 import ch.xxx.trader.domain.model.entity.QuoteHourBs;
 import ch.xxx.trader.domain.services.*;
 import ch.xxx.trader.usecase.common.DtoUtils;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -147,7 +150,7 @@ public class BitstampService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			// Bitstamp
-			Collection<QuoteBs> collectBs = this.collectBsQuotes(timeFrame, false);
+			var collectBs = this.collectBsQuotes(timeFrame, false, QuoteHourBs.class);
 			if (!collectBs.isEmpty()) {
 				try {
 					this.quoteHourBsRepository.insert(collectBs);
@@ -173,7 +176,7 @@ public class BitstampService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			// Bitstamp
-			Collection<QuoteBs> collectBs = this.collectBsQuotes(timeFrame, true);
+			var collectBs = this.collectBsQuotes(timeFrame, true, QuoteDayBs.class);
 			if (!collectBs.isEmpty()) {
 				try {
 					this.quoteDayBsRepository.insert(collectBs);
@@ -190,7 +193,7 @@ public class BitstampService {
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitstamp Daily Data Time:"));
 	}
 
-	private Collection<QuoteBs> collectBsQuotes(MyTimeFrame timeFrame, boolean day) {
+	private <T> Collection<T> collectBsQuotes(MyTimeFrame timeFrame, boolean day, Class<T> myClass) {
 		Map<String, List<QuoteBs>> multimap;
 		try {
 			multimap = this.quoteBsRepository
@@ -200,9 +203,22 @@ public class BitstampService {
 			LOG.warn(day ? "Bitstamp prepare day data failed" : "Bitstamp prepare hour data failed", e);
 			return List.of();
 		}
-		return multimap.keySet().stream().map(key -> day ? this.makeBsQuoteDay(key, multimap, timeFrame.begin(),
+		var quoteList = multimap.keySet().stream().map(key -> day ? this.makeBsQuoteDay(key, multimap, timeFrame.begin(),
 				timeFrame.end()) : this.makeBsQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 				.filter(Predicate.not(Collection::isEmpty)).flatMap(Collection::stream).toList();
+		return quoteList.stream().map(value -> mapToDest(myClass, value)).collect(Collectors.toList());
+	}
+
+	private <T> @NonNull T mapToDest(Class<T> myClass, QuoteBs value) {
+		T dest;
+		try {
+			dest = myClass.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		BeanUtils.copyProperties(value, dest);
+		return dest;
 	}
 
 	private Collection<QuoteBs> makeBsQuoteDay(String key, Map<String, List<QuoteBs>> multimap, Calendar begin,

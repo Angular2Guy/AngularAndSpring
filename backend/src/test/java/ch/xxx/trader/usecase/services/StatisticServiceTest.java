@@ -23,6 +23,10 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
+import ch.xxx.trader.domain.model.entity.QuoteDayBf;
+import ch.xxx.trader.domain.model.entity.QuoteDayBs;
+import ch.xxx.trader.domain.services.QuoteDayBfRepository;
+import ch.xxx.trader.domain.services.QuoteDayBsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,10 +50,10 @@ public class StatisticServiceTest {
 	}
 	
 	@Mock
-	private QuoteBsRepository quoteBsRepository;
+	private QuoteDayBsRepository quoteBsRepository;
 
 	@Mock
-	private QuoteBfRepository quoteBfRepository;
+	private QuoteDayBfRepository quoteBfRepository;
 	
 	
 	@Test
@@ -187,7 +191,7 @@ public class StatisticServiceTest {
 	@Test
 	public void statisticBitstampDayCollectionQuotes() {
 		Mockito.when(this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(BitstampService.BS_DAY_COL), Mockito.eq("btcusd"), Mockito.any(), Mockito.any()))
+				 Mockito.eq("btcusd"), Mockito.any(), Mockito.any()))
 				.thenReturn(createBsQuotes());
 		StatisticService service = new StatisticService(this.quoteBsRepository, this.quoteBfRepository);
 		CommonStatisticsDto dto = service.getCommonStatistics(StatisticsCurrPair.BcUsd, CoinExchange.Bitstamp);
@@ -198,7 +202,7 @@ public class StatisticServiceTest {
 	@Test
 	public void statisticBitfinexDayCollectionQuotes() {
 		Mockito.when(this.quoteBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(BitfinexService.BF_DAY_COL), Mockito.eq("btcusd"), Mockito.any(), Mockito.any()))
+				 Mockito.eq("btcusd"), Mockito.any(), Mockito.any()))
 				.thenReturn(createBfQuotes());
 		StatisticService service = new StatisticService(this.quoteBsRepository, this.quoteBfRepository);
 		CommonStatisticsDto dto = service.getCommonStatistics(StatisticsCurrPair.BcUsd, CoinExchange.Bitfinex);
@@ -220,7 +224,7 @@ public class StatisticServiceTest {
 		Assertions.assertEquals(((BigDecimal) declaredMethod.invoke(dto)).longValue(), 0L);
 	}
 	
-	private List<QuoteBf> createBfQuotes() {
+	private List<QuoteDayBf> createBfQuotes() {
 		return List.of(
 				this.createBfQuote(BigDecimal.TEN, BigDecimal.TEN, LocalDate.now().minusYears(4L)),
 				this.createBfQuote(BigDecimal.valueOf(20L), BigDecimal.valueOf(20L), LocalDate.now().minusMonths(15L)),
@@ -233,7 +237,7 @@ public class StatisticServiceTest {
 				this.createBfQuote(BigDecimal.valueOf(90L), BigDecimal.valueOf(90L), LocalDate.now().minusDays(10L)));
 	}
 	
-	private List<QuoteBs> createBsQuotes() {
+	private List<QuoteDayBs> createBsQuotes() {
 		return List.of(
 				this.createBsQuote(BigDecimal.TEN, BigDecimal.TEN, LocalDate.now().minusYears(4L)),
 				this.createBsQuote(BigDecimal.valueOf(20L), BigDecimal.valueOf(20L), LocalDate.now().minusMonths(15L)),
@@ -246,14 +250,14 @@ public class StatisticServiceTest {
 				this.createBsQuote(BigDecimal.valueOf(90L), BigDecimal.valueOf(90L), LocalDate.now().minusDays(10L)));
 	}
 
-	private QuoteBs createBsQuote(BigDecimal last, BigDecimal volume, LocalDate localDate) {
-		QuoteBs quoteBs = new QuoteBs(null, last, null, null, null, volume, null, null, null);
+	private QuoteDayBs createBsQuote(BigDecimal last, BigDecimal volume, LocalDate localDate) {
+		var quoteBs = new QuoteDayBs(null, last, null, null, null, volume, null, null, null);
 		quoteBs.setCreatedAt(Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		return quoteBs;
 	}
 	
-	private QuoteBf createBfQuote(BigDecimal last, BigDecimal volume, LocalDate localDate) {
-		QuoteBf quoteBf = new QuoteBf(null, null, null, last, null, null, volume, null);
+	private QuoteDayBf createBfQuote(BigDecimal last, BigDecimal volume, LocalDate localDate) {
+		var quoteBf = new QuoteDayBf(null, null, null, last, null, null, volume, null);
 		quoteBf.setCreatedAt(Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		return quoteBf;
 	}

@@ -15,6 +15,7 @@
   */
 package ch.xxx.trader.usecase.services;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -33,8 +34,10 @@ import java.util.stream.Collectors;
 import ch.xxx.trader.domain.model.entity.*;
 import ch.xxx.trader.domain.services.*;
 import ch.xxx.trader.usecase.common.DtoUtils;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -144,7 +147,7 @@ public class BitfinexService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			// Bitfinex
-			Collection<QuoteBf> collectBf = this.collectBfQuotes(timeFrame, false);
+			var collectBf = this.collectBfQuotes(timeFrame, false, QuoteHourBf.class);
 			if (!collectBf.isEmpty()) {
 				try {
 					this.quoteHourBfRepository.insert(collectBf);
@@ -170,7 +173,7 @@ public class BitfinexService {
 		while (timeFrame.end().before(now)) {
 			Date start = new Date();
 			// Bitfinex
-			Collection<QuoteBf> collectBf = this.collectBfQuotes(timeFrame, true);
+			var collectBf = this.collectBfQuotes(timeFrame, true, QuoteDayBf.class);
 			if (!collectBf.isEmpty()) {
 				try {
 					this.quoteDayBfRepository.insert(collectBf);
@@ -187,7 +190,7 @@ public class BitfinexService {
 		LOG.info(this.serviceUtils.createAvgLogStatement(startAll, "Prepared Bitfinex Daily Data Time:"));
 	}
 
-	private Collection<QuoteBf> collectBfQuotes(MyTimeFrame timeFrame, boolean day) {
+	private <T> Collection<T> collectBfQuotes(MyTimeFrame timeFrame, boolean day, Class<T> myClass) {
 		Map<String, List<QuoteBf>> multimap;
 		try {
 			multimap = this.quoteBfRepository
@@ -197,9 +200,22 @@ public class BitfinexService {
 			LOG.warn(day ? "Bitfinex prepare day data failed" : "Bitfinex prepare hour data failed", e);
 			return List.of();
 		}
-		return multimap.keySet().stream().map(key -> day ? this.makeBfQuoteDay(key, multimap, timeFrame.begin(),
+		var quotes = multimap.keySet().stream().map(key -> day ? this.makeBfQuoteDay(key, multimap, timeFrame.begin(),
 				timeFrame.end()) : this.makeBfQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 				.filter(Predicate.not(Collection::isEmpty)).flatMap(Collection::stream).toList();
+		return quotes.stream().map(value -> mapToDest(myClass, value)).collect(Collectors.toList());
+	}
+
+	private <T> @NonNull T mapToDest(Class<T> myClass, QuoteBf value) {
+		T dest;
+		try {
+			dest = myClass.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		BeanUtils.copyProperties(value, dest);
+		return dest;
 	}
 
 	private Collection<QuoteBf> makeBfQuoteHour(String key, Map<String, List<QuoteBf>> multimap, Calendar begin,

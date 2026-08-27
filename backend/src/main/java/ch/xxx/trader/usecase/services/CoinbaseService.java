@@ -20,6 +20,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -44,19 +45,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ch.xxx.trader.domain.model.entity.QuoteDayCb;
-import ch.xxx.trader.domain.model.entity.QuoteHourCb;
+import ch.xxx.trader.domain.model.entity.*;
 import ch.xxx.trader.domain.services.*;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
-import ch.xxx.trader.domain.model.entity.QuoteCb;
-import ch.xxx.trader.domain.model.entity.QuoteCbSmall;
 import ch.xxx.trader.usecase.common.DtoUtils;
 
 @Service
@@ -233,19 +233,19 @@ public class CoinbaseService {
 				LOG.warn(logFailed, e);
 				quotes = List.of();
 			}
-			Collection<QuoteCb> myColl = this.createCbQuoteTimeFrame(timeFrame1, isDay, quotes);
-			this.countRelevantProperties(nonZeroProperties, myColl);
-			if (!myColl.isEmpty()) {
-				try {
 					if(isDay) {
-						this.quoteDayCbRepository.insert(myColl);
+						var myColl = this.createCbQuoteTimeFrame(timeFrame1, isDay, quotes, QuoteDayCb.class);
+						if (!myColl.isEmpty()) {
+							this.countRelevantProperties(nonZeroProperties, myColl.stream().map(value -> mapToDest(QuoteCb.class, value)).toList());
+							this.quoteDayCbRepository.insert(myColl);
+						}
 					} else {
-						this.quoteHourCbRepository.insert(myColl);
+						var myColl = this.createCbQuoteTimeFrame(timeFrame1, isDay, quotes, QuoteHourCb.class);
+						if (!myColl.isEmpty()) {
+							this.countRelevantProperties(nonZeroProperties, myColl.stream().map(value -> mapToDest(QuoteCb.class, value)).toList());
+							this.quoteHourCbRepository.insert(myColl);
+						}
 					}
-				} catch (Exception e) {
-					LOG.warn(logFailed, e);
-				}
-			}
 		} catch (Exception e) {
 			LOG.warn(logFailed, e);
 		}
@@ -254,8 +254,8 @@ public class CoinbaseService {
 				+ " 0 < properties: " + nonZeroProperties.get());
 	}
 
-	private Collection<QuoteCb> createCbQuoteTimeFrame(final MyTimeFrame timeFrame1, final boolean isDay,
-			List<QuoteCb> quotes) {
+	private <T> Collection<T> createCbQuoteTimeFrame(final MyTimeFrame timeFrame1, final boolean isDay,
+			List<QuoteCb> quotes, Class<T> myClass) {
 		Date start = new Date();
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 		var result = isDay ? this.makeCbQuoteDay(quotes, timeFrame1.begin(), timeFrame1.end())
@@ -263,7 +263,19 @@ public class CoinbaseService {
 		LOG.info(String.format("Calculate Coinbase %s Data for: ", isDay ? "Day" : "Hour")
 				+ sdf.format(timeFrame1.begin().getTime()) + " Time: " + (new Date().getTime() - start.getTime())
 				+ "ms");
-		return result;
+		return result.stream().map(value -> mapToDest(myClass, value)).toList();
+	}
+
+	private <T, B extends Quote> @NonNull T mapToDest(Class<T> myClass, B value) {
+		T dest;
+		try {
+			dest = myClass.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+				 NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		BeanUtils.copyProperties(value, dest);
+		return dest;
 	}
 
 	private void createCbIntervalAvg(boolean isDay) {

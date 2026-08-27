@@ -37,50 +37,50 @@ public class CoinbaseServiceTest {
 	@Test
 	public void sevenDaysQuotesReadHourCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_HOUR_COL), Mockito.any(), Mockito.any())).thenReturn(List.of());
+				 Mockito.any(), Mockito.any())).thenReturn(List.of());
 		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
 		Assertions.assertTrue(service.sevenDaysQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_HOUR_COL), Mockito.any(), Mockito.any());
+				Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void thirtyDaysQuotesReadDayCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_DAY_COL), Mockito.any(), Mockito.any())).thenReturn(List.of());
+				 Mockito.any(), Mockito.any())).thenReturn(List.of());
 		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
 		Assertions.assertTrue(service.thirtyDaysQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_DAY_COL), Mockito.any(), Mockito.any());
+				 Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void nintyDaysQuotesReadDayCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_DAY_COL), Mockito.any(), Mockito.any())).thenReturn(List.of());
+				 Mockito.any(), Mockito.any())).thenReturn(List.of());
 		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
 		Assertions.assertTrue(service.nintyDaysQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_DAY_COL), Mockito.any(), Mockito.any());
+				 Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void sixMonthsQuotesReadDayCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_DAY_COL), Mockito.any(), Mockito.any())).thenReturn(List.of());
+				 Mockito.any(), Mockito.any())).thenReturn(List.of());
 		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
 		Assertions.assertTrue(service.sixMonthsQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_DAY_COL), Mockito.any(), Mockito.any());
+				 Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void oneYearQuotesReadDayCollection() {
 		Mockito.when(this.quoteCbRepository.findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_DAY_COL), Mockito.any(), Mockito.any())).thenReturn(List.of());
+				 Mockito.any(), Mockito.any())).thenReturn(List.of());
 		CoinbaseService service = new CoinbaseService(this.quoteCbRepository, this.serviceUtils);
 		Assertions.assertTrue(service.oneYearQuotesBc().isEmpty());
 		Mockito.verify(this.quoteCbRepository).findByCreatedAtAfterOrderByCreatedAtAsc(
-				Mockito.eq(CoinbaseService.CB_DAY_COL), Mockito.any(), Mockito.any());
+				 Mockito.any(), Mockito.any());
 	}
 }

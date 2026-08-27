@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
+import ch.xxx.trader.domain.services.QuoteDayBfRepository;
+import ch.xxx.trader.domain.services.QuoteDayBsRepository;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
@@ -35,17 +37,15 @@ import ch.xxx.trader.domain.model.dto.StatisticsCommon.StatisticsCurrPair;
 import ch.xxx.trader.domain.model.entity.Quote;
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
-import ch.xxx.trader.domain.services.QuoteBfRepository;
-import ch.xxx.trader.domain.services.QuoteBsRepository;
 
 @Service
 public class StatisticService {
-	private final QuoteBsRepository quoteBsRepository;
-	private final QuoteBfRepository quoteBfRepository;
+	private final QuoteDayBsRepository quoteDayBsRepository;
+	private final QuoteDayBfRepository quoteDayBfRepository;
 
-	public StatisticService(QuoteBsRepository quoteBsRepository, QuoteBfRepository quoteBfRepository) {
-		this.quoteBsRepository = quoteBsRepository;
-		this.quoteBfRepository = quoteBfRepository;
+	public StatisticService(QuoteDayBsRepository quoteDayBsRepository, QuoteDayBfRepository quoteDayBfRepository) {
+		this.quoteDayBsRepository = quoteDayBsRepository;
+		this.quoteDayBfRepository = quoteDayBfRepository;
 	}
 
 	public CommonStatisticsDto getCommonStatistics(StatisticsCurrPair currPair, CoinExchange coinExchange) {
@@ -58,7 +58,7 @@ public class StatisticService {
 
 	private CommonStatisticsDto createBitStampStatistics(StatisticsCurrPair currPair) {
 		CommonStatisticsDto result = calcStatistics(
-				this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(BitstampService.BS_DAY_COL,
+				this.quoteDayBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(
 						currPair.getBitStampKey(), MongoUtils.buildStartDate(TimeFrame.Year5), Limit.of(5000)));
 		result.setCurrPair(currPair);
 		return result;
@@ -181,7 +181,7 @@ public class StatisticService {
 
 	private CommonStatisticsDto createBitfinexStatistics(StatisticsCurrPair currPair) {
 		CommonStatisticsDto result = calcStatistics(
-				this.quoteBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(BitfinexService.BF_DAY_COL,
+				this.quoteDayBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(
 						currPair.getBitfinexKey(), MongoUtils.buildStartDate(TimeFrame.Year5), Limit.of(5000)));
 		result.setCurrPair(currPair);
 		return result;

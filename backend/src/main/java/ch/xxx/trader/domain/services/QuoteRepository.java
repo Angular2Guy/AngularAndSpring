@@ -15,20 +15,21 @@
    */
 package ch.xxx.trader.domain.services;
 
+import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.model.entity.Quote;
+import ch.xxx.trader.domain.model.entity.QuoteBs;
+import ch.xxx.trader.domain.model.entity.QuoteHourCb;
+import org.springframework.data.domain.Limit;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 public interface QuoteRepository<T extends Quote> {
-/*
-	void ensureIndex(Class<T> entityClass);
-
-	MyTimeFrame createTimeFrame(Class<T> entityClass, boolean hour);
-
-	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date date);
-
-	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date);
-
-	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date, Limit limit);
-
-	List<T> findByCreatedAtAfterOrderByCreatedAtAsc(String collectionName, Date date, Limit limit);
-	 */
+    List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate);
+    List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate, Limit limit);
+    Optional<T> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
+    List<T> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
+    List<T> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
+    Optional<T> findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(String pair, Date date);
 }

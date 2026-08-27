@@ -30,12 +30,6 @@ public interface QuoteCbRepository extends QuoteRepository<QuoteCb> {
 
 	<S extends QuoteCb> List<S> insert(Iterable<S> quotes);
 
-	Optional<QuoteCb> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
-
-	List<QuoteCb> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
-
-	List<QuoteCb> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
-
 	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteCb> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
 }
