@@ -90,11 +90,11 @@ public class BitstampService {
 	}
 
 	public List<QuoteBs> tfQuotes(String timeFrame, String pair) {
-		return DtoUtils.tfQuotes(timeFrame, pair, this.quoteBsRepository, BS_HOUR_COL, BS_DAY_COL);
+		return DtoUtils.tfQuotes(timeFrame, pair, this.quoteBsRepository);
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
-		List<QuoteBs> quotes = DtoUtils.tfQuotes(timeFrame, pair, this.quoteBsRepository, BS_HOUR_COL, BS_DAY_COL);
+		List<QuoteBs> quotes = DtoUtils.tfQuotes(timeFrame, pair, this.quoteBsRepository);
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 

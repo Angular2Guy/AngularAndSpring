@@ -15,9 +15,9 @@
  */
 package ch.xxx.trader.usecase.common;
 
-import ch.xxx.trader.domain.services.QuoteRepository;
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.model.entity.Quote;
+import ch.xxx.trader.domain.services.QuoteRepository;
 import org.springframework.data.domain.Limit;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -67,8 +67,7 @@ public class DtoUtils {
 		}
 	}
 
-	public static <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, QuoteRepository<T> quoteRepository,
-			String hourCollection, String dayCollection) {
+	public static <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, QuoteRepository<T> quoteRepository) {
 		MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
 		return switch (myTimeFrame) {
 			case TODAY -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,

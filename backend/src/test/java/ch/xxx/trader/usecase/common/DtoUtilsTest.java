@@ -29,8 +29,6 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 public class DtoUtilsTest {
 	private static final String PAIR = "btcusd";
-	private static final String HOUR_COL = "quoteBsHour";
-	private static final String DAY_COL = "quoteBsDay";
 
 	@Mock
 	private QuoteRepository<QuoteBs> quoteRepository;
@@ -39,7 +37,7 @@ public class DtoUtilsTest {
 	public void tfQuotesTodayReadsDefaultCollection() {
 		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any())).thenReturn(List.of());
-		List<QuoteBs> result = DtoUtils.tfQuotes("today", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
+		List<QuoteBs> result = DtoUtils.tfQuotes("today", PAIR, this.quoteRepository);
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any());
@@ -49,7 +47,7 @@ public class DtoUtilsTest {
 	public void tfQuotesSevenDaysReadsHourCollection() {
 		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any())).thenReturn(List.of());
-		List<QuoteBs> result = DtoUtils.tfQuotes("7days", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
+		List<QuoteBs> result = DtoUtils.tfQuotes("7days", PAIR, this.quoteRepository);
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any());
@@ -59,7 +57,7 @@ public class DtoUtilsTest {
 	public void tfQuotesThirtyDaysReadsDayCollection() {
 		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any())).thenReturn(List.of());
-		List<QuoteBs> result = DtoUtils.tfQuotes("30days", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
+		List<QuoteBs> result = DtoUtils.tfQuotes("30days", PAIR, this.quoteRepository);
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any());
@@ -69,7 +67,7 @@ public class DtoUtilsTest {
 	public void tfQuotesNintyDaysReadsDayCollection() {
 		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any())).thenReturn(List.of());
-		List<QuoteBs> result = DtoUtils.tfQuotes("90days", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
+		List<QuoteBs> result = DtoUtils.tfQuotes("90days", PAIR, this.quoteRepository);
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any());
@@ -79,7 +77,7 @@ public class DtoUtilsTest {
 	public void tfQuotesSixMonthsReadsDayCollection() {
 		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any())).thenReturn(List.of());
-		List<QuoteBs> result = DtoUtils.tfQuotes("6month", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
+		List<QuoteBs> result = DtoUtils.tfQuotes("6month", PAIR, this.quoteRepository);
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any());
@@ -89,7 +87,7 @@ public class DtoUtilsTest {
 	public void tfQuotesOneYearReadsDayCollection() {
 		Mockito.when(this.quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any())).thenReturn(List.of());
-		List<QuoteBs> result = DtoUtils.tfQuotes("1year", PAIR, this.quoteRepository, HOUR_COL, DAY_COL);
+		List<QuoteBs> result = DtoUtils.tfQuotes("1year", PAIR, this.quoteRepository);
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(Mockito.eq(PAIR),
 				Mockito.any(), Mockito.any());
