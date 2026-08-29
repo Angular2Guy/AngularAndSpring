@@ -23,12 +23,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface QuoteRepository<T extends Quote> {
-    List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate);
-    List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate, Limit limit);
     Optional<T> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
     List<T> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
     List<T> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
-    Optional<T> findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(String pair, Date date);
     Optional<T> findFirstByOrderByCreatedAtDesc();
 
     Optional<T> findFirstByOrderByCreatedAtAsc();

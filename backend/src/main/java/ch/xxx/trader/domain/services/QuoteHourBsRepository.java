@@ -15,6 +15,7 @@
    */
 package ch.xxx.trader.domain.services;
 
+import ch.xxx.trader.domain.model.entity.QuoteBf;
 import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.domain.model.entity.QuoteHourBs;
 import ch.xxx.trader.domain.model.entity.QuoteHourCb;
@@ -25,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface QuoteHourBsRepository extends QuoteRepository<QuoteHourBs> {
+public interface QuoteHourBsRepository extends QuoteRepository<QuoteHourBs>, QuotePairRepository<QuoteHourBs> {
 	QuoteHourBs insert(QuoteHourBs quote);
 
 	<S extends QuoteHourBs> List<S> insert(Iterable<S> quotes);

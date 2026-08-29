@@ -25,7 +25,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 
-public interface QuoteBfRepository extends QuoteRepository<QuoteBf> {
+public interface QuoteBfRepository extends QuoteRepository<QuoteBf>, QuotePairRepository<QuoteBf> {
 	QuoteBf insert(QuoteBf quote);
 
 	<S extends QuoteBf> List<S> insert(Iterable<S> quotes);

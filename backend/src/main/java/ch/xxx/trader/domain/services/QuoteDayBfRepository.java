@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface QuoteDayBfRepository extends QuoteRepository<QuoteDayBf> {
+public interface QuoteDayBfRepository extends QuoteRepository<QuoteDayBf>, QuotePairRepository<QuoteDayBf> {
 	QuoteDayBf insert(QuoteDayBf quote);
 
 	<S extends QuoteDayBf> List<S> insert(Iterable<S> quotes);

@@ -16,7 +16,7 @@
 package ch.xxx.trader.usecase.common;
 
 import ch.xxx.trader.domain.model.entity.QuoteBs;
-import ch.xxx.trader.domain.services.QuoteRepository;
+import ch.xxx.trader.domain.services.QuotePairRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ public class DtoUtilsTest {
 	private static final String PAIR = "btcusd";
 
 	@Mock
-	private QuoteRepository<QuoteBs> quoteRepository;
+	private QuotePairRepository<QuoteBs> quoteRepository;
 
 	@Test
 	public void tfQuotesTodayReadsDefaultCollection() {
