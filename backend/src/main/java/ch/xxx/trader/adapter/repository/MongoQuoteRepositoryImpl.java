@@ -92,21 +92,28 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
         }
     }
 
-    private <T extends Quote> QuotePairRepository<T> findRepository(T instance) {
+    @SuppressWarnings("unchecked")
+    private <T extends Quote> QuotePairRepository<T> findRepository(T instance,MongoUtils.TimeFrame myTimeFrame) {
         return (QuotePairRepository<T>) switch (instance) {
-            case QuoteBs q -> this.quoteBsRepository;
-            case QuoteDayBs q -> this.quoteDayBsRepository;
-            case QuoteHourBs q -> this.quoteHourBsRepository;
-            case QuoteBf q  -> this.quoteBfRepository;
-            case QuoteDayBf q  -> this.quoteDayBfRepository;
-            case QuoteHourBf q  -> this.quoteHourBfRepository;
+            case QuoteBs q -> this.findRepository(myTimeFrame, this.quoteBsRepository, this.quoteHourBsRepository, this.quoteDayBsRepository);
+            case QuoteBf q -> this.findRepository(myTimeFrame, this.quoteBfRepository, this.quoteHourBfRepository, this.quoteDayBfRepository);
             default -> throw new IllegalStateException("Unexpected value: " + instance.getClass());
+        };
+    }
+
+    private <A extends Quote,B extends Quote,C extends Quote> QuotePairRepository<?> findRepository(MongoUtils.TimeFrame myTimeFrame,
+                              QuotePairRepository<A> minuteRepository, QuotePairRepository<B> hourRepository,QuotePairRepository<C> dayRepository) {
+        return switch (myTimeFrame) {
+            case TODAY, CURRENT -> minuteRepository;
+            case SEVENDAYS ->  hourRepository;
+            case THIRTYDAYS, NINTYDAYS, Month6, Year1 ->  dayRepository;
+            default -> throw new IllegalStateException("Unexpected value: " + myTimeFrame);
         };
     }
 
     public <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, T instance) {
         MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame.toLowerCase());
-        var myRepository = this.findRepository(instance);
+        var myRepository = this.findRepository(instance, myTimeFrame);
         return switch (myTimeFrame) {
             case TODAY -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
                             MongoUtils.buildStartDate(MongoUtils.TimeFrame.TODAY)).stream()
