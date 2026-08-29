@@ -48,8 +48,6 @@ import ch.xxx.trader.usecase.mappers.ReportMapper;
 @Service
 public class BitfinexService {
 	private static final Logger LOG = LoggerFactory.getLogger(BitfinexService.class);
-	public static final String BF_HOUR_COL = "quoteBfHour";
-	public static final String BF_DAY_COL = "quoteBfDay";
 	public static volatile boolean singleInstanceLock = false;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
@@ -82,7 +80,7 @@ public class BitfinexService {
 	}
 
 	public Optional<QuoteBf> currentQuote(String pair) {
-		return this.quoteBfRepository.findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(pair,
+		return this.quoteBfRepository.findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(pair.toLowerCase(),
 				MongoUtils.buildStartDate(TimeFrame.CURRENT));
 	}
 

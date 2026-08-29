@@ -51,8 +51,6 @@ import ch.xxx.trader.usecase.mappers.ReportMapper;
 @Service
 public class BitstampService {
 	private static final Logger LOG = LoggerFactory.getLogger(BitstampService.class);
-	public static final String BS_HOUR_COL = "quoteBsHour";
-	public static final String BS_DAY_COL = "quoteBsDay";
 	public static volatile boolean singleInstanceLock = false;
 	private final MyOrderBookClient orderBookClient;
 	private final ReportMapper reportMapper;
@@ -85,7 +83,7 @@ public class BitstampService {
 	}
 
 	public Optional<QuoteBs> currentQuoteBtc(String pair) {
-		return this.quoteBsRepository.findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(pair,
+		return this.quoteBsRepository.findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(pair.toLowerCase(),
 				MongoUtils.buildStartDate(TimeFrame.CURRENT));
 	}
 

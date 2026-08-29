@@ -111,21 +111,21 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
     }
 
     public <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, Class<T> entityClass) {
-        MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+        MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame.toLowerCase());
         var myRepository = this.findRepository(entityClass);
         return switch (myTimeFrame) {
-            case TODAY -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+            case TODAY -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
                             MongoUtils.buildStartDate(MongoUtils.TimeFrame.TODAY)).stream()
                     .filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
-            case SEVENDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+            case SEVENDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
                     MongoUtils.buildStartDate(MongoUtils.TimeFrame.SEVENDAYS), Limit.of(1000));
-            case THIRTYDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+            case THIRTYDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
                     MongoUtils.buildStartDate(MongoUtils.TimeFrame.THIRTYDAYS), Limit.of(1000));
-            case NINTYDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+            case NINTYDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
                     MongoUtils.buildStartDate(MongoUtils.TimeFrame.NINTYDAYS), Limit.of(1000));
-            case Month6 -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+            case Month6 -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
                     MongoUtils.buildStartDate(MongoUtils.TimeFrame.Month6), Limit.of(1000));
-            case Year1 -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+            case Year1 -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
                     MongoUtils.buildStartDate(MongoUtils.TimeFrame.Year1), Limit.of(1000));
             default -> List.of();
         };
