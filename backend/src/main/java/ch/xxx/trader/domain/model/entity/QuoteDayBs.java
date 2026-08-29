@@ -63,6 +63,19 @@ public class QuoteDayBs implements Quote {
 		this.open = open;		
 	}
 
+	public QuoteDayBs() {
+		super();
+		this.high = BigDecimal.ZERO;
+		this.last = BigDecimal.ZERO;
+		this.timestamp = new Date();
+		this.bid = BigDecimal.ZERO;
+		this.vwap = BigDecimal.ZERO;
+		this.volume = BigDecimal.ZERO;
+		this.low = BigDecimal.ZERO;
+		this.ask = BigDecimal.ZERO;
+		this.open = BigDecimal.ZERO;
+	}
+
 	public BigDecimal getHigh() {
 		return high;
 	}

@@ -64,6 +64,18 @@ public class QuoteBf implements Quote {
 		this.timestamp = timestamp;
 	}
 
+	public QuoteBf() {
+		super();
+		this.mid = BigDecimal.ZERO;
+		this.bid = BigDecimal.ZERO;
+		this.ask = BigDecimal.ZERO;
+		this.last_price = BigDecimal.ZERO;
+		this.low = BigDecimal.ZERO;
+		this.high = BigDecimal.ZERO;
+		this.volume = BigDecimal.ZERO;
+		this.timestamp = "";
+	}
+
 	public ObjectId get_id() {
 		return _id;
 	}

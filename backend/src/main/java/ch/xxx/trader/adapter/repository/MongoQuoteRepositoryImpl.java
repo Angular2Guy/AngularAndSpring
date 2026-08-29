@@ -15,26 +15,42 @@
  */
 package ch.xxx.trader.adapter.repository;
 
-import ch.xxx.trader.domain.model.entity.Quote;
-import ch.xxx.trader.domain.services.MongoQuoteRepository;
-import ch.xxx.trader.domain.services.MyTimeFrame;
-import ch.xxx.trader.domain.services.QuoteRepository;
+import ch.xxx.trader.domain.common.MongoUtils;
+import ch.xxx.trader.domain.model.entity.*;
+import ch.xxx.trader.domain.services.*;
 import ch.xxx.trader.usecase.common.DtoUtils;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
-    protected final MongoOperations operations;
+    private final MongoOperations operations;
+    private final QuoteBfRepository quoteBfRepository;
+    private final QuoteHourBfRepository quoteHourBfRepository;
+    private final QuoteDayBfRepository quoteDayBfRepository;
+    private final QuoteBsRepository quoteBsRepository;
+    private final QuoteHourBsRepository quoteHourBsRepository;
+    private final QuoteDayBsRepository quoteDayBsRepository;
 
-    public MongoQuoteRepositoryImpl(MongoOperations operations) {
+    public MongoQuoteRepositoryImpl(MongoOperations operations, QuoteBfRepository quoteBfRepository, QuoteHourBfRepository quoteHourBfRepository,
+                                    QuoteDayBfRepository quoteDayBfRepository,QuoteBsRepository quoteBsRepository,QuoteHourBsRepository quoteHourBsRepository,
+                                    QuoteDayBsRepository quoteDayBsRepository) {
         this.operations = operations;
+        this.quoteBfRepository = quoteBfRepository;
+        this.quoteHourBfRepository = quoteHourBfRepository;
+        this.quoteDayBfRepository = quoteDayBfRepository;
+        this.quoteBsRepository = quoteBsRepository;
+        this.quoteHourBsRepository = quoteHourBsRepository;
+        this.quoteDayBsRepository = quoteDayBsRepository;
     }
 
     @Override
@@ -74,5 +90,44 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
         } else {
             globalBeginn.add(Calendar.DAY_OF_YEAR, 1);
         }
+    }
+
+    private <T extends Quote> QuotePairRepository<T> findRepository(Class<T> entityClass) {
+        T myInstance;
+        try {
+            myInstance = entityClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        return (QuotePairRepository<T>) switch (myInstance) {
+            case QuoteBs q -> this.quoteBsRepository;
+            case QuoteDayBs q -> this.quoteDayBsRepository;
+            case QuoteHourBs q -> this.quoteHourBsRepository;
+            case QuoteBf q  -> this.quoteBfRepository;
+            case QuoteDayBf q  -> this.quoteDayBfRepository;
+            case QuoteHourBf q  -> this.quoteHourBfRepository;
+            default -> throw new IllegalStateException("Unexpected value: " + myInstance);
+        };
+    }
+
+    public <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, Class<T> entityClass) {
+        MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
+        var myRepository = this.findRepository(entityClass);
+        return switch (myTimeFrame) {
+            case TODAY -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+                            MongoUtils.buildStartDate(MongoUtils.TimeFrame.TODAY)).stream()
+                    .filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
+            case SEVENDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.SEVENDAYS), Limit.of(1000));
+            case THIRTYDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.THIRTYDAYS), Limit.of(1000));
+            case NINTYDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.NINTYDAYS), Limit.of(1000));
+            case Month6 -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.Month6), Limit.of(1000));
+            case Year1 -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
+                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.Year1), Limit.of(1000));
+            default -> List.of();
+        };
     }
 }

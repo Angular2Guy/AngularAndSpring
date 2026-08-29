@@ -17,6 +17,7 @@ package ch.xxx.trader.usecase.common;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.model.entity.Quote;
+import ch.xxx.trader.domain.services.MongoQuoteRepository;
 import ch.xxx.trader.domain.services.QuotePairRepository;
 import ch.xxx.trader.domain.services.QuoteRepository;
 import org.springframework.data.domain.Limit;
@@ -56,7 +57,7 @@ public class DtoUtils {
 	public static BiConsumer createSetter(final MethodHandles.Lookup lookup, final MethodHandle setter)
 			throws Exception {
 		final CallSite site = LambdaMetafactory.metafactory(lookup, "accept", MethodType.methodType(BiConsumer.class),
-				MethodType.methodType(void.class, Object.class, Object.class), // signature of method BiConsumer.accept
+				MethodType.methodType(void.class, Object.class, Object.class), // signature of BiConsumer.accept
 																				// after type erasure
 				setter, setter.type()); // actual signature of setter
 		try {
@@ -66,25 +67,5 @@ public class DtoUtils {
 		} catch (final Throwable e) {
 			throw new Error(e);
 		}
-	}
-
-	public static <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, QuotePairRepository<T> quoteRepository) {
-		MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame);
-		return switch (myTimeFrame) {
-			case TODAY -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-							MongoUtils.buildStartDate(MongoUtils.TimeFrame.TODAY)).stream()
-					.filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
-			case SEVENDAYS -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-					MongoUtils.buildStartDate(MongoUtils.TimeFrame.SEVENDAYS), Limit.of(1000));
-			case THIRTYDAYS -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-					MongoUtils.buildStartDate(MongoUtils.TimeFrame.THIRTYDAYS), Limit.of(1000));
-			case NINTYDAYS -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-					MongoUtils.buildStartDate(MongoUtils.TimeFrame.NINTYDAYS), Limit.of(1000));
-			case Month6 -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-					MongoUtils.buildStartDate(MongoUtils.TimeFrame.Month6), Limit.of(1000));
-			case Year1 -> quoteRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair,
-					MongoUtils.buildStartDate(MongoUtils.TimeFrame.Year1), Limit.of(1000));
-			default -> List.of();
-		};
 	}
 }

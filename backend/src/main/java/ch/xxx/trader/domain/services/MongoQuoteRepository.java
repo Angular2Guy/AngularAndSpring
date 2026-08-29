@@ -17,20 +17,13 @@ package ch.xxx.trader.domain.services;
 
 import ch.xxx.trader.domain.model.entity.Quote;
 
+import java.util.List;
+
 public interface MongoQuoteRepository {
 
 	<T extends Quote> void ensureIndex(Class<T> entityClass);
 
 	<A extends Quote, B extends Quote> MyTimeFrame createTimeFrame(Class<A> entityClass, Class<B> aggreateEntityClass,
 																   boolean hour, QuoteRepository<A> quoteRepository, QuoteRepository<B> aggreateQuoteRepository);
-
-	/*
-	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date date);
-
-	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date);
-
-	List<T> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String collectionName, String pair, Date date, Limit limit);
-
-	List<T> findByCreatedAtAfterOrderByCreatedAtAsc(String collectionName, Date date, Limit limit);
-	 */
+	<T extends Quote> List<T> tfQuotes(String timeFrame, String pair, Class<T> entityClass);
 }
