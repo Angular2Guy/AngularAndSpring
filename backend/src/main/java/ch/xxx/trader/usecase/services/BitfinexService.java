@@ -140,7 +140,7 @@ public class BitfinexService {
 
 	private void createBfHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBf.class,QuoteHourBf.class, true);
+		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBf.class,QuoteHourBf.class, true, this.quoteBfRepository, this.quoteHourBfRepository);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
@@ -166,7 +166,7 @@ public class BitfinexService {
 
 	private void createBfDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBf.class,QuoteDayBf.class, true);
+		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBf.class,QuoteDayBf.class, true, this.quoteBfRepository, this.quoteDayBfRepository);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));

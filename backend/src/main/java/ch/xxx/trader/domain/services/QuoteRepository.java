@@ -15,10 +15,7 @@
    */
 package ch.xxx.trader.domain.services;
 
-import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.model.entity.Quote;
-import ch.xxx.trader.domain.model.entity.QuoteBs;
-import ch.xxx.trader.domain.model.entity.QuoteHourCb;
 import org.springframework.data.domain.Limit;
 
 import java.util.Date;
@@ -32,4 +29,7 @@ public interface QuoteRepository<T extends Quote> {
     List<T> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
     List<T> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
     Optional<T> findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(String pair, Date date);
+    Optional<T> findFirstByOrderByCreatedAtDesc();
+
+    Optional<T> findFirstByOrderByCreatedAtAsc();
 }

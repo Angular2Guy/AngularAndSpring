@@ -15,17 +15,17 @@
    */
 package ch.xxx.trader.adapter.repository;
 
-import ch.xxx.trader.domain.model.entity.QuoteCb;
-import ch.xxx.trader.domain.services.QuoteCbRepository;
+import ch.xxx.trader.domain.model.entity.QuoteDayCb;
+import ch.xxx.trader.domain.services.QuoteDayCbRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface QuoteDayCbMongoRepository extends MongoRepository<QuoteCb, ObjectId>,
-        QuoteCbRepository {
+public interface QuoteDayCbMongoRepository extends MongoRepository<QuoteDayCb, ObjectId>,
+        QuoteDayCbRepository {
 
-	Optional<QuoteCb> findFirstByOrderByCreatedAtDesc();
+	Optional<QuoteDayCb> findFirstByOrderByCreatedAtDesc();
 
-	Optional<QuoteCb> findFirstByOrderByCreatedAtAsc();
+	Optional<QuoteDayCb> findFirstByOrderByCreatedAtAsc();
 }

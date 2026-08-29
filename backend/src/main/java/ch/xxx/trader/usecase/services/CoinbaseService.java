@@ -281,8 +281,9 @@ public class CoinbaseService {
 	private void createCbIntervalAvg(boolean isDay) {
 		LOG.info(isDay ? "createCbDailyAvg()" : "createCbHourlyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
-		var aggregateQuoteClass = isDay ? QuoteDayCb.class : QuoteHourCb.class;
-		final MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteCb.class, aggregateQuoteClass, !isDay);
+		final MyTimeFrame timeFrame = isDay ?
+				this.mongoQuoteRepository.createTimeFrame(QuoteCb.class, QuoteDayCb.class, !isDay, this.quoteCbRepository, this.quoteDayCbRepository) :
+				this.mongoQuoteRepository.createTimeFrame(QuoteCb.class, QuoteHourCb.class, !isDay, this.quoteCbRepository, this.quoteHourCbRepository);
 		final Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

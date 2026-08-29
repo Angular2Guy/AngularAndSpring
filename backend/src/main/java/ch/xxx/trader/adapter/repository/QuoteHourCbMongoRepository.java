@@ -16,16 +16,18 @@
 package ch.xxx.trader.adapter.repository;
 
 import ch.xxx.trader.domain.model.entity.QuoteCb;
+import ch.xxx.trader.domain.model.entity.QuoteHourCb;
 import ch.xxx.trader.domain.services.QuoteCbRepository;
+import ch.xxx.trader.domain.services.QuoteHourCbRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface QuoteHourCbMongoRepository extends MongoRepository<QuoteCb, ObjectId>,
-        QuoteCbRepository {
+public interface QuoteHourCbMongoRepository extends MongoRepository<QuoteHourCb, ObjectId>,
+        QuoteHourCbRepository {
 
-	Optional<QuoteCb> findFirstByOrderByCreatedAtDesc();
+	Optional<QuoteHourCb> findFirstByOrderByCreatedAtDesc();
 
-	Optional<QuoteCb> findFirstByOrderByCreatedAtAsc();
+	Optional<QuoteHourCb> findFirstByOrderByCreatedAtAsc();
 }

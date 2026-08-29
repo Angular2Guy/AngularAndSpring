@@ -143,7 +143,7 @@ public class BitstampService {
 
 	private void createBsHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteHourBs.class, true);
+		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteHourBs.class, true, this.quoteBsRepository, this.quoteHourBsRepository);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
@@ -169,7 +169,7 @@ public class BitstampService {
 
 	private void createBsDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteHourBs.class, false);
+		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteDayBs.class, false, this.quoteBsRepository, this.quoteDayBsRepository);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
