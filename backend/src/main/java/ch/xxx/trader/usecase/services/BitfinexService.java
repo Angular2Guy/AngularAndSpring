@@ -85,11 +85,11 @@ public class BitfinexService {
 	}
 
 	public List<QuoteBf> tfQuotes(String timeFrame, String pair) {
-		return this.mongoQuoteRepository.tfQuotes(timeFrame, pair, QuoteBf.class);
+		return this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBf(null, null, null, null, null,null, null, null));
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
-		List<QuoteBf> quotes = this.mongoQuoteRepository.tfQuotes(timeFrame, pair, QuoteBf.class);
+		List<QuoteBf> quotes = this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBf(null, null, null, null, null,null, null, null));
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 

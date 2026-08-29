@@ -92,27 +92,21 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
         }
     }
 
-    private <T extends Quote> QuotePairRepository<T> findRepository(Class<T> entityClass) {
-        T myInstance;
-        try {
-            myInstance = entityClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        return (QuotePairRepository<T>) switch (myInstance) {
+    private <T extends Quote> QuotePairRepository<T> findRepository(T instance) {
+        return (QuotePairRepository<T>) switch (instance) {
             case QuoteBs q -> this.quoteBsRepository;
             case QuoteDayBs q -> this.quoteDayBsRepository;
             case QuoteHourBs q -> this.quoteHourBsRepository;
             case QuoteBf q  -> this.quoteBfRepository;
             case QuoteDayBf q  -> this.quoteDayBfRepository;
             case QuoteHourBf q  -> this.quoteHourBfRepository;
-            default -> throw new IllegalStateException("Unexpected value: " + myInstance);
+            default -> throw new IllegalStateException("Unexpected value: " + instance.getClass());
         };
     }
 
-    public <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, Class<T> entityClass) {
+    public <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, T instance) {
         MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame.toLowerCase());
-        var myRepository = this.findRepository(entityClass);
+        var myRepository = this.findRepository(instance);
         return switch (myTimeFrame) {
             case TODAY -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
                             MongoUtils.buildStartDate(MongoUtils.TimeFrame.TODAY)).stream()

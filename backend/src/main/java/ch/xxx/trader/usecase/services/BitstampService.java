@@ -88,11 +88,11 @@ public class BitstampService {
 	}
 
 	public List<QuoteBs> tfQuotes(String timeFrame, String pair) {
-		return this.mongoQuoteRepository.tfQuotes(timeFrame, pair, QuoteBs.class);
+		return this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBs(null, null, null, null, null,null,null, null, null));
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
-		List<QuoteBs> quotes = this.mongoQuoteRepository.tfQuotes(timeFrame, pair, QuoteBs.class);
+		List<QuoteBs> quotes = this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBs(null, null, null, null, null,null,null, null, null));
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 

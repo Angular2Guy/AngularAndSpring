@@ -78,7 +78,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR), any(Date.class)))
 				.thenReturn(List.of(q1, q2));
 
-		List<QuoteBs> result = this.repository.tfQuotes("today", PAIR, QuoteBs.class);
+		List<QuoteBs> result = this.repository.tfQuotes("today", PAIR, createQuoteBs(new Date()));
 
 		Assertions.assertEquals(2, result.size());
 		Mockito.verify(this.quoteBsRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -97,7 +97,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR), any(Date.class)))
 				.thenReturn(List.of(oddQuote, evenQuote));
 
-		List<QuoteBs> result = this.repository.tfQuotes("today", PAIR, QuoteBs.class);
+		List<QuoteBs> result = this.repository.tfQuotes("today", PAIR, createQuoteBs(new Date()));
 
 		Assertions.assertEquals(1, result.size());
 		Assertions.assertEquals(evenMinute, result.get(0).getCreatedAt());
@@ -108,7 +108,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteBs> result = this.repository.tfQuotes("7days", PAIR, QuoteBs.class);
+		List<QuoteBs> result = this.repository.tfQuotes("7days", PAIR, createQuoteBs(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteBsRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -120,7 +120,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteBs> result = this.repository.tfQuotes("30days", PAIR, QuoteBs.class);
+		List<QuoteBs> result = this.repository.tfQuotes("30days", PAIR, createQuoteBs(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteBsRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -132,7 +132,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteBs> result = this.repository.tfQuotes("90days", PAIR, QuoteBs.class);
+		List<QuoteBs> result = this.repository.tfQuotes("90days", PAIR, createQuoteBs(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteBsRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -144,7 +144,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteBs> result = this.repository.tfQuotes("6month", PAIR, QuoteBs.class);
+		List<QuoteBs> result = this.repository.tfQuotes("6month", PAIR, createQuoteBs(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteBsRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -156,7 +156,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteBs> result = this.repository.tfQuotes("1year", PAIR, QuoteBs.class);
+		List<QuoteBs> result = this.repository.tfQuotes("1year", PAIR, createQuoteBs(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteBsRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -168,7 +168,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteHourBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteHourBs> result = this.repository.tfQuotes("7days", PAIR, QuoteHourBs.class);
+		List<QuoteHourBs> result = this.repository.tfQuotes("7days", PAIR, createQuoteHourBs(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteHourBsRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -180,7 +180,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteDayBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteDayBs> result = this.repository.tfQuotes("7days", PAIR, QuoteDayBs.class);
+		List<QuoteDayBs> result = this.repository.tfQuotes("7days", PAIR, createQuoteDayBs(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteDayBsRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -192,7 +192,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteBf> result = this.repository.tfQuotes("7days", PAIR, QuoteBf.class);
+		List<QuoteBf> result = this.repository.tfQuotes("7days", PAIR, createQuoteBf(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteBfRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -204,7 +204,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteHourBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteHourBf> result = this.repository.tfQuotes("7days", PAIR, QuoteHourBf.class);
+		List<QuoteHourBf> result = this.repository.tfQuotes("7days", PAIR, createQuoteHourBf(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteHourBfRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -216,7 +216,7 @@ public class MongoQuoteRepositoryImplTest {
 		Mockito.when(this.quoteDayBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
 				any(Date.class), eq(Limit.of(1000)))).thenReturn(List.of());
 
-		List<QuoteDayBf> result = this.repository.tfQuotes("7days", PAIR, QuoteDayBf.class);
+		List<QuoteDayBf> result = this.repository.tfQuotes("7days", PAIR, createQuoteDayBf(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 		Mockito.verify(this.quoteDayBfRepository).findByPairAndCreatedAtAfterOrderByCreatedAtAsc(eq(PAIR),
@@ -225,7 +225,7 @@ public class MongoQuoteRepositoryImplTest {
 
 	@Test
 	void tfQuotesUnsupportedTimeFrameReturnsEmpty() {
-		List<QuoteBs> result = this.repository.tfQuotes("1month", PAIR, QuoteBs.class);
+		List<QuoteBs> result = this.repository.tfQuotes("1month", PAIR, createQuoteBs(new Date()));
 
 		Assertions.assertTrue(result.isEmpty());
 	}
@@ -344,6 +344,38 @@ public class MongoQuoteRepositoryImplTest {
 	private QuoteDayBs createQuoteDayBs(Date createdAt) {
 		QuoteDayBs q = new QuoteDayBs(BigDecimal.TEN, BigDecimal.TEN, new Date(), BigDecimal.TEN, BigDecimal.TEN,
 				BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN);
+		q.setCreatedAt(createdAt);
+		q.setPair(PAIR);
+		return q;
+	}
+
+	private QuoteHourBs createQuoteHourBs(Date createdAt) {
+		QuoteHourBs q = new QuoteHourBs(BigDecimal.TEN, BigDecimal.TEN, new Date(), BigDecimal.TEN, BigDecimal.TEN,
+				BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN);
+		q.setCreatedAt(createdAt);
+		q.setPair(PAIR);
+		return q;
+	}
+
+	private QuoteBf createQuoteBf(Date createdAt) {
+		QuoteBf q = new QuoteBf(BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN,
+				BigDecimal.TEN, BigDecimal.TEN, "");
+		q.setCreatedAt(createdAt);
+		q.setPair(PAIR);
+		return q;
+	}
+
+	private QuoteHourBf createQuoteHourBf(Date createdAt) {
+		QuoteHourBf q = new QuoteHourBf(BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN,
+				BigDecimal.TEN, BigDecimal.TEN, "");
+		q.setCreatedAt(createdAt);
+		q.setPair(PAIR);
+		return q;
+	}
+
+	private QuoteDayBf createQuoteDayBf(Date createdAt) {
+		QuoteDayBf q = new QuoteDayBf(BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN,
+				BigDecimal.TEN, BigDecimal.TEN, "");
 		q.setCreatedAt(createdAt);
 		q.setPair(PAIR);
 		return q;
