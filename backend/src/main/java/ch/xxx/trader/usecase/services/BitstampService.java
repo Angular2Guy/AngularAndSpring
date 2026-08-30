@@ -36,6 +36,7 @@ import ch.xxx.trader.domain.model.entity.QuoteDayBs;
 import ch.xxx.trader.domain.model.entity.QuoteHourBs;
 import ch.xxx.trader.domain.services.*;
 import ch.xxx.trader.usecase.common.DtoUtils;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,7 +211,9 @@ public class BitstampService {
 	private <T> @NonNull T mapToDest(Class<T> myClass, QuoteBs value) {
 		T dest;
 		try {
-			dest = myClass.getDeclaredConstructor().newInstance();
+			dest = myClass.getDeclaredConstructor(
+					BigDecimal.class,BigDecimal.class,Date.class,BigDecimal.class,BigDecimal.class,BigDecimal.class,BigDecimal.class,BigDecimal.class,BigDecimal.class
+			).newInstance(null,null,null,null,null,null,null,null,null);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
 				 NoSuchMethodException e) {
 			throw new RuntimeException(e);

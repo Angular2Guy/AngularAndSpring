@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import ch.xxx.trader.domain.model.entity.*;
 import ch.xxx.trader.domain.services.*;
 import ch.xxx.trader.usecase.common.DtoUtils;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,7 +208,8 @@ public class BitfinexService {
 	private <T> @NonNull T mapToDest(Class<T> myClass, QuoteBf value) {
 		T dest;
 		try {
-			dest = myClass.getDeclaredConstructor().newInstance();
+			dest = myClass.getDeclaredConstructor(BigDecimal.class,BigDecimal.class,BigDecimal.class,BigDecimal.class,BigDecimal.class,
+					BigDecimal.class,BigDecimal.class,String.class).newInstance(null,null,null,null,null,null,null,null);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
 				 NoSuchMethodException e) {
 			throw new RuntimeException(e);
