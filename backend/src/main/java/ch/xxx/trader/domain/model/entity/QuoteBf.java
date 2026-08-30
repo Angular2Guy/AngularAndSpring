@@ -42,14 +42,14 @@ public class QuoteBf implements Quote {
 	@JsonProperty
 	private Date createdAt = new Date();
 
-	private final BigDecimal mid;
-	private final BigDecimal bid;
-	private final BigDecimal ask;
-	private final BigDecimal last_price;
-	private final BigDecimal low;
-	private final BigDecimal high;
-	private final BigDecimal volume;
-	private final String timestamp;
+	private BigDecimal mid;
+	private BigDecimal bid;
+	private BigDecimal ask;
+	private BigDecimal last_price;
+	private BigDecimal low;
+	private BigDecimal high;
+	private BigDecimal volume;
+	private String timestamp;
 	
 	public QuoteBf(@JsonProperty("mid") BigDecimal mid,@JsonProperty("bid") BigDecimal bid,@JsonProperty("ask") BigDecimal ask,@JsonProperty("last_price") BigDecimal last_price,@JsonProperty("low") BigDecimal low,
 			@JsonProperty("high") BigDecimal high,@JsonProperty("volume") BigDecimal volume,@JsonProperty("timestamp") String timestamp) {
@@ -92,32 +92,64 @@ public class QuoteBf implements Quote {
 		return mid;
 	}
 
+	public void setMid(BigDecimal mid) {
+		this.mid = mid;
+	}
+
 	public BigDecimal getBid() {
 		return bid;
+	}
+
+	public void setBid(BigDecimal bid) {
+		this.bid = bid;
 	}
 
 	public BigDecimal getAsk() {
 		return ask;
 	}
 
+	public void setAsk(BigDecimal ask) {
+		this.ask = ask;
+	}
+
 	public BigDecimal getLast_price() {
 		return last_price;
+	}
+
+	public void setLast_price(BigDecimal last_price) {
+		this.last_price = last_price;
 	}
 
 	public BigDecimal getLow() {
 		return low;
 	}
 
+	public void setLow(BigDecimal low) {
+		this.low = low;
+	}
+
 	public BigDecimal getHigh() {
 		return high;
+	}
+
+	public void setHigh(BigDecimal high) {
+		this.high = high;
 	}
 
 	public BigDecimal getVolume() {
 		return volume;
 	}
 
+	public void setVolume(BigDecimal volume) {
+		this.volume = volume;
+	}
+
 	public String getTimestamp() {
 		return timestamp;
+	}
+
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	@Override

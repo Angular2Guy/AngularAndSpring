@@ -111,10 +111,11 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
         };
     }
 
-    public <T extends Quote> List<T> tfQuotes(String timeFrame, String pair, T instance) {
+    @SuppressWarnings("unchecked")
+    public <A extends Quote, B extends Quote> List<B> tfQuotes(String timeFrame, String pair, A instance) {
         MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame.toLowerCase());
         var myRepository = this.findRepository(instance, myTimeFrame);
-        return switch (myTimeFrame) {
+        return (List<B>) switch (myTimeFrame) {
             case TODAY -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
                             MongoUtils.buildStartDate(MongoUtils.TimeFrame.TODAY)).stream()
                     .filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();

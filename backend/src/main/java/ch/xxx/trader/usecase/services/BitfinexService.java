@@ -86,7 +86,8 @@ public class BitfinexService {
 	}
 
 	public List<QuoteBf> tfQuotes(String timeFrame, String pair) {
-		return this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBf(null, null, null, null, null,null, null, null));
+		return this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBf(null, null, null, null, null,null, null, null))
+				.stream().map(this::mapToDest).toList();
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
@@ -203,6 +204,12 @@ public class BitfinexService {
 				timeFrame.end()) : this.makeBfQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 				.filter(Predicate.not(Collection::isEmpty)).flatMap(Collection::stream).toList();
 		return quotes.stream().map(value -> mapToDest(myClass, value)).collect(Collectors.toList());
+	}
+
+	private <T extends Quote> QuoteBf mapToDest(T source) {
+		var dest = new QuoteBf(null, null,null,null,null,null,null,null);
+		BeanUtils.copyProperties(source, dest);
+		return dest;
 	}
 
 	private <T> @NonNull T mapToDest(Class<T> myClass, QuoteBf value) {

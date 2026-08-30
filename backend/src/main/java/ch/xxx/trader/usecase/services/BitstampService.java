@@ -31,9 +31,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import ch.xxx.trader.domain.model.entity.QuoteDayBf;
-import ch.xxx.trader.domain.model.entity.QuoteDayBs;
-import ch.xxx.trader.domain.model.entity.QuoteHourBs;
+import ch.xxx.trader.domain.model.entity.*;
 import ch.xxx.trader.domain.services.*;
 import ch.xxx.trader.usecase.common.DtoUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,7 +44,6 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
-import ch.xxx.trader.domain.model.entity.QuoteBs;
 import ch.xxx.trader.usecase.mappers.ReportMapper;
 
 @Service
@@ -89,7 +86,8 @@ public class BitstampService {
 	}
 
 	public List<QuoteBs> tfQuotes(String timeFrame, String pair) {
-		return this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBs(null, null, null, null, null,null,null, null, null));
+		return this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBs(null, null, null, null, null,null,null, null, null))
+				.stream().map(this::mapToDest).toList();
 	}
 
 	public byte[] pdfReport(String timeFrame, String pair) {
@@ -206,6 +204,12 @@ public class BitstampService {
 				timeFrame.end()) : this.makeBsQuoteHour(key, multimap, timeFrame.begin(), timeFrame.end()))
 				.filter(Predicate.not(Collection::isEmpty)).flatMap(Collection::stream).toList();
 		return quoteList.stream().map(value -> mapToDest(myClass, value)).collect(Collectors.toList());
+	}
+
+	private <T extends Quote> QuoteBs mapToDest(T source) {
+		var dest = new QuoteBs(null, null,null,null,null,null,null,null,null);
+		BeanUtils.copyProperties(source, dest);
+		return dest;
 	}
 
 	private <T> @NonNull T mapToDest(Class<T> myClass, QuoteBs value) {

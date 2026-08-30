@@ -41,15 +41,15 @@ public class QuoteBs implements Quote {
 	@Indexed(name = "QuoteBs-createdAt")
 	@JsonProperty
 	private Date createdAt = new Date();
-	private final BigDecimal high;
-	private final BigDecimal last;
-	private final Date timestamp;
-	private final BigDecimal bid;
-	private final BigDecimal vwap;
-	private final BigDecimal volume;
-	private final BigDecimal low;
-	private final BigDecimal ask;
-	private final BigDecimal open;
+	private BigDecimal high;
+	private BigDecimal last;
+	private Date timestamp;
+	private BigDecimal bid;
+	private BigDecimal vwap;
+	private BigDecimal volume;
+	private BigDecimal low;
+	private BigDecimal ask;
+	private BigDecimal open;
 	
 	public QuoteBs(@JsonProperty("high") BigDecimal high,@JsonProperty("last") BigDecimal last,@JsonProperty("timestamp") Date timestamp,@JsonProperty("bid") BigDecimal bid,@JsonProperty("vwap") BigDecimal vwap,@JsonProperty("volume") BigDecimal volume,
 			@JsonProperty("low") BigDecimal low,@JsonProperty("ask") BigDecimal ask, @JsonProperty("open") BigDecimal open) {
@@ -69,36 +69,72 @@ public class QuoteBs implements Quote {
 		return high;
 	}
 
+	public void setHigh(BigDecimal high) {
+		this.high = high;
+	}
+
 	public BigDecimal getLast() {
 		return last;
+	}
+
+	public void setLast(BigDecimal last) {
+		this.last = last;
 	}
 
 	public Date getTimestamp() {
 		return timestamp;
 	}
 
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
 	public BigDecimal getBid() {
 		return bid;
+	}
+
+	public void setBid(BigDecimal bid) {
+		this.bid = bid;
 	}
 
 	public BigDecimal getVwap() {
 		return vwap;
 	}
 
+	public void setVwap(BigDecimal vwap) {
+		this.vwap = vwap;
+	}
+
 	public BigDecimal getVolume() {
 		return volume;
+	}
+
+	public void setVolume(BigDecimal volume) {
+		this.volume = volume;
 	}
 
 	public BigDecimal getLow() {
 		return low;
 	}
 
+	public void setLow(BigDecimal low) {
+		this.low = low;
+	}
+
 	public BigDecimal getAsk() {
 		return ask;
 	}
 
+	public void setAsk(BigDecimal ask) {
+		this.ask = ask;
+	}
+
 	public BigDecimal getOpen() {
 		return open;
+	}
+
+	public void setOpen(BigDecimal open) {
+		this.open = open;
 	}	
 
 	public ObjectId get_id() {

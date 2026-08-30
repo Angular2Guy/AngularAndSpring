@@ -25,5 +25,6 @@ public interface MongoQuoteRepository {
 
 	<A extends Quote, B extends Quote> MyTimeFrame createTimeFrame(Class<A> entityClass, Class<B> aggreateEntityClass,
 																   boolean hour, QuoteRepository<A> quoteRepository, QuoteRepository<B> aggreateQuoteRepository);
-	<T extends Quote> List<T> tfQuotes(String timeFrame, String pair, T instance);
+
+	<A extends Quote, B extends Quote> List<B> tfQuotes(String timeFrame, String pair, A instance);
 }
