@@ -15,10 +15,7 @@
    */
 package ch.xxx.trader.domain.services;
 
-import ch.xxx.trader.domain.model.entity.QuoteBf;
-import ch.xxx.trader.domain.model.entity.QuoteBs;
-import ch.xxx.trader.domain.model.entity.QuoteHourBs;
-import ch.xxx.trader.domain.model.entity.QuoteHourCb;
+import ch.xxx.trader.domain.model.entity.*;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -33,4 +30,13 @@ public interface QuoteHourBsRepository extends QuoteRepository<QuoteHourBs>, Quo
 
 	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteHourBs> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
+
+	Optional<QuoteHourBs> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
+	List<QuoteHourBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
+	List<QuoteHourBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
+	Optional<QuoteHourBs> findFirstByOrderByCreatedAtDesc();
+	Optional<QuoteHourBs> findFirstByOrderByCreatedAtAsc();
+	List<QuoteHourBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate);
+	List<QuoteHourBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate, Limit limit);
+	Optional<QuoteHourBs> findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(String pair, Date date);
 }

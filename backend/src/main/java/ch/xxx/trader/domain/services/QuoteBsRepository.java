@@ -32,4 +32,13 @@ public interface QuoteBsRepository extends QuoteRepository<QuoteBs>, QuotePairRe
 
 	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteBs> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
+
+	Optional<QuoteBs> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
+	List<QuoteBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
+	List<QuoteBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
+	Optional<QuoteBs> findFirstByOrderByCreatedAtDesc();
+	Optional<QuoteBs> findFirstByOrderByCreatedAtAsc();
+	List<QuoteBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate);
+	List<QuoteBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate, Limit limit);
+	Optional<QuoteBs> findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(String pair, Date date);
 }
