@@ -86,12 +86,24 @@ public class BitstampService {
 	}
 
 	public List<QuoteBs> tfQuotes(String timeFrame, String pair) {
-		return this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBs(null, null, null, null, null,null,null, null, null))
+		var myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame.toLowerCase());
+		return this.mongoQuoteRepository.tfQuotes(myTimeFrame, pair, getMyClass(myTimeFrame))
 				.stream().map(this::mapToDest).toList();
 	}
 
+	private static @NonNull Class<? extends Quote> getMyClass(TimeFrame myTimeFrame) {
+		return switch (myTimeFrame) {
+			case TODAY, CURRENT -> QuoteBs.class;
+			case SEVENDAYS -> QuoteHourBs.class;
+			case THIRTYDAYS, NINTYDAYS, Month6, Year1 -> QuoteDayBs.class;
+			default -> throw new IllegalStateException("Unexpected value: " + myTimeFrame.getValue());
+		};
+	}
+
 	public byte[] pdfReport(String timeFrame, String pair) {
-		List<QuoteBs> quotes = this.mongoQuoteRepository.tfQuotes(timeFrame, pair, new QuoteBs(null, null, null, null, null,null,null, null, null));
+		var myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame.toLowerCase());
+		List<QuoteBs> quotes = this.mongoQuoteRepository.tfQuotes(myTimeFrame, pair, getMyClass(myTimeFrame))
+				.stream().map(this::mapToDest).toList();
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 
@@ -140,7 +152,7 @@ public class BitstampService {
 
 	private void createBsHourlyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteHourBs.class, true, this.quoteBsRepository, this.quoteHourBsRepository);
+		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteHourBs.class, true);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
@@ -166,7 +178,7 @@ public class BitstampService {
 
 	private void createBsDailyAvg() {
 		LocalDateTime startAll = LocalDateTime.now();
-		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteDayBs.class, false, this.quoteBsRepository, this.quoteDayBsRepository);
+		MyTimeFrame timeFrame = this.mongoQuoteRepository.createTimeFrame(QuoteBs.class, QuoteDayBs.class, false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));

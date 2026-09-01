@@ -282,8 +282,8 @@ public class CoinbaseService {
 		LOG.info(isDay ? "createCbDailyAvg()" : "createCbHourlyAvg()");
 		LocalDateTime startAll = LocalDateTime.now();
 		final MyTimeFrame timeFrame = isDay ?
-				this.mongoQuoteRepository.createTimeFrame(QuoteCb.class, QuoteDayCb.class, !isDay, this.quoteCbRepository, this.quoteDayCbRepository) :
-				this.mongoQuoteRepository.createTimeFrame(QuoteCb.class, QuoteHourCb.class, !isDay, this.quoteCbRepository, this.quoteHourCbRepository);
+				this.mongoQuoteRepository.createTimeFrame(QuoteCb.class, QuoteDayCb.class, !isDay) :
+				this.mongoQuoteRepository.createTimeFrame(QuoteCb.class, QuoteHourCb.class, !isDay);
 		final Calendar now = Calendar.getInstance();
 		now.setTime(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

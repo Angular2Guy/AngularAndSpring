@@ -40,10 +40,14 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
     private final QuoteBsRepository quoteBsRepository;
     private final QuoteHourBsRepository quoteHourBsRepository;
     private final QuoteDayBsRepository quoteDayBsRepository;
+    private final QuoteCbRepository quoteCbRepository;
+    private final QuoteDayCbRepository quoteDayCbRepository;
+    private final QuoteHourCbRepository quoteHourCbRepository;
 
     public MongoQuoteRepositoryImpl(MongoOperations operations, QuoteBfRepository quoteBfRepository, QuoteHourBfRepository quoteHourBfRepository,
-                                    QuoteDayBfRepository quoteDayBfRepository,QuoteBsRepository quoteBsRepository,
-                                    QuoteHourBsRepository quoteHourBsRepository, QuoteDayBsRepository quoteDayBsRepository) {
+                                    QuoteDayBfRepository quoteDayBfRepository,QuoteBsRepository quoteBsRepository, QuoteCbRepository quoteCbRepository,
+                                    QuoteHourBsRepository quoteHourBsRepository, QuoteDayBsRepository quoteDayBsRepository,
+                                    QuoteDayCbRepository quoteDayCbRepository, QuoteHourCbRepository quoteHourCbRepository) {
         this.operations = operations;
         this.quoteBfRepository = quoteBfRepository;
         this.quoteHourBfRepository = quoteHourBfRepository;
@@ -51,6 +55,9 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
         this.quoteBsRepository = quoteBsRepository;
         this.quoteHourBsRepository = quoteHourBsRepository;
         this.quoteDayBsRepository = quoteDayBsRepository;
+        this.quoteDayCbRepository = quoteDayCbRepository;
+        this.quoteHourCbRepository = quoteHourCbRepository;
+        this.quoteCbRepository = quoteCbRepository;
     }
 
     @Override
@@ -66,9 +73,9 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
             this.operations.createCollection(aggreateEntityClass);
         }
         final Calendar globalBeginn = Calendar.getInstance();
-        Optional<B> lastAggregate = aggreateQuoteRepository.findFirstByOrderByCreatedAtDesc();
+        Optional<B> lastAggregate = getLastAggregate(aggreateEntityClass);
         lastAggregate.ifPresentOrElse(myQuote -> this.calcGlobalBegin(hour, globalBeginn, myQuote), () -> {
-            Optional<A> firstQuote = quoteRepository.findFirstByOrderByCreatedAtAsc();
+            Optional<A> firstQuote = getFirstQuote(entityClass, aggreateEntityClass);
             globalBeginn.setTime(firstQuote.map(Quote::getCreatedAt).orElse(
                     Date.from(java.time.LocalDate.now().atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant())));
         });
@@ -83,6 +90,31 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
         return new MyTimeFrame(begin, end);
     }
 
+    @SuppressWarnings("unchecked")
+    private <A extends Quote, B extends Quote> Optional<A> getFirstQuote(Class<A> entityClass, Class<B> aggreateEntityClass) {
+        var result = (Optional<A>) switch (entityClass) {
+            case Class<?> c when c == QuoteBf.class -> this.quoteBfRepository;
+            case Class<?> c when c == QuoteBs.class -> this.quoteBsRepository;
+            case Class<?> c when c == QuoteCb.class -> this.quoteCbRepository;
+            default -> throw new IllegalStateException("Unexpected value: " + aggreateEntityClass.getSimpleName());
+        };
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <B extends Quote> Optional<B> getLastAggregate(Class<B> aggreateEntityClass) {
+        Optional<B> lastAggregate = (Optional<B>) switch (aggreateEntityClass) {
+            case Class<?> c when c == QuoteDayBf.class -> quoteDayBfRepository.findFirstByOrderByCreatedAtDesc();
+            case Class<?> c when c == QuoteHourBf.class -> quoteHourBfRepository.findFirstByOrderByCreatedAtDesc();
+            case Class<?> c when c == QuoteDayBs.class -> quoteDayBsRepository.findFirstByOrderByCreatedAtDesc();
+            case Class<?> c when c == QuoteHourBs.class -> quoteHourBsRepository.findFirstByOrderByCreatedAtDesc();
+            case Class<?> c when c == QuoteHourCb.class -> quoteHourCbRepository.findFirstByOrderByCreatedAtDesc();
+            case Class<?> c when c == QuoteDayCb.class -> quoteDayCbRepository.findFirstByOrderByCreatedAtDesc();
+            default -> throw new IllegalStateException("Unexpected value: " + aggreateEntityClass.getSimpleName());
+        };
+        return lastAggregate;
+    }
+
     private void calcGlobalBegin(boolean hour, Calendar globalBeginn, Quote myQuote) {
         globalBeginn.setTime(myQuote.getCreatedAt());
         if (hour) {
@@ -93,42 +125,41 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Quote> QuotePairRepository<T> findRepository(T instance,MongoUtils.TimeFrame myTimeFrame) {
-        return (QuotePairRepository<T>) switch (instance) {
-            case QuoteBs q -> this.findRepository(myTimeFrame, this.quoteBsRepository, this.quoteHourBsRepository, this.quoteDayBsRepository);
-            case QuoteBf q -> this.findRepository(myTimeFrame, this.quoteBfRepository, this.quoteHourBfRepository, this.quoteDayBfRepository);
-            default -> throw new IllegalStateException("Unexpected value: " + instance.getClass());
+    public <T> List<T> tfQuotes(MongoUtils.TimeFrame myTimeFrame, String pair, Class<T> myClass) {
+        var result = (List<T>) switch (myTimeFrame) {
+            case TODAY,CURRENT -> switch(myClass) {
+                case Class<?> c when c == QuoteBf.class -> this.quoteBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
+                                MongoUtils.buildStartDate(myTimeFrame)).stream()
+                        .filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
+                case Class<?> c when c == QuoteBs.class -> this.quoteBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
+                                MongoUtils.buildStartDate(myTimeFrame)).stream()
+                        .filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
+                default -> List.of();
+             };
+            case SEVENDAYS -> switch (myClass) {
+                case Class<?> c when c == QuoteHourBf.class -> this.quoteHourBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
+                        MongoUtils.buildStartDate(myTimeFrame), Limit.of(1000));
+                case Class<?> c when c == QuoteHourBs.class -> this.quoteHourBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
+                        MongoUtils.buildStartDate(myTimeFrame), Limit.of(1000));
+                default -> List.of();
+            };
+            case THIRTYDAYS -> getDayList(pair, myClass, myTimeFrame);
+            case NINTYDAYS -> getDayList(pair, myClass, myTimeFrame);
+            case Month6 -> getDayList(pair, myClass, myTimeFrame);
+            case Year1 -> getDayList(pair, myClass, myTimeFrame);
+            default -> List.of();
         };
+        return result;
     }
 
-    private <A extends Quote,B extends Quote,C extends Quote> QuotePairRepository<?> findRepository(MongoUtils.TimeFrame myTimeFrame,
-                              QuotePairRepository<A> minuteRepository, QuotePairRepository<B> hourRepository,QuotePairRepository<C> dayRepository) {
-        return switch (myTimeFrame) {
-            case TODAY, CURRENT -> minuteRepository;
-            case SEVENDAYS ->  hourRepository;
-            case THIRTYDAYS, NINTYDAYS, Month6, Year1 ->  dayRepository;
-            default -> throw new IllegalStateException("Unexpected value: " + myTimeFrame);
-        };
-    }
-
-    @SuppressWarnings("unchecked")
-    public <A extends Quote, B extends Quote> List<B> tfQuotes(String timeFrame, String pair, A instance) {
-        MongoUtils.TimeFrame myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame.toLowerCase());
-        var myRepository = this.findRepository(instance, myTimeFrame);
-        return (List<B>) switch (myTimeFrame) {
-            case TODAY -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
-                            MongoUtils.buildStartDate(MongoUtils.TimeFrame.TODAY)).stream()
-                    .filter(q -> MongoUtils.filterEvenMinutes(q.getCreatedAt())).toList();
-            case SEVENDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
-                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.SEVENDAYS), Limit.of(1000));
-            case THIRTYDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
-                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.THIRTYDAYS), Limit.of(1000));
-            case NINTYDAYS -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
-                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.NINTYDAYS), Limit.of(1000));
-            case Month6 -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
-                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.Month6), Limit.of(1000));
-            case Year1 -> myRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
-                    MongoUtils.buildStartDate(MongoUtils.TimeFrame.Year1), Limit.of(1000));
+    private <T> List<?> getDayList(String pair, Class<T> myClass, MongoUtils.TimeFrame myTimeFrame) {
+        return switch (myClass) {
+            case Class<?> c when c == QuoteDayBf.class ->
+                    this.quoteDayBfRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
+                            MongoUtils.buildStartDate(myTimeFrame), Limit.of(1000));
+            case Class<?> c when c == QuoteDayBs.class ->
+                    this.quoteDayBsRepository.findByPairAndCreatedAtAfterOrderByCreatedAtAsc(pair.toLowerCase(),
+                            MongoUtils.buildStartDate(myTimeFrame), Limit.of(1000));
             default -> List.of();
         };
     }

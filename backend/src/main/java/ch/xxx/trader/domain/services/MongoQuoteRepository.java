@@ -15,6 +15,7 @@
    */
 package ch.xxx.trader.domain.services;
 
+import ch.xxx.trader.domain.common.MongoUtils;
 import ch.xxx.trader.domain.model.entity.Quote;
 
 import java.util.List;
@@ -26,5 +27,5 @@ public interface MongoQuoteRepository {
 	<A extends Quote, B extends Quote> MyTimeFrame createTimeFrame(Class<A> entityClass, Class<B> aggreateEntityClass,
 																   boolean hour);
 
-	<A extends Quote, B extends Quote> List<B> tfQuotes(String timeFrame, String pair, A instance);
+	<T> List<T> tfQuotes(MongoUtils.TimeFrame myTimeFrame, String pair, Class<T> myClass);
 }
