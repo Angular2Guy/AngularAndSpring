@@ -93,9 +93,9 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
     @SuppressWarnings("unchecked")
     private <A extends Quote, B extends Quote> Optional<A> getFirstQuote(Class<A> entityClass, Class<B> aggreateEntityClass) {
         var result = (Optional<A>) switch (entityClass) {
-            case Class<?> c when c == QuoteBf.class -> this.quoteBfRepository;
-            case Class<?> c when c == QuoteBs.class -> this.quoteBsRepository;
-            case Class<?> c when c == QuoteCb.class -> this.quoteCbRepository;
+            case Class<?> c when c == QuoteBf.class -> this.quoteBfRepository.findFirstByOrderByCreatedAtAsc();
+            case Class<?> c when c == QuoteBs.class -> this.quoteBsRepository.findFirstByOrderByCreatedAtAsc();
+            case Class<?> c when c == QuoteCb.class -> this.quoteCbRepository.findFirstByOrderByCreatedAtAsc();
             default -> throw new IllegalStateException("Unexpected value: " + aggreateEntityClass.getSimpleName());
         };
         return result;
