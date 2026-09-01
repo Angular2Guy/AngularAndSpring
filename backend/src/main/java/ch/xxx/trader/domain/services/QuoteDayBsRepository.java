@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface QuoteDayBsRepository extends QuoteBsPairRepository<QuoteDayBs> {
+public interface QuoteDayBsRepository {
 	QuoteDayBs insert(QuoteDayBs quote);
 
 	<S extends QuoteDayBs> List<S> insert(Iterable<S> quotes);
@@ -34,20 +34,12 @@ public interface QuoteDayBsRepository extends QuoteBsPairRepository<QuoteDayBs> 
 	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteDayBs> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
 
-	@Override
 	Optional<QuoteDayBs> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
-	@Override
 	List<QuoteDayBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
-	@Override
 	List<QuoteDayBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
-	@Override
 	Optional<QuoteDayBs> findFirstByOrderByCreatedAtDesc();
-	@Override
 	Optional<QuoteDayBs> findFirstByOrderByCreatedAtAsc();
-	@Override
 	List<QuoteDayBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate);
-	@Override
 	List<QuoteDayBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate, Limit limit);
-	@Override
 	Optional<QuoteDayBs> findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(String pair, Date date);
 }

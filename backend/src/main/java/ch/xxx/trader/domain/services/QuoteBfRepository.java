@@ -25,7 +25,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import ch.xxx.trader.domain.model.entity.QuoteBf;
 
-public interface QuoteBfRepository extends QuoteBfPairRepository<QuoteBf> {
+public interface QuoteBfRepository {
 	QuoteBf insert(QuoteBf quote);
 
 	<S extends QuoteBf> List<S> insert(Iterable<S> quotes);
@@ -33,20 +33,12 @@ public interface QuoteBfRepository extends QuoteBfPairRepository<QuoteBf> {
 	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteBf> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
 
-	@Override
 	Optional<QuoteBf> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
-	@Override
 	List<QuoteBf> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
-	@Override
 	List<QuoteBf> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
-	@Override
 	Optional<QuoteBf> findFirstByOrderByCreatedAtDesc();
-	@Override
 	Optional<QuoteBf> findFirstByOrderByCreatedAtAsc();
-	@Override
 	List<QuoteBf> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate);
-	@Override
 	List<QuoteBf> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate, Limit limit);
-	@Override
 	Optional<QuoteBf> findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(String pair, Date date);
 }
