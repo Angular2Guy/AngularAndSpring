@@ -29,7 +29,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Document
-public class QuoteBs implements Quote {
+public class QuoteBs implements Quote,QuotePairBs {
 	
 	@Id
 	private ObjectId _id;

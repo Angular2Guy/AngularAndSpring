@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Document
-public class QuoteHourBs implements Quote {
+public class QuoteHourBs implements Quote,QuotePairBs {
 
 	@Id
 	private ObjectId _id;

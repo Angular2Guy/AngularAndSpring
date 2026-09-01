@@ -24,11 +24,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface QuoteDayCbRepository extends QuoteRepository<QuoteDayCb> {
+public interface QuoteDayCbRepository {
 	QuoteDayCb insert(QuoteDayCb quote);
 
 	<S extends QuoteDayCb> List<S> insert(Iterable<S> quotes);
 
 	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteDayCb> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
+	Optional<QuoteDayCb> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
+	List<QuoteDayCb> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
+	List<QuoteDayCb> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
+	Optional<QuoteDayCb> findFirstByOrderByCreatedAtDesc();
+	Optional<QuoteDayCb> findFirstByOrderByCreatedAtAsc();
 }

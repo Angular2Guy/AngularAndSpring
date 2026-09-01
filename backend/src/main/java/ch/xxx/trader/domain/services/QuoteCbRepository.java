@@ -25,11 +25,17 @@ import org.springframework.data.mongodb.repository.Query;
 
 import ch.xxx.trader.domain.model.entity.QuoteCb;
 
-public interface QuoteCbRepository extends QuoteRepository<QuoteCb> {
+public interface QuoteCbRepository {
 	QuoteCb insert(QuoteCb quote);
 
 	<S extends QuoteCb> List<S> insert(Iterable<S> quotes);
 
 	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteCb> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
+
+	Optional<QuoteCb> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
+	List<QuoteCb> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
+	List<QuoteCb> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
+	Optional<QuoteCb> findFirstByOrderByCreatedAtDesc();
+	Optional<QuoteCb> findFirstByOrderByCreatedAtAsc();
 }

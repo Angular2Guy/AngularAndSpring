@@ -24,7 +24,7 @@ public interface MongoQuoteRepository {
 	<T extends Quote> void ensureIndex(Class<T> entityClass);
 
 	<A extends Quote, B extends Quote> MyTimeFrame createTimeFrame(Class<A> entityClass, Class<B> aggreateEntityClass,
-																   boolean hour, QuoteRepository<A> quoteRepository, QuoteRepository<B> aggreateQuoteRepository);
+																   boolean hour);
 
 	<A extends Quote, B extends Quote> List<B> tfQuotes(String timeFrame, String pair, A instance);
 }

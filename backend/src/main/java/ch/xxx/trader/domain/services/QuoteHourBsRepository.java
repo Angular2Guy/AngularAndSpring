@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface QuoteHourBsRepository extends QuoteRepository<QuoteHourBs>, QuotePairRepository<QuoteHourBs> {
+public interface QuoteHourBsRepository extends QuoteBsPairRepository<QuoteHourBs> {
 	QuoteHourBs insert(QuoteHourBs quote);
 
 	<S extends QuoteHourBs> List<S> insert(Iterable<S> quotes);
@@ -31,12 +31,20 @@ public interface QuoteHourBsRepository extends QuoteRepository<QuoteHourBs>, Quo
 	@Query("{ 'createdAt': { '$gt': ?0, '$lt': ?1 } }")
 	List<QuoteHourBs> findByCreatedAtGreaterThanAndCreatedAtLessThan(Date from, Date to);
 
+	@Override
 	Optional<QuoteHourBs> findFirstByCreatedAtAfterOrderByCreatedAtDesc(Date date);
+	@Override
 	List<QuoteHourBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date);
+	@Override
 	List<QuoteHourBs> findByCreatedAtAfterOrderByCreatedAtAsc(Date date, Limit limit);
+	@Override
 	Optional<QuoteHourBs> findFirstByOrderByCreatedAtDesc();
+	@Override
 	Optional<QuoteHourBs> findFirstByOrderByCreatedAtAsc();
+	@Override
 	List<QuoteHourBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate);
+	@Override
 	List<QuoteHourBs> findByPairAndCreatedAtAfterOrderByCreatedAtAsc(String pair, Date startDate, Limit limit);
+	@Override
 	Optional<QuoteHourBs> findFirstByPairAndCreatedAtAfterOrderByCreatedAtDesc(String pair, Date date);
 }

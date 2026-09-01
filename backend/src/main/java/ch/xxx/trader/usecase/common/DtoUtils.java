@@ -15,16 +15,9 @@
  */
 package ch.xxx.trader.usecase.common;
 
-import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.model.entity.Quote;
-import ch.xxx.trader.domain.services.MongoQuoteRepository;
-import ch.xxx.trader.domain.services.QuotePairRepository;
-import ch.xxx.trader.domain.services.QuoteRepository;
-import org.springframework.data.domain.Limit;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.invoke.*;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 

@@ -42,8 +42,8 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
     private final QuoteDayBsRepository quoteDayBsRepository;
 
     public MongoQuoteRepositoryImpl(MongoOperations operations, QuoteBfRepository quoteBfRepository, QuoteHourBfRepository quoteHourBfRepository,
-                                    QuoteDayBfRepository quoteDayBfRepository,QuoteBsRepository quoteBsRepository,QuoteHourBsRepository quoteHourBsRepository,
-                                    QuoteDayBsRepository quoteDayBsRepository) {
+                                    QuoteDayBfRepository quoteDayBfRepository,QuoteBsRepository quoteBsRepository,
+                                    QuoteHourBsRepository quoteHourBsRepository, QuoteDayBsRepository quoteDayBsRepository) {
         this.operations = operations;
         this.quoteBfRepository = quoteBfRepository;
         this.quoteHourBfRepository = quoteHourBfRepository;
@@ -61,7 +61,7 @@ public class MongoQuoteRepositoryImpl implements MongoQuoteRepository {
 
     @Override
     public <A extends Quote, B extends Quote> MyTimeFrame createTimeFrame(Class<A> entityClass, Class<B> aggreateEntityClass,
-                      boolean hour, QuoteRepository<A> quoteRepository, QuoteRepository<B> aggreateQuoteRepository) {
+                      boolean hour) {
         if(!this.operations.collectionExists(aggreateEntityClass)) {
             this.operations.createCollection(aggreateEntityClass);
         }
