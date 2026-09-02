@@ -88,14 +88,14 @@ public class BitfinexService {
 	public List<QuoteBf> tfQuotes(String timeFrame, String pair) {
 		var myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame.toLowerCase());
 		return this.mongoQuoteRepository.tfQuotes(myTimeFrame, pair, getMyClass(myTimeFrame))
-				.stream().map(this::mapToDest).toList();
+				.stream().map(this::mapPairToDest).toList();
 	}
 
 	private static @NonNull Class<? extends Quote> getMyClass(TimeFrame myTimeFrame) {
 		return switch (myTimeFrame) {
-			case TODAY, CURRENT -> QuoteBs.class;
-			case SEVENDAYS -> QuoteHourBs.class;
-			case THIRTYDAYS, NINTYDAYS, Month6, Year1 -> QuoteDayBs.class;
+			case TODAY, CURRENT -> QuoteBf.class;
+			case SEVENDAYS -> QuoteHourBf.class;
+			case THIRTYDAYS, NINTYDAYS, Month6, Year1 -> QuoteDayBf.class;
 			default -> throw new IllegalStateException("Unexpected value: " + myTimeFrame.getValue());
 		};
 	}
@@ -103,7 +103,7 @@ public class BitfinexService {
 	public byte[] pdfReport(String timeFrame, String pair) {
 		var myTimeFrame = MongoUtils.KEY_TO_TIMEFRAME.get(timeFrame.toLowerCase());
 		List<QuoteBf> quotes = this.mongoQuoteRepository.tfQuotes(myTimeFrame, pair, getMyClass(myTimeFrame))
-				.stream().map(this::mapToDest).toList();
+				.stream().map(this::mapPairToDest).toList();
 		return this.serviceUtils.generatePdf(quotes, this.reportMapper::convert);
 	}
 
@@ -218,7 +218,7 @@ public class BitfinexService {
 		return quotes.stream().map(value -> mapToDest(myClass, value)).collect(Collectors.toList());
 	}
 
-	private <T extends Quote> QuoteBf mapToDest(T source) {
+	private <T> QuoteBf mapPairToDest(T source) {
 		var dest = new QuoteBf(null, null,null,null,null,null,null,null);
 		BeanUtils.copyProperties(source, dest);
 		return dest;
