@@ -130,9 +130,9 @@ public class CoinbaseService {
 		return getQuoteDayCbSmalls(TimeFrame.NINTYDAYS);
 	}
 
-	private @NonNull List<QuoteCbSmall> getQuoteDayCbSmalls(TimeFrame nintydays) {
+	private @NonNull List<QuoteCbSmall> getQuoteDayCbSmalls(TimeFrame timeFrame) {
 		return this.quoteDayCbRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(nintydays), Limit.of(1000))
+				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(timeFrame), Limit.of(1000))
 				.stream()
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()))
