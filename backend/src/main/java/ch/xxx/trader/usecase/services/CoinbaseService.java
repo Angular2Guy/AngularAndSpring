@@ -114,53 +114,37 @@ public class CoinbaseService {
 	}
 
 	public List<QuoteCbSmall> sevenDaysQuotesBc() {
-		return this.quoteCbRepository
+		return this.quoteHourCbRepository
 				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.SEVENDAYS), Limit.of(1000))
 				.stream()
-				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()))
 				.toList();
 	}
 
 	public List<QuoteCbSmall> thirtyDaysQuotesBc() {
-		return this.quoteCbRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.THIRTYDAYS), Limit.of(1000))
-				.stream()
-				.filter(CoinbaseService::filterEvenMinutes)
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
-						quote.getLtc()))
-				.toList();
+		return getQuoteDayCbSmalls(TimeFrame.THIRTYDAYS);
 	}
 
 	public List<QuoteCbSmall> nintyDaysQuotesBc() {
-		return this.quoteCbRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.NINTYDAYS), Limit.of(1000))
+		return getQuoteDayCbSmalls(TimeFrame.NINTYDAYS);
+	}
+
+	private @NonNull List<QuoteCbSmall> getQuoteDayCbSmalls(TimeFrame nintydays) {
+		return this.quoteDayCbRepository
+				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(nintydays), Limit.of(1000))
 				.stream()
-				.filter(CoinbaseService::filterEvenMinutes)
 				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
 						quote.getLtc()))
 				.toList();
 	}
 
 	public List<QuoteCbSmall> sixMonthsQuotesBc() {
-		return this.quoteCbRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.Month6), Limit.of(1000))
-				.stream()
-				.filter(CoinbaseService::filterEvenMinutes)
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
-						quote.getLtc()))
-				.toList();
+		return getQuoteDayCbSmalls(TimeFrame.Month6);
 	}
 
 	public List<QuoteCbSmall> oneYearQuotesBc() {
-		return this.quoteCbRepository
-				.findByCreatedAtAfterOrderByCreatedAtAsc(MongoUtils.buildStartDate(TimeFrame.Year1), Limit.of(1000))
-				.stream()
-				.filter(CoinbaseService::filterEvenMinutes)
-				.map(quote -> new QuoteCbSmall(quote.getCreatedAt(), quote.getUsd(), quote.getEur(), quote.getEth(),
-						quote.getLtc()))
-				.toList();
+		return getQuoteDayCbSmalls(TimeFrame.Year1);
 	}
 
 	public Optional<QuoteCb> currentQuoteBc() {
