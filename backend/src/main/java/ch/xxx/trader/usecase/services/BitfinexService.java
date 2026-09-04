@@ -15,26 +15,14 @@
   */
 package ch.xxx.trader.usecase.services;
 
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import ch.xxx.trader.domain.model.entity.*;
+import ch.xxx.trader.domain.common.MongoUtils;
+import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
+import ch.xxx.trader.domain.model.entity.Quote;
+import ch.xxx.trader.domain.model.entity.QuoteBf;
+import ch.xxx.trader.domain.model.entity.QuoteDayBf;
+import ch.xxx.trader.domain.model.entity.QuoteHourBf;
 import ch.xxx.trader.domain.services.*;
-import ch.xxx.trader.usecase.common.DtoUtils;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import ch.xxx.trader.usecase.mappers.ReportMapper;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +30,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import ch.xxx.trader.domain.common.MongoUtils;
-import ch.xxx.trader.domain.common.MongoUtils.TimeFrame;
-import ch.xxx.trader.usecase.mappers.ReportMapper;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class BitfinexService {

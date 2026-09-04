@@ -68,8 +68,6 @@ public class CoinbaseService {
 			String propertyName, PropertyDescriptor propertyDescriptor) {
 	}
 
-	public static final String CB_HOUR_COL = "quoteCbHour";
-	public static final String CB_DAY_COL = "quoteCbDay";
 	public static volatile boolean singleInstanceLock = false;
 	private final QuoteCbRepository quoteCbRepository;
 	private final MongoQuoteRepository mongoQuoteRepository;
