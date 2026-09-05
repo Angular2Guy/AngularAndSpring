@@ -179,19 +179,15 @@ public class StatisticService {
 	}
 
 	private static <T extends Quote> BigDecimal getQuoteValue(T myQuote) {
-		if (myQuote instanceof QuoteBs quote) {
-			return quote.getLast();
-		} else if (myQuote instanceof QuoteDayBs quote) {
-			return quote.getLast();
-		} else if (myQuote instanceof QuoteHourBs quote) {
-			return quote.getLast();
-		} else if (myQuote instanceof QuoteBf quote) {
-			return quote.getLast_price();
-		} else if (myQuote instanceof QuoteDayBf quote) {
-			return quote.getLast_price();
-		} else {
-			return ((QuoteHourBf) myQuote).getLast_price();
-		}
+		return switch(myQuote) {
+			case QuoteBs q -> q.getLast();
+			case QuoteDayBs q -> q.getLast();
+			case QuoteHourBs q -> q.getLast();
+			case QuoteBf q -> q.getLast_price();
+			case QuoteDayBf q -> q.getLast_price();
+			case QuoteHourBf q -> q.getLast_price();
+            default -> throw new RuntimeException("Unexpected value: " + myQuote);
+		};
 	}
 
 	private static Date createBeforeDate(int months, int years) {
