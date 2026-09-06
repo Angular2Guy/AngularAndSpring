@@ -35,6 +35,10 @@ The goal is to show a simple MongoDb based application that uses virtual threads
 The application runs a scheduled task reads the exchange rates of cryptocurrencies and stores them in the Mongodb. The UI uses the rest service to read the rates and displays them on a table. The table updates itself regularly and shows out of date data in blue. A detail page shows the data of the currency and a chart of the rates of the current day, 7 days, 30 days, 90 days. 
 If the user logs in the user can see the relevant part of the orderbooks for an order. The orderbooks route is implemented as a lazy loading feature module. The route guard checks for the Jwt token and the logout invalidates the Jwt token. 
 
+## Howto run it
+
+Run the MongoDB with Docker. The command can be found in [runMongoDBDocker.sh](runMongoDBDocker.sh). Then start the application without any profile. The application will start to import quotes and after a few minutes a chart will be available.  
+
 ## C4 Architecture Diagrams
 The project has a [System Context Diagram](structurizr/diagrams/structurizr-1-SystemContext.svg), a [Container Diagram](structurizr/diagrams/structurizr-1-Containers.svg) and a [Component Diagram](structurizr/diagrams/structurizr-1-Components.svg). The Diagrams have been created with Structurizr. The file runStructurizr.sh contains the commands to use Structurizr and the directory structurizr contains the dsl file.
 
