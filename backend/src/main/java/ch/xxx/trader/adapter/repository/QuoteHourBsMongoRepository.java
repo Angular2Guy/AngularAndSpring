@@ -24,8 +24,5 @@ import java.util.Optional;
 
 public interface QuoteHourBsMongoRepository extends MongoRepository<QuoteHourBs, ObjectId>,
         QuoteHourBsRepository {
-
-	Optional<QuoteHourBs> findFirstByOrderByCreatedAtDesc();
-
-	Optional<QuoteHourBs> findFirstByOrderByCreatedAtAsc();
+	
 }

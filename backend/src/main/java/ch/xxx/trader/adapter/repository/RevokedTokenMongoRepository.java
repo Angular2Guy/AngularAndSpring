@@ -15,11 +15,12 @@
    */
 package ch.xxx.trader.adapter.repository;
 
+import ch.xxx.trader.domain.services.RevokedTokenRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import ch.xxx.trader.domain.model.entity.RevokedToken;
 
 public interface RevokedTokenMongoRepository extends MongoRepository<RevokedToken, ObjectId>,
-		ch.xxx.trader.domain.services.RevokedTokenRepository {
+        RevokedTokenRepository {
 }

@@ -40,7 +40,7 @@ public class PrepareDataTask {
 		this.coinbaseService = coinbaseService;
 	}
 
-	@Async
+	@Async("clientTaskExecutor")
 	@Scheduled(cron = "0 5 0,12 ? * ?")
 	@SchedulerLock(name = "bitstamp_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createBsAvg() {
@@ -53,7 +53,7 @@ public class PrepareDataTask {
 		}
 	}
 
-	@Async
+	@Async("clientTaskExecutor")
 	@Scheduled(cron = "0 45 0,12 ? * ?")
 	@SchedulerLock(name = "bitfinex_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createBfAvg() {
@@ -66,7 +66,7 @@ public class PrepareDataTask {
 		}
 	}
 
-	@Async
+	@Async("clientTaskExecutor")
 	@Scheduled(cron = "0 10 2,14 ? * ?")
 	@SchedulerLock(name = "coinbase_avg_scheduledTask", lockAtLeastFor = "PT10H", lockAtMostFor = "PT11H")
 	public void createCbAvg() {

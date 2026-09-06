@@ -25,7 +25,4 @@ import java.util.Optional;
 public interface QuoteDayBsMongoRepository extends MongoRepository<QuoteDayBs, ObjectId>,
         QuoteDayBsRepository {
 
-	Optional<QuoteDayBs> findFirstByOrderByCreatedAtDesc();
-
-	Optional<QuoteDayBs> findFirstByOrderByCreatedAtAsc();
 }
