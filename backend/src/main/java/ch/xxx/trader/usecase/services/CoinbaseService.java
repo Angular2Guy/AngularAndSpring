@@ -312,13 +312,12 @@ public class CoinbaseService {
 		List<QuoteCb> hourQuotes = new LinkedList<QuoteCb>();
 		QuoteCb quoteCb = new QuoteCb();
 		quoteCb.setCreatedAt(begin.getTime());
-		long count = quotes.stream().filter(quote -> {
-			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
-		}).count();
+		long count = quotes.stream().filter(quote ->
+			quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime())).count();
 		if (count > 2) {
-			quoteCb = quotes.stream().filter(quote -> {
-				return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
-			}).reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
+			quoteCb = quotes.stream().filter(quote ->
+				quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime()))
+					.reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
 			hourQuotes.add(quoteCb);
 		}
 		return hourQuotes;
@@ -331,15 +330,12 @@ public class CoinbaseService {
 			QuoteCb quoteCb = new QuoteCb();
 			quoteCb.setCreatedAt(hours.get(i).getTime());
 			final int x = i;
-			long count = quotes.stream().filter(quote -> {
-				return quote.getCreatedAt().after(hours.get(x).getTime())
-						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
-			}).count();
+			long count = quotes.stream().filter(quote ->
+				quote.getCreatedAt().after(hours.get(x).getTime())	&& quote.getCreatedAt().before(hours.get(x + 1).getTime())).count();
 			if (count > 2) {
-				quoteCb = quotes.stream().filter(quote -> {
-					return quote.getCreatedAt().after(hours.get(x).getTime())
-							&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
-				}).reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
+				quoteCb = quotes.stream().filter(quote ->
+						quote.getCreatedAt().after(hours.get(x).getTime()) && quote.getCreatedAt().before(hours.get(x + 1).getTime()))
+						.reduce(quoteCb, (q1, q2) -> avgCbQuotePeriod(q1, q2, count));
 				hourQuotes.add(quoteCb);
 			}
 		}

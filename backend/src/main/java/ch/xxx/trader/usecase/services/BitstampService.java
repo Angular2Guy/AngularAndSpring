@@ -240,9 +240,9 @@ public class BitstampService {
 			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
 		}).count();
 		if (count > 2) {
-			QuoteBs hourQuote = multimap.get(key).stream().filter(quote -> {
-				return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
-			}).reduce(quoteBs, (q1, q2) -> avgBsQuote(q1, q2, count));
+			QuoteBs hourQuote = multimap.get(key).stream().filter(quote ->
+				quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime())
+			).reduce(quoteBs, (q1, q2) -> avgBsQuote(q1, q2, count));
 			hourQuote.setPair(key);
 			hourQuotes.add(hourQuote);
 		}
@@ -258,10 +258,8 @@ public class BitstampService {
 					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
 			quoteBs.setCreatedAt(hours.get(i).getTime());
 			final int x = i;
-			long count = multimap.get(key).stream().filter(quote -> {
-				return quote.getCreatedAt().after(hours.get(x).getTime())
-						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
-			}).count();
+			long count = multimap.get(key).stream().filter(quote ->
+				quote.getCreatedAt().after(hours.get(x).getTime()) && quote.getCreatedAt().before(hours.get(x + 1).getTime())).count();
 			if (count > 2) {
 				QuoteBs hourQuote = multimap.get(key).stream().filter(quote -> {
 					return quote.getCreatedAt().after(hours.get(x).getTime())

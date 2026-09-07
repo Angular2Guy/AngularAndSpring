@@ -240,15 +240,12 @@ public class BitfinexService {
 					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "");
 			quoteBf.setCreatedAt(hours.get(i).getTime());
 			final int x = i;
-			long count = multimap.get(key).stream().filter(quote -> {
-				return quote.getCreatedAt().after(hours.get(x).getTime())
-						&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
-			}).count();
+			long count = multimap.get(key).stream().filter(quote ->
+				quote.getCreatedAt().after(hours.get(x).getTime()) && quote.getCreatedAt().before(hours.get(x + 1).getTime())).count();
 			if (count > 2) {
-				QuoteBf hourQuote = multimap.get(key).stream().filter(quote -> {
-					return quote.getCreatedAt().after(hours.get(x).getTime())
-							&& quote.getCreatedAt().before(hours.get(x + 1).getTime());
-				}).reduce(quoteBf, (q1, q2) -> avgBfQuote(q1, q2, count));
+				QuoteBf hourQuote = multimap.get(key).stream().filter(quote ->
+					quote.getCreatedAt().after(hours.get(x).getTime())	&& quote.getCreatedAt().before(hours.get(x + 1).getTime()))
+						.reduce(quoteBf, (q1, q2) -> avgBfQuote(q1, q2, count));
 				hourQuote.setPair(key);
 				hourQuotes.add(hourQuote);
 			}
@@ -263,13 +260,12 @@ public class BitfinexService {
 		QuoteBf quoteBf = new QuoteBf(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
 				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "");
 		quoteBf.setCreatedAt(begin.getTime());
-		long count = multimap.get(key).stream().filter(quote -> {
-			return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
-		}).count();
+		long count = multimap.get(key).stream().filter(quote ->
+			quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime())).count();
 		if (count > 2) {
-			QuoteBf hourQuote = multimap.get(key).stream().filter(quote -> {
-				return quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime());
-			}).reduce(quoteBf, (q1, q2) -> avgBfQuote(q1, q2, count));
+			QuoteBf hourQuote = multimap.get(key).stream().filter(quote ->
+				quote.getCreatedAt().after(begin.getTime()) && quote.getCreatedAt().before(end.getTime()))
+					.reduce(quoteBf, (q1, q2) -> avgBfQuote(q1, q2, count));
 			hourQuote.setPair(key);
 			hourQuotes.add(hourQuote);
 		}

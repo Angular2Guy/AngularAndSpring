@@ -32,7 +32,7 @@ public class JwtUtils {
 	public static final String BEARER = "Bearer ";
 	public static final String AUTHORITY = "authority";
 	public static final String UUID = "uuid";
-	public static final record TokenSubjectRole(String subject, String role) {}
+	public record TokenSubjectRole(String subject, String role) {}
 
 	public static Optional<String> extractToken(Map<String,String> headers) {
 		String authStr = headers.get(AUTHORIZATION);
@@ -40,24 +40,19 @@ public class JwtUtils {
 	}
 
 	private static Optional<String> extractToken(Optional<String> authStr) {
-		if (authStr.isPresent()) {
-			authStr = Optional.ofNullable(authStr.get().startsWith(BEARER) ? authStr.get().substring(7) : null);
-		}
-		return authStr;
+		var result = authStr.stream().filter(token -> token.startsWith(BEARER)).map(token -> token.substring(7)).findFirst();
+		return result;
 	}
 
 	public static Optional<String> resolveToken(String bearerToken) {
-		if (bearerToken != null && bearerToken.startsWith(JwtUtils.BEARER)) {
-			return Optional.of(bearerToken.substring(7, bearerToken.length()));
-		}
-		return Optional.empty();
+		var result = Optional.ofNullable(bearerToken).stream().filter(token -> token.startsWith(BEARER))
+				.map(token -> token.substring(7, token.length())).findFirst();
+		return result;
 	}
 	
 	public static Optional<Jws<Claims>> getClaims(Optional<String> token, Key jwtTokenKey) {
-		if (!token.isPresent()) {
-			return Optional.empty();
-		}
-		return Optional.of(Jwts.parserBuilder().setSigningKey(jwtTokenKey).build().parseClaimsJws(token.get()));
+		var result = token.stream().map(myToken -> Jwts.parserBuilder().setSigningKey(jwtTokenKey).build().parseClaimsJws(myToken)).findFirst();
+		return result;
 	}
 	
 	public static String getTokenRoles(Map<String,String> headers, Key jwtTokenKey) {
