@@ -20,6 +20,7 @@ import {
   Inject,
   DestroyRef,
   inject,
+  signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -30,7 +31,7 @@ import {
   transition,
   style,
 } from "@angular/animations";
-import { BehaviorSubject, Observable, repeat } from "rxjs";
+import { Observable, repeat } from "rxjs";
 import { BitstampService } from "../../services/bitstamp.service";
 import { QuoteBs } from "../../common/quote-bs";
 import { DetailBase, Tuple } from "../../common/detail-base";
@@ -69,7 +70,7 @@ import { NgxLineChartsModule } from "ngx-simple-charts/line";
 })
 export class BsdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteBs = {} as QuoteBs;
-  protected chartShow = new BehaviorSubject(false);
+  protected chartShow = signal(false);
   protected todayQuotes: QuoteBs[] = [];
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
@@ -83,14 +84,14 @@ export class BsdetailComponent extends DetailBase implements OnInit {
   }
 
   ngOnInit() {
-    this.chartShow.next(false);
+    this.chartShow.set(false);
     this.route.params.subscribe((params) => {
       this.serviceBs
         .getCurrentQuote(params.currpair)
         .pipe(repeat({ delay: 10000 }), takeUntilDestroyed(this.destroy))
         .subscribe((quote) => {
           this.currQuote = quote;
-          this.currPair = this.utils.getCurrpairName(this.currQuote.pair) ?? "";
+          this.currPair.set(this.utils.getCurrpairName(this.currQuote.pair) ?? "");
         });
       this.serviceBs
         .getTodayQuotes(this.route.snapshot.paramMap.get("currpair") ?? "")
@@ -102,7 +103,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
               (quote) => new Tuple<string, number>(quote.createdAt, quote.last),
             ),
           );
-          this.chartShow.next(true);
+          this.chartShow.set(true);
         });
     });
   }
@@ -112,7 +113,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
   }
 
   changeTf() {
-    this.chartShow.next(false);
+    this.chartShow.set(false);
     const currpair = this.route.snapshot.paramMap.get("currpair") ?? "";
     let quoteObserv: Observable<QuoteBs[]>;
     if (this.timeframe === this.utils.MyTimeFrames.Day7) {
@@ -136,7 +137,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
           (quote) => new Tuple<string, number>(quote.createdAt, quote.last),
         ),
       );
-      this.chartShow.next(true);
+      this.chartShow.set(true);
     });
   }
 

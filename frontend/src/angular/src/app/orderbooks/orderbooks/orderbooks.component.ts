@@ -18,6 +18,7 @@ import {
   DestroyRef,
   OnInit,
   inject,
+  signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { BitstampCurrPairs, BitstampService } from "../../services/bitstamp.service";
@@ -58,9 +59,9 @@ export class OrderbooksComponent implements OnInit {
   private bitfinexCurrPairs = new BitfinexCurrPairs();
   public currencies: MyCurr[] = [];
   protected model = new MyModel("", false, false, false, 1, 0);
-  protected bsOrders: MyOrder[] = [];
-  protected bfOrders: MyOrder[] = [];
-  protected ibOrders: MyOrder[] = [];
+  protected bsOrders = signal<MyOrder[]>([]);
+  protected bfOrders = signal<MyOrder[]>([]);
+  protected ibOrders = signal<MyOrder[]>([]);
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
@@ -85,10 +86,10 @@ export class OrderbooksComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((ob) => {
           //                this.orderbookBs = ob;
-          this.bsOrders = this.filterObBs(ob);
+          this.bsOrders.set(this.filterObBs(ob));
         });
     } else {
-      this.bsOrders = [];
+      this.bsOrders.set([]);
     }
     if (this.model.bitfinexCb) {
       this.serviceBf
@@ -96,10 +97,10 @@ export class OrderbooksComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((ob) => {
           //                this.orderbookBf = ob;
-          this.bfOrders = this.filterObBf(ob);
+          this.bfOrders.set(this.filterObBf(ob));
         });
     } else {
-      this.bfOrders = [];
+      this.bfOrders.set([]);
     }
   }
   back() {

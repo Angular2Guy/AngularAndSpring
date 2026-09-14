@@ -20,6 +20,7 @@ import {
   LOCALE_ID,
   DestroyRef,
   inject,
+  signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -32,7 +33,7 @@ import {
 } from "@angular/animations";
 import { BitfinexService } from "../../services/bitfinex.service";
 import { QuoteBf } from "../../common/quote-bf";
-import { BehaviorSubject, Observable, repeat } from "rxjs";
+import { Observable, repeat } from "rxjs";
 import { DetailBase, Tuple } from "../../common/detail-base";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NgxLineChartsModule } from "ngx-simple-charts/line";
@@ -69,7 +70,7 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 })
 export class BfdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteBf | null = null;
-  protected chartShow = new BehaviorSubject(false);
+  protected chartShow = signal(false);
   protected todayQuotes: QuoteBf[] = [];
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
@@ -83,14 +84,14 @@ export class BfdetailComponent extends DetailBase implements OnInit {
   }
 
   ngOnInit() {
-    this.chartShow.next(false);
+    this.chartShow.set(false);
     this.route.params.subscribe((params) => {
       this.serviceBf
         .getCurrentQuote(params.currpair)
         .pipe(repeat({ delay: 10000 }), takeUntilDestroyed(this.destroy))
         .subscribe((quote) => {
           this.currQuote = quote;
-          this.currPair = this.utils.getCurrpairName(this.currQuote.pair) ?? "";
+          this.currPair.set(this.utils.getCurrpairName(this.currQuote.pair) ?? "");
         });
       this.serviceBf
         .getTodayQuotes(this.route.snapshot.paramMap.get("currpair") ?? "")
@@ -103,7 +104,7 @@ export class BfdetailComponent extends DetailBase implements OnInit {
                 new Tuple<string, number>(quote.createdAt, quote.last_price),
             ),
           );
-          this.chartShow.next(true);
+          this.chartShow.set(true);
         });
     });
   }
@@ -113,7 +114,7 @@ export class BfdetailComponent extends DetailBase implements OnInit {
   }
 
   changeTf() {
-    this.chartShow.next(false);
+    this.chartShow.set(false);
     const currpair = this.route.snapshot.paramMap.get("currpair");
     let quoteObserv: Observable<QuoteBf[]>;
     if (this.timeframe === this.utils.MyTimeFrames.Day7) {
@@ -138,7 +139,7 @@ export class BfdetailComponent extends DetailBase implements OnInit {
             new Tuple<string, number>(quote.createdAt, quote.last_price),
         ),
       );
-      this.chartShow.next(true);
+      this.chartShow.set(true);
     });
   }
 

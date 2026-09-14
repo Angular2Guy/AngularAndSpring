@@ -10,6 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+import { signal } from "@angular/core";
 import { CommonUtils } from "./common-utils";
 import { ChartPoint, ChartPoints } from "ngx-simple-charts/line";
 
@@ -30,9 +31,9 @@ export class Tuple<A, B> {
 }
 
 export abstract class DetailBase {
-  chartPoints: ChartPoints[] = [];
+  chartPoints = signal<ChartPoints[]>([]);
   utils = new CommonUtils();
-  currPair = "";
+  currPair = signal("");
   timeframe = this.utils.MyTimeFrames.Day;
   addLinReg = false;
   readonly yScaleWidth = 50;
@@ -56,20 +57,20 @@ export abstract class DetailBase {
 	//console.log(slope, intercept);
 	const linReg = myChartPoint.map((myPoint,i) => ({x: myPoint.x, y: slope * i + intercept}) as ChartPoint);
 	//console.log(linReg);
-    this.chartPoints = [
+    this.chartPoints.set([
       {
-        name: this.currPair,
+        name: this.currPair(),
         chartPointList: myChartPoint,
         yScaleWidth: this.yScaleWidth,
         xScaleHeight: this.xScaleHeight,        
       } as ChartPoints   
-    ];    
+    ]);    
     if(this.addLinReg) {
-    this.chartPoints.push({name: this.utils.LINEAR_REGRESSION,
+    this.chartPoints.update(points => [...points, {name: this.utils.LINEAR_REGRESSION,
       chartPointList: linReg,
       yScaleWidth: this.yScaleWidth,
       xScaleHeight: this.xScaleHeight
-      } as ChartPoints);
+      } as ChartPoints]);
     }
     //console.log(this.chartPoints);
   }

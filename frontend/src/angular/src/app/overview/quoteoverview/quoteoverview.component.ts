@@ -15,7 +15,6 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
   DestroyRef,
   ChangeDetectionStrategy,
 } from "@angular/core";
@@ -26,7 +25,7 @@ import { QuoteBs } from "../../common/quote-bs";
 import { QuoteCb } from "../../common/quote-cb";
 import { QuoteIb } from "../../common/quote-ib";
 import { QuoteBf } from "../../common/quote-bf";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject, interval } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DataSource, CollectionViewer } from "@angular/cdk/collections";
 import { Router } from "@angular/router";
@@ -68,10 +67,9 @@ import { MatToolbarModule } from "@angular/material/toolbar";
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./quoteoverview.component.scss"],
 })
-export class QuoteoverviewComponent implements OnInit, OnDestroy {
+export class QuoteoverviewComponent implements OnInit {
   protected datasource = new Myds();
   protected loggedIn = false;
-  private interval: any;
   private utils = new CommonUtils();
   private bitstampCurrPairs= new BitstampCurrPairs();
   private coinbaseCurrPairs= new CoinbaseCurrPairs();
@@ -89,12 +87,9 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-    this.interval = setInterval(() => {
+    interval(15000).pipe(takeUntilDestroyed(this.destroy)).subscribe(() => {
       this.refreshData();
-    }, 15000);
+    });
     if (this.datasource.rows.length < 15) {
       for (let i = 0; i < 15; i++) {
         this.datasource.rows.push(
@@ -117,12 +112,6 @@ export class QuoteoverviewComponent implements OnInit, OnDestroy {
     this.refreshData();
     this.loggedIn = !!this.tokenService.token;
     //console.log(this.hash);
-  }
-
-  ngOnDestroy(): void {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
   }
 
   openLoginDialog(): void {

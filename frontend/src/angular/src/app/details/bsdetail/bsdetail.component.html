@@ -1,7 +1,7 @@
 <div>
   <mat-toolbar color="primary">
     <span i18n="@@bitstamp">Bitstamp</span>
-    <span class="currPair">{{ currPair }}</span>
+    <span class="currPair">{{ currPair() }}</span>
     <span class="example-fill-remaining-space"></span>
     <span class="back-button"
       ><button mat-flat-button color="primary" (click)="back()" i18n="@@back">
@@ -46,7 +46,7 @@
             {{ $safeNavigationMigration(currQuote?.vwap) | number: "1.2" }}
           </td>
           <td i18n="@@pair">Pair:</td>
-          <td id="currPair">{{ currPair }}</td>
+          <td id="currPair">{{ currPair() }}</td>
           <td i18n="@@timestamp">Timestamp:</td>
           <td id="createdAt">
             {{
@@ -101,10 +101,10 @@
     <div
       #chartContainer
       class="chart-container"
-      [@showChart]="chartShow | async"
+      [@showChart]="chartShow()"
     >
-      <sc-line-chart [chartPoints]="chartPoints"></sc-line-chart>
+      <sc-line-chart [chartPoints]="chartPoints()"></sc-line-chart>
     </div>
-    <div>{{ todayQuotes?.length }} {{ chartShow | async }}</div>
+    <div>{{ todayQuotes?.length }} {{ chartShow() }}</div>
   </div>
 </div>

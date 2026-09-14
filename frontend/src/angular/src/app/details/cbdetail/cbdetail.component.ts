@@ -20,6 +20,7 @@ import {
   Inject,
   DestroyRef,
   inject,
+  signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -30,7 +31,7 @@ import {
   transition,
   style,
 } from "@angular/animations";
-import { BehaviorSubject, Observable, repeat } from "rxjs";
+import { Observable, repeat } from "rxjs";
 import { QuoteCb, QuoteCbSmall } from "../../common/quote-cb";
 import { CoinbaseCurrPairs, CoinbaseService } from "../../services/coinbase.service";
 import { DetailBase, Tuple } from "../../common/detail-base";
@@ -76,7 +77,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
   readonly ETHUSD: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly LTCUSD: string;
-  protected chartShow = new BehaviorSubject(false);
+  protected chartShow = signal(false);
   protected todayQuotes: QuoteCbSmall[] = [];
   protected myCurrPair = "";
   private readonly destroy: DestroyRef = inject(DestroyRef);
@@ -95,7 +96,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
   }
 
   ngOnInit() {
-    this.chartShow.next(false);
+    this.chartShow.set(false);
     this.route.params.subscribe((params) => {
       this.currpair = params.currpair;
       this.myCurrPair = this.utils.getCurrpairName(this.currpair) ?? "";
@@ -136,7 +137,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
               ),
             );
           }
-          this.chartShow.next(true);
+          this.chartShow.set(true);
         });
     });
   }
@@ -146,7 +147,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
   }
 
   changeTf() {
-    this.chartShow.next(false);
+    this.chartShow.set(false);
     this.currpair = this.route.snapshot.paramMap.get("currpair") ?? "";
     let quoteObserv: Observable<QuoteCbSmall[]>;
     if (this.timeframe === this.utils.MyTimeFrames.Day7) {
@@ -187,7 +188,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
           ),
         );
       }
-      this.chartShow.next(true);
+      this.chartShow.set(true);
     });
   }
 }

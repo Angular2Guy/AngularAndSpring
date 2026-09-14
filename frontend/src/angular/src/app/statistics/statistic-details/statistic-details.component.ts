@@ -20,6 +20,7 @@ import {
   Input,
   OnInit,
   inject,
+  signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -60,9 +61,9 @@ export class StatisticDetailsComponent implements OnInit {
   coinExchange: CoinExchange = CoinExchange.bitfinex;
   protected statisticCurrencyPair = StatisticCurrencyPair;
   protected selCurrency = StatisticCurrencyPair.bcUsd;
-  protected commonStatistics = {} as CommonStatistics;
-  protected chartBars!: ChartBars;
-  protected chartsLoading = true;
+  protected commonStatistics = signal<CommonStatistics>({} as CommonStatistics);
+  protected chartBars = signal<ChartBars>({} as ChartBars);
+  protected chartsLoading = signal(true);
   private myTabIndex = 0;
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
@@ -82,22 +83,22 @@ export class StatisticDetailsComponent implements OnInit {
     this.statisticService
       .getCommonStatistics(this.selCurrency, this.coinExchange)
       .pipe(
-        tap((result) => (this.chartBars = this.createChartBars(result))),
+        tap((result) => this.chartBars.set(this.createChartBars(result))),
         takeUntilDestroyed(this.destroy),
       )
-      .subscribe((result) => (this.commonStatistics = result));
+      .subscribe((result) => this.commonStatistics.set(result));
   }
 
   updateCurrency(): void {
-    if (!this.chartsLoading) {
-      this.chartsLoading = true;
+    if (!this.chartsLoading()) {
+      this.chartsLoading.set(true);
       this.statisticService
         .getCommonStatistics(this.selCurrency, this.coinExchange)
         .pipe(
-          tap((result) => (this.chartBars = this.createChartBars(result))),
+          tap((result) => this.chartBars.set(this.createChartBars(result))),
           takeUntilDestroyed(this.destroy),
         )
-        .subscribe((result) => (this.commonStatistics = result));
+        .subscribe((result) => this.commonStatistics.set(result));
     }
   }
 
@@ -126,7 +127,7 @@ export class StatisticDetailsComponent implements OnInit {
       yScaleWidth: 100,
       chartBars: performanceValues,
     } as ChartBars;
-    this.chartsLoading = false;
+    this.chartsLoading.set(false);
     // console.log(myChartBars);
     return myChartBars;
   }

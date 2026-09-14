@@ -104,7 +104,7 @@
                       >Amount</span
                       ></mat-list-item
                       >
-                      @for (order of bsOrders; track order) {
+                      @for (order of bsOrders(); track order) {
                         <mat-list-item role="listitem">
                           <span [style.color]="order.color"
                             >{{ order.price }} - {{ order.amount }}</span
@@ -125,7 +125,7 @@
                             >Amount</span
                             ></mat-list-item
                             >
-                            @for (order of ibOrders; track order) {
+                            @for (order of ibOrders(); track order) {
                               <mat-list-item>
                                 <span [style.color]="order.color"
                                   >{{ order.price }} - {{ order.amount }}</span
@@ -146,7 +146,7 @@
                                   >Amount</span
                                   ></mat-list-item
                                   >
-                                  @for (order of bfOrders; track order) {
+                                  @for (order of bfOrders(); track order) {
                                     <mat-list-item>
                                       <span [style.color]="order.color"
                                         >{{ order.price }} - {{ order.amount }}</span

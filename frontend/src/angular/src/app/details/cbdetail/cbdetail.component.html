@@ -153,10 +153,10 @@
     <div
       #chartContainer
       class="chart-container"
-      [@showChart]="chartShow | async"
+      [@showChart]="chartShow()"
     >
-      <sc-line-chart [chartPoints]="chartPoints"></sc-line-chart>
+      <sc-line-chart [chartPoints]="chartPoints()"></sc-line-chart>
     </div>
-    <div>{{ todayQuotes?.length }} {{ chartShow | async }}</div>
+    <div>{{ todayQuotes?.length }} {{ chartShow() }}</div>
   </div>
 </div>
