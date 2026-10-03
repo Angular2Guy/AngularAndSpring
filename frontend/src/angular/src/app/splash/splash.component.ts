@@ -18,6 +18,7 @@ import {
   OnInit,
   AfterViewInit,
   ChangeDetectionStrategy,
+  signal,
 } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
@@ -27,10 +28,10 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
   imports: [MatProgressSpinner, RouterModule],
   templateUrl: "./splash.component.html",
   styleUrls: ["./splash.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SplashComponent implements OnInit, AfterViewInit {
-  protected myState = false;
+  protected readonly myState = signal(false);
 
   constructor(private router: Router) {}
 
@@ -39,6 +40,6 @@ export class SplashComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => (this.myState = true));
+    setTimeout(() => this.myState.set(true));
   }
 }

@@ -34,8 +34,8 @@ export abstract class DetailBase {
   chartPoints = signal<ChartPoints[]>([]);
   utils = new CommonUtils();
   currPair = signal("");
-  timeframe = this.utils.MyTimeFrames.Day;
-  addLinReg = false;
+  timeframe = signal(this.utils.MyTimeFrames.Day);
+  addLinReg = signal(false);
   readonly yScaleWidth = 50;
   readonly xScaleHeight = 20;
 
@@ -65,7 +65,7 @@ export abstract class DetailBase {
         xScaleHeight: this.xScaleHeight,        
       } as ChartPoints   
     ]);    
-    if(this.addLinReg) {
+    if(this.addLinReg()) {
     this.chartPoints.update(points => [...points, {name: this.utils.LINEAR_REGRESSION,
       chartPointList: linReg,
       yScaleWidth: this.yScaleWidth,

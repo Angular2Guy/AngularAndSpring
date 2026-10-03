@@ -1,7 +1,7 @@
 <div>
   <mat-toolbar color="primary">
     <span i18n="@@coinbase">Coinbase</span>
-    <span class="currPair">{{ myCurrPair }}</span>
+    <span class="currPair">{{ currPair() }}</span>
     <span class="example-fill-remaining-space"></span>
     <span class="back-button"
       ><button mat-flat-button color="primary" (click)="back()" i18n="@@back">
@@ -12,112 +12,112 @@
   <div>
     <table>
       <tbody>
-        @if (currpair === BTCUSD) {
+        @if (currpair() === BTCUSD) {
           <tr>
             <td i18n="@@pair">Pair:</td>
-            <td>{{ myCurrPair }}</td>
+            <td>{{ currPair() }}</td>
             <td i18n="@@lastUsd">Last Usd:</td>
             <td id="usd">
-              {{ $safeNavigationMigration(currQuote?.usd) | number: "1.2" }}
+              {{ $safeNavigationMigration(currQuote()?.usd) | number: "1.2" }}
             </td>
             <td i18n="@@lastEur">Last Eur:</td>
             <td id="eur">
-              {{ $safeNavigationMigration(currQuote?.eur) | number: "1.2" }}
+              {{ $safeNavigationMigration(currQuote()?.eur) | number: "1.2" }}
             </td>
             <td i18n="@@lastYen">Last Yen:</td>
             <td id="jpy">
-              {{ $safeNavigationMigration(currQuote?.jpy) | number: "1.2" }}
+              {{ $safeNavigationMigration(currQuote()?.jpy) | number: "1.2" }}
             </td>
             <td i18n="@@lastGbp">Last Pound:</td>
             <td id="gbp">
-              {{ $safeNavigationMigration(currQuote?.gbp) | number: "1.2" }}
+              {{ $safeNavigationMigration(currQuote()?.gbp) | number: "1.2" }}
             </td>
             <td i18n="@@timestamp">Timestamp:</td>
             <td id="createdAt">
               {{
-                $safeNavigationMigration(currQuote?.createdAt)
+                $safeNavigationMigration(currQuote()?.createdAt)
                   | date: "HH:mm:ss"
               }}
             </td>
           </tr>
         }
-        @if (currpair === ETHUSD) {
+        @if (currpair() === ETHUSD) {
           <tr>
             <td i18n="@@pair">Pair:</td>
-            <td>{{ myCurrPair }}</td>
+            <td>{{ currPair() }}</td>
             <td i18n="@@lastUsd">Last Usd:</td>
             <td>
               {{
-                $safeNavigationMigration(currQuote?.usd) /
-                  $safeNavigationMigration(currQuote?.eth) | number: "1.2"
+                $safeNavigationMigration(currQuote()?.usd) /
+                  $safeNavigationMigration(currQuote()?.eth) | number: "1.2"
               }}
             </td>
             <td i18n="@@lastEur">Last Eur:</td>
             <td>
               {{
-                $safeNavigationMigration(currQuote?.eur) /
-                  $safeNavigationMigration(currQuote?.eth) | number: "1.2"
+                $safeNavigationMigration(currQuote()?.eur) /
+                  $safeNavigationMigration(currQuote()?.eth) | number: "1.2"
               }}
             </td>
             <td i18n="@@lastYen">Last Yen:</td>
             <td>
               {{
-                $safeNavigationMigration(currQuote?.jpy) /
-                  $safeNavigationMigration(currQuote?.eth) | number: "1.2"
+                $safeNavigationMigration(currQuote()?.jpy) /
+                  $safeNavigationMigration(currQuote()?.eth) | number: "1.2"
               }}
             </td>
             <td i18n="@@lastGbp">Last Pound:</td>
             <td>
               {{
-                $safeNavigationMigration(currQuote?.gbp) /
-                  $safeNavigationMigration(currQuote?.eth) | number: "1.2"
+                $safeNavigationMigration(currQuote()?.gbp) /
+                  $safeNavigationMigration(currQuote()?.eth) | number: "1.2"
               }}
             </td>
             <td i18n="@@timestamp">Timestamp:</td>
             <td>
               {{
-                $safeNavigationMigration(currQuote?.createdAt)
+                $safeNavigationMigration(currQuote()?.createdAt)
                   | date: "HH:mm:ss"
               }}
             </td>
           </tr>
         }
-        @if (currpair === LTCUSD) {
+        @if (currpair() === LTCUSD) {
           <tr>
             <td i18n="@@pair">Pair:</td>
-            <td>{{ myCurrPair }}</td>
+            <td>{{ currPair() }}</td>
             <td i18n="@@lastUsd">Last Usd:</td>
             <td>
               {{
-                $safeNavigationMigration(currQuote?.usd) /
-                  $safeNavigationMigration(currQuote?.ltc) | number: "1.2"
+                $safeNavigationMigration(currQuote()?.usd) /
+                  $safeNavigationMigration(currQuote()?.ltc) | number: "1.2"
               }}
             </td>
             <td i18n="@@lastEur">Last Eur:</td>
             <td>
               {{
-                $safeNavigationMigration(currQuote?.eur) /
-                  $safeNavigationMigration(currQuote?.ltc) | number: "1.2"
+                $safeNavigationMigration(currQuote()?.eur) /
+                  $safeNavigationMigration(currQuote()?.ltc) | number: "1.2"
               }}
             </td>
             <td i18n="@@lastYen">Last Yen:</td>
             <td>
               {{
-                $safeNavigationMigration(currQuote?.jpy) /
-                  $safeNavigationMigration(currQuote?.ltc) | number: "1.2"
+                $safeNavigationMigration(currQuote()?.jpy) /
+                  $safeNavigationMigration(currQuote()?.ltc) | number: "1.2"
               }}
             </td>
             <td i18n="@@lastGbp">Last Pound:</td>
             <td>
               {{
-                $safeNavigationMigration(currQuote?.gbp) /
-                  $safeNavigationMigration(currQuote?.ltc) | number: "1.2"
+                $safeNavigationMigration(currQuote()?.gbp) /
+                  $safeNavigationMigration(currQuote()?.ltc) | number: "1.2"
               }}
             </td>
             <td i18n="@@timestamp">Timestamp:</td>
             <td id="createdAt">
               {{
-                $safeNavigationMigration(currQuote?.createdAt)
+                $safeNavigationMigration(currQuote()?.createdAt)
                   | date: "HH:mm:ss"
               }}
             </td>
@@ -129,7 +129,7 @@
       <span>
         <mat-radio-group
           class="radioGroup"
-          [(ngModel)]="timeframe"
+          [ngModel]="timeframe()" (ngModelChange)="timeframe.set($event)"
           (change)="changeTf()"
         >
           @for (tf of utils.timeframes; track tf) {
@@ -142,7 +142,7 @@
           }
         </mat-radio-group>
         <mat-checkbox
-          [(ngModel)]="addLinReg"
+          [ngModel]="addLinReg()" (ngModelChange)="addLinReg.set($event)"
           (change)="changeTf()"
           class="radioButton"
           i18n="@@linReg"
@@ -155,6 +155,6 @@
         <sc-line-chart [chartPoints]="chartPoints()"></sc-line-chart>
       </div>
     }
-    <div>{{ todayQuotes?.length }} {{ chartShow() }}</div>
+    <div>{{ todayQuotes().length }} {{ chartShow() }}</div>
   </div>
 </div>

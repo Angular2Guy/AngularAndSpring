@@ -51,11 +51,11 @@ import { NgxLineChartsModule } from "ngx-simple-charts/line";
   ],
   templateUrl: "./cbdetail.component.html",
   styleUrls: ["./cbdetail.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CbdetailComponent extends DetailBase implements OnInit {
-  public currpair: string = "";
-  public currQuote: QuoteCb = {} as QuoteCb;
+  public readonly currpair = signal<string>("");
+  public readonly currQuote = signal<QuoteCb>({} as QuoteCb);
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly BTCUSD: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -63,8 +63,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly LTCUSD: string;
   protected chartShow = signal(false);
-  protected todayQuotes: QuoteCbSmall[] = [];
-  protected myCurrPair = "";
+  public readonly todayQuotes = signal<QuoteCbSmall[]>([]);
   private readonly destroy: DestroyRef = inject(DestroyRef);
   private coinbaseCurrPairs = new CoinbaseCurrPairs();
 
@@ -82,26 +81,26 @@ export class CbdetailComponent extends DetailBase implements OnInit {
 
   ngOnInit() {
     this.chartShow.set(false);
-    this.route.params.subscribe((params) => {
-      this.currpair = params.currpair;
-      this.myCurrPair = this.utils.getCurrpairName(this.currpair) ?? "";
+    this.route.params.pipe(takeUntilDestroyed(this.destroy)).subscribe((params) => {
+      this.currpair.set(params.currpair);
+      this.currPair.set(this.utils.getCurrpairName(params.currpair) ?? "");
       this.serviceCb
         .getCurrentQuote()
         .pipe(repeat({ delay: 10000 }), takeUntilDestroyed(this.destroy))
-        .subscribe((quote) => (this.currQuote = quote));
+        .subscribe((quote) => this.currQuote.set(quote));
       this.serviceCb
         .getTodayQuotes()
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((quotes) => {
-          this.todayQuotes = quotes;
-          if (this.currpair === this.coinbaseCurrPairs.BTCUSD) {
+          this.todayQuotes.set(quotes);
+          if (this.currpair() === this.coinbaseCurrPairs.BTCUSD) {
             this.updateChartData(
               quotes.map(
                 (quote) =>
                   new Tuple<string, number>(quote.createdAt, quote.usd),
               ),
             );
-          } else if (this.currpair === this.coinbaseCurrPairs.ETHUSD) {
+          } else if (this.currpair() === this.coinbaseCurrPairs.ETHUSD) {
             this.updateChartData(
               quotes.map(
                 (quote) =>
@@ -111,7 +110,7 @@ export class CbdetailComponent extends DetailBase implements OnInit {
                   ),
               ),
             );
-          } else if (this.currpair === this.coinbaseCurrPairs.LTCUSD) {
+          } else if (this.currpair() === this.coinbaseCurrPairs.LTCUSD) {
             this.updateChartData(
               quotes.map(
                 (quote) =>
@@ -133,39 +132,39 @@ export class CbdetailComponent extends DetailBase implements OnInit {
 
   changeTf() {
     this.chartShow.set(false);
-    this.currpair = this.route.snapshot.paramMap.get("currpair") ?? "";
+    this.currpair.set(this.route.snapshot.paramMap.get("currpair") ?? "");
     let quoteObserv: Observable<QuoteCbSmall[]>;
-    if (this.timeframe === this.utils.MyTimeFrames.Day7) {
+    if (this.timeframe() === this.utils.MyTimeFrames.Day7) {
       quoteObserv = this.serviceCb.get7DayQuotes();
-    } else if (this.timeframe === this.utils.MyTimeFrames.Day30) {
+    } else if (this.timeframe() === this.utils.MyTimeFrames.Day30) {
       quoteObserv = this.serviceCb.get30DayQuotes();
-    } else if (this.timeframe === this.utils.MyTimeFrames.Day90) {
+    } else if (this.timeframe() === this.utils.MyTimeFrames.Day90) {
       quoteObserv = this.serviceCb.get90DayQuotes();
-    } else if (this.timeframe === this.utils.MyTimeFrames.Day180) {
+    } else if (this.timeframe() === this.utils.MyTimeFrames.Day180) {
       quoteObserv = this.serviceCb.get6MonthsQuotes();
-    } else if (this.timeframe === this.utils.MyTimeFrames.Day365) {
+    } else if (this.timeframe() === this.utils.MyTimeFrames.Day365) {
       quoteObserv = this.serviceCb.get1YearQuotes();
     } else {
       quoteObserv = this.serviceCb.getTodayQuotes();
     }
 
     quoteObserv.pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
-      this.todayQuotes = quotes;
+      this.todayQuotes.set(quotes);
 
-      if (this.currpair === this.coinbaseCurrPairs.BTCUSD) {
+      if (this.currpair() === this.coinbaseCurrPairs.BTCUSD) {
         this.updateChartData(
           quotes.map(
             (quote) => new Tuple<string, number>(quote.createdAt, quote.usd),
           ),
         );
-      } else if (this.currpair === this.coinbaseCurrPairs.ETHUSD) {
+      } else if (this.currpair() === this.coinbaseCurrPairs.ETHUSD) {
         this.updateChartData(
           quotes.map(
             (quote) =>
               new Tuple<string, number>(quote.createdAt, quote.usd / quote.eth),
           ),
         );
-      } else if (this.currpair === this.coinbaseCurrPairs.LTCUSD) {
+      } else if (this.currpair() === this.coinbaseCurrPairs.LTCUSD) {
         this.updateChartData(
           quotes.map(
             (quote) =>

@@ -51,12 +51,12 @@ import { NgxLineChartsModule } from "ngx-simple-charts/line";
   ],
   templateUrl: "./bsdetail.component.html",
   styleUrls: ["./bsdetail.component.scss"],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BsdetailComponent extends DetailBase implements OnInit {
-  public currQuote: QuoteBs = {} as QuoteBs;
+  public readonly currQuote = signal<QuoteBs>({} as QuoteBs);
   protected chartShow = signal(false);
-  protected todayQuotes: QuoteBs[] = [];
+  public readonly todayQuotes = signal<QuoteBs[]>([]);
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
   constructor(
@@ -70,19 +70,19 @@ export class BsdetailComponent extends DetailBase implements OnInit {
 
   ngOnInit() {
     this.chartShow.set(false);
-    this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroy)).subscribe((params) => {
       this.serviceBs
         .getCurrentQuote(params.currpair)
         .pipe(repeat({ delay: 10000 }), takeUntilDestroyed(this.destroy))
         .subscribe((quote) => {
-          this.currQuote = quote;
-          this.currPair.set(this.utils.getCurrpairName(this.currQuote.pair) ?? "");
+          this.currQuote.set(quote);
+          this.currPair.set(this.utils.getCurrpairName(quote.pair) ?? "");
         });
       this.serviceBs
         .getTodayQuotes(this.route.snapshot.paramMap.get("currpair") ?? "")
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((quotes) => {
-          this.todayQuotes = quotes;
+          this.todayQuotes.set(quotes);
           this.updateChartData(
             quotes.map(
               (quote) => new Tuple<string, number>(quote.createdAt, quote.last),
@@ -101,22 +101,22 @@ export class BsdetailComponent extends DetailBase implements OnInit {
     this.chartShow.set(false);
     const currpair = this.route.snapshot.paramMap.get("currpair") ?? "";
     let quoteObserv: Observable<QuoteBs[]>;
-    if (this.timeframe === this.utils.MyTimeFrames.Day7) {
+    if (this.timeframe() === this.utils.MyTimeFrames.Day7) {
       quoteObserv = this.serviceBs.get7DayQuotes(currpair);
-    } else if (this.timeframe === this.utils.MyTimeFrames.Day30) {
+    } else if (this.timeframe() === this.utils.MyTimeFrames.Day30) {
       quoteObserv = this.serviceBs.get30DayQuotes(currpair);
-    } else if (this.timeframe === this.utils.MyTimeFrames.Day90) {
+    } else if (this.timeframe() === this.utils.MyTimeFrames.Day90) {
       quoteObserv = this.serviceBs.get90DayQuotes(currpair);
-    } else if (this.timeframe === this.utils.MyTimeFrames.Day180) {
+    } else if (this.timeframe() === this.utils.MyTimeFrames.Day180) {
       quoteObserv = this.serviceBs.get6MonthsQuotes(currpair);
-    } else if (this.timeframe === this.utils.MyTimeFrames.Day365) {
+    } else if (this.timeframe() === this.utils.MyTimeFrames.Day365) {
       quoteObserv = this.serviceBs.get1YearQuotes(currpair);
     } else {
       quoteObserv = this.serviceBs.getTodayQuotes(currpair);
     }
 
     quoteObserv.pipe(takeUntilDestroyed(this.destroy)).subscribe((quotes) => {
-      this.todayQuotes = quotes;
+      this.todayQuotes.set(quotes);
       this.updateChartData(
         quotes.map(
           (quote) => new Tuple<string, number>(quote.createdAt, quote.last),
@@ -129,7 +129,7 @@ export class BsdetailComponent extends DetailBase implements OnInit {
   showReport() {
     const currpair = this.route.snapshot.paramMap.get("currpair") ?? "";
     const url =
-      "/bitstamp" + this.utils.createReportUrl(this.timeframe, currpair);
+      "/bitstamp" + this.utils.createReportUrl(this.timeframe(), currpair);
     window.open(url);
   }
 }

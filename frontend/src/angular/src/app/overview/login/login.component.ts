@@ -19,6 +19,7 @@ import {
   Inject,
   DestroyRef,
   inject,
+  signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { QuoteoverviewComponent } from "../quoteoverview/quoteoverview.component";
@@ -73,17 +74,17 @@ enum FormFields {
     ReactiveFormsModule,
   ],
   templateUrl: "./login.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
   protected signinForm: FormGroup;
   protected loginForm: FormGroup;
-  protected loginFailed = false;
-  protected signinFailed = false;
-  protected pwMatching = true;
+  protected readonly loginFailed = signal(false);
+  protected readonly signinFailed = signal(false);
+  protected readonly pwMatching = signal(true);
   protected formFields = FormFields;
-  protected waitingForResponse = false;
+  protected readonly waitingForResponse = signal(false);
   private user = {} as MyUser;
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
@@ -133,11 +134,12 @@ export class LoginComponent implements OnInit {
       group.get(FormFields.password)?.touched ||
       group.get(FormFields.password2)?.touched
     ) {
-      this.pwMatching =
+      const matching =
         group.get(FormFields.password)?.value ===
           group.get(FormFields.password2)?.value &&
         group.get(FormFields.password)?.value !== "";
-      if (!this.pwMatching) {
+      this.pwMatching.set(matching);
+      if (!matching) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         group.get(FormFields.password)?.setErrors({ MatchPassword: true });
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -147,7 +149,7 @@ export class LoginComponent implements OnInit {
         group.get(FormFields.password2)?.setErrors(null);
       }
     }
-    return this.pwMatching;
+    return this.pwMatching();
   }
 
   onSigninClick(): void {
@@ -157,13 +159,17 @@ export class LoginComponent implements OnInit {
     myUser.email = this.signinForm.get(FormFields.email)?.value;
     //      console.log(this.signinForm);
     //      console.log(myUser);
-    this.waitingForResponse = true;
+    this.waitingForResponse.set(true);
     this.myuserService
       .postSignin(myUser)
       .pipe(takeUntilDestroyed(this.destroy))
       .subscribe({
         next: (us) => this.signin(us),
-        error: (err) => console.log(err),
+        error: (err) => {
+          console.log(err);
+          this.waitingForResponse.set(false);
+          this.signinFailed.set(true);
+        },
       });
   }
 
@@ -172,39 +178,43 @@ export class LoginComponent implements OnInit {
     myUser.userId = this.loginForm.get(FormFields.username)?.value;
     myUser.password = this.loginForm.get(FormFields.password)?.value;
     //      console.log(myUser);
-    this.waitingForResponse = true;
+    this.waitingForResponse.set(true);
     this.myuserService
       .postLogin(myUser)
       .pipe(takeUntilDestroyed(this.destroy))
       .subscribe({
         next: (us) => this.login(us),
-        error: (err) => console.log(err),
+        error: (err) => {
+          console.log(err);
+          this.waitingForResponse.set(false);
+          this.loginFailed.set(true);
+        },
       });
   }
 
   signin(us: MyUser): void {
     this.user = us;
     this.data.loggedIn = !!us?.token;
-    this.waitingForResponse = false;
+    this.waitingForResponse.set(false);
     if (this.user.userId !== null) {
-      this.signinFailed = false;
+      this.signinFailed.set(false);
       this.dialogRef.close(this.data.loggedIn);
     } else {
-      this.signinFailed = true;
+      this.signinFailed.set(true);
     }
   }
 
   login(us: MyUser): void {
     this.user = us;
     this.data.loggedIn = !!us?.token;
-    this.waitingForResponse = false;
+    this.waitingForResponse.set(false);
     if (this.user.userId !== null) {
-      this.loginFailed = false;
+      this.loginFailed.set(false);
       this.tokenService.token = us.token;
       this.tokenService.userId = us.userId;
       this.dialogRef.close(this.data.loggedIn);
     } else {
-      this.loginFailed = true;
+      this.loginFailed.set(true);
     }
   }
 

@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { Component, ChangeDetectionStrategy, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { CoinExchange, CommonStatistics } from "../common/common-statistics";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
@@ -40,13 +40,13 @@ import { StatisticDetailsComponent } from "./statistic-details/statistic-details
     StatisticDetailsComponent,
   ],
   templateUrl: "./statistics.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./statistics.component.scss"],
 })
 export class StatisticsComponent {
   //protected commonStatistics = new CommonStatistics();
   protected coinExchange = CoinExchange;
-  protected tabIndex = 0;
+  protected readonly tabIndex = signal(0);
 
   constructor(private router: Router) {}
 
@@ -55,6 +55,6 @@ export class StatisticsComponent {
   }
 
   onSelTabChange(event: any): void {
-    this.tabIndex = event.index;
+    this.tabIndex.set(event.index);
   }
 }

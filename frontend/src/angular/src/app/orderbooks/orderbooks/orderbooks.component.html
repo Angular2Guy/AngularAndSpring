@@ -14,7 +14,8 @@
         <div>
           <div>
             <mat-checkbox
-              [(ngModel)]="model.bitstampCb"
+              [ngModel]="bitstampCb()"
+              (ngModelChange)="bitstampCb.set($event)"
               name="bitstampCb"
               i18n="@@bitstamp"
               >Bitstamp</mat-checkbox
@@ -22,7 +23,8 @@
             </div>
               <div>
                 <mat-checkbox
-                  [(ngModel)]="model.bitfinexCb"
+                  [ngModel]="bitfinexCb()"
+                  (ngModelChange)="bitfinexCb.set($event)"
                   name="bitfinexCb"
                   i18n="@@bitfinex"
                   >Bitfinex</mat-checkbox
@@ -30,11 +32,11 @@
                 </div>
                 <div>
                   <div class="formatMs">
-                    <mat-radio-group [(ngModel)]="model.buysell" name="buysell">
-                      <mat-radio-button name="buysell" value="1" i18n="@@buy"
+                    <mat-radio-group [ngModel]="buysell()" (ngModelChange)="buysell.set($event)" name="buysell">
+                      <mat-radio-button name="buysell" [value]="1" i18n="@@buy"
                         >Buy</mat-radio-button
                         >
-                        <mat-radio-button name="buysell" value="0" i18n="@@sell"
+                        <mat-radio-button name="buysell" [value]="0" i18n="@@sell"
                           >Sell</mat-radio-button
                           >
                         </mat-radio-group>
@@ -44,13 +46,14 @@
                       <div class="formatMs">
                         <mat-form-field>
                           <mat-select
-                            [(ngModel)]="model.currpair"
+                            [ngModel]="currpair()"
+                            (ngModelChange)="currpair.set($event)"
                             required
                             name="currpair"
                             placeholder-i18n="@@currencyPair"
                             placeholder="currency pair"
                             >
-                            @for (curr of currencies; track curr) {
+                            @for (curr of currencies(); track curr.value) {
                               <mat-option
                                 [value]="curr.value"
                                 >
@@ -68,7 +71,8 @@
                             <input
                               matInput
                               type="number"
-                              [(ngModel)]="model.amount"
+                              [ngModel]="amount()"
+                              (ngModelChange)="amount.set($event)"
                               name="amount"
                               required
                               placeholder-i18n="@@amount"

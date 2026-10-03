@@ -12,13 +12,13 @@
     <mat-tab-group (selectedTabChange)="onSelTabChange($event)">
       <mat-tab label="Bitstamp" label-i18n="@@bitstamp">
         <app-statistic-details
-          [tabIndex]="tabIndex"
+          [tabIndex]="tabIndex()"
           [coinExchange]="coinExchange.bitstamp"
         ></app-statistic-details>
       </mat-tab>
       <mat-tab label="Bitfinex" label-i18n="@@bitfinex">
         <app-statistic-details
-          [tabIndex]="tabIndex"
+          [tabIndex]="tabIndex()"
           [coinExchange]="coinExchange.bitfinex"
         ></app-statistic-details>
       </mat-tab>

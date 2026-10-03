@@ -27,7 +27,7 @@ import { RouterModule } from "@angular/router";
   selector: "app-root",
   imports: [RouterModule],
   templateUrl: "./app.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {

@@ -264,7 +264,7 @@ describe("CbdetailComponent", () => {
   });
 
   it("should have value", () => {
-    expect(component.currQuote.aed).toBe(30446.14);
+    expect(component.currQuote().aed).toBe(30446.14);
   });
   /*
   it("should show usd", () => {

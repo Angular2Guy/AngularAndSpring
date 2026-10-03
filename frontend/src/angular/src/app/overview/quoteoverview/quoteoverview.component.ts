@@ -17,6 +17,7 @@ import {
   OnInit,
   DestroyRef,
   ChangeDetectionStrategy,
+  signal,
 } from "@angular/core";
 import { BitstampCurrPairs, BitstampService } from "../../services/bitstamp.service";
 import { CoinbaseCurrPairs, CoinbaseService } from "../../services/coinbase.service";
@@ -64,12 +65,12 @@ import { MatToolbarModule } from "@angular/material/toolbar";
     ReactiveFormsModule,
   ],
   templateUrl: "./quoteoverview.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./quoteoverview.component.scss"],
 })
 export class QuoteoverviewComponent implements OnInit {
   protected datasource = new Myds();
-  protected loggedIn = false;
+  protected readonly loggedIn = signal(false);
   private utils = new CommonUtils();
   private bitstampCurrPairs= new BitstampCurrPairs();
   private coinbaseCurrPairs= new CoinbaseCurrPairs();
@@ -91,8 +92,9 @@ export class QuoteoverviewComponent implements OnInit {
       this.refreshData();
     });
     if (this.datasource.rows.length < 15) {
-      for (let i = 0; i < 15; i++) {
-        this.datasource.rows.push(
+      const rows = [...this.datasource.rows];
+      for (let i = rows.length; i < 15; i++) {
+        rows.push(
           new Myrow(
             "",
             "",
@@ -107,10 +109,10 @@ export class QuoteoverviewComponent implements OnInit {
           ),
         );
       }
-      this.datasource.updateRows();
+      this.datasource.updateRows(rows);
     }
     this.refreshData();
-    this.loggedIn = !!this.tokenService.token;
+    this.loggedIn.set(!!this.tokenService.token);
     //console.log(this.hash);
   }
 
@@ -119,11 +121,13 @@ export class QuoteoverviewComponent implements OnInit {
       width: "600px",
       disableClose: true,
       hasBackdrop: true,
-      data: { loggedIn: this.loggedIn },
+      data: { loggedIn: this.loggedIn() },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.loggedIn = result;
+      if (result !== undefined) {
+        this.loggedIn.set(!!result);
+      }
     });
   }
 
@@ -134,7 +138,7 @@ export class QuoteoverviewComponent implements OnInit {
   }
 
   logout(): void {
-    this.loggedIn = !this.serviceMu.postLogout();
+    this.loggedIn.set(!this.serviceMu.postLogout());
   }
 
   orderbooks(): void {
@@ -248,12 +252,13 @@ export class QuoteoverviewComponent implements OnInit {
         takeUntilDestroyed(this.destroy),
       )
       .subscribe((quote) => {
-        this.datasource.rows[rowId] = this.createRowBs(
+        const rows = [...this.datasource.rows];
+        rows[rowId] = this.createRowBs(
           quote,
           "Bitstamp",
           this.utils.getCurrpairName(currPair) ?? "",
         );
-        this.datasource.updateRows();
+        this.datasource.updateRows(rows);
       });
   }
 
@@ -265,12 +270,13 @@ export class QuoteoverviewComponent implements OnInit {
         takeUntilDestroyed(this.destroy),
       )
       .subscribe((quote) => {
-        this.datasource.rows[rowId] = this.createRowBf(
+        const rows = [...this.datasource.rows];
+        rows[rowId] = this.createRowBf(
           quote,
           "Bitfinex",
           this.utils.getCurrpairName(currPair) ?? "",
         );
-        this.datasource.updateRows();
+        this.datasource.updateRows(rows);
       });
   }
 
@@ -291,10 +297,11 @@ export class QuoteoverviewComponent implements OnInit {
       )
       .subscribe((quote) => {
         const myrows = this.createRowsCb(quote);
-        this.datasource.rows[8] = myrows[0];
-        this.datasource.rows[9] = myrows[1];
-        this.datasource.rows[10] = myrows[2];
-        this.datasource.updateRows();
+        const rows = [...this.datasource.rows];
+        rows[8] = myrows[0];
+        rows[9] = myrows[1];
+        rows[10] = myrows[2];
+        this.datasource.updateRows(rows);
       });
     this.refreshBfData(this.bitfinexCurrPairs.BTCUSD, 11);
     this.refreshBfData(this.bitfinexCurrPairs.ETHUSD, 12);
@@ -311,8 +318,12 @@ export class Myds extends DataSource<Myrow> {
   rows: Myrow[] = [];
   private subject = new BehaviorSubject<Myrow[]>([]);
 
-  updateRows(): void {
-    this.subject.next(this.rows);
+  updateRows(rows?: Myrow[]): void {
+    if (rows) {
+      this.rows = rows;
+    }
+    // Emit a new array reference so OnPush + mat-table detect the change.
+    this.subject.next([...this.rows]);
   }
 
   connect(collectionViewer: CollectionViewer): Observable<Myrow[]> {

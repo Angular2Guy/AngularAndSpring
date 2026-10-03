@@ -93,7 +93,7 @@ describe("BfdetailComponent", () => {
   });
 
   it("should have value", () => {
-    expect(component.currQuote?.mid).toBe(1);
+    expect(component.currQuote()?.mid).toBe(1);
   });
 
   it("should show last_price", () => {
@@ -129,7 +129,7 @@ describe("BfdetailComponent", () => {
   it("should show createdAt", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#createdAt")).nativeElement;
-    const myDate = new Date(component.currQuote?.createdAt ?? new Date());
+    const myDate = new Date(component.currQuote()?.createdAt ?? new Date());
     const dateStr =
       (myDate.getMinutes().toString().length === 1
         ? "0" + myDate.getMinutes()

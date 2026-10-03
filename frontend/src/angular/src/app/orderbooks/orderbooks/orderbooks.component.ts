@@ -52,13 +52,17 @@ import { MatToolbarModule } from "@angular/material/toolbar";
     MatListModule,
   ],
   templateUrl: "./orderbooks.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./orderbooks.component.scss"],
 })
 export class OrderbooksComponent implements OnInit {
   private bitfinexCurrPairs = new BitfinexCurrPairs();
-  public currencies: MyCurr[] = [];
-  protected model = new MyModel("", false, false, false, 1, 0);
+  protected readonly currencies = signal<MyCurr[]>([]);
+  protected readonly currpair = signal<string>("");
+  protected readonly bitstampCb = signal(false);
+  protected readonly bitfinexCb = signal(false);
+  protected readonly buysell = signal<number>(1);
+  protected readonly amount = signal<number>(0);
   protected bsOrders = signal<MyOrder[]>([]);
   protected bfOrders = signal<MyOrder[]>([]);
   protected ibOrders = signal<MyOrder[]>([]);
@@ -71,18 +75,18 @@ export class OrderbooksComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.currencies = [
+    this.currencies.set([
       new MyCurr(this.bitfinexCurrPairs.BTCUSD, "Btc - Usd"),
       new MyCurr(this.bitfinexCurrPairs.ETHUSD, "Eth - Usd"),
       new MyCurr(this.bitfinexCurrPairs.LTCUSD, "Ltc - Usd"),
       new MyCurr(this.bitfinexCurrPairs.XRPUSD, "Xrp - Usd"),
-    ];
+    ]);
   }
   onSubmit() {
     //console.log( this.model );
-    if (this.model.bitstampCb) {
+    if (this.bitstampCb()) {
       this.serviceBs
-        .getOrderbook(this.model.currpair)
+        .getOrderbook(this.currpair())
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((ob) => {
           //                this.orderbookBs = ob;
@@ -91,9 +95,9 @@ export class OrderbooksComponent implements OnInit {
     } else {
       this.bsOrders.set([]);
     }
-    if (this.model.bitfinexCb) {
+    if (this.bitfinexCb()) {
       this.serviceBf
-        .getOrderbook(this.model.currpair)
+        .getOrderbook(this.currpair())
         .pipe(takeUntilDestroyed(this.destroy))
         .subscribe((ob) => {
           //                this.orderbookBf = ob;
@@ -111,18 +115,20 @@ export class OrderbooksComponent implements OnInit {
   private filterObBs(ob: OrderbookBs): MyOrder[] {
     const myOrders: MyOrder[] = [];
     let sum = 0;
-    const bidAskArr = this.model.buysell === 1 ? ob.asks : ob.bids;
+    const buysell = Number(this.buysell());
+    const amount = Number(this.amount());
+    const bidAskArr = buysell === 1 ? ob.asks : ob.bids;
     for (const order of bidAskArr) {
       myOrders.push(
         new MyOrder(
-          this.model.buysell,
+          buysell,
           parseFloat(order[0]),
           parseFloat(order[1]),
-          sum > this.model.amount ? "black" : "blue",
+          sum > amount ? "black" : "blue",
         ),
       );
       sum += parseFloat(order[1]);
-      if (sum > this.model.amount * 1.5) {
+      if (sum > amount * 1.5) {
         break;
       }
     }
@@ -132,18 +138,20 @@ export class OrderbooksComponent implements OnInit {
   private filterObBf(ob: OrderbookBf): MyOrder[] {
     const myOrders: MyOrder[] = [];
     let sum = 0;
-    const bidAskArr = this.model.buysell === 1 ? ob.asks : ob.bids;
+    const buysell = Number(this.buysell());
+    const amount = Number(this.amount());
+    const bidAskArr = buysell === 1 ? ob.asks : ob.bids;
     for (const order of bidAskArr) {
       myOrders.push(
         new MyOrder(
-          this.model.buysell,
+          buysell,
           parseFloat(order.price),
           parseFloat(order.amount),
-          sum > this.model.amount ? "black" : "blue",
+          sum > amount ? "black" : "blue",
         ),
       );
       sum += parseFloat(order.amount);
-      if (sum > this.model.amount * 1.5) {
+      if (sum > amount * 1.5) {
         break;
       }
     }
@@ -153,18 +161,20 @@ export class OrderbooksComponent implements OnInit {
   private filterObIb(ob: OrderbookIb): MyOrder[] {
     const myOrders: MyOrder[] = [];
     let sum = 0;
-    const bidAskArr = this.model.buysell === 1 ? ob.asks : ob.bids;
+    const buysell = Number(this.buysell());
+    const amount = Number(this.amount());
+    const bidAskArr = buysell === 1 ? ob.asks : ob.bids;
     for (const order of bidAskArr) {
       myOrders.push(
         new MyOrder(
-          this.model.buysell,
+          buysell,
           parseFloat(order[0]),
           parseFloat(order[1]),
-          sum > this.model.amount ? "black" : "blue",
+          sum > amount ? "black" : "blue",
         ),
       );
       sum += parseFloat(order[1]);
-      if (sum > this.model.amount * 1.5) {
+      if (sum > amount * 1.5) {
         break;
       }
     }

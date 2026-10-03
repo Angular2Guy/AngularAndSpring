@@ -17,9 +17,10 @@ import { CommonModule } from "@angular/common";
 import {
   Component,
   DestroyRef,
-  Input,
   OnInit,
+  effect,
   inject,
+  input,
   signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
@@ -53,35 +54,34 @@ import { StatisticService } from "../../services/statistic.service";
     MatProgressSpinnerModule,
   ],
   templateUrl: "./statistic-details.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./statistic-details.component.scss"],
 })
 export class StatisticDetailsComponent implements OnInit {
-  @Input()
-  coinExchange: CoinExchange = CoinExchange.bitfinex;
+  readonly coinExchange = input<CoinExchange>(CoinExchange.bitfinex);
+  readonly tabIndex = input<number>(0);
   protected statisticCurrencyPair = StatisticCurrencyPair;
-  protected selCurrency = StatisticCurrencyPair.bcUsd;
+  protected readonly selCurrency = signal<StatisticCurrencyPair>(
+    StatisticCurrencyPair.bcUsd,
+  );
   protected commonStatistics = signal<CommonStatistics>({} as CommonStatistics);
   protected chartBars = signal<ChartBars>({} as ChartBars);
   protected chartsLoading = signal(true);
-  private myTabIndex = 0;
   private readonly destroy: DestroyRef = inject(DestroyRef);
 
-  constructor(private statisticService: StatisticService) {}
-
-  get tabIndex() {
-    return this.myTabIndex;
-  }
-
-  @Input()
-  set tabIndex(tabIndex: number) {
-    this.myTabIndex = tabIndex;
-    this.updateCurrency();
+  constructor(private statisticService: StatisticService) {
+    // Re-fetch when parent tab selection or exchange changes (after initial load).
+    effect(() => {
+      // Track inputs so OnPush re-runs on reference change.
+      this.tabIndex();
+      this.coinExchange();
+      this.updateCurrency();
+    });
   }
 
   ngOnInit(): void {
     this.statisticService
-      .getCommonStatistics(this.selCurrency, this.coinExchange)
+      .getCommonStatistics(this.selCurrency(), this.coinExchange())
       .pipe(
         tap((result) => this.chartBars.set(this.createChartBars(result))),
         takeUntilDestroyed(this.destroy),
@@ -93,7 +93,7 @@ export class StatisticDetailsComponent implements OnInit {
     if (!this.chartsLoading()) {
       this.chartsLoading.set(true);
       this.statisticService
-        .getCommonStatistics(this.selCurrency, this.coinExchange)
+        .getCommonStatistics(this.selCurrency(), this.coinExchange())
         .pipe(
           tap((result) => this.chartBars.set(this.createChartBars(result))),
           takeUntilDestroyed(this.destroy),

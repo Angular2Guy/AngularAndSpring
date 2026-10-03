@@ -2,7 +2,8 @@
   <div class="radio-wrapper">
     <mat-radio-group
       aria-label="Select an option"
-      [(ngModel)]="selCurrency"
+      [ngModel]="selCurrency()"
+      (ngModelChange)="selCurrency.set($event)"
       (change)="updateCurrency()"
     >
       <mat-radio-button

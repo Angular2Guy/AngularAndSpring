@@ -23,7 +23,7 @@
       </button></span
     >
     <span>
-      @if (!loggedIn) {
+      @if (!loggedIn()) {
         <button
           mat-flat-button
           color="primary"
@@ -35,7 +35,7 @@
       }
     </span>
     <span>
-      @if (loggedIn) {
+      @if (loggedIn()) {
         <button
           mat-flat-button
           color="primary"

@@ -15,49 +15,49 @@
         <tr>
           <td i18n="@@last">Last:</td>
           <td id="last">
-            {{ $safeNavigationMigration(currQuote?.last) | number: "1.2" }}
+            {{ $safeNavigationMigration(currQuote()?.last) | number: "1.2" }}
           </td>
           <td i18n="@@high">High:</td>
           <td id="high">
-            {{ $safeNavigationMigration(currQuote?.high) | number: "1.2" }}
+            {{ $safeNavigationMigration(currQuote()?.high) | number: "1.2" }}
           </td>
           <td i18n="@@low">Low:</td>
           <td id="low">
-            {{ $safeNavigationMigration(currQuote?.low) | number: "1.2" }}
+            {{ $safeNavigationMigration(currQuote()?.low) | number: "1.2" }}
           </td>
         </tr>
         <tr>
           <td i18n="@@bid">Bid:</td>
           <td id="bid">
-            {{ $safeNavigationMigration(currQuote?.bid) | number: "1.2" }}
+            {{ $safeNavigationMigration(currQuote()?.bid) | number: "1.2" }}
           </td>
           <td i18n="@@ask">Ask:</td>
           <td id="ask">
-            {{ $safeNavigationMigration(currQuote?.ask) | number: "1.2" }}
+            {{ $safeNavigationMigration(currQuote()?.ask) | number: "1.2" }}
           </td>
           <td i18n="@@open">Open:</td>
           <td id="open">
-            {{ $safeNavigationMigration(currQuote?.open) | number: "1.2" }}
+            {{ $safeNavigationMigration(currQuote()?.open) | number: "1.2" }}
           </td>
         </tr>
         <tr>
           <td i18n="@@vwap">Vwap:</td>
           <td id="vwap">
-            {{ $safeNavigationMigration(currQuote?.vwap) | number: "1.2" }}
+            {{ $safeNavigationMigration(currQuote()?.vwap) | number: "1.2" }}
           </td>
           <td i18n="@@pair">Pair:</td>
           <td id="currPair">{{ currPair() }}</td>
           <td i18n="@@timestamp">Timestamp:</td>
           <td id="createdAt">
             {{
-              $safeNavigationMigration(currQuote?.createdAt) | date: "HH:mm:ss"
+              $safeNavigationMigration(currQuote()?.createdAt) | date: "HH:mm:ss"
             }}
           </td>
         </tr>
         <tr>
           <td i18n="@@volume">Volume:</td>
           <td id="volume">
-            {{ $safeNavigationMigration(currQuote?.volume) | number: "1.2" }}
+            {{ $safeNavigationMigration(currQuote()?.volume) | number: "1.2" }}
           </td>
         </tr>
       </tbody>
@@ -66,7 +66,7 @@
       <span>
         <mat-radio-group
           class="radioGroup"
-          [(ngModel)]="timeframe"
+          [ngModel]="timeframe()" (ngModelChange)="timeframe.set($event)"
           (change)="changeTf()"
         >
           @for (tf of utils.timeframes; track tf) {
@@ -79,7 +79,7 @@
           }
         </mat-radio-group>
         <mat-checkbox
-          [(ngModel)]="addLinReg"
+          [ngModel]="addLinReg()" (ngModelChange)="addLinReg.set($event)"
           (change)="changeTf()"
           class="radioButton"
           i18n="@@linReg"
@@ -90,7 +90,7 @@
           class="radioButton"
           (click)="showReport()"
           [ngStyle]="{
-            visibility: todayQuotes.length > 0 ? 'visible' : 'hidden',
+            visibility: todayQuotes().length > 0 ? 'visible' : 'hidden',
           }"
           i18n="@@showReport"
         >
@@ -103,6 +103,6 @@
         <sc-line-chart [chartPoints]="chartPoints()"></sc-line-chart>
       </div>
     }
-    <div>{{ todayQuotes?.length }} {{ chartShow() }}</div>
+    <div>{{ todayQuotes().length }} {{ chartShow() }}</div>
   </div>
 </div>

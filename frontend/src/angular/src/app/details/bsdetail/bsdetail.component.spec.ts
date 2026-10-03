@@ -97,7 +97,7 @@ describe("BsdetailComponent", () => {
   });
 
   it("should have value", () => {
-    expect(component.currQuote.ask).toBe(7);
+    expect(component.currQuote().ask).toBe(7);
   });
   it("should show last", () => {
     const de: DebugElement = fixture.debugElement;
@@ -137,7 +137,7 @@ describe("BsdetailComponent", () => {
   it("should show createdAt", () => {
     const de: DebugElement = fixture.debugElement;
     const el: HTMLElement = de.query(By.css("#createdAt")).nativeElement;
-    const myDate = new Date(component.currQuote.createdAt);
+    const myDate = new Date(component.currQuote().createdAt);
     const dateStr =
       (myDate.getMinutes().toString().length === 1
         ? "0" + myDate.getMinutes()
