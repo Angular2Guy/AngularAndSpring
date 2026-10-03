@@ -22,6 +22,7 @@ import {
   inject,
   input,
   signal,
+  untracked,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -71,11 +72,14 @@ export class StatisticDetailsComponent implements OnInit {
 
   constructor(private statisticService: StatisticService) {
     // Re-fetch when parent tab selection or exchange changes (after initial load).
+    // updateCurrency() reads chartsLoading/selCurrency and the fetch
+    // completion writes chartsLoading — tracking those would retrigger this
+    // effect after every fetch (endless HTTP loop), so only tabIndex and
+    // coinExchange are tracked while the side effect itself runs untracked.
     effect(() => {
-      // Track inputs so OnPush re-runs on reference change.
-      this.tabIndex();
-      this.coinExchange();
-      this.updateCurrency();
+      void this.tabIndex();
+      void this.coinExchange();
+      untracked(() => this.updateCurrency());
     });
   }
 
