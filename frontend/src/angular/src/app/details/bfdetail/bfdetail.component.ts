@@ -24,13 +24,6 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  trigger,
-  state,
-  animate,
-  transition,
-  style,
-} from "@angular/animations";
 import { BitfinexService } from "../../services/bitfinex.service";
 import { QuoteBf } from "../../common/quote-bf";
 import { Observable, repeat } from "rxjs";
@@ -59,14 +52,6 @@ import { MatToolbarModule } from "@angular/material/toolbar";
   templateUrl: "./bfdetail.component.html",
   styleUrls: ["./bfdetail.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
-  animations: [
-    trigger("showChart", [
-      transition("false => true", [
-        style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 })),
-      ]),
-    ]),
-  ],
 })
 export class BfdetailComponent extends DetailBase implements OnInit {
   public currQuote: QuoteBf | null = null;

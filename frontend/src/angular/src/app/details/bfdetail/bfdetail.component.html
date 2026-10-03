@@ -94,16 +94,14 @@
         </button>
       </span>
     </div>
-    <div
-      #chartContainer
-      class="chart-container"
-      [@showChart]="chartShow()"
-    >
-      <sc-line-chart
-        [chartPoints]="chartPoints()"
-        class="line-chart"
-      ></sc-line-chart>
-    </div>
+    @if (chartShow()) {
+      <div #chartContainer class="chart-container" animate.enter="chart-fade-in">
+        <sc-line-chart
+          [chartPoints]="chartPoints()"
+          class="line-chart"
+        ></sc-line-chart>
+      </div>
+    }
     <div>{{ todayQuotes?.length }} {{ chartShow() }}</div>
   </div>
 </div>

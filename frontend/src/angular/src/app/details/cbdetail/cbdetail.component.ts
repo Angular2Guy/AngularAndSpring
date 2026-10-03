@@ -24,13 +24,6 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  trigger,
-  state,
-  animate,
-  transition,
-  style,
-} from "@angular/animations";
 import { Observable, repeat } from "rxjs";
 import { QuoteCb, QuoteCbSmall } from "../../common/quote-cb";
 import { CoinbaseCurrPairs, CoinbaseService } from "../../services/coinbase.service";
@@ -59,14 +52,6 @@ import { NgxLineChartsModule } from "ngx-simple-charts/line";
   templateUrl: "./cbdetail.component.html",
   styleUrls: ["./cbdetail.component.scss"],
   changeDetection: ChangeDetectionStrategy.Eager,
-  animations: [
-    trigger("showChart", [
-      transition("false => true", [
-        style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 })),
-      ]),
-    ]),
-  ],
 })
 export class CbdetailComponent extends DetailBase implements OnInit {
   public currpair: string = "";

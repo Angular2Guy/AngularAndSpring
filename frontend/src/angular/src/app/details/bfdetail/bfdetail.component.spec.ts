@@ -19,7 +19,6 @@ import { BitfinexService } from "../../services/bitfinex.service";
 import { BfdetailComponent } from "./bfdetail.component";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {
   provideHttpClient,
   withInterceptorsFromDi,
@@ -71,7 +70,6 @@ describe("BfdetailComponent", () => {
         RouterTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
         MatToolbarModule,
         MatRadioModule,
         MatCheckboxModule,

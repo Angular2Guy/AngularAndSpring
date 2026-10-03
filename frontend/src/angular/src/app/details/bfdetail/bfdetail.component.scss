@@ -26,6 +26,22 @@ td {
   height: calc(100vh - 250px);
   width: 100%;
 }
+.chart-fade-in {
+  animation: chart-fade-in 1s ease-in-out;
+}
+@keyframes chart-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chart-fade-in {
+    animation: none;
+  }
+}
 .example-fill-remaining-space {
   // This fills the remaining space, by using flexbox.
   // Every toolbar row uses a flexbox row layout.

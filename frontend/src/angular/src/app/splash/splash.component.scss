@@ -21,6 +21,27 @@
 }
 .content {
   margin-top: 50px;
+  opacity: 0;
+}
+.content.splash-visible {
+  opacity: 1;
+  animation: splash-fade-in 750ms ease-in-out;
+}
+@keyframes splash-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    opacity: 1;
+  }
+  .content.splash-visible {
+    animation: none;
+  }
 }
 .example-margin {
   margin: 0 10px;

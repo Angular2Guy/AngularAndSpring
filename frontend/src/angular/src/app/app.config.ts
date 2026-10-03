@@ -14,7 +14,6 @@
    limitations under the License.
  */
 import { ApplicationConfig, importProvidersFrom } from "@angular/core";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import {
   provideHttpClient,
   withInterceptorsFromDi,
@@ -27,7 +26,6 @@ import { provideRouter } from "@angular/router";
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideAnimations(),
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
     importProvidersFrom(
       NgxServiceModule.forRoot({
@@ -43,7 +41,6 @@ export const appConfig: ApplicationConfig = {
 @NgModule({ declarations: [AppComponent, SplashComponent],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
-        BrowserAnimationsModule,
         MatProgressSpinnerModule,
         NgxServiceModule.forRoot({
             tokenRefreshPath: "/myuser/refreshToken",

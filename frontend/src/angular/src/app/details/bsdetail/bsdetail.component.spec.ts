@@ -17,7 +17,6 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {
   HttpClient,
   provideHttpClient,
@@ -75,7 +74,6 @@ describe("BsdetailComponent", () => {
         RouterTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
         MatToolbarModule,
         MatRadioModule,
         MatCheckboxModule,
