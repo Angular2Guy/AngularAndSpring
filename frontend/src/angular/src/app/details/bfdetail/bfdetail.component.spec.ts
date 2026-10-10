@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { BitfinexService } from "../../services/bitfinex.service";
 import { BfdetailComponent } from "./bfdetail.component";
@@ -64,7 +64,7 @@ describe("BfdetailComponent", () => {
   let fixture: ComponentFixture<BfdetailComponent>;
   const mockService = new MockBfService(null as unknown as HttpClient);
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -79,8 +79,9 @@ describe("BfdetailComponent", () => {
         { provide: BitfinexService, useValue: mockService },
         provideHttpClient(withXhr(), withInterceptorsFromDi()),
       ],
-    }).compileComponents();
-  }));
+    });
+    await TestBed.compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BfdetailComponent);

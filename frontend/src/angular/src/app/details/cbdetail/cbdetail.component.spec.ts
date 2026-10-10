@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -235,7 +235,7 @@ describe("CbdetailComponent", () => {
   let fixture: ComponentFixture<CbdetailComponent>;
   const mockService = new MockService(null as unknown as HttpClient);
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -250,8 +250,9 @@ describe("CbdetailComponent", () => {
         { provide: CoinbaseService, useValue: mockService },
         provideHttpClient(withXhr(), withInterceptorsFromDi()),
       ],
-    }).compileComponents();
-  }));
+    });
+    await TestBed.compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CbdetailComponent);
