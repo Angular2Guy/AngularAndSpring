@@ -29,7 +29,7 @@
     "@angular/material-luxon-adapter": "^22.0.0",
     "@angular/platform-browser": "^22.0.1",
     "@angular/platform-browser-dynamic": "^22.0.1",
-    "@angular/router": "^22.0.1",
+    "@angular/router": "^22.2.0",
     "@types/luxon": "^2.0.0",
     "luxon": "^3.7.2",
     "material-icons": "^1.11.11",
