@@ -363,14 +363,16 @@ public class CoinbaseService {
 
 	private QuoteCb avgCbQuotePeriodMF(QuoteCb q1, QuoteCb q2, long count) {
 		QuoteCb result = new QuoteCb();
+		result.setCreatedAt(q1.getCreatedAt());
 		this.propertyDescriptors.forEach(myPropertyDescriptor -> {
 			try {
 				var gsmf = this.createGetMethodFunction(myPropertyDescriptor);
 				BigDecimal num1 = gsmf.getter.apply(q1);
 				BigDecimal num2 = gsmf.getter.apply(q2);
-				BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
-				gsmf.setter.accept(result, resultValue);
-				result.setCreatedAt(q1.getCreatedAt());
+				if (num1 != null && num2 != null) {
+					BigDecimal resultValue = this.serviceUtils.avgHourValue(num1, num2, count);
+					gsmf.setter.accept(result, resultValue);
+				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
