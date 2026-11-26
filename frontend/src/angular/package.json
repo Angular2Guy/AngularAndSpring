@@ -9,7 +9,6 @@
     "test": "ng test --watch=false --coverage",
     "test:watch": "ng test --watch=true",
     "lint": "ng lint",
-    "e2e": "ng e2e",
     "prebuild": "rimraf ./dist && mkdirp ./dist",
     "postbuild": "npm run deploy",
     "predeploy": "rimraf ../../main/resources/static/*",
@@ -39,7 +38,6 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^22.0.1",
     "@angular-eslint/builder": "^22.0.0",
     "@angular-eslint/eslint-plugin": "^22.0.0",
     "@angular-eslint/eslint-plugin-template": "^22.0.0",
